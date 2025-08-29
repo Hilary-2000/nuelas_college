@@ -1,0 +1,288 @@
+28th Aug 2025 14:44:34PM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+28th Aug 2025 08:03:22AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+28th Aug 2025 07:48:55AM : JAMES MUGOH with admission number LC-2025-9 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 07:04:26AM : Class "Student Enquiries" added successfully - {ANN AKOTCH}
+28th Aug 2025 07:03:54AM : Class "Enquiries" added successfully - {ANN AKOTCH}
+28th Aug 2025 06:58:58AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+27th Aug 2025 10:55:24AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+26th Jul 2025 18:33:47PM : James Mwingi - of Reg No. (LC-2025-6) data has been updated successfully! - {HILLARY NGIGE}
+26th Jul 2025 18:33:25PM : Skima Jeremiah - of Reg No. (LC-2025-7) data has been updated successfully! - {HILLARY NGIGE}
+26th Jul 2025 18:33:16PM : Skima Jeremiah - of Reg No. (LC-2025-7) data has been updated successfully! - {HILLARY NGIGE}
+26th Jul 2025 18:31:32PM : Skima Jeremiah - of Reg No. (LC-2025-7) data has been updated successfully! - {HILLARY NGIGE}
+26th Jul 2025 18:30:33PM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+25th Jul 2025 16:52:22PM : James Mwingi - of Reg No. (LC-2025-6) data has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 15:00:04PM : Skima Jeremiah - of Reg No. (LC-2025-7) data has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:59:54PM : Ham Makanga - of Reg No. (LC-2025-8) data has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:59:38PM : Skima Jeremiah - of Reg No. (LC-2025-7) data has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:59:07PM : Skima Jeremiah - of Reg No. (LC-2025-7) data has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:53:34PM : Ham Makanga - of Reg No. (LC-2025-8) data has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:35:28PM : Ham Makanga - of Reg No. (LC-2025-8) data has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:24:33PM : HAM MAKANGA with admission number LC-2025-8 has been admitted successfully - {HILLARY NGIGE}
+25th Jul 2025 14:22:22PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:22:04PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:21:34PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 14:16:34PM : SKIMA JEREMIAH with admission number LC-2025-7 has been admitted successfully - {HILLARY NGIGE}
+25th Jul 2025 13:43:13PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 13:08:54PM : Course "TEXTILE DESIGNER" has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 12:51:15PM : James Mwingi - of Reg No. (LC-2025-6) data has been updated successfully! - {HILLARY NGIGE}
+25th Jul 2025 11:08:28AM : JAMES MWINGI with admission number LC-2025-6 has been admitted successfully - {HILLARY NGIGE}
+25th Jul 2025 10:52:30AM : Fees structure has been modified. Votehead " Registration Fee (payable Once)" changed successfully! - {HILLARY NGIGE}
+25th Jul 2025 09:19:00AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+24th Jul 2025 20:10:34PM : Role "Accountant" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 20:09:56PM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+24th Jul 2025 20:08:43PM : JAMES MUGOH successfully logged into the system as Accountant - {JAMES MUGOH}
+24th Jul 2025 20:07:16PM : Registration of JAMES MUGOH as <b>Accountant</b> has been done successfully - {HILLARY NGIGE}
+24th Jul 2025 20:06:18PM : Role "Accountant" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 20:01:47PM : Role "Supplier" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 19:56:19PM : Role "Accountant" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 19:54:31PM : Role "Accountant" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 19:53:56PM : Role "Supplier" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 15:02:55PM : Role "Supplier" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 15:02:48PM : Role "Supplier" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 15:02:40PM : Role "Supplier" has been added successfully! - {HILLARY NGIGE}
+24th Jul 2025 15:01:43PM : Role "New Role" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 14:05:26PM : Role "New Role" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 14:05:18PM : Role "New Role" has been added successfully! - {HILLARY NGIGE}
+24th Jul 2025 13:09:13PM : Role "Users" has been added successfully! - {HILLARY NGIGE}
+24th Jul 2025 13:08:15PM : Role "User Roles" has been added successfully! - {HILLARY NGIGE}
+24th Jul 2025 13:05:09PM : Role "User Role" has been added successfully! - {HILLARY NGIGE}
+24th Jul 2025 12:17:45PM : Role "Accountant" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 12:17:35PM : Role "Accountant" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 12:13:29PM : Role "Accountant" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 12:02:14PM : Role "Accountant" has been updated successfully! - {HILLARY NGIGE}
+24th Jul 2025 08:25:44AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+14th Jun 2025 10:54:11AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+29th May 2025 11:45:17AM : Mercy Kyalo - of Reg No. (LC-2025-5) data has been updated successfully! - {HILLARY NGIGE}
+29th May 2025 11:09:10AM : Transaction for "Mercy Kyalo" Reg No "LC-2025-5" has been completed successfully! - {HILLARY NGIGE}
+29th May 2025 10:49:15AM : Mutiso Karama - of Reg No. (LC-2025-4) data has been updated successfully! - {HILLARY NGIGE}
+29th May 2025 10:48:47AM : Mercy Kyalo - of Reg No. (LC-2025-5) data has been updated successfully! - {HILLARY NGIGE}
+29th May 2025 10:48:40AM : Mercy Kyalo - of Reg No. (LC-2025-5) data has been updated successfully! - {HILLARY NGIGE}
+29th May 2025 10:47:38AM : Mercy Kyalo - of Reg No. (LC-2025-5) data has been updated successfully! - {HILLARY NGIGE}
+29th May 2025 10:47:07AM : Mercy Kyalo - of Reg No. (LC-2025-5) data has been updated successfully! - {HILLARY NGIGE}
+29th May 2025 10:46:23AM : Mercy Kyalo - of Reg No. (LC-2025-5) data has been updated successfully! - {HILLARY NGIGE}
+29th May 2025 08:04:15AM : MERCY KYALO with admission number LC-2025-5 has been admitted successfully - {HILLARY NGIGE}
+29th May 2025 07:39:15AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+12th May 2025 13:10:40PM : Mutiso Mutiso of adm no LC-2025-4  balance has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 13:02:37PM : Mutiso Mutiso of adm no LC-2025-4  balance has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 12:54:29PM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+12th May 2025 09:18:44AM : Fees structure has been modified. Votehead "Registration Fee (payable Once)" has been added successfully! - {HILLARY NGIGE}
+12th May 2025 09:13:02AM : Fees structure has been modified. Votehead "Registration Fee (payable Once)" has been added successfully! - {HILLARY NGIGE}
+12th May 2025 09:08:41AM : Fees structure has been modified. Votehead "Registration Fee (payable Once)" has been added successfully! - {HILLARY NGIGE}
+12th May 2025 08:45:13AM : Fees structure has been modified. Votehead " Registration Fee (payable Once)" has been added successfully! - {HILLARY NGIGE}
+12th May 2025 08:43:14AM : Academic calender has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 08:09:49AM : Role has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 08:09:45AM : Role has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 08:09:43AM : Role has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 08:09:39AM : Role has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 08:09:37AM : Role has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 08:09:34AM : Role has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 08:00:19AM : Course "FASHION AND DESIGN" has been added successfully! - {HILLARY NGIGE}
+12th May 2025 07:55:37AM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:55:12AM : Course "FASHION AND DESIGN" has been added successfully! - {HILLARY NGIGE}
+12th May 2025 07:51:57AM : Course "FASHION AND DESIGN" has been added successfully! - {HILLARY NGIGE}
+12th May 2025 07:50:17AM : Course "MEDIA PRODUCTION" has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 07:50:14AM : Course "LAPTOP AND PHONE REPAIR" has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 07:50:11AM : Course "FILM PRODUCTION" has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 07:50:08AM : Course "ANIMATION AND DIGITAL MEDIA TECHNOLOGY" has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 07:50:05AM : Course "WEB PROGRAMMING" has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 07:48:12AM : Course "Information Technology" has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 07:48:09AM : Course "Information Technology" has been deleted successfully! - {HILLARY NGIGE}
+12th May 2025 07:39:34AM : Course "FINE ART (IN SIGN LANGUAGE)" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:39:14AM : Course "GRAPHIC DESIGN (IN SIGN LANGUAGE)" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:39:02AM : Course "MOBILE AND PHONE REPAIR" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:38:57AM : Course "MOBILE AND PHONE REPAIR" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:38:44AM : Course "PHOTOGRAPHY" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:38:32AM : Course "WEB DESIGN" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:38:15AM : Course "FINE ART" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:38:02AM : Course "GRAPHIC DESIGNER" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:37:45AM : Course "LECTURER/TRAINER" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:36:53AM : Course "TEXTILE DESIGNER" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:36:39AM : Course "FASHION MERCHANDISER" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:36:27AM : Course "COSTUME DESIGNER" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:36:15AM : Course "ENTREPRENEUR (BOTIQUE OWNER/BRAND FOUNDER)" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:36:08AM : Course "FASHION ILLUSTRATOR" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:36:01AM : Course "STYLIST AND IMAGE CONSULTANT" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:35:51AM : Course "STYLIST AND IMAGE CONSULTANT" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:35:39AM : Course "FASHION ILLUSTRATOR" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:35:33AM : Course "STYLIST AND IMAGE CONSULTANT" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:35:28AM : Course "PATTERN MAKER " has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:35:23AM : Course "GARMENT PRODUCTION SPECIALIST" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:35:18AM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:35:10AM : Course "TAILOR AND DRESS MAKER" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:33:54AM : Departments (DIGITAL ARTS AND TECHNOLOGY) with a code of (DAT-001) have been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:33:43AM : Departments (Fashion and Design) with a code of (FS-001) have been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:31:58AM : Departments (DIGITAL ARTS AND TECHNOLOGY) with a code of (ENG-001) have been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:31:31AM : Departments (Fashion and Design) with a code of (SC-001) have been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:30:47AM : Course "ENTREPRENEUR (BOTIQUE OWNER/BRAND FOUNDER)" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:30:18AM : Course "STYLIST AND IMAGE CONSULTANT" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:30:02AM : Course "PATTERN MAKER " has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 07:29:20AM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+12th May 2025 06:31:45AM : Transaction for "Mutiso Karama" Reg No "LC-2025-4" has been completed successfully! - {HILLARY NGIGE}
+12th May 2025 06:30:46AM : Fees structure has been modified. Votehead "Admission Fees" has been added successfully! - {HILLARY NGIGE}
+12th May 2025 06:19:50AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+11th May 2025 17:25:30PM : Transaction for "Mutiso Karama" Reg No "LC-2025-4" has been completed successfully! - {HILLARY NGIGE}
+11th May 2025 17:21:23PM : Mutiso Mutiso of adm no LC-2025-4  balance has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 17:17:13PM : Mutiso Mutiso of adm no LC-2025-4  balance has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 17:15:21PM : Mutiso Karama - of Reg No. (LC-2025-4) data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 11:19:48AM : Transaction has been deleted successfully! - {HILLARY NGIGE}
+11th May 2025 11:19:46AM : Transaction has been deleted successfully! - {HILLARY NGIGE}
+11th May 2025 11:19:44AM : Transaction has been deleted successfully! - {HILLARY NGIGE}
+11th May 2025 11:19:42AM : Transaction has been deleted successfully! - {HILLARY NGIGE}
+11th May 2025 11:19:40AM : Transaction has been deleted successfully! - {HILLARY NGIGE}
+11th May 2025 08:26:01AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 08:24:29AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 08:24:27AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 08:24:25AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 08:20:41AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 08:20:36AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 08:19:51AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 08:18:54AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+11th May 2025 08:05:03AM : Mutiso Karama - of Reg No. (LC-2025-4) course data has been updated successfully! - {HILLARY NGIGE}
+09th May 2025 17:11:33PM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+09th May 2025 12:45:18PM : Transaction for "Mutiso Karama" Reg No "LC-2025-4" has been completed successfully! - {HILLARY NGIGE}
+09th May 2025 11:44:53AM : Transaction for "Mutiso Karama" Reg No "LC-2025-4" has been completed successfully! - {HILLARY NGIGE}
+09th May 2025 11:44:19AM : Fees structure has been modified. Votehead "Admission Fees" has been added successfully! - {HILLARY NGIGE}
+09th May 2025 11:43:28AM : Transaction for "Mutiso Karama" Reg No "LC-2025-4" has been completed successfully! - {HILLARY NGIGE}
+09th May 2025 11:25:11AM : Transaction for "Mutiso Karama" Reg No "LC-2025-4" has been completed successfully! - {HILLARY NGIGE}
+09th May 2025 11:19:21AM : Transaction for "Mutiso Karama" Reg No "LC-2025-4" has been completed successfully! - {HILLARY NGIGE}
+08th May 2025 17:30:12PM : Transaction has been deleted successfully! - {HILLARY NGIGE}
+08th May 2025 16:09:52PM : Transaction for "Mutiso Karama" Reg No "LC-2025-4" has been completed successfully! - {HILLARY NGIGE}
+08th May 2025 13:53:00PM : Mutiso Karama - of Reg No. (LC-2025-4) data has been updated successfully! - {HILLARY NGIGE}
+08th May 2025 12:45:17PM : Mutiso Karama - of Reg No. (LC-2025-4) data has been updated successfully! - {HILLARY NGIGE}
+08th May 2025 10:55:14AM : MUTISO KARAMA has been admitted successfully - {HILLARY NGIGE}
+08th May 2025 10:54:43AM :   of Reg No (LC-2025-3) discounts have been updated successfully - {HILLARY NGIGE}
+08th May 2025 10:54:42AM : Mukisa Mukiso of Reg No (LC-2025-3) discounts have been updated successfully - {HILLARY NGIGE}
+08th May 2025 10:54:36AM : Viola Adede of Reg No (LC-2025-2) discounts have been updated successfully - {HILLARY NGIGE}
+08th May 2025 10:54:29AM : Kimani Muchatikha of Reg No (LC-2025-1) discounts have been updated successfully - {HILLARY NGIGE}
+08th May 2025 10:20:05AM : Course "FASHION ILLUSTRATOR" has been updated successfully! - {HILLARY NGIGE}
+08th May 2025 10:19:38AM : Course "STYLIST AND IMAGE CONSULTANT" has been updated successfully! - {HILLARY NGIGE}
+08th May 2025 10:19:19AM : Departments (Science and informatics) with a code of (SC-001) have been updated successfully! - {HILLARY NGIGE}
+08th May 2025 08:48:54AM : Course "STYLIST AND IMAGE CONSULTANT" has been updated successfully! - {HILLARY NGIGE}
+08th May 2025 08:24:05AM : Kimani Muchatikha - of Reg No. (LC-2025-1) data has been updated successfully! - {HILLARY NGIGE}
+08th May 2025 08:21:55AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+07th May 2025 16:40:57PM : Mukisa Mukiso - of Reg No. (LC-2025-3) data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 16:39:17PM : Mukisa Mukiso - of Reg No. (LC-2025-3) data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 16:34:07PM : Mukisa Mukiso - of Reg No. (LC-2025-3) data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 14:14:25PM : Mukisa Mukiso - of Reg No. (LC-2025-3) data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 13:39:27PM : Mukisa Mukiso - of Reg No. (LC-2025-3) data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 13:33:56PM : Mukisa Mukiso - of Reg No. (LC-2025-3) data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 13:02:30PM : Mukisa Mukiso - of Reg No. (LC-2025-3) course data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 13:02:22PM : Mukisa Mukiso - of Reg No. (LC-2025-3) course data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 13:01:57PM : Course "TAILOR AND DRESS MAKER" has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 11:30:27AM : Mukisa Mukiso - of Reg No. (LC-2025-3) course data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 11:30:24AM : Mukisa Mukiso - of Reg No. (LC-2025-3) course data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 10:34:49AM : MUKISA MUKISO has been admitted successfully - {HILLARY NGIGE}
+07th May 2025 10:34:19AM : Course "PATTERN MAKER " has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 10:33:47AM : Role has been deleted successfully! - {HILLARY NGIGE}
+07th May 2025 10:33:45AM : Role has been deleted successfully! - {HILLARY NGIGE}
+07th May 2025 10:05:00AM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 09:35:23AM : VIOLA ADEDE has been admitted successfully - {HILLARY NGIGE}
+07th May 2025 09:34:25AM : Course "GARMENT PRODUCTION SPECIALIST" has been updated successfully! - {HILLARY NGIGE}
+07th May 2025 09:28:40AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}
+06th May 2025 21:49:06PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 21:30:51PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 21:30:47PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 21:30:42PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 21:30:30PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 21:29:54PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 21:29:05PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 21:28:58PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 20:21:15PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 20:20:53PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 20:15:08PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 20:12:11PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 20:08:14PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:43:27PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:43:02PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:42:35PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:42:11PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:41:48PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:39:09PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:38:28PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:37:03PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:37:00PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:36:21PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:35:50PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:25:53PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:24:03PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:23:34PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:23:26PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:22:56PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:22:18PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:21:47PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:16:44PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:14:37PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 19:14:32PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:43:53PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:42:38PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:42:03PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:41:57PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:39:15PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:38:49PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:38:44PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:33:47PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:33:10PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:27:01PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:26:32PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:26:02PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:25:38PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 18:20:08PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:59:25PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:59:20PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:59:15PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:58:06PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:56:22PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:54:20PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:53:46PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:53:37PM : Kimani Muchatikha - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+06th May 2025 17:44:16PM : KIMANI MUCHATIKHA has been admitted successfully - {HILLARY NGIGE}
+06th May 2025 17:38:23PM : MAHTMA GHANDI has been admitted successfully - {HILLARY NGIGE}
+06th May 2025 17:36:34PM : JAMES MUGAKI has been admitted successfully - {HILLARY NGIGE}
+06th May 2025 17:32:05PM : MUSTAHIKI MAYOR has been admitted successfully - {HILLARY NGIGE}
+06th May 2025 10:36:34AM : DD DD has been admitted successfully - {HILLARY NGIGE}
+06th May 2025 08:18:43AM : JAMES CHONGWO has been admitted successfully - {HILLARY NGIGE}
+06th May 2025 08:18:12AM : Hillary Ngige of Reg No (LC-2025-4) discounts have been updated successfully - {HILLARY NGIGE}
+05th May 2025 20:45:24PM : HILLARY NGIGE has been admitted successfully - {HILLARY NGIGE}
+05th May 2025 20:44:43PM : Hillary Ngige of Reg No (LC-2025-3) discounts have been updated successfully - {HILLARY NGIGE}
+05th May 2025 20:43:21PM : HILLARY NGIGE has been admitted successfully - {HILLARY NGIGE}
+05th May 2025 20:28:12PM : Hillary Ngige of Reg No (LC-2025-2) discounts have been updated successfully - {HILLARY NGIGE}
+05th May 2025 18:37:37PM : HILLARY NGIGE has been admitted successfully - {HILLARY NGIGE}
+05th May 2025 17:39:46PM : Course "Information Technology" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:39:43PM : Course "Information Technology" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:39:39PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:39:32PM : Course "LAPTOP AND PHONE REPAIR" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:39:23PM : Course "FILM PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:39:18PM : Course "ANIMATION AND DIGITAL MEDIA TECHNOLOGY" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:39:08PM : Course "WEB PROGRAMMING" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:39:03PM : Course "FINE ART (IN SIGN LANGUAGE)" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:38:48PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:37:39PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:37:26PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:36:50PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:35:46PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:35:32PM : Course "FINE ART (IN SIGN LANGUAGE)" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:35:29PM : Course "WEB PROGRAMMING" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:35:25PM : Course "WEB PROGRAMMING" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:35:21PM : Course "ANIMATION AND DIGITAL MEDIA TECHNOLOGY" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:35:16PM : Course "FILM PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:35:12PM : Course "LAPTOP AND PHONE REPAIR" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:35:08PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 17:34:18PM : Course "Information Technology" has been added successfully! - {HILLARY NGIGE}
+05th May 2025 16:59:20PM : Test Test of Reg No (LC-2025-1) discounts have been updated successfully - {HILLARY NGIGE}
+05th May 2025 16:59:04PM : Transaction has been deleted successfully! - {HILLARY NGIGE}
+05th May 2025 16:57:30PM : Test Test - of Reg No. (LC-2025-1) course data has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 16:31:48PM : Course "FASHION AND DESIGN" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 16:29:33PM : Course "FINE ART (IN SIGN LANGUAGE)" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 16:26:57PM : Course "WEB PROGRAMMING" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 16:26:02PM : Course "ANIMATION AND DIGITAL MEDIA TECHNOLOGY" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:58:59PM : Course "FILM PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:58:21PM : Course "LAPTOP AND PHONE REPAIR" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:57:24PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:56:33PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:55:39PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:55:19PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:52:40PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:51:49PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 14:51:29PM : Course "MEDIA PRODUCTION" has been updated successfully! - {HILLARY NGIGE}
+05th May 2025 13:30:02PM : Course "Information Technology" has been added successfully! - {HILLARY NGIGE}
+05th May 2025 11:32:53AM : HILLARY NGIGE successfully logged into the system as Principal - {HILLARY NGIGE}

@@ -1,0 +1,28 @@
+29th Aug 2025 09:17:49AM : Transaction for "Hillary Adala" Reg No "NC-2025-002" has been completed successfully! - {ANN AKOTCH}
+29th Aug 2025 09:07:51AM : Transaction for "Hillary Adala" Reg No "NC-2025-002" has been completed successfully! - {ANN AKOTCH}
+29th Aug 2025 08:57:32AM : Transaction for "Hillary Adala" Reg No "NC-2025-002" has been completed successfully! - {ANN AKOTCH}
+29th Aug 2025 08:57:01AM : Transaction has been deleted successfully! - {ANN AKOTCH}
+29th Aug 2025 08:56:58AM : Transaction has been deleted successfully! - {ANN AKOTCH}
+29th Aug 2025 08:54:51AM : Transaction for "Hillary Adala" Reg No "NC-2025-002" has been completed successfully! - {ANN AKOTCH}
+29th Aug 2025 08:51:22AM : Transaction for "Hillary Adala" Reg No "NC-2025-002" has been completed successfully! - {ANN AKOTCH}
+29th Aug 2025 08:11:05AM : Fees structure has been modified. Votehead "Admission Fees" has been added successfully! - {ANN AKOTCH}
+29th Aug 2025 08:07:53AM : HILLARY ADALA with admission number NC-2025-002 has been admitted successfully - {ANN AKOTCH}
+29th Aug 2025 08:01:49AM : Hillary Ngige with admission number NC-2025-001 has been admitted successfully - {ANN AKOTCH}
+29th Aug 2025 07:51:14AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+28th Aug 2025 14:47:05PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+28th Aug 2025 13:57:25PM : Admission prefix has has been updated successfully! - {ANN AKOTCH}
+28th Aug 2025 13:55:19PM : School information changed successfully! - {ANN AKOTCH}
+28th Aug 2025 13:54:42PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+28th Aug 2025 12:33:56PM : Course "FASHION AND DESIGN" has been added successfully! - {ANN AKOTCH}
+28th Aug 2025 12:16:50PM : JAMES KARIMI with admission number LC-2025-016 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 12:02:44PM : JAMES MURUMI with admission number LC-2025-015 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 12:00:29PM : JAMES KARANI with admission number LC-2025-014 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 11:57:27AM : JAMES KARANI with admission number LC-2025-013 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 11:53:53AM : JAMES NGUGI with admission number LC-2025-012 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 11:32:50AM : JAMES KARANI with admission number LC-2025-011 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 08:44:31AM : Mutiso Karama - of Reg No. (LC-2025-4) data has been updated successfully! - {ANN AKOTCH}
+28th Aug 2025 08:42:50AM : Mutiso Karama - of Reg No. (LC-2025-4) data has been updated successfully! - {ANN AKOTCH}
+28th Aug 2025 08:37:42AM : James Mwingi - of Reg No. (LC-2025-6) data has been updated successfully! - {ANN AKOTCH}
+28th Aug 2025 08:26:12AM : MAXWEL ADANJE with admission number LC-2025-10 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 08:15:11AM : MUSKARI COMBO with admission number LC-2025-9 has been admitted successfully - {ANN AKOTCH}
+28th Aug 2025 08:05:42AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
