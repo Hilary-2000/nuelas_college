@@ -138,8 +138,8 @@
                         <select name="study_mode" id="study_mode" class="form-control">
                             <option value="" hidden>Select an Option</option>
                             <option selected value="fulltime">Fulltime Mode</option>
-                            <option value="evening">Evening Mode</option>
-                            <option value="weekend">Saturday Mode</option>
+                            <option value="evening">Hybrid Mode</option>
+                            <option value="weekend">Weekend Mode</option>
                         </select>
                     </div>
                     <div class="conts">

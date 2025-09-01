@@ -419,21 +419,22 @@ cObj("save_payment_option").onclick = function () {
     var err = checkBlank("payment_description_texts");
     if (err == 0) {
         var data = valObj("payment_description");
-        if (data.length > 0) {
-            var newdata = "{\"description\":\"" + valObj("payment_description_texts") + "\",\"show\":\"true\"}";
-            data = data.substr(0, data.length - 1) + "," + newdata + "]";
-            cObj("payment_description").value = data;
-            displayPaymentOption(data);
-        } else {
-            var newdata = "[{\"description\":\"" + valObj("payment_description_texts") + "\",\"show\":\"true\"}]";
-            cObj("payment_description").value = newdata;
-            displayPaymentOption(newdata);
+        if (hasJsonStructure(data)) {
+            data = JSON.parse(data);
+            var newdata = {"description":valObj("payment_description_texts"),"show":true};
+            data.push(newdata);
+            cObj("payment_description").value = JSON.stringify(data);
+        }else{
+            var newdata = {"description":valObj("payment_description_texts"),"show":true};
+            cObj("payment_description").value = JSON.stringify([newdata]);
         }
         cObj("cancel_payment_options").click();
+        displayPaymentOption();
     }
 }
 
-function displayPaymentOption(data) {
+function displayPaymentOption() {
+    var data = cObj("payment_description").value;
     if (data.length > 0) {
         if (hasJsonStructure(data)) {
             var json_data = JSON.parse(data);
@@ -450,7 +451,7 @@ function displayPaymentOption(data) {
                 }
                 select += "</select>";
                 const element = json_data[index];
-                var checked = element.show == "true" ? "checked" : "";
+                var checked = element.show ? "checked" : "";
                 data_to_display += "<tr><td>" + (index + 1) + ". </td><td id='descriptied" + (index + 1) + "'>" + element.description + "</td>";
                 data_to_display += "<td>" + select + "</td>";
                 data_to_display += "<td><input type='checkbox' " + checked + " class='pd_show_' id='pd_show_" + (index + 1) + "'></td><td><p><span class='mx-1 link edit_pd' id='edit_pd_" + (index + 1) + "'> <i class='fas fa-pen-fancy'></i></span> <span class='mx-1 link delete_pd' id='delete_pd_" + (index + 1) + "'><i class='fas fa-trash'></i></span></p></td></tr>";
@@ -604,7 +605,7 @@ function arrangePD() {
 
             var data_string = JSON.stringify(new_arraus);
             cObj("payment_description").value = data_string;
-            displayPaymentOption(data_string);
+            displayPaymentOption();
         }
     }
 }
@@ -641,8 +642,8 @@ function getPaymentOptions() {
             if (timeout == 1200) {
             }
             if (cObj("payment_options_loaders").classList.contains("hide")) {
-                displayPaymentOption(cObj("payment_details_blocks").innerText);
                 cObj("payment_description").value = cObj("payment_details_blocks").innerText;
+                displayPaymentOption();
                 stopInterval(ids);
             }
         }, 100);
@@ -2163,6 +2164,8 @@ cObj("sach").onchange = function () {
         cObj("classenroll").classList.add("hide");
         cObj("bcnos").classList.add("hide");
         cObj("course_lists_search_bar").classList.add("hide");
+        cObj("intake_month_search_win").classList.add("hide");
+        cObj("intake_year_search_win").classList.add("hide");
     } else if (this.value == "AdmNo") {
         cObj("swindow").classList.remove("hide");
         cObj("named").classList.add("hide");
@@ -2170,6 +2173,8 @@ cObj("sach").onchange = function () {
         cObj("classenroll").classList.add("hide");
         cObj("course_lists_search_bar").classList.add("hide");
         cObj("bcnos").classList.add("hide");
+        cObj("intake_month_search_win").classList.add("hide");
+        cObj("intake_year_search_win").classList.add("hide");
     } else if (this.value == "class") {
         cObj("swindow").classList.remove("hide");
         cObj("named").classList.add("hide");
@@ -2177,6 +2182,8 @@ cObj("sach").onchange = function () {
         cObj("classenroll").classList.remove("hide");
         cObj("course_lists_search_bar").classList.remove("hide");
         cObj("bcnos").classList.add("hide");
+        cObj("intake_month_search_win").classList.add("hide");
+        cObj("intake_year_search_win").classList.add("hide");
     } else if (this.value == "bcno") {
         cObj("swindow").classList.remove("hide");
         cObj("named").classList.add("hide");
@@ -2184,14 +2191,35 @@ cObj("sach").onchange = function () {
         cObj("classenroll").classList.add("hide");
         cObj("course_lists_search_bar").classList.add("hide");
         cObj("bcnos").classList.remove("hide");
+        cObj("intake_month_search_win").classList.add("hide");
+        cObj("intake_year_search_win").classList.add("hide");
     } else if (this.value == "allstuds") {
-        cObj("course_lists_search_bar").classList.add("hide");
         cObj("swindow").classList.add("hide");
         cObj("bcnos").classList.add("hide");
+        cObj("named").classList.add("hide");
+        cObj("admnosd").classList.add("hide");
+        cObj("classenroll").classList.add("hide");
+        cObj("course_lists_search_bar").classList.add("hide");
+        cObj("intake_month_search_win").classList.add("hide");
+        cObj("intake_year_search_win").classList.add("hide");
     } else if (this.value == "regtoday") {
-        cObj("course_lists_search_bar").classList.add("hide");
         cObj("swindow").classList.add("hide");
         cObj("bcnos").classList.add("hide");
+        cObj("named").classList.add("hide");
+        cObj("admnosd").classList.add("hide");
+        cObj("classenroll").classList.add("hide");
+        cObj("course_lists_search_bar").classList.add("hide");
+        cObj("intake_month_search_win").classList.add("hide");
+        cObj("intake_year_search_win").classList.add("hide");
+    } else if (this.value == "registered_in") {
+        cObj("swindow").classList.add("hide");
+        cObj("bcnos").classList.add("hide");
+        cObj("named").classList.add("hide");
+        cObj("admnosd").classList.add("hide");
+        cObj("classenroll").classList.add("hide");
+        cObj("course_lists_search_bar").classList.add("hide");
+        cObj("intake_month_search_win").classList.remove("hide");
+        cObj("intake_year_search_win").classList.remove("hide");
     }
 }
 
@@ -2253,6 +2281,11 @@ cObj("findingstudents").onclick = function () {
         }
         else if (valObj("sach") == "regtoday") {
             datapassing += "&todayreg=true";
+        }
+        else if (valObj("sach") == "registered_in") {
+            datapassing += "&intake_month="+valObj("intake_month_search")+"&intake_year="+valObj("intake_year_search");
+            erroro += checkBlank("intake_month_search");
+            erroro += checkBlank("intake_year_search");
         }
         if (erroro == 0) {
             //showPleasewait();
@@ -9585,7 +9618,7 @@ cObj("upload_new_students_button").onclick = function () {
         formData.append("upload_new_students", "new_student");
       
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/college_sims/ajax/administration/admissions.php", true);
+        xhr.open("POST", "/nuelas_college/ajax/administration/admissions.php", true);
         
         xhr.upload.onprogress = function (e) {
           if (e.lengthComputable) {
@@ -9608,7 +9641,7 @@ cObj("upload_new_students_button").onclick = function () {
                 
                 // check the message if its a success message
                 if (response.success) {
-                    cObj("error_message_holder_new_student").innerHTML = "<p class='text-success'>"+response.message+"</p>";
+                    cObj("error_message_holder_new_student").innerHTML = "<p class='text-success'>"+response.message+" <br> "+response.error_list+"</p>";
                 }else{
                     cObj("error_message_holder_new_student").innerHTML = "<p class='text-danger'>"+response.message+"</p>";
                 }

@@ -3286,8 +3286,8 @@ function checkPresnt($array, $string){
                         <input type="number" name="fulltime_fees" value="0" id="fulltime_fees" class="form-control" placeholder="Fulltime Fees(Kes 20,000)">
                     </div>
                     <div class="form-group">
-                        <label for="evening_fees" class="form-control-label">Evening Fees</label>
-                        <input type="number" name="evening_fees" value="0" id="evening_fees" class="form-control" placeholder="Evening Fees(Kes 20,000)">
+                        <label for="evening_fees" class="form-control-label">Hybrid Fees</label>
+                        <input type="number" name="evening_fees" value="0" id="evening_fees" class="form-control" placeholder="Hybrid Fees(Kes 20,000)">
                     </div>
                     <div class="form-group">
                         <label for="weekend_fees" class="form-control-label">Weekend Fees</label>
@@ -3349,8 +3349,8 @@ function checkPresnt($array, $string){
                             <input type="number" name="edit_fulltime_fees" value="0" id="edit_fulltime_fees" class="form-control" placeholder="Fulltime Fees(Kes 20,000)">
                         </div>
                         <div class="form-group">
-                            <label for="edit_evening_fees" class="form-control-label">Evening Fees</label>
-                            <input type="number" name="edit_evening_fees" value="0" id="edit_evening_fees" class="form-control" placeholder="Evening Fees(Kes 20,000)">
+                            <label for="edit_evening_fees" class="form-control-label">Hybrid Fees</label>
+                            <input type="number" name="edit_evening_fees" value="0" id="edit_evening_fees" class="form-control" placeholder="Hybrid Fees(Kes 20,000)">
                         </div>
                         <div class="form-group">
                             <label for="edit_weekend_fees" class="form-control-label">Weekend Fees</label>

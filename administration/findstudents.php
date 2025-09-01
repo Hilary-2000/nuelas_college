@@ -26,6 +26,7 @@
                             <option value="bcno">BC number</option>
                             <option value="allstuds" id ='alstuds'>All students</option>
                             <option value="regtoday" id='regtodays'>Registered today</option>
+                            <option value="registered_in" id='registered_in'>Intake</option>
                         </select>
                     </div>
                     <div class="col-lg-7 row">
@@ -50,6 +51,33 @@
                         <div class="col-md-6 mx-auto hide" id="bcnos">
                             <label class="form-control-label" for="bcnosd"><b>Enter birth certifcate no.</b> <br></label>
                             <input type="text" name="bcnosd" id="bcnosd" placeholder="Enter BC NO.">
+                        </div> 
+                        <div class="col-md-6 mx-auto hide" id="intake_month_search_win">
+                            <label class="form-control-label" for="intake_month_search"><b>Intake Month.</b> <br></label>
+                            <select name="" id="intake_month_search" class="form-control">
+                                <option value="" hidden>Select intake month</option>
+                                <option value="Jan">Jan</option>
+                                <option value="Feb">Feb</option>
+                                <option value="Mar">Mar</option>
+                                <option value="Apr">Apr</option>
+                                <option value="May">May</option>
+                                <option value="Jun">Jun</option>
+                                <option value="Jul">Jul</option>
+                                <option value="Aug">Aug</option>
+                                <option value="Sep">Sep</option>
+                                <option value="Oct">Oct</option>
+                                <option value="Nov">Nov</option>
+                                <option value="Dec">Dec</option>
+                            </select>
+                        </div> 
+                        <div class="col-md-6 mx-auto hide" id="intake_year_search_win">
+                            <label class="form-control-label" for="intake_year_search"><b>Intake Year.</b> <br></label>
+                            <select name="intake_year_search" id="intake_year_search" class="form-control">
+                                <option value="" hidden>Select an Option</option>
+                                <?php for($index = date("Y"); $index > 2017; $index--):?>
+                                    <option value="<?=$index?>"><?=$index?></option>
+                                <?php endfor;?>
+                            </select>
                         </div> 
                     </div>
                     <div class="col-lg-2">
@@ -291,8 +319,8 @@
                                     <select name="edit_study_mode" id="edit_study_mode" class="form-control w-100">
                                         <option value="" hidden>Select an Option</option>
                                         <option selected value="fulltime">Fulltime Mode</option>
-                                        <option value="evening">Evening Mode</option>
-                                        <option value="weekend">Saturday Mode</option>
+                                        <option value="evening">Hybrid Mode</option>
+                                        <option value="weekend">Weekend Mode</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">

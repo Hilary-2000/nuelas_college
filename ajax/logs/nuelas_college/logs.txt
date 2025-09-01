@@ -1,3 +1,12 @@
+01st Sep 2025 16:30:07PM : Hillary Ngige of Reg No (NC-2025-003) discounts have been updated successfully - {ANN AKOTCH}
+01st Sep 2025 16:30:02PM :  James of Reg No (NC-2025-004) discounts have been updated successfully - {ANN AKOTCH}
+01st Sep 2025 16:25:32PM : James Mugoh of Reg No (NC-2025-004) discounts have been updated successfully - {ANN AKOTCH}
+01st Sep 2025 16:25:27PM : Hillary Ngige of Reg No (NC-2025-003) discounts have been updated successfully - {ANN AKOTCH}
+01st Sep 2025 15:58:05PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+01st Sep 2025 15:49:18PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+01st Sep 2025 10:50:44AM : JAMES MUGOH with admission number NC-2025-004 has been admitted successfully - {ANN AKOTCH}
+01st Sep 2025 10:47:04AM : HILLARY NGIGE with admission number NC-2025-003 has been admitted successfully - {ANN AKOTCH}
+01st Sep 2025 10:02:23AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 29th Aug 2025 09:17:49AM : Transaction for "Hillary Adala" Reg No "NC-2025-002" has been completed successfully! - {ANN AKOTCH}
 29th Aug 2025 09:07:51AM : Transaction for "Hillary Adala" Reg No "NC-2025-002" has been completed successfully! - {ANN AKOTCH}
 29th Aug 2025 08:57:32AM : Transaction for "Hillary Adala" Reg No "NC-2025-002" has been completed successfully! - {ANN AKOTCH}

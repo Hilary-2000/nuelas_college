@@ -366,7 +366,9 @@ class PDF extends FPDF
             $this->Cell($w[6], 6, ucwords(strtolower($row[6])), 1, 0, 'L', $fill);
             // $this->Cell($w[7], 6, ($row[7]), 1, 0, 'R', $fill);
             $this->Cell($w[8], 6, ($row[8]), 1, 0, 'R', $fill);
-            $this->Cell($w[9], 6, ($row[9]), 1, 0, 'R', $fill);
+            if (count($header) > 9) {
+                $this->Cell($w[9], 6, ($row[9]), 1, 0, 'R', $fill);
+            }
             $this->Ln();
             $fill = !$fill;
             $balance += $row[2];
@@ -4120,7 +4122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     $pdf->Cell(200, 8, "Fees Collection Table", 0, 0, 'C', false);
                     $pdf->Ln();
                     $pdf->SetFont('Helvetica', 'B', 8);
-                    $width = array(5, 20, 17, 22, 28, 13, 10, 35, 33, 18);
+                    $width = array(5, 20, 25, 22, 35, 25, 10, 35, 33, 18);
                     $skip = false;
                     $pdf->financeTable($header, $data, $width, $skip);
                     $pdf->Output("I", str_replace(" ", "_", $pdf->school_document_title) . ".pdf");
@@ -4173,7 +4175,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
                             // $amount_paid = ($amount_paid);
                             $payBy = explode(" ", ucwords(strtolower(getStaffNamedReport($staff_data, $row['payBy']))))[0];
-                            $pay_for = $row['payment_for'];
+                            $pay_for = isJson_report($row['payment_for']) ? count(json_decode($row['payment_for']))." Voteheads" : count([$row['payment_for']])." Voteheads";
                             $date = date("dS M Y H:ia", strtotime($row['date_of_transaction'] . " " . $row['time_of_transaction']));
                             $transaction_code = $row['transaction_code'];
                             $stud_data = array($number, $amount_paid, $balance, $transaction_code, $fullname, $mode_of_pay, $pay_for, $date, $payBy);
