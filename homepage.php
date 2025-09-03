@@ -131,7 +131,7 @@ function checkPresnt($array, $string){
 
     
     <!-- the customizable text editor documents -->
-        <script src="https://cdn.tiny.cloud/1/if2hs0ax6hmgx2842yuozz7qt8lde0hvc8upqv9gmokdk2id/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="https://cdn.tiny.cloud/1/7rm4l4e0oa0zq4xscpmjlaybzcu2t0ald5hpigdbevjw9cgp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <!-- ends here -->
 
     <!-- START DATATABLES -->
@@ -3217,7 +3217,7 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
-        <div class="confirmpaymentwindow hide" id="add_classes_win">
+        <div class="confirmpaymentwindow hide" style="overflow: auto;"  id="add_classes_win">
             <div class="changesubwindow addsubject animate">
                 <div class="conts">
                     <p class="funga" id="close_add_class_win">&times</p>
@@ -3255,7 +3255,7 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
-        <div class="confirmpaymentwindow hide" id="add_course_window">
+        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="add_course_window">
             <div class="changesubwindow2 addsubject animate">
                 <div class="conts">
                     <p class="funga" id="close_add_course_win">&times</p>

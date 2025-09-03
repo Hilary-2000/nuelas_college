@@ -9606,6 +9606,8 @@ cObj("select_all_dept").onchange = function () {
 
 cObj("upload_new_students_button").onclick = function () {
     var err = checkBlank("new_student_uploads");
+    err += checkBlank("first_row");
+    err += checkBlank("last_row_number");
     if (err == 0) {
         // show the progress bar
         cObj("upload_new_students").classList.remove("hide");
@@ -9616,9 +9618,11 @@ cObj("upload_new_students_button").onclick = function () {
         var formData = new FormData();
         formData.append("file", file);
         formData.append("upload_new_students", "new_student");
+        formData.append("first_row", valObj("first_row"));
+        formData.append("last_row_number", valObj("last_row_number"));
       
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/nuelas_college/ajax/administration/admissions.php", true);
+        xhr.open("POST", "/ajax/administration/admissions.php", true);
         
         xhr.upload.onprogress = function (e) {
           if (e.lengthComputable) {

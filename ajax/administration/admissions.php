@@ -6844,6 +6844,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 // Get the highest row and column numbers containing data
                 $highestColumn = $worksheet->getHighestColumn(); // e.g., 'F'
                 $highestRow = $worksheet->getHighestRow($highestColumn); // e.g., 10
+                $highestRow = $_POST['last_row_number']*1;
 
                 // Convert the highest column letter to a number
                 $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
@@ -6883,7 +6884,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
                 $data = [];
                 $ommited_students = [];
-                for ($row = 2; $row <= $highestRow; $row++) {
+                $first_row = $_POST['first_row']*1;
+                for ($row = $first_row; $row <= $highestRow; $row++) {
                     // helper to convert col+row into a cell address
                     $cell = function($col, $row) use ($worksheet) {
                         $colLetter = Coordinate::stringFromColumnIndex($col);
@@ -6990,15 +6992,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
                     $insert = "INSERT INTO `student_data` 
                         (`first_name`,`second_name`,`surname`,`adm_no`,`course_done`,`stud_class`,`intake_month`,`intake_year`,`D_O_B`,`D_O_A`,
-                        `parentName`,`parentContacts`,`parent_name2`,`parent_contact2`,`gender`, `my_course_list`,`study_mode`) 
+                        `parentName`,`parentContacts`,`parent_name2`,`parent_contact2`,`gender`, `my_course_list`,`study_mode`, `student_contact`) 
                         VALUES 
-                        (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                        (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                     $stmt = $conn2->prepare($insert);
                     $stmt->execute([
                         $student_name[0], $student_name[1], $student_name[2], $reg_no, $course_chosen, $level_id,
                         $intake_month, $intake_year, $dob, $doa,
-                        $parent_name_1, $contact_1, $parent_name_2, $contact_2, $gender, $course_details_string,$study_mode
+                        $parent_name_1, $contact_1, $parent_name_2, $contact_2, $gender, $course_details_string,$study_mode, $student_contact
                     ]);
                 }
 
