@@ -814,6 +814,48 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
+        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="edit_student_votehead">
+            <div class="window_lg animate">
+                <div class="conts">
+                    <p class="funga" id="close_edit_student_votehead">&times</p>
+                    <h5 class="text-center"><b>Edit Student Voteheads <img class="hide" src="images/ajax_clock_small.gif" id="loader_evh"></b></h5>
+                </div>
+                <div class="add_expense">
+                    <div class="form-group my-2">
+                        <b>Note:</b>
+                        <ul>
+                            <li>This voteheads settings will be linked to the class this student is in this academic year.</li>
+                            <li>Select voteheads the student will pay for!</li>
+                            <li>Transport votehead is compulsory for every student enrolled in transport until un-enrolled/in-active!</li>
+                            <li>Once the voteheads are selected this will determine the amount the student pays!</li>
+                            <li>If a votehead selected is provisional, it will be compulsory for the student to pay for that!</li>
+                        </ul>
+                    </div>
+                    <hr class="mx-auto">
+                    <div class="form-group my-2">
+                        <p><b>Student Name : </b><span id="student_name_evh">Loading...</span></p>
+                        <p><b>Student Adm No : </b><span id="student_adm_no_evh">Loading...</span></p>
+                        <p><b>Student Class : </b><span id="student_class_evh">Loading...</span></p>
+                        <p><b>Current Fees : </b><span id="current_fees_evh">Loading...</span></p>
+                        <input type="hidden" id="student_index_evh" value="0">
+                        <input type="hidden" name="course_level_value_holder" id="course_level_value_holder" value="[]">
+                        <button type="button" id="reset_student_voteheads">Reset to default</button>
+                    </div>
+                    <hr class="mx-auto">
+                    <div class="form-group my-2">
+                        <div id="all_voteheads">
+                            <p>Voteheads will appear here!</p>
+                        </div>
+                    </div>
+                    <div class="container" id="error_handler_evh"></div>
+                </div>
+                <div class="btns">
+                    <button type="button" id='save_changed_evh'>Save Votehead Changes</button>
+                    <button class="btn btn-sm btn-outline-success" id="reset_vhs" type='button'><i class="fa fa-retweet"></i> Restore</button>
+                    <button type="button" id="close_student_fees_evh">Close</button>
+                </div>
+            </div>
+        </div>
         <div class="confirmpaymentwindow hide" id='remove_roles_windows'>
             <div class="confirmpayment animate">
                 <p class="hide" id="index_to_delete"></p>

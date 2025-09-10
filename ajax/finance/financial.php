@@ -19,7 +19,7 @@
                 }
                 $class = "".$_GET['class_use']."";
                 $student_admission = $_GET['student_admission'];
-                if ($_GET['class_use'] == "-1" || $_GET['class_use'] == "-2") {
+                if ($_GET['class_use'] == "-1" || $_GET['class_use'] == "-2" || $_GET['class_use'] == "-3") {
                     $select = "<select class='payments_options' id='$object_id'><option value='' hidden>Select option..</option>";
                     $select.="<option value='balance'>Balance</option>";
                     $select.="</select>";
@@ -30,6 +30,8 @@
                     $student_data = students_details($student_admission,$conn2);
                     $course_fees = 0;
                     $my_course_list = isJson($student_data['my_course_list']) ? json_decode($student_data['my_course_list']) : [];
+                    $issetup = false;
+                    $vhs = [];
                     for($index = 0; $index < count($my_course_list); $index++){
                         if($my_course_list[$index]->course_status == 1){
                             // module terms
@@ -38,23 +40,36 @@
                                 if($module_terms[$ind]->status == 1){
                                     $student_data['study_mode'] = strtolower($student_data['study_mode']);
                                     $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0)));
+                                    if(isset($module_terms[$ind]->voteheads) && count($module_terms[$ind]->voteheads) > 0){
+                                        $issetup = true;
+                                        foreach($module_terms[$ind]->voteheads as $votehead){
+                                            if($votehead->pay){
+                                                array_push($vhs, $votehead->votehead);
+                                            }
+                                        }
+                                    }
                                     break;
                                 }
                             }
                         }
                     }
-                    $a_fee = new stdClass();
-                    $a_fee->fees_name = "Course Fees";
-                    $a_fee->fees_amount = $course_fees;
-                    $a_fee->fees_id = 0;
-                    $a_fee->fees_role = "Compulsory";
-                    array_push($all_course_fees, $a_fee);
+
+                    // is the default course entry
+                    if((isPresent($vhs, "0") && $issetup) || !$issetup){
+                        $a_fee = new stdClass();
+                        $a_fee->fees_name = "Course Fees";
+                        $a_fee->fees_amount = $course_fees;
+                        $a_fee->fees_id = 0;
+                        $a_fee->fees_role = "Compulsory";
+                        array_push($all_course_fees, $a_fee);
+                    }
 
                     // STUDENT BALANCE
                     $balance = $student_data['balance_carry_forward'];
-                    $select = "SELECT * FROM `fees_structure` WHERE `course` = '".$course_value."' AND `classes` = ? and `activated` = 1";
+                    $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
+                    // $select = "SELECT * FROM `fees_structure` WHERE `course` = '".$course_value."' AND `classes` = ? and `activated` = 1";
+                    $select = (count($vhs) > 0 && $issetup) ? "SELECT * FROM `fees_structure` WHERE ids IN (".join(',', $vhs).")" : "SELECT * FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_value."' AND `activated` = 1  and `roles` = 'regular';";
                     $stmt = $conn2->prepare($select);
-                    $stmt->bind_param("s",$class);
                     $stmt->execute();
                     $results = $stmt->get_result();
                     if($results){
@@ -94,6 +109,77 @@
             }else {
                 echo "<p style='color:green;'>Display a student with their admission number to display their available votehead!</p>";
             }
+        }elseif(isset($_GET['get_student_voteheads'])){
+            $student_id = $_GET['student_id'];
+            $select = "SELECT * FROM student_data WHERE adm_no = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $student_id);
+            $stmt->execute();
+            $result =  $stmt->get_result();
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $select = "SELECT * FROM fees_structure WHERE classes = ? AND course = ?";
+                    $stmt_2 = $conn2->prepare($select);
+                    $stmt_2->bind_param("ss", $row['stud_class'], $row['course_done']);
+                    $stmt_2->execute();
+                    $res = $stmt_2->get_result();
+                    $voteheads = [];
+                    if($res){
+                        while($rowed = $res->fetch_assoc()){
+                            array_push($voteheads,$rowed);
+                        }
+                    }
+                    $student_course = isJson($row['my_course_list']) ? json_decode($row['my_course_list'], true) : null;
+                    $active_course = null;
+                    foreach ($student_course as $course) {
+                        if($course['course_status'] == 1){
+                            $active_course = $course;
+                        }
+                    }
+
+                    if($student_course == null){
+                        echo "<p class='text-danger' id='error_edit_votehead'>Student has invalid course!</p>";
+                        return;
+                    }
+                    
+                    if($active_course == null){
+                        echo "<p class='text-danger' id='error_edit_votehead'>No student available!</p>";
+                        return;
+                    }
+
+                    $data_to_display = "<table class='table' id='student_votehead_table'><tr><th rowspan='2'>No</th><th rowspan='2'>Votehead Name</th><th rowspan='2'>Role</th><th colspan='".count($active_course['module_terms'])."'>MODULES</th></tr><tr>";
+                    foreach($active_course['module_terms'] as $module){
+                        $data_to_display.= "<th>".$module['term_name']." ".($module['status'] == 1 ? "<br> Active" : "In-Active")."</th>";
+                    }
+                    $data_to_display.= "</tr>";
+                    
+                    // add the course prices itself
+                    $data_to_display.= "<tr><td>1. <input type='checkbox' class='edit_course_fees' id='edit_course_fees_0' checked></td><td>Course Fees</td><td><span class='badge bg-primary'>Regular</span></td>";
+                    $row['study_mode'] = strtolower($row['study_mode']);
+                    foreach($active_course['module_terms'] as $key => $module){
+                        $check_module = checkVotehead($active_course['module_terms'], "0", $module['id'], "regular");
+                        $course_fees = $row['study_mode'] == "weekend" ? ($module['weekend_cost'] ?? 0) : ($row['study_mode'] == "evening" ? ($module['evening_cost'] ?? 0) : ($row['study_mode'] == "fulltime" ? ($module['fulltime_cost'] ?? 0) : ($module['termly_cost'] ?? 0)));
+                        $data_to_display.="<td><input type='checkbox' class='edit_course_fees_0' id='edit_module_course_fees_0_".($key+1)."' ".$check_module."> Kes ".number_format($course_fees)."</td>";
+                    }
+                    $data_to_display.="</tr>";
+
+                    // go through the fees structure
+                    foreach ($voteheads as $key => $votehead) {
+                        $data_to_display.= "<tr><td>".($key+2).". <input type='checkbox' value='".$votehead['ids']."' class='edit_course_fees' id='edit_course_fees_".$votehead['ids']."' checked></td><td>".$votehead['expenses']."</td><td><span class='badge bg-primary'>".ucwords(strtolower($votehead['roles']))."</span></td>";
+                        $row['study_mode'] = strtolower($row['study_mode']);
+                        foreach($active_course['module_terms'] as $module){
+                            $check_module = checkVotehead($active_course['module_terms'], $votehead['ids'], $module['id'], $votehead['roles']);
+                            $course_fees = $row['study_mode'] == "weekend" ? $votehead['TERM_3'] : ($row['study_mode'] == "evening" ? $votehead['TERM_2'] : ($row['study_mode'] == "fulltime" ? $votehead['TERM_1'] : $votehead['TERM_1']));
+                            $data_to_display.="<td><input type='checkbox' class='edit_course_fees_".$votehead['ids']."' id='edit_module_course_fees_".$votehead['ids']."_".$module['id']."' ".$check_module."> Kes ".number_format($course_fees)."</td>";
+                        }
+                        $data_to_display.="</tr>";
+                    }
+                    $data_to_display.="</table>";
+                    echo $data_to_display;
+                    return;
+                }
+            }
+            echo "<p class='text-danger' id='error_edit_votehead'>No student available!</p>";
         }elseif(isset($_GET['dispose_asset'])){
             $asset_id = $_GET['asset_id'];
             $set_disposed_date = $_GET['set_disposed_date'];
@@ -5701,6 +5787,24 @@
         }
     }
 
+    function checkVotehead($modules, $votehead_id, $module_id, $votehead_type = "provisional"){
+        $issetup = false;
+        foreach ($modules as $key => $module) {
+            if(isset($module['voteheads']) && $module['id'] == $module_id){
+                $issetup = true;
+                foreach($module['voteheads'] as $votehead){
+                    if ($votehead['votehead'] == $votehead_id && $votehead['pay']) {
+                        return "checked";
+                    }
+                }
+            }
+        }
+        if (!$issetup && strtolower($votehead_type) == "regular") {
+            return "checked";
+        }
+        return "";
+    }
+
     function deleteFile($filePath) {
         if (file_exists($filePath)) {
           if (unlink($filePath)) {
@@ -7489,6 +7593,8 @@
         // GET THE COURSE FEES
         $course_fees = 0;
         $active_course = false;
+        $other_vh = [];
+        $issetup = false;
         $my_course_list = isJson($student_data['my_course_list']) ? json_decode($student_data['my_course_list']) : [];
         for($index = 0; $index < count($my_course_list); $index++){
             if($my_course_list[$index]->course_status == 1){
@@ -7497,7 +7603,21 @@
                 for ($ind=0; $ind < count($module_terms); $ind++) {
                     if($module_terms[$ind]->status == 1){
                         $student_data['study_mode'] = strtolower($student_data['study_mode']);
-                        $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0)));
+                        $omit_course_fees = false;
+                        if(isset($module_terms[$ind]->voteheads)){
+                            $issetup =true;
+                            foreach ($module_terms[$ind]->voteheads as $valued) {
+                                if($valued->votehead == "0" && !$valued->pay){
+                                    $omit_course_fees = true;
+                                }
+                                if($valued->votehead != "0" && $valued->pay){
+                                    array_push($other_vh, $valued->votehead);
+                                }
+                            }
+                        }
+                        if(!$omit_course_fees){
+                            $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0)));
+                        }
                         // $course_fees = $module_terms[$ind]->termly_cost;
                         $active_course = true;
                         break;
@@ -7519,9 +7639,8 @@
     
             // get the term they are in
             $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
-            $select = "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE `classes` = ? AND `course` = ? AND `activated` = 1  and `roles` = 'regular';";
+            $select =  count($other_vh) > 0 && $issetup ? "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE ids IN (".join(',', $other_vh).")" : "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_enrolled."' AND `activated` = 1  and `roles` = 'regular';";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$class,$course_enrolled);
             $stmt->execute();
             $res = $stmt->get_result();
             if($res){
@@ -7532,24 +7651,24 @@
             $stmt->close();
     
             // add fees structure fees to course fees
-            $fees_structure += $course_fees;
+            $course_fees += ($issetup && count($other_vh) == 0) ? 0 : $fees_structure;
                     
             // get dicounts
             $discounts = getDiscount($admno,$conn2);
             if ($discounts[0] > 0 || $discounts[1] > 0) {
                 if ($discounts[0] > 0) {
                     $discounts = 100 - $discounts[0];
-                    $fees_structure = round(($fees_structure * $discounts) / 100);
+                    $course_fees = round(($course_fees * $discounts) / 100);
                 }else{;
-                    $fees_structure = $fees_structure - $discounts[1];
+                    $course_fees = $course_fees - $discounts[1];
                 }
             }
         }
 
         // add student balance carry forward
-        $fees_structure += $student_balance;
+        $course_fees += $student_balance;
         
-        return $fees_structure;
+        return $course_fees;
     }
 
     function getFeesTerm($term,$conn2,$classes,$admno){

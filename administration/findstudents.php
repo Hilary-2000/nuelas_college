@@ -174,6 +174,14 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
+                                            <p><b>Votehead Status: <i class="fas fa-info-circle" title="This highlights the voteheads the students are paying for!"></i> </b></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><span id="view_votehead_status">10</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_votehead_status"><i class="fas fa-pen-fancy"></i></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <p><b>Fees Paid <!--as of <span id="current_term2"></span>-->:</b></p>
                                         </div>
                                         <div class="col-md-6">

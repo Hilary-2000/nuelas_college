@@ -2747,6 +2747,9 @@ function tablebtnlistener() {
                     cObj("snamed_in").value = splitdata[0]
                     cObj("fnamed_in").value = splitdata[1]
                     cObj("lnamed_in").value = splitdata[2]
+                    cObj("student_name_evh").innerHTML = splitdata[1]+" "+splitdata[2];
+                    cObj("student_class_evh").innerHTML = splitdata[6];
+                    cObj("student_adm_no_evh").innerHTML = splitdata[7];
                     if (splitdata[6] == "-2") {
                         cObj("reason_for_leaving_window").classList.remove("hide");
                     } else {
@@ -2858,6 +2861,7 @@ function tablebtnlistener() {
                     cObj("lastyr_fees_balance").innerHTML = splitdata[29];
                     cObj("fees_paid_this_term").innerHTML = splitdata[28];
                     cObj("fees_balances").innerHTML = splitdata[31];
+                    cObj("current_fees_evh").innerHTML = splitdata[31];
                     cObj("total_paid_fees").innerHTML = splitdata[32];
                     cObj("transport_enrolled_std_infor").innerHTML = splitdata[34];
                     cObj("board_enrolled_std_infor").innerHTML = splitdata[35];
@@ -2958,6 +2962,8 @@ function tablebtnlistener() {
 }
 
 function display_course_list_table(course_history, json_data) {
+    let votehead_status = "Regular Only";
+    let votehead_counter = 0;
     // course history is null
     if(course_history != null && course_history.module_terms.length > 0){
         // display that in the table.
@@ -2968,7 +2974,7 @@ function display_course_list_table(course_history, json_data) {
         var start_date_end_date = "<div class='row mt-1 "+data_status+"' id='start_date_end_date_window_"+index+"'><div class='col-md-9'><label class='form-control-label' for='start_date_"+index+"'><b>Start Date</b></label><input class='form-control start_date_selector' id='start_date_"+index+"' type='date' value='"+start_date+"'></div><div class='col-md-9 mt-1'><label class='form-control-label' for='end_date_"+index+"' ><b>End Date</b></label><input class='form-control end_date_selector' id='end_date_"+index+"' type='date' value='"+end_date+"'></div></div>";
         var data_to_display = "<h4 class='text-center'>Course Progress <input id='course_level_invalue' hidden value='"+JSON.stringify(course_history)+"'><input id='course_level_value' hidden value='"+JSON.stringify(json_data)+"'></h4><table class='table'><tr><th>Course Level</th><th>Course Name</th><th>Module Terms</th><th>Status</th><th>period</th></tr>";
         data_to_display+="<tr><td rowspan='"+course_history.module_terms.length+"' style='vertical-align: middle;'><b>"+course_history.course_level_name+"</b></td><td rowspan='"+course_history.module_terms.length+"' style='vertical-align: middle;'><b>"+course_history.course_name+"</b></td><td>"+course_history.module_terms[0].term_name+"</td><td><label class='form-control-label' for='checked1' >Status : </label> <select class='form-control select_options' id='select_option_0'><option value='' hidden>Select Option</option><option value='0' "+(course_history.module_terms[0].status == 0 ? "selected" : "")+">In-Active</option><option "+(course_history.module_terms[0].status == 1 ? "selected" : "")+" value='1'>Active</option><option "+(course_history.module_terms[0].status == 2 ? "selected" : "")+" value='2'>Completed</option></select>"+start_date_end_date+"</td><td>"+(course_history.module_terms[0].start_date.length > 0 ? "Start Date : "+"<b>"+formatDate_1(course_history.module_terms[0].start_date)+"</b>"+"<br>End Date : "+"<b>"+formatDate_1(course_history.module_terms[0].end_date)+"</b>" : "In-Active") +"</td></tr>";
-
+        
         // loop through the data
         for (let index = 1; index < course_history.module_terms.length; index++) {
             const element = course_history.module_terms[index];
@@ -2978,14 +2984,25 @@ function display_course_list_table(course_history, json_data) {
             var start_date_end_date = "<div class='row mt-1 "+data_status+"' id='start_date_end_date_window_"+index+"'><div class='col-md-9'><label class='form-control-label' for='start_date_"+index+"'><b>Start Date</b></label><input class='form-control start_date_selector' id='start_date_"+index+"' type='date' value='"+start_date+"'></div><div class='col-md-9 mt-1'><label class='form-control-label' for='end_date_"+index+"' ><b>End Date</b></label><input class='form-control end_date_selector' id='end_date_"+index+"' type='date' value='"+end_date+"'></div></div>";
             let delete_button = (index == (course_history.module_terms.length-1)) ? "<span class='btn btn-sm btn-outline-danger' id='delete_course_term_module'><i class='fa fa-trash'></i> Del</span>" : "";
             data_to_display+="<tr><td>"+course_history.module_terms[index].term_name+"<br>"+delete_button+"</td><td><label class='form-control-label' for='select_option_1' >Status : </label> <select class='form-control select_options' id='select_option_"+index+"'><option value='' hidden>Select Option</option><option value='0' "+(course_history.module_terms[index].status == 0 ? "selected" : "")+">In-Active</option><option "+(course_history.module_terms[index].status == 1 ? "selected" : "")+" value='1'>Active</option><option "+(course_history.module_terms[index].status == 2 ? "selected" : "")+" value='2'>Completed</option></select>"+start_date_end_date+"</td><td>"+(course_history.module_terms[index].start_date.length > 0 ? "Start Date : "+"<b>"+formatDate_1(course_history.module_terms[index].start_date)+"</b>"+"<br>End Date : "+"<b>"+formatDate_1(course_history.module_terms[index].end_date)+"</b>" : "In-Active") +"</td></tr>";
+            votehead_counter += (course_history.module_terms[index].voteheads != undefined || course_history.module_terms[index].voteheads != null) ? (course_history.module_terms[index].voteheads.length > 0 ? 1 : 0) : 0;
         }
         data_to_display += "</table>";
-
+        
+        if (votehead_counter == course_history.module_terms.length) {
+            votehead_status = "Fully Defined";
+        }else{
+            if (votehead_counter > 0) {
+                votehead_status = "Partially Defined";
+            }
+        }
         // diplay the data of the course
         cObj("course_details_display").innerHTML = data_to_display;
     }else{
         cObj("course_details_display").innerHTML = "<h4 class='text-center mt-2'>Course Progress</h4><p class='text-danger text-center mt-1'>The student progress will appear here!</p>";
     }
+
+    // view votehead status
+    cObj("view_votehead_status").innerHTML = votehead_status;
                     
     if(cObj("delete_course_term_module") != undefined){
         cObj("delete_course_term_module").addEventListener("click", function () {
@@ -3079,10 +3096,256 @@ function display_course_list_table(course_history, json_data) {
         });
     }
 }
+
+cObj("reset_student_voteheads").onclick = function () {
+    var datapass = "?reset_votehead_settings=true&adm_no="+valObj("adminnos");
+    sendData2("GET","administration/admissions.php", datapass, cObj("error_handler_evh"), cObj("loader_evh"));
+        setTimeout(() => {
+            var timeout = 0;
+            var ids = setInterval(() => {
+                timeout++;
+                //after two minutes of slow connection the next process wont be executed
+                if (timeout == 1200) {
+                    stopInterval(ids);
+                }
+                if (cObj("loader_evh").classList.contains("hide")) {
+                    // setTimeout(() => {
+                    //     cObj("error_handler_evh").innerHTML = "";
+                    // }, 2000);
+                    // cObj("close_student_fees_evh").click();
+                    cObj("edit_votehead_status").click();
+                    cObj("view"+valObj("adminnos")).click();
+                    stopInterval(ids);
+                }
+            }, 100);
+        }, 200);
+}
+
+cObj("edit_votehead_status").onclick = function () {
+    cObj("boarding_status_changer").innerHTML = "";
+    var course = cObj("course_level_value") != undefined ? cObj("course_level_value").value : null;
+    if (course != null) {
+        cObj("course_level_value_holder").value = course;
+        cObj("edit_student_votehead").classList.remove("hide");
+        var datapass = "?get_student_voteheads=true&student_id="+valObj("adminnos");
+        sendData2("GET", "finance/financial.php", datapass, cObj("all_voteheads"), cObj("loader_evh"));
+        setTimeout(() => {
+            var timeout = 0;
+            var ids = setInterval(() => {
+                timeout++;
+                //after two minutes of slow connection the next process wont be executed
+                if (timeout == 1200) {
+                    stopInterval(ids);
+                }
+                if (cObj("loader_evh").classList.contains("hide")) {
+                    var edit_course_fees = document.getElementsByClassName("edit_course_fees");
+                    for (let index = 0; index < edit_course_fees.length; index++) {
+                        const element = edit_course_fees[index];
+                        element.addEventListener("change", edit_course_fees_func);
+
+                        // set eventlisteners for the row
+                        var className = element.id;
+                        var edit_module_fees = document.getElementsByClassName(className);
+                        for (let index_2 = 0; index_2 < edit_module_fees.length; index_2++) {
+                            const module = edit_module_fees[index_2];
+                            module.addEventListener("change", checkModules);
+                        }
+                    }
+
+                    // set votehead checkbox
+                    SetVoteheadCheckbox();
+                    stopInterval(ids);
+                }
+            }, 100);
+        }, 200);
+    }else{
+        cObj("boarding_status_changer").innerHTML = "<p class='text-danger'>An error has occured, reload your page and try again!</p>";
+    }
+}
+
+function edit_course_fees_func() {
+    var edit_module_course_fees = document.getElementsByClassName("edit_course_fees_"+this.id.substr(17));
+    for (let index = 0; index < edit_module_course_fees.length; index++) {
+        const element = edit_module_course_fees[index];
+        element.checked = this.checked;
+    }
+    var courses = hasJsonStructure(valObj("course_level_value_holder")) ? JSON.parse(cObj("course_level_value_holder").value) : [];
+    if (courses.course_status == 1) {
+        var modules = courses.module_terms;
+        // GO THROUGH THE TERMS
+        for (let index_1 = 0; index_1 < modules.length; index_1++) {
+            const element_1 = modules[index_1];
+            // GO THROUGH THE VOTEHEADS
+            for (let index_2 = 0; index_2 < edit_module_course_fees.length; index_2++) {
+                const element_2 = edit_module_course_fees[index_2];
+                var votehead_data = {votehead: this.id.substr(17), pay: element_2.checked};
+                var module_id = element_2.id.substring(24+(element_2.className.substring(17).length)+1);
+
+                // check if the module id is the correct one else skip
+                if (element_1.id != module_id) {
+                    continue;
+                }
+
+                // checkk if the votehead key is present if not add the votehead and skip
+                if (element_1.voteheads == null || element_1.voteheads == undefined) {
+                    modules[index_1].voteheads = [votehead_data];
+                    continue;
+                }
+                
+
+                var module_voteheads = element_1.voteheads;
+                var present = false;
+                for (let index_3 = 0; index_3 < module_voteheads.length; index_3++) {
+                    const element_3 = module_voteheads[index_3];
+                    if (element_3.votehead == this.id.substring(17)) {
+                        modules[index_1].voteheads[index_3] = votehead_data;
+                        present = true;
+                    }
+                }
+                if (!present) {
+                    modules[index_1].voteheads.push(votehead_data);
+                }
+            }
+        }
+        courses.module_terms = modules;
+        cObj("course_level_value_holder").value = JSON.stringify(courses);
+    }
+}
+
+function SetVoteheadCheckbox(){
+    var edit_course_fees = document.getElementsByClassName("edit_course_fees");
+    console.log(edit_course_fees.length);
+    for (let index = 0; index < edit_course_fees.length; index++) {
+        const one_vh = edit_course_fees[index];
+        var className = one_vh.id;
+        var my_row = document.getElementsByClassName(className);
+        var checked = 0;
+        for (let index = 0; index < my_row.length; index++) {
+            const element = my_row[index];
+            if (element.checked) {
+                checked++;
+            }
+
+            // trigger change event
+            element.dispatchEvent(new Event("change"));
+        }
+
+        if (checked == my_row.length) {
+            cObj(className).indeterminate = false;
+            cObj(className).checked = true;
+        }else{
+            if (checked > 0) {
+                cObj(className).checked = false;
+                cObj(className).indeterminate = true;
+            }else{
+                cObj(className).checked = false;
+                cObj(className).indeterminate = false;
+            }
+        }
+    }
+}
+
+function checkModules() {
+    var className = this.className;
+    var my_row = document.getElementsByClassName(this.className);
+    var checked = 0;
+    for (let index = 0; index < my_row.length; index++) {
+        const element = my_row[index];
+        if (element.checked) {
+            checked++;
+        }
+    }
+
+    if (checked == my_row.length) {
+        cObj(className).indeterminate = false;
+        cObj(className).checked = true;
+    }else{
+        if (checked > 0) {
+            cObj(className).checked = false;
+            cObj(className).indeterminate = true;
+        }else{
+            cObj(className).checked = false;
+            cObj(className).indeterminate = false;
+        }
+    }
+
+    
+    var courses = hasJsonStructure(valObj("course_level_value_holder")) ? JSON.parse(cObj("course_level_value_holder").value) : [];
+    if (courses.course_status == 1) {
+        var modules = courses.module_terms;
+        // GO THROUGH THE TERMS
+        for (let index_1 = 0; index_1 < modules.length; index_1++) {
+            const element_1 = modules[index_1];
+            for (let index_2 = 0; index_2 < my_row.length; index_2++) {
+                const element_2 = my_row[index_2];
+                var votehead_data = {votehead: this.className.substr(17), pay: this.checked};
+                // check the module term
+                if (element_1.id != this.id.substring(24+(element_2.className.substring(17).length)+1)) {
+                    continue;
+                }
+                
+                if (element_1.voteheads == null || element_1.voteheads == undefined) {
+                    element_1.voteheads = [votehead_data];
+                    continue;
+                }
+
+                var module_voteheads = element_1.voteheads;
+                var present = false;
+                for (let index_3 = 0; index_3 < module_voteheads.length; index_3++) {
+                    const element_3 = module_voteheads[index_3];
+                    if (element_3.votehead == this.className.substring(17)) {
+                        modules[index_1].voteheads[index_3] = votehead_data;
+                        present = true;
+                    }
+                }
+                if (!present) {
+                    modules[index_1].voteheads.push(votehead_data);
+                }
+            }
+        }
+        courses.module_terms = modules;
+        cObj("course_level_value_holder").value = JSON.stringify(courses);
+    }
+}
+
+cObj("save_changed_evh").onclick = function () {
+    var datapass = "update_voteheads=true&votehead_update="+valObj("course_level_value_holder")+"&adm_no="+valObj("adminnos");
+    sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("error_handler_evh"), cObj("loader_evh"));
+    setTimeout(() => {
+        var timeout = 0;
+        var ids = setInterval(() => {
+            timeout++;
+            //after two minutes of slow connection the next process wont be executed
+            if (timeout == 1200) {
+                stopInterval(ids);
+            }
+            if (cObj("loader_evh").classList.contains("hide")) {
+                cObj("error_handler_evh").innerHTML = "";
+                if (cObj("error_edit_votehead") == undefined || cObj("error_edit_votehead") == null) {
+                    setTimeout(() => {
+                        cObj("error_handler_evh").innerHTML = "";
+                        cObj("close_student_fees_evh").click();
+                        cObj("view"+valObj("adminnos")).click();
+                    }, 1000);
+                }else{
+                    cObj("error_handler_evh").innerHTML = "<p class='text-success'>An error has occured!</p>";
+                }
+                stopInterval(ids);
+            }
+        }, 100);
+    }, 200);
+}
+
+cObj("close_student_fees_evh").onclick = function () {
+    cObj("edit_student_votehead").classList.add("hide");
+}
+cObj("close_edit_student_votehead").onclick = function () {
+    cObj("edit_student_votehead").classList.add("hide");
+}
+
 cObj("save_course_progress").onclick = function () {
     if (cObj("course_level_value") != undefined) {
         var course_level_value = hasJsonStructure(valObj("course_level_value")) ? JSON.parse(valObj("course_level_value")) : [];
-        console.log(course_level_value);
 
         // get the value for the course level
         var select_options = document.getElementsByClassName("select_options");
@@ -3091,9 +3354,6 @@ cObj("save_course_progress").onclick = function () {
             const element = select_options[index];
             statuses.push(element.value);
         }
-
-        // statuses
-        console.log(statuses);
 
         // modify the course levels
         let module_terms = course_level_value.module_terms;

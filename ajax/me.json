@@ -1,24 +1,153 @@
 [
     {
-        "class_name": "8",
-        "voteheads": [
+        "course_level": "Short Course",
+        "course_name": 1,
+        "course_status": 1,
+        "id": 1,
+        "module_terms": [
             {
-                "votehead": 1,
-                "TERM_1": true,
-                "TERM_2": true,
-                "TERM_3": true
+                "id": 1,
+                "term_name": "MODULE 1",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "9500",
+                "evening_cost": "7500",
+                "weekend_cost": "7000",
+                "voteheads": [
+                    {
+                        "votehead": "0",
+                        "pay": true
+                    },
+                    {
+                        "votehead": "415",
+                        "pay": false
+                    },
+                    {
+                        "votehead": "416",
+                        "pay": false
+                    }
+                ]
             },
             {
-                "votehead": 3,
-                "TERM_1": true,
-                "TERM_2": true,
-                "TERM_3": true
+                "id": 2,
+                "term_name": "MODULE 2",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "9500",
+                "evening_cost": "7500",
+                "weekend_cost": "7000",
+                "voteheads": [
+                    {
+                        "votehead": "0",
+                        "pay": true
+                    },
+                    {
+                        "votehead": "415",
+                        "pay": false
+                    },
+                    {
+                        "votehead": "416",
+                        "pay": false
+                    }
+                ]
             },
             {
-                "votehead": 20,
-                "TERM_1": true,
-                "TERM_2": true,
-                "TERM_3": true
+                "id": 3,
+                "term_name": "MODULE 3",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "9500",
+                "evening_cost": "7500",
+                "weekend_cost": "7000",
+                "voteheads": [
+                    {
+                        "votehead": "415",
+                        "pay": false
+                    },
+                    {
+                        "votehead": "0",
+                        "pay": true
+                    },
+                    {
+                        "votehead": "416",
+                        "pay": false
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "term_name": "MODULE 4",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "9500",
+                "evening_cost": "7500",
+                "weekend_cost": "7000",
+                "voteheads": [
+                    {
+                        "votehead": "0",
+                        "pay": true
+                    },
+                    {
+                        "votehead": "415",
+                        "pay": false
+                    },
+                    {
+                        "votehead": "416",
+                        "pay": false
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "term_name": "MODULE 5",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "9500",
+                "evening_cost": "7500",
+                "weekend_cost": "7000",
+                "voteheads": [
+                    {
+                        "votehead": "0",
+                        "pay": true
+                    },
+                    {
+                        "votehead": "415",
+                        "pay": false
+                    },
+                    {
+                        "votehead": "416",
+                        "pay": false
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "term_name": "MODULE 6",
+                "status": 1,
+                "start_date": "20250203140712",
+                "end_date": "20250803140712",
+                "fulltime_cost": "9500",
+                "evening_cost": "7500",
+                "weekend_cost": "7000",
+                "voteheads": [
+                    {
+                        "votehead": "0",
+                        "pay": false
+                    },
+                    {
+                        "votehead": "415",
+                        "pay": false
+                    },
+                    {
+                        "votehead": "416",
+                        "pay": false
+                    }
+                ]
             }
         ]
     }

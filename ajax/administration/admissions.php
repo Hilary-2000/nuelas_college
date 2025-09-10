@@ -17,6 +17,36 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
         include("../../connections/conn2.php");
         if(isset($_GET['admit'])){
             echo "<p class='text-danger'>Wrong place wrong time! ;-( </p>";
+        }elseif(isset($_GET['reset_votehead_settings'])){
+            $admission_no = $_GET['adm_no'];
+            $select = "SELECT * FROM student_data WHERE adm_no = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $admission_no);
+            $stmt->execute();
+            $result =  $stmt->get_result();
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $student_course = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list'], true) : null;
+                    if($student_course != null){
+                        foreach($student_course as $key_1 => $course){
+                            if($course['course_status'] == 1){
+                                $module_terms = $course['module_terms'];
+                                foreach ($module_terms as $key_2 => $term) {
+                                    unset($student_course[$key_1]['module_terms'][$key_2]['voteheads']);
+                                }
+                            }
+                        }
+                        $student_course = json_encode($student_course);
+                        $update = "UPDATE student_data SET my_course_list='".$student_course."' WHERE adm_no = '".$admission_no."'";
+                        $stmt = $conn2->prepare($update);
+                        $stmt->execute();
+                        echo "<p class='text-success'>Reset has been done successfully!!</p>";
+                        return;
+                    }else{
+                    }
+                }
+            }
+            echo "<p class='text-danger'>An error has occured!</p>";
         }elseif(isset($_GET['get_course_fees_structure'])){
             $course_level = $_GET['course_level'];
             
@@ -5759,6 +5789,44 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
             $stmt->close();
             $conn2->close();
+        }elseif(isset($_POST['update_voteheads'])){
+            $votehead_update = isJson_report($_POST['votehead_update']) ? json_decode($_POST['votehead_update']) : null;
+            if($votehead_update == null){
+                echo "<p id='error_edit_votehead' class='text-danger'>Invalid update, reload your page and try again!</p>";
+                return 0;
+            }
+            $update = "SELECT * FROM student_data WHERE adm_no = ?";
+            $stmt = $conn2->prepare($update);
+            $stmt->bind_param("s", $_POST['adm_no']);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $student_data = $row;
+                    $course_list = isJson_report($student_data['my_course_list']) ? json_decode($student_data['my_course_list'], true) : null;
+                    if($course_list == null){
+                        $course_list = [$votehead_update];
+                    }else{
+                        foreach($course_list as $key => $value){
+                            if($value['course_status'] == 1){
+                                $course_list[$key] = $votehead_update;
+                            }
+                        }
+                    }
+
+                    $update = "UPDATE student_data SET my_course_list = ? WHERE adm_no = ?";
+                    $stmt = $conn2->prepare($update);
+                    $course_list = json_encode($course_list);
+                    $stmt->bind_param("ss", $course_list, $_POST['adm_no']);
+                    $stmt->execute();
+                    
+                    echo "<p class='text-success'>Voteheads have been updated successfully!!</p>";
+                    return 0;
+                }
+            }
+                    
+            echo "<p class='text-danger' id='error_edit_votehead' >An error has occured!!</p>";
+            return 0;
         }elseif (isset($_POST['delete_student'])) {
             $std_id = $_POST['delete_student'];
             $student_data = getStudentData($std_id, $conn2);
