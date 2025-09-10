@@ -297,7 +297,8 @@
             }
         }elseif (isset($_GET['get_parents_list'])) {
             $get_parents_list = $_GET['get_parents_list'];
-            $select = "SELECT * FROM `student_data` WHERE `stud_class` = '$get_parents_list'";
+            $course_selected = isset($_GET['course_selected']) ? "AND course_done = '".$_GET['course_selected']."'" : "";
+            $select = "SELECT * FROM `student_data` WHERE `stud_class` = '$get_parents_list' $course_selected";
             if ($get_parents_list == "others") {
                 // get the whole class list
                 $select = "SELECT * FROM `settings` WHERE `sett` = 'class';";

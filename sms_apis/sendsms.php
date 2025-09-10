@@ -114,7 +114,7 @@
                     <select class="form-control" name="select_recipients2" id="select_recipients2">
                         <option value="" hidden>Select recipient..</option>
                         <option value="my_staff">My staff</option>
-                        <option value="parents">Parents</option>
+                        <option value="parents">Parents and Students</option>
                     </select>
                     <div class="conts hide" id="staffs_list_ms">
                         <div class="p-1 my-2 text-success border border-success w-50"><b>Note:</b> <br>- Select staff you  want to send message to:</div>
@@ -153,41 +153,17 @@
                         <label>To Student`s parent selected: <br></label>
                         <p class="text-secondary">(Total Number of Students: <span id="all_parents" >0</span>) <br></p>
                         <p class="text-secondary">(Selected Students: <span class="red_notice" id="excempt_list">0</span>) <br></p>
-                        <label for="my-class">Select class: <br></label>
+                        <label for="my-class">Select Course Level: <br></label>
                         <p id="seleceted_class" class = "hide"></p>
                         <p id="cl_list_msg"></p><!--Select class-->
-                        <p id="parents_lists_nm"><!--Student list-->
-                        <!--<div class="staff_list">
-                                <div class="staff_dets">
-                                    <label for="staff1" style="color:cadetblue;">Select all</label>
-                                    <input type="checkbox" name="staff1" id="staff1">
-                                </div>
-                                <div class="staff_dets">
-                                    <label>1.</label>
-                                    <label for="staff1">Owen Malingu`s Parent (1)</label>
-                                    <input type="checkbox" name="staff1" id="staff1">
-                                </div>
-                                <div class="staff_dets">
-                                    <label>2.</label>
-                                    <label for="staff2">Owen Malingu`s Parent (1)</label>
-                                    <input type="checkbox" name="staff2" id="staff2">
-                                </div>
-                                <div class="staff_dets">
-                                    <label>3.</label>
-                                    <label for="staff3">Owen Malingu`s Parent (1)</label>
-                                    <input type="checkbox" name="staff3" id="staff3">
-                                </div>
-                                <div class="staff_dets">
-                                    <label>4.</label>
-                                    <label for="staff1">Owen Malingu`s Parent (1)</label>
-                                    <input type="checkbox" name="staff1" id="staff1">
-                                </div>
-                                <div class="staff_dets">
-                                    <label>5.</label>
-                                    <label for="staff2">Owen Malingu`s Parent (1)</label>
-                                    <input type="checkbox" name="staff2" id="staff2">
-                                </div>
-                            </div>-->
+                        <label for="course_list_sms">Select Course: <br></label>
+                        <p id="course_list_sms_holder">
+                            <span class="border border-secondary text-secondary text-center p-1 w-25">
+                                Your course list will appear here!
+                            </span>
+                        </p>
+                        <p id="parents_lists_nm">
+                            
                         </p>
                     </div>
                     <div class="conts hide" id="parent_selections">

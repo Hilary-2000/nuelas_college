@@ -266,7 +266,7 @@ function getStudentsParent() {
             if (cObj("loading_my_sms_here").classList.contains("hide")) {
                 //add a listener
                 if (cObj("my-class") != null) {
-                    cObj("my-class").addEventListener("change", getParentsList);
+                    cObj("my-class").addEventListener("change", getCourseListSMS);
                 }
 
                 stopInterval(id23w);
@@ -289,9 +289,30 @@ function getStudentsSms() {
         }
     }
 }
+function getCourseListSMS() {
+    var datapass = "?get_course_list=true&course_level="+this.value+"&object_id=course_list_sms";
+    sendData2("GET", "administration/admissions.php", datapass, cObj("course_list_sms_holder"), cObj("loadings"));
+    setTimeout(() => {
+        var timeout = 0;
+        var id23w = setInterval(() => {
+            timeout++;
+            //after two minutes of slow connection the next process wont be executed
+            if (timeout == 1200) {
+                stopInterval(id23w);
+            }
+            if (cObj("loadings").classList.contains("hide")) {
+                if (cObj("course_list_sms") != undefined) {
+                    console.log("add event");
+                    cObj("course_list_sms").addEventListener("change", getParentsList);
+                }
+                stopInterval(id23w);
+            }
+        }, 100);
+    }, 200);
+}
 function getParentsList() {
     if (this.value.length > 0) {
-        var datapass = "?get_parents_list=" + this.value;
+        var datapass = "?get_parents_list=" + cObj("my-class").value+"&course_selected="+this.value;
         sendData2("GET", "sms/sms.php", datapass, cObj("parents_lists_nm"),cObj("loading_my_sms_here"));
         setTimeout(() => {
             var timeout = 0;

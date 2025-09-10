@@ -36,6 +36,7 @@
                             $module_terms = $my_course_list[$index]->module_terms;
                             for ($ind=0; $ind < count($module_terms); $ind++) {
                                 if($module_terms[$ind]->status == 1){
+                                    $student_data['study_mode'] = strtolower($student_data['study_mode']);
                                     $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0)));
                                     break;
                                 }
@@ -7495,6 +7496,7 @@
                 $module_terms = $my_course_list[$index]->module_terms;
                 for ($ind=0; $ind < count($module_terms); $ind++) {
                     if($module_terms[$ind]->status == 1){
+                        $student_data['study_mode'] = strtolower($student_data['study_mode']);
                         $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0)));
                         // $course_fees = $module_terms[$ind]->termly_cost;
                         $active_course = true;

@@ -1,74 +1,24 @@
 [
     {
-        "course_level": 9,
-        "course_name": "1",
-        "course_status": 1,
-        "id": 1,
-        "module_terms": [
+        "class_name": "8",
+        "voteheads": [
             {
-                "id": 1,
-                "term_name": "MODULE 1",
-                "status": "2",
-                "start_date": "20250829080753",
-                "end_date": "20260301080753",
-                "fulltime_cost": "9500",
-                "evening_cost": "7500",
-                "weekend_cost": "7000"
+                "votehead": 1,
+                "TERM_1": true,
+                "TERM_2": true,
+                "TERM_3": true
             },
             {
-                "id": 2,
-                "term_name": "MODULE 2",
-                "status": "1",
-                "start_date": "20250901120625",
-                "end_date": "20260301120625",
-                "fulltime_cost": "9500",
-                "evening_cost": "7500",
-                "weekend_cost": "7000",
-                "termly_cost": 9500
+                "votehead": 3,
+                "TERM_1": true,
+                "TERM_2": true,
+                "TERM_3": true
             },
             {
-                "id": 3,
-                "term_name": "MODULE 3",
-                "status": "0",
-                "start_date": "",
-                "end_date": "",
-                "fulltime_cost": "9500",
-                "evening_cost": "7500",
-                "weekend_cost": "7000",
-                "termly_cost": 9500
-            },
-            {
-                "id": 4,
-                "term_name": "MODULE 4",
-                "status": "0",
-                "start_date": "",
-                "end_date": "",
-                "fulltime_cost": "9500",
-                "evening_cost": "7500",
-                "weekend_cost": "7000",
-                "termly_cost": 9500
-            },
-            {
-                "id": 5,
-                "term_name": "MODULE 5",
-                "status": "0",
-                "start_date": "",
-                "end_date": "",
-                "fulltime_cost": "9500",
-                "evening_cost": "7500",
-                "weekend_cost": "7000",
-                "termly_cost": 9500
-            },
-            {
-                "id": 6,
-                "term_name": "MODULE 6",
-                "status": "0",
-                "start_date": "",
-                "end_date": "",
-                "fulltime_cost": "9500",
-                "evening_cost": "7500",
-                "weekend_cost": "7000",
-                "termly_cost": 9500
+                "votehead": 20,
+                "TERM_1": true,
+                "TERM_2": true,
+                "TERM_3": true
             }
         ]
     }

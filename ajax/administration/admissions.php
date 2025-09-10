@@ -3456,8 +3456,23 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         }
                     }
 
+                    $new_admission_no = $prefix.($admno < 10 ? "00".$admno : ($admno < 100 ? "0".$admno : $admno));
+                    
+                    $students = getStudentData($new_admission_no, $conn2);
+                    if(count($students) > 0){
+                        $select  = "SELECT * FROM `student_data` WHERE `adm_no` LIKE '$prefix%' ORDER BY adm_no DESC";
+                        $stmt = $conn2->prepare($select);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        if($result){
+                            if($row = $result->fetch_assoc()){
+                                $lastest_admission = (substr($row['adm_no'], strlen($prefix)) * 1) + 1;
+                                $new_admission_no = $prefix.($lastest_admission < 10 ? "00".$lastest_admission : ($lastest_admission < 100 ? "0".$lastest_admission : $lastest_admission));
+                            }
+                        }
+                    }
                     // prefix
-                    echo $prefix.($admno < 10 ? "00".$admno : ($admno < 100 ? "0".$admno : $admno));
+                    echo $new_admission_no;
                 }
             }
         }elseif (isset($_GET['genmanuall'])) {
@@ -4734,6 +4749,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             // get the fees structure for class
             $get_course_list = $_GET['get_course_list_fees_struct'];
             $course_level = $_GET['course_level'];
+            $object_id = "search_fees_course_list";
 
             // get fees structure
             // get the course levels
@@ -4766,7 +4782,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            $select = "<select class='form-control' id='search_fees_course_list'><option hidden value=''>Select Courses!</option>";
+            $select = "<select class='form-control' id='".$object_id."'><option hidden value=''>Select Courses!</option>";
             if ($result) {
                 if($row = $result->fetch_assoc()){
                     $valued = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
@@ -4805,6 +4821,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             echo $select;
         }elseif(isset($_GET['get_course_list'])){
             $course_level = $_GET['course_level'];
+            $object_id = isset($_GET['object_id']) ? $_GET['object_id'] : "course_chosen";
             
             // get the course levels
             $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
@@ -4834,7 +4851,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            $select = "<select class='form-control' id='course_chosen'><option hidden value=''>Select Courses!</option>";
+            $select = "<select class='form-control' id='".$object_id."'><option hidden value=''>Select Courses!</option>";
             if ($result) {
                 if($row = $result->fetch_assoc()){
                     $valued = isJson_report($row['valued']) ? json_decode($row['valued']) : [];

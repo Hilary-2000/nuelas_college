@@ -1,3 +1,9 @@
+09th Sep 2025 07:28:23AM : JAMES KARANI with admission number NC-2025-010 has been admitted successfully - {ANN AKOTCH}
+09th Sep 2025 07:27:38AM : Course "FRUIT MAKER" has been added successfully! - {ANN AKOTCH}
+09th Sep 2025 07:19:43AM : Ruth  of Reg No (NC-2025-005) discounts have been updated successfully - {ANN AKOTCH}
+09th Sep 2025 06:32:20AM : GLORIA KITIWA with admission number NC-2025-005 has been admitted successfully - {ANN AKOTCH}
+09th Sep 2025 06:30:55AM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+09th Sep 2025 06:28:45AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 03rd Sep 2025 11:48:53AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 01st Sep 2025 16:30:07PM : Hillary Ngige of Reg No (NC-2025-003) discounts have been updated successfully - {ANN AKOTCH}
 01st Sep 2025 16:30:02PM :  James of Reg No (NC-2025-004) discounts have been updated successfully - {ANN AKOTCH}
