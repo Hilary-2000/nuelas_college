@@ -6598,6 +6598,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $module_index = 1;
                 $module_id = 1;
                 $module_termly_cost = 0;
+                $fulltime_cost = 0;
+                $evening_cost = 0;
+                $weekend_cost = 0;
                 foreach($course_list as $key_init => $course){
                     if($course->course_status == 1){
                         $modules = $course->module_terms;
@@ -6605,7 +6608,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             if($key == (count($modules)-1)){
                                 $module_index = $key+1;
                                 $module_id = $module->id;
-                                $module_termly_cost = $module->termly_cost;
+                                // $module_termly_cost = $module->termly_cost;
+                                $fulltime_cost = isset($module->fulltime_cost) ? $module->fulltime_cost : 0;
+                                $evening_cost = isset($module->evening_cost) ? $module->evening_cost : 0;
+                                $weekend_cost = isset($module->weekend_cost) ? $module->weekend_cost : 0;
                             }
                         }
     
@@ -6615,7 +6621,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $term->status = 0;
                         $term->start_date = "";
                         $term->end_date = "";
-                        $term->termly_cost = $module_termly_cost;
+                        $term->fulltime_cost = $fulltime_cost;
+                        $term->evening_cost = $evening_cost;
+                        $term->weekend_cost = $weekend_cost;
     
                         // course list
                         array_push($course_list[$key_init]->module_terms,$term);
@@ -6640,13 +6648,19 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $course_level = null;
                 $term_duration = 0;
                 $duration_intervals = "days";
+                $fulltime_cost = 0;
+                $evening_cost = 0;
+                $weekend_cost = 0;
                 foreach($courses as $course){
                     if($course->id == $course_chosen){
                         $course_level = $course->course_level;
                         $no_of_term = $course->no_of_terms;
-                        $cost_per_term = $course->termly_fees;
+                        // $cost_per_term = $course->termly_fees;
                         $duration_intervals = $course->duration_intervals;
                         $term_duration = $course->term_duration;
+                        $fulltime_cost = $course->fulltime_fees;
+                        $evening_cost = $course->evening_fees;
+                        $weekend_cost = $course->weekend_fees;
                     }
                 }
                 
@@ -6664,7 +6678,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $new_module_term->status = $index == 0 ? 1 : 0;
                     $new_module_term->start_date = $index == 0 ? date("YmdHis") : "";
                     $new_module_term->end_date = $index == 0 ? date("YmdHis", strtotime($term_duration." ".$duration_intervals)) : "";
-                    $new_module_term->termly_cost = $cost_per_term;
+                    $new_module_term->fulltime_cost = $fulltime_cost;
+                    $new_module_term->evening_cost = $evening_cost;
+                    $new_module_term->weekend_cost = $weekend_cost;
                     array_push($module_terms, $new_module_term);
                 }
 

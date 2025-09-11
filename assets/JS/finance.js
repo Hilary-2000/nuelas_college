@@ -557,6 +557,8 @@ cObj("modeofpay").onclick = function () {
     cObj("makepayments").classList.remove("hide");
 }
 cObj("searchfin1").onclick = function () {
+    cObj("student_results").innerHTML = "";
+    cObj("payments_options").innerHTML = "";
     var err = 0;
     err += checkBlank("studids");
     if (err == 0) {
@@ -744,7 +746,7 @@ cObj("makepayments").onclick = function () {
                 cObj("geterrorpay").innerHTML = "<p style='color:red;font-size:12px;'>Check for errors and fill all the fields having red borders</p>";
             }
         } else {
-            cObj("geterrorpay").innerHTML = "<p style='color:red;'>Populate the student information before proceeding or contact your administrator there might be an issue with the system configuration.</p>"
+            cObj("geterrorpay").innerHTML = "<p style='color:red;'>Confirm the student`s votehead options.</p>"
         }
     } else {
         redBorder(cObj("studids"));
@@ -932,7 +934,6 @@ cObj("confirmyes").onclick = function () {
         cObj("submit_receipt_printing").click();
         cObj("confirmno").click();
     }
-
 }
 
 cObj("mpesacode").onblur = function () {
@@ -2528,7 +2529,7 @@ function getMpesaPayments() {
     // get the exams that are already done
     rowsColStudents = [];
     var datapass = "?mpesaTransaction=true";
-    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("output"), cObj("completedTransHolder"));
+    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("transDataReciever"), cObj("completedTransHolder"));
     setTimeout(() => {
         var timeout = 0;
         var idms = setInterval(() => {
@@ -2539,201 +2540,65 @@ function getMpesaPayments() {
             }
             if (cObj("completedTransHolder").classList.contains("hide")) {
                 // get the arrays
-                var results = cObj("output").innerText;
-                if (results != "NULL" && results.length > 0) {
-                    var rows = results.split("|");
-                    //create a column now
-                    for (let index = 0; index < rows.length; index++) {
-                        const element = rows[index];
-                        var col = element.split(":");
-                        rowsColStudents.push(col);
-                    }
-
-                    cObj("tot_records").innerText = rows.length;
-                    //create the display table
-                    //get the number of pages
-                    cObj("transDataReciever").innerHTML = displayRecord(1, 10, rowsColStudents);
-
-                    //show the number of pages for each record
-                    var counted = rows.length / 10;
-                    pagecountTransaction = Math.ceil(counted);
-
-                } else {
-                    cObj("transDataReciever").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! No M-Pesa transactions has been captured!</p>";
-                    cObj("tablefooter").classList.add("invisible");
-                }
-
                 // set the listener for the assign button
                 var assign_payment = document.getElementsByClassName("assign_payment");
                 for (let index = 0; index < assign_payment.length; index++) {
                     const element = assign_payment[index];
                     element.addEventListener("click", find_Payment)
                 }
+
+                var unassign_payment = document.getElementsByClassName("unassign_payment");
+                for (let index = 0; index < unassign_payment.length; index++) {
+                    const element = unassign_payment[index];
+                    element.addEventListener("click", un_assign_payments);
+                }
+
+
+                // set the datatable
+                $(document).ready(function() {
+                    $('#mpesa_transactions_table').DataTable();  // Just one line!
+                });
                 stopInterval(idms);
             }
         }, 100);
     }, 100);
 }
-// create a function to assign payment to value
-function setAssignLis() {
-    // set the listener for the assign button
-    var assign_payment = document.getElementsByClassName("assign_payment");
-    for (let index = 0; index < assign_payment.length; index++) {
-        const element = assign_payment[index];
-        element.addEventListener("click", find_Payment)
-    }
+
+
+function un_assign_payments() {
+    cObj("un_assign_payment_window").classList.remove("hide");
+    cObj("un_assign_payments_id").value = this.id.substring(17);
 }
 
-// display records
+cObj("decline_unassign_payments").onclick = function () {
+    cObj("un_assign_payment_window").classList.add("hide");
+}
 
-function displayRecord(start, finish, arrays) {
-    start--;
-    if (start < 0) {
-        start = 0;
-    }
-    var total = arrays.length;
-    //the finish value
-    var fins = 0;
-    //this is the table header to the start of the tbody
-    var tableData = "<table class='table'><tr><th class='text-uppercase text-secondary text-xxs font-weight-bolder'>#</th><th class='text-uppercase text-secondary text-xxs font-weight-bolder'>Transaction No</th><th class='text-uppercase text-secondary text-xxs font-weight-bolder ps-2'>Amount</th><th class='text-uppercase text-secondary text-xxs font-weight-bolder ps-2'>Adm No</th><th class='text-uppercase text-secondary text-xxs font-weight-bolder text-center ps-2'>Time Of Transaction<br></th><th class='text-uppercase text-secondary text-xxs font-weight-bolder text-center ps-2'>ACTION<br></th><!-- <th></th><th></th> --></tr>";
-    if (finish < total) {
-        fins = finish;
-        //create a table of the 10 records
-        for (let index = start; index < finish; index++) {
-            //create table of 10 elements
-            //the rows now with their respective data
-            //check if the user has a null payment or not
-            var status = arrays[index][7];
-            var action = "";
-            if (status == 0) {
-                status = "<span style='color:red;'>Not-Assigned</span>";
-                action = "<span class='link assign_payment' id='" + arrays[index][8] + "'><i class='fas fa-eye'></i> Assign</span>";
-            } else {
-                status = "<span style='color:green;'>Assigned</span>";
-                action = "<span>Assigned</span>";
+cObj("confirm_unassign_payments").onclick = function () {
+    var datapass = "?un_assign_payment=true&transaction_id="+valObj("un_assign_payments_id");
+    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("data_error_holder"), cObj("completedTransHolder"));
+    setTimeout(() => {
+        var timeout = 0;
+        var idms = setInterval(() => {
+            timeout++;
+            //after two minutes of slow connection the next process wont be executed
+            if (timeout == 1200) {
+                stopInterval(idms);
             }
-            tableData += "<tr><td>" + (index + 1) + "</td><td><div class='d-flex px-2 align-content-center'><div class='my-auto'><p class='mb-0 text-sm'><span class='text-uppercase text-secondary text-sm font-weight-bolder text-center'>" + arrays[index][0] + "</span></p></div></div></td><td><p class='text-sm font-weight-bold mb-0'>Kes " + arrays[index][1] + " </p></td><td><span class='text-xs font-weight-bold'>" + arrays[index][2] + "</span></td><td class='align-middle text-center'><p class='text-xs font-weight-bold'>" + arrays[index][3] + "</p></td><td class='align-middle'>" + action + "</td></tr>";
-        }
-    } else {
-        //create a table of the 10 records
-        for (let index = start; index < total; index++) {
-            //create table of 10 elements
-            //the rows now with their respective data
-            var status = arrays[index][7];
-            var action = "";
-            if (status == 0) {
-                status = "<span style='color:red;'>Not-Assigned</span>";
-                action = "<span class='link assign_payment' id='" + arrays[index][8] + "'><i class='fas fa-eye'></i> Assign</span>";
-            } else {
-                status = "<span style='color:green;'>Assigned</span>";
-                action = "<span>Assigned</span>";
+            if (cObj("completedTransHolder").classList.contains("hide")) {
+                // get the arrays
+                cObj("decline_unassign_payments").click();
+                cObj("mpesaTrans").click();
+                stopInterval(idms);
             }
-            tableData += "<tr><td>" + (index + 1) + "</td><td><div class='d-flex px-2 align-content-center'><div class='my-auto'><p class='mb-0 text-sm'><span class='text-uppercase text-secondary text-sm font-weight-bolder text-center'>" + arrays[index][0] + "</span></p></div></div></td><td><p class='text-sm font-weight-bold mb-0'>Kes " + arrays[index][1] + " </p></td><td><span class='text-xs font-weight-bold'>" + arrays[index][2] + "</span></td><td class='align-middle text-center'><p class='text-xs font-weight-bold'>" + arrays[index][3] + "</p></td><td class='align-middle'>" + action + "</td></tr>";
-        }
-        fins = total;
-    }
-    tableData += "</table>";
-    //set the start and the end value
-    cObj("startNo").innerText = (start + 1);
-    cObj("finishNo").innerText = fins;
-    //set the page number
-    cObj("pagenumNav").innerText = pagecounttrans;
-    return tableData;
-}
-//next record 
-//add the page by one and the number os rows to dispay by 10
-cObj("tonextNav").onclick = function () {
-    if (pagecounttrans < pagecountTransaction) { // if the current page is less than the total number of pages add a page to go to the next page
-        startpage += 10;
-        pagecounttrans++;
-        var endpage = startpage + 11;
-        cObj("transDataReciever").innerHTML = displayRecord(startpage, endpage, rowsColStudents);
-    } else {
-        pagecounttrans = pagecountTransaction;
-    }
-    setAssignLis();
-}
-// end of next records
-cObj("toprevNac").onclick = function () {
-    if (pagecounttrans > 1) {
-        pagecounttrans--;
-        startpage -= 10;
-        var endpage = (startpage + 10) - 1;
-        cObj("transDataReciever").innerHTML = displayRecord(startpage, endpage, rowsColStudents);
-    }
-    setAssignLis();
-}
-cObj("tofirstNav").onclick = function () {
-    if (pagecountTransaction > 0) {
-        pagecounttrans = 1;
-        startpage = 0;
-        var endpage = startpage + 10;
-        cObj("transDataReciever").innerHTML = displayRecord(startpage, endpage, rowsColStudents);
-    }
-    setAssignLis();
-}
-cObj("tolastNav").onclick = function () {
-    if (pagecountTransaction > 0) {
-        pagecounttrans = pagecountTransaction;
-        startpage = ((pagecounttrans * 10) - 10) + 1;
-        var endpage = startpage + 10;
-        cObj("transDataReciever").innerHTML = displayRecord(startpage, endpage, rowsColStudents);
-    }
-    setAssignLis();
-}
-
-// seacrh keyword at the table
-cObj("searchkey").onkeyup = function () {
-    checkName_mpesas(this.value);
-    // set the listener for the assign button
-    var assign_payment = document.getElementsByClassName("assign_payment");
-    for (let index = 0; index < assign_payment.length; index++) {
-        const element = assign_payment[index];
-        element.addEventListener("click", find_Payment);
-    }
-}
-//create a function to check if the array has the keyword being searched for
-function checkName_mpesas(keyword) {
-    if (keyword.length > 0) {
-        cObj("tablefooter").classList.add("invisible");
-        // set the 
-    } else {
-        cObj("tablefooter").classList.remove("invisible");
-    }
-    var rowsNcol2 = [];
-    var keylower = keyword.toLowerCase();
-    var keyUpper = keyword.toUpperCase();
-    //row break
-    for (let index = 0; index < rowsColStudents.length; index++) {
-        const element = rowsColStudents[index];
-        //column break
-        var present = 0;
-        if (element[1].includes(keylower) || element[1].includes(keyUpper)) {
-            present++;
-        }
-        if (element[2].includes(keylower) || element[2].includes(keyUpper)) {
-            present++;
-        }
-        if (element[0].includes(keylower) || element[0].includes(keyUpper)) {
-            present++;
-        }
-        //here you can add any other columns to be searched for
-        if (present > 0) {
-            rowsNcol2.push(element);
-        }
-    }
-    if (rowsNcol2.length > 0) {
-        cObj("transDataReciever").innerHTML = displayRecord(1, 10, rowsNcol2);
-    } else {
-        cObj("transDataReciever").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! your search for \"" + keyword + "\" was not found</p>";
-        cObj("tablefooter").classList.add("invisible");
-    }
+        }, 100);
+    }, 100);
 }
 
 // here we find payments 
 function find_Payment() {
     // get the transaction information
-    var datapass = "?mpesa_transaction_id=" + this.id;
+    var datapass = "?mpesa_transaction_id=" + this.id.substr(15);
     sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("output_mpesa_transactions"), cObj("loadings"));
     setTimeout(() => {
         var timeout = 0;
@@ -2748,7 +2613,8 @@ function find_Payment() {
                 var results = cObj("output_mpesa_transactions").innerText;
                 var mpesa_data = results.split(":");
                 cObj("mpesa_id").innerText = mpesa_data[1];
-                cObj("amount_paid").innerText = mpesa_data[2];
+                cObj("assign_payment_amount_paid").innerText = mpesa_data[2];
+                cObj("mpesa_payment_amount_holder").value = mpesa_data[2]*1;
                 cObj("wrong_adm").innerText = mpesa_data[3];
                 cObj("trans_time").innerText = mpesa_data[4];
                 cObj("payer_name").innerText = mpesa_data[7];
@@ -2765,13 +2631,17 @@ function find_Payment() {
     // switdh through the window
     cObj("mpesa_payment_tbl").classList.add("hide");
     cObj("payment_information").classList.remove("hide");
+
+    // add autofill for the input key
+    getStudentNameAdmno();
 }
+
 cObj("goback_link").onclick = function () {
     cObj("mpesa_payment_tbl").classList.remove("hide");
     cObj("payment_information").classList.add("hide");
 
     // clear some areas
-    cObj("result_holder").classList.remove("hide");
+    cObj("result_holder").classList.add("hide");
     cObj("student_results").innerHTML = "";
     cObj("error_handled").innerHTML = "";
     cObj("payments_options").innerHTML = "";
@@ -2781,6 +2651,8 @@ cObj("goback_link").onclick = function () {
 // find the students results to assign the unassigned payment to
 cObj("find_student_assign").onclick = function () {
     // get the student admission number
+    cObj("paymentsresults").innerHTML = "";
+    cObj("payments").innerHTML = "";
     var datapass = "?findadmno=" + valObj("stud_admission_no");
     sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("student_results"), cObj("loadings"));
     setTimeout(() => {
@@ -2793,7 +2665,7 @@ cObj("find_student_assign").onclick = function () {
             }
             if (cObj("loadings").classList.contains("hide")) {
                 cObj("result_holder").classList.remove("hide");
-                if (cObj("student_results").innerText != "Admission number entered is invalid!") {
+                if (cObj("invalid_admission_search") == undefined) {
                     // this gets the payment options for that particular student
                     var class_studs_in = document.getElementsByClassName("class_studs_in");
                     var student_names = document.getElementsByClassName("student_names");
@@ -2812,6 +2684,8 @@ cObj("find_student_assign").onclick = function () {
                         queried[0].id = "std_closing_bal";
                     }
                     datapass+="&student_admission="+valObj("stud_admission_no");
+                    var course_value = cObj("course_value_finance") != undefined ? valObj("course_value_finance") : "0";
+                    datapass+="&course_value="+course_value;
                     // send the data to get the select
                     sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("payments_options"), cObj("loadings"));
                     setTimeout(() => {
@@ -2823,15 +2697,8 @@ cObj("find_student_assign").onclick = function () {
                                 stopInterval(idfs);
                             }
                             if (cObj("loadings").classList.contains("hide")) {
-
-                                var payments_options = document.getElementsByClassName("payments_options");
-                                // if the length is two then its the second one if its one then its the first one
-                                var cl_length = payments_options.length;
-                                if (cl_length == 2) {
-                                    payments_options[1].id = "payment_for_option";
-                                } else {
-                                    payments_options[0].id = "payment_for_option";
-                                }
+                                // set tables listerners
+                                set_table_listeners();
                                 stopInterval(idfs);
                             }
                         }, 100);
@@ -2842,58 +2709,185 @@ cObj("find_student_assign").onclick = function () {
         }, 100);
     }, 100);
 }
+
+
+function set_table_listeners() {
+    var votehead_checks = document.getElementsByClassName("votehead_checks");
+    for (let index = 0; index < votehead_checks.length; index++) {
+        const element = votehead_checks[index];
+        element.addEventListener("change", function () {
+            if (this.checked) {
+                cObj("votehead_amounts_"+this.id.substring(16, this.id.length)).classList.remove("disabled");
+                cObj("votehead_amounts_"+this.id.substring(16, this.id.length)).disabled = false;
+            }else{
+                cObj("votehead_amounts_"+this.id.substring(16, this.id.length)).classList.add("disabled");
+                cObj("votehead_amounts_"+this.id.substring(16, this.id.length)).disabled = true;
+            }
+        });
+    }
+
+    var votehead_amounts  = document.getElementsByClassName("votehead_amounts ");
+    for (let index = 0; index < votehead_amounts .length; index++) {
+        const element = votehead_amounts [index];
+        element.addEventListener("keyup", function () {
+            var va = document.getElementsByClassName("votehead_amounts ");
+            var total_fees = 0;
+            for (let index = 0; index < va.length; index++) {
+                const elem = va[index];
+                if (!elem.classList.contains("disabled")) {
+                    total_fees += elem.value*1;
+                }
+            }
+            console.log(total_fees);
+            cObj("amount3").value = total_fees;
+            cObj("amount2").value = total_fees;
+            cObj("amount1").value = total_fees;
+        });
+    }
+}
+
 var click = 0;
 cObj("assigne_payment_btn").onclick = function () {
+    cObj("error_handled").innerHTML = "";
     // check if the object is selected
-    if (cObj("student_results").innerText != "Admission number entered is invalid!") {
-        checkBlank("payment_for_option");
-        var payfor = cObj("payment_for_option").value;
-        if (payfor.length > 0) {
-            // var queried = document.getElementsByClassName("queried");
-            if (click == 0) {
-                cObj("error_handled").innerHTML = "";
-                var prevbal = (cObj("std_closing_bal").innerText * 1);
-                var amountpaid = (cObj("amount_paid").innerText * 1);
-                var balance = prevbal;
-                if (cObj("last_receipt_id")!= null) {
-                    var last_receipt_id = valObj("last_receipt_id");
-                    cObj("last_receipt_id_take").value = last_receipt_id;
+    if (cObj("invalid_admission_search") == undefined) {
+        if (click == 0) {
+            // get the payment for details
+            var total_fees_paid = 0;
+            var votehead_paid_for = [];
+            var votehead_amounts = document.getElementsByClassName("votehead_amounts");
+            for (let index = 0; index < votehead_amounts.length; index++) {
+                const element = votehead_amounts[index];
+                if (!element.classList.contains("disabled")) {
+                    var votehead_details = cObj("course_details_"+element.id.substring(17, element.id.length)).value;
+                    var json_votehead_details = hasJsonStructure(votehead_details) ? JSON.parse(votehead_details) : [];
+                    var payment_details = {
+                        id: json_votehead_details.length == 0 ? "_"+index : json_votehead_details.fees_id,
+                        name: json_votehead_details.length == 0 ? "Undefined Fees" : json_votehead_details.fees_name,
+                        amount_paid: element.value,
+                        roles: json_votehead_details.length == 0 ? "compulsory" : json_votehead_details.fees_role
+                    };
+                    votehead_paid_for.push(payment_details);
+                    total_fees_paid += element.value*1;
                 }
-                var supporting_documents_list = valObj("supporting_documents_list");
-                var datapass = "?insertpayments=true&stuadmin=" + valObj("stud_admission_no") + "&transcode=" + cObj("mpesa_id").innerText + "&amount=" + amountpaid + "&payfor=" + payfor + "&paidby=mpesa&modeofpay=mpesa&balances=" + balance + "&send_sms=true&mpesa_id=" + cObj("payment_id").innerText+"&supporting_documents_list="+supporting_documents_list;
-                sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("error_handled"), cObj("loadings"));
-                setTimeout(() => {
-                    var timeout = 0;
-                    var idfs = setInterval(() => {
-                        timeout++;
-                        //after two minutes of slow connection the next process wont be executed
-                        if (timeout == 1200) {
-                            stopInterval(idfs);
-                        }
-                        if (cObj("loadings").classList.contains("hide")) {
-                            if (cObj("error_handled").innerText == "Transaction completed successfully!") {
-                                setTimeout(() => {
-                                    cObj("goback_link").click();
-                                }, 2000);
-                            }
-                            stopInterval(idfs);
-                        }
-                    }, 100);
-                }, 100);
-                click = 1;
             }
-            setTimeout(() => {
-                click = 0;
-            }, 2000);
+            console.log(votehead_paid_for);
 
-        } else {
-            cObj("error_handled").innerHTML = "<p class='text-danger'>Select what the fund is allocated for.</p>";
+            if(votehead_paid_for.length == 0){
+                cObj("error_handled").innerHTML = "<p class='text-danger'>No voteheads to pay for selected!</p>";
+                return 0;
+            }
+
+            var collected_fees = valObj("mpesa_payment_amount_holder")*1;
+            if (total_fees_paid != collected_fees) {
+                cObj("error_handled").innerHTML = "<p class='text-danger'>The total votehead amount does not match the total fees to be paid!</p>";
+                return 0;
+            }
+            
+            cObj("confirmpayments_transfer").classList.remove("hide");
+            cObj("mode_of_payments_transfer").value = "mpesa";
+            cObj("transaction_codes_transfer").value = cObj("mpesa_id").innerText;
+            cObj("payments_for_transfer").value = JSON.stringify(votehead_paid_for);
+
+            // values for the receipt
+            cObj("students_names_transfer").value = cObj("std_names").innerText;
+            cObj("student_admission_no_transfer").value = valObj("stud_admission_no");
+            cObj("amount_paid_by_student_transfer").value = "Kes " + comma3(total_fees_paid);
+            cObj("reprint_transfer").value = false;
+            cObj("last_receipt_id_take_transfer").value = cObj("last_receipt_id")!= null ? valObj("last_receipt_id") : 0;
+            cObj("fees_payment_opt_holder_transfer").value = "auto";
+            cObj("nameofstudents_transfer").innerHTML = cObj("std_names").innerText;
+            return 0;
+            var datapass = "?insertpayments=true&stuadmin=" + valObj("stud_admission_no") + "&transcode=" + cObj("mpesa_id").innerText + "&amount=" + amountpaid + "&payfor=" + payfor + "&paidby=mpesa&modeofpay=mpesa&balances=" + balance + "&send_sms=true&mpesa_id=" + cObj("payment_id").innerText+"&supporting_documents_list="+supporting_documents_list;
+            sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("error_handled"), cObj("loadings"));
+            setTimeout(() => {
+                var timeout = 0;
+                var idfs = setInterval(() => {
+                    timeout++;
+                    //after two minutes of slow connection the next process wont be executed
+                    if (timeout == 1200) {
+                        stopInterval(idfs);
+                    }
+                    if (cObj("loadings").classList.contains("hide")) {
+                        if (cObj("error_handled").innerText == "Transaction completed successfully!") {
+                            setTimeout(() => {
+                                cObj("goback_link").click();
+                            }, 2000);
+                        }
+                        stopInterval(idfs);
+                    }
+                }, 100);
+            }, 100);
+            click = 1;
         }
+        setTimeout(() => {
+            click = 0;
+        }, 2000);
     } else {
         // show error message
         cObj("error_handled").innerHTML = "<p class='text-danger'>You have not selected a student to associate the payment to.</p>";
     }
 }
+
+cObj("confirmyes_transfer").onclick = function (){
+    var err = checkBlank("check-parents-sms_transfer");
+    if (err == 0) {
+        var datapass = "?insertpayments=true&stuadmin=" + valObj("student_admission_no_transfer") + "&transcode=" + valObj("transaction_codes_transfer") + "&amount=" + (cObj("amount_to_transfer").innerText*1) + "&payfor=" + valObj("payments_for_transfer") ;
+        datapass += "&paidby=mpesa&modeofpay=mpesa&balances="+(cObj("std_closing_bal").innerText*1)+"&send_sms=" + valObj("check-parents-sms_transfer") +"&date_of_payments_fees="+valObj("date_of_payments_fees_holder_transfer");
+        datapass+="&time_of_payment_fees="+valObj("time_of_payment_fees_holder_transfer")+"&fees_payment_opt_holder="+valObj("fees_payment_opt_holder_transfer")+"&supporting_documents_list=[]&mpesa_id="+cObj("payment_id").innerText;
+        sendData2("GET", "finance/financial.php", datapass, cObj("error_handled"), cObj("loadings"));
+        setTimeout(() => {
+            var ids = setInterval(() => {
+                setTimeout(() => {
+                    var timeout = 0;
+                    var idsf = setInterval(() => {
+                        timeout++;
+                        //after two minutes of slow connection the next process wont be executed
+                        if (timeout == 1200) {
+                            stopInterval(idsf);
+                        }
+                        if (cObj("loadings").classList.contains("hide")) {
+                            console.log("Saved the transaction and refreshing the balance from: "+cObj("std_closing_bal").innerText);
+                            
+                            if (cObj("successfull_payment") != null || cObj("successfull_payment") != undefined){
+                                cObj("find_student_assign").click();
+                                console.log("Refreshing the balance.");
+                                setTimeout(() => {
+                                    var inner_id = setInterval(() => {
+                                        if (cObj("loadings").classList.contains("hide")) {
+                                            if (cObj("last_receipt_id")!= null) {
+                                                var last_receipt_id = valObj("last_receipt_id");
+                                                cObj("last_receipt_id_take_transfer").value = last_receipt_id;
+                                            }
+                                            console.log("New balance "+cObj("std_closing_bal").innerText);
+                                            cObj("new_student_balance_transfer").value = "Kes " + comma3(cObj("std_closing_bal").innerText);
+                                            cObj("submit_receipt_printing_transfer").click();
+                                            cObj("confirmno_transfer").click();
+                                            setTimeout(() => {
+                                                cObj("goback_link").click();
+                                                cObj("successfull_payment").innerHTML = "";
+                                            }, 1000);
+                                            stopInterval(inner_id);
+                                        }
+                                    }, 100);
+                                }, 100);
+                            }
+                            stopInterval(idsf);
+                        }
+                    }, 100);
+                }, 200);
+                stopInterval(ids);
+            }, 100);
+        }, 200);
+    }else{
+        cObj("error_handled").innerHTML = "<p class='text-danger'>You have not selected a student to associate the payment to.</p>";
+    }
+}
+
+cObj("confirmno_transfer").onclick = function () {
+    cObj("confirmpayments_transfer").classList.add("hide");
+}
+
 var stud_fname = [];
 var sec_name = [];
 var sur_name = [];
@@ -2933,6 +2927,7 @@ function getStudentNameAdmno() {
                     }
                 }
                 autocomplete(document.getElementById("studids"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);
+                autocomplete(document.getElementById("stud_admission_no"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);
                 autocomplete(document.getElementById("student_admno_in"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);
                 autocomplete(document.getElementById("students_admnos_in"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);
                 autocomplete(document.getElementById("student_adm_credit_note"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);

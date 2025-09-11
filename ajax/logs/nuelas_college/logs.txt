@@ -1,3 +1,42 @@
+11th Sep 2025 20:44:46PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 20:43:59PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 20:22:24PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 20:22:00PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 20:15:38PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 20:14:46PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 20:08:15PM : Transaction for "Null" Reg No ": NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 20:04:00PM : Transaction for "Null" Reg No ": NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 19:59:47PM : Transaction for "Null" Reg No ": NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 19:51:51PM : Transaction for "Null" Reg No ": NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 19:49:02PM : Transaction for "Null" Reg No ": NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 19:47:47PM : Transaction for "Null" Reg No ": NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 19:28:56PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:28PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:26PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:23PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:20PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:18PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:16PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:13PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:10PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:24:06PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 19:14:43PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 19:11:26PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 19:04:27PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 18:49:34PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 16:50:34PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 12:57:53PM : School information changed successfully! - {ANN AKOTCH}
+11th Sep 2025 12:49:21PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 12:49:03PM : Carol  - of Reg No. (NC-2025-001) data has been updated successfully! - {ANN AKOTCH}
+11th Sep 2025 12:48:23PM : Carol Carol of adm no NC-2025-001  balance has been updated successfully! - {ANN AKOTCH}
+11th Sep 2025 12:43:36PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 12:43:34PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 12:43:32PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 12:43:30PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 12:43:27PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 12:43:25PM : Transaction has been deleted successfully! - {ANN AKOTCH}
+11th Sep 2025 12:36:54PM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
+11th Sep 2025 07:35:33AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 10th Sep 2025 20:00:23PM : Fees structure has been modified. Votehead "New Votehead" has been added successfully! - {ANN AKOTCH}
 09th Sep 2025 07:28:23AM : JAMES KARANI with admission number NC-2025-010 has been admitted successfully - {ANN AKOTCH}
 09th Sep 2025 07:27:38AM : Course "FRUIT MAKER" has been added successfully! - {ANN AKOTCH}

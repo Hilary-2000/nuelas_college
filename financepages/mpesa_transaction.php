@@ -39,91 +39,16 @@
                                 <!-- Add the loading element here -->
                                 <div class="container d-flex align-content-center justify-content-left p-2 hide">
                                     <p  id="completedTransHolder" >Loading <i class="fas fa-star fa-spin"></i><i class="fas fa-star fa-spin"></i><i class="fas fa-star fa-spin"></i></p>
+                                    <p id="data_error_holder"></p>
                                 </div>
                             </div>
                             <div class="col sm-5">
-                                <div class="input-group my-3">
-                                    <input type="text" name="searchkey" id="searchkey" class="form-control border border-gray rounded p-2 text-xs font-weight-bold" style="width:fit-content;" placeholder="Enter keyword to search table...">
-                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive p-0" id="transDataReciever">
-                            <table class="table">
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">#</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Transaction No</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Amount</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Adm No</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center ps-2">Status<br></th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center ps-2">ACTION<br></th>
-                                    <!-- <th></th>
-                                    <th></th> -->
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>
-                                        <div class="d-flex px-2 align-content-center">
-                                            <div class="my-auto">
-                                                <span class="mb-0"> <strong class="text-uppercase text-secondary font-weight-bolder text-center">PEGGHJHKJBN</strong></span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm font-weight-bold mb-0">1,000</p>
-                                    </td>
-                                    <td>
-                                        <span class="text-xs font-weight-bold">Sumba Jack (41)</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <p class="text-xs font-weight-bold"><span class="badges badges-success">Not-Assigned</span></p>
-                                    </td>
-                                    <td class="align-middle">
-                                        <span class="link "><i class="fas fa-eye"></i> Assign</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>
-                                        <div class="d-flex px-2 align-content-center">
-                                            <div class="my-auto">
-                                                <span class="mb-0"> <strong class="text-uppercase text-secondary font-weight-bolder text-center">PEGGHJHKJBN</strong></span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-sm font-weight-bold mb-0">1,000</p>
-                                    </td>
-                                    <td>
-                                        <span class="text-xs font-weight-bold">Sumba Jack (41)</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <p class="text-xs font-weight-bold"><span class="badges badges-warning">Assigned</span></p>
-                                    </td>
-                                    <td class="align-middle">
-                                        <span>Assigned</span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="row mt-5" id="tablefooter">
-                            <div class="col-sm-12 col-md-5">
-                                <div class="container-fluid">
-                                    <p class="text-xxs font-weight-bolder opacity-9 text-uppercase">Showing <span class="text-primary" id="startNo">1 </span> to <span class="text-primary" id="finishNo">10</span> of <span id="tot_records"></span> Records.</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-7">
-                                <div class="dataTables_paginate paging_full_numbers" id="datatable_paginate">
-                                    <ul class="pagination">
-                                        <li class="paginate_button page-item first" id="datatable_first"><a href="javascript:;" aria-controls="datatable" data-dt-idx="0" tabindex="0" class="page-link" id="tofirstNav">First</a></li>
-                                        <li class="paginate_button page-item previous mx-1" id="datatable_previous"><a href="javascript:;" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link" id="toprevNac">Prev</a></li>
-                                        <li class="paginate_button page-item previous active mx-3" id="datatable_previous"><a href="javascript:;" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link" id="pagenumNav">1</a></li>
-                                        <li class="paginate_button page-item next mx-1" id="datatable_next"><a href="javascript:;" aria-controls="datatable" data-dt-idx="7" tabindex="0" class="page-link" id="tonextNav">Next</a></li>
-                                        <li class="paginate_button page-item last mx-1" id="datatable_last"><a href="javascript:;" aria-controls="datatable" data-dt-idx="8" tabindex="0" class="page-link" id="tolastNav">Last</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+                            <p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! No M-Pesa transactions has been captured yet!</p>
                         </div>
                     </div>
                 </div>
@@ -131,21 +56,23 @@
             <!-- the assigne fees window -->
             <div class="container hide" id="payment_information">
                 <!-- display the payment information -->
-                <div class="back">
+                <div class="back mt-2">
                     <p class="link" id="goback_link" style="text-align: left;"><i class="fas fa-arrow-left"></i> Go back</p>
                 </div>
                 <div class="row rounded-25 border border-secondary p-2 my-2 mx-auto">
+                    <h5 class="text-center"><u>Assign Transaction</u></h5>
                     <div class="col-md-6">
                         <h6 class="text-primary">Transaction information</h6>
                         <p class="hide" id="output_mpesa_transactions"></p>
                         <p>
                             <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Payment Id: </strong><span id="payment_id">PHJHJHGHJH</span></span><br>
                             <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Transaction Id: </strong><span id="mpesa_id">PHJHJHGHJH</span></span><br>
-                            <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Transaction Amount: </strong> Kes <span id="amount_paid">1000,</span></span><br>
+                            <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Transaction Amount: </strong> Kes <span id="assign_payment_amount_paid">1000,</span></span><br>
+                            <input type="hidden" name="" id="mpesa_payment_amount_holder" value="0">
                             <span class="text-danger text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Wrong Student Id: </strong><span id="wrong_adm">12</span></span><br>
                             <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Date of transaction: </strong><span id="trans_time"> 12th Aug 2022 10:00:00</span></span><br>
                             <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Payer Name: </strong><span id="payer_name">ADALA HILLARY NGIGE</span></span><br>
-                            <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> MSISDN: </strong><span id="msisdn">254743551250</span></span><br>
+                            <span class="text-dark text-uppercase text-xxs d-none"><strong> <i class="fas fa-check"></i> MSISDN: </strong><span id="msisdn">254743551250</span></span><br>
                         </p>
                     </div>
                     <div class="col-md-6">
@@ -153,7 +80,9 @@
                         <div class="form-group float-right" style="width: fit-content;">
                             <label for="stud_admission_no" class="form-control-label">Enter student admission to associate with the payment:</label>
                             <div class="form-group">
-                                <input type="text" name="stud_admission_no" id="stud_admission_no" class="" placeholder="Admission No">
+                                <div class="autocomplete">
+                                    <input type="text" name="stud_admission_no" id="stud_admission_no" class="" placeholder="Admission No">
+                                </div>
                                 <button class="btn btn-primary btn-sm" id="find_student_assign">Search</button>
                             </div>
                         </div>
@@ -163,8 +92,8 @@
                 <div class="container my-2 hide" id="result_holder">
                     <div class="container-fluid" id="student_results">
                     </div>
-                    <div class="container-fluid my-2">
-                        <label for="payment_for_option" class="form-control-label">Select what the payment is for:</label>
+                    <div class="conts my-2">
+                        <label for="payment_for_option" class="form-control-label"><b>Select what the payment is for</b></label>
                         <p id="payments_options"></p>
                     </div>
                     <div class="button">

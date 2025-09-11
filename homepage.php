@@ -661,6 +661,67 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
+        <div class="confirmpaymentwindow hide" id='un_assign_payment_window'>
+            <div class="confirmpayment animate">
+                <h6 class='text-center'>Unassign Payment</h6>
+                <p>Are you sure you want to un-assign this payment? <br><b>Note:</b><br>This will affect the student`s balance!</p>
+                <input type="hidden" value="0" id="un_assign_payments_id">
+                <div class="btns">
+                    <button type='button' id='confirm_unassign_payments'>Yes</button>
+                    <button type='button' id='decline_unassign_payments'>No</button>
+                </div>
+            </div>
+        </div>
+        <div class="confirmpaymentwindow hide" id='confirmpayments_transfer'>
+            <div class="confirmpayment animate">
+                <h6 id="switch_confirmation_transfer" class='text-center'>Confirm Payment</h6>
+                <p id="title_confirmation">Are you sure you want to make payment for <b><span id="nameofstudents_transfer"></span></b>?</p>
+                <p><label class="form-control-label" for="check-parents-sms_transfer"><b>Send the parents SMS ?</b> <span class="text-danger" id="send_sms_dsiclaimer_transfer"></span></label>
+                    <!-- <input type="checkbox" id="check-parents-sms">  -->
+                    <select class="form-control p-1" name="check-parents-sms" id="check-parents-sms_transfer">
+                        <option value="" hidden>Select who to send SMS</option>
+                        <option value="student_contact">Student</option>
+                        <option value="first_parent">Primary Parent</option>
+                        <option value="second_parent">Second Parent</option>
+                        <option value="both_parent">Both Parent</option>
+                        <option value="all_three">All Three</option>
+                        <option value="none">None</option>
+                    </select>
+                </p>
+                <form method="POST" id="receipt_form" action="reports/reports.php" target="_blank">
+                    <p>
+                        <label for="reciept_size_transfer" class="form-control-label"><b>Select receipt size</b></label>
+                        <select name="reciept_size" id="reciept_size_transfer" class="form-control">
+                            <option value="" hidden>Select reciept Size</option>
+                            <option value="A4">A4 Size Full</option>
+                            <option value="A51">A5 Size Sample 1</option>
+                            <option value="thermal1">Thermal paper size 80mm Sample 1</option>
+                        </select>
+                    </p>
+                    <input type="hidden" name="student_admission_no" id="student_admission_no_transfer">
+                    <input type="hidden" name="amount_paid_by_student" id="amount_paid_by_student_transfer">
+                    <input type="hidden" name="new_student_balance" id="new_student_balance_transfer">
+                    <input type="hidden" name="mode_of_payments" id="mode_of_payments_transfer">
+                    <input type="hidden" name="transaction_codes" id="transaction_codes_transfer">
+                    <input type="hidden" name="payments_for" id="payments_for_transfer">
+                    <input type="hidden" name="students_names" id="students_names_transfer">
+                    <input type="hidden" id="reprint_transfer" name="reprint">
+                    <input type="hidden" id="masiku_transfer" name="masiku" value="<?php echo date("Y-m-d");?>">
+                    <input type="hidden" id="masaa_transfer" name="masaa" value="<?php echo date("H:i:s");?>">
+                    <input type="hidden" name="last_receipt_id_take" id="last_receipt_id_take_transfer">
+                    <input type="hidden" value="fees_payment_receipt"  name="fees_payment_receipt" id="fees_payment_receipt_transfer">
+                    <input type="hidden" value="<?php echo date("Y-m-d");?>" name="date_of_payments_fees" id="date_of_payments_fees_holder_transfer">
+                    <input type="hidden" value="<?php echo date("H:i:s");?>" name="time_of_payment_fees" id="time_of_payment_fees_holder_transfer">
+                    <input type="hidden" value="auto" name="fees_payment_opt_holder" id="fees_payment_opt_holder_transfer">
+                    <input type="hidden" name="supporting_documents_list" value="[]" id="supporting_documents_list_transfer">
+                    <button hidden id="submit_receipt_printing_transfer" type="submit">Submit</button>
+                </form>
+                <div class="btns">
+                    <button type='button' id='confirmyes_transfer'>Yes</button>
+                    <button type='button' id='confirmno_transfer'>No</button>
+                </div>
+            </div>
+        </div>
         <div class="confirmpaymentwindow hide" id='confirmpayments'>
             <div class="confirmpayment animate">
                 <h6 id="switch_confirmation" class='text-center'>Confirm Payment</h6>
@@ -700,7 +761,7 @@ function checkPresnt($array, $string){
                     <input type="hidden" name="last_receipt_id_take" id="last_receipt_id_take">
                     <input type="hidden" value="fees_payment_receipt"  name="fees_payment_receipt" id="fees_payment_receipt">
                     <input type="hidden" value="<?php echo date("Y-m-d");?>" name="date_of_payments_fees" id="date_of_payments_fees_holder">
-                    <input type="hidden" value="<?php echo date("H:i");?>" name="time_of_payment_fees" id="time_of_payment_fees_holder">
+                    <input type="hidden" value="<?php echo date("H:i:s");?>" name="time_of_payment_fees" id="time_of_payment_fees_holder">
                     <input type="hidden" value="auto" name="fees_payment_opt_holder" id="fees_payment_opt_holder">
                     <input type="hidden" name="supporting_documents_list" value="[]" id="supporting_documents_list">
                     <button hidden id="submit_receipt_printing" type="submit">Submit</button>

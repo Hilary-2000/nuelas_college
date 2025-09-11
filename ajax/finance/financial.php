@@ -68,7 +68,7 @@
                     $balance = $student_data['balance_carry_forward'];
                     $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
                     // $select = "SELECT * FROM `fees_structure` WHERE `course` = '".$course_value."' AND `classes` = ? and `activated` = 1";
-                    $select = (count($vhs) > 0 && $issetup) ? "SELECT * FROM `fees_structure` WHERE ids IN (".join(',', $vhs).")" : "SELECT * FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_value."' AND `activated` = 1  and `roles` = 'regular';";
+                    $select = (count($vhs) > 0 && $issetup) ? "SELECT * FROM `fees_structure` WHERE ids IN (".join(',', $vhs).")" : "SELECT * FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_value."' AND `activated` = 1;";
                     $stmt = $conn2->prepare($select);
                     $stmt->execute();
                     $results = $stmt->get_result();
@@ -79,7 +79,7 @@
                             $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
                             $a_fee->fees_amount = $student_data['study_mode'] == "weekend" ? $row['TERM_3'] : ($student_data['study_mode'] == "evening" ? $row['TERM_2'] : $row['TERM_1']);
                             $a_fee->fees_id = $row['ids'];
-                            $a_fee->fees_role = $row['roles'] == "regular" ? "Compulsory" : $row['roles'];
+                            $a_fee->fees_role = $issetup ? "Compulsory" : ($row['roles'] == "regular" ? "Compulsory" : $row['roles']);
                             array_push($all_course_fees, $a_fee);
                         }
                     }else {
@@ -95,7 +95,7 @@
                         array_push($all_course_fees, $a_fee);
                     }
 
-                    if(count($all_course_fees) > 0){
+                    if(count($all_course_fees) > 0 && !$issetup || count($vhs) > 0 && $issetup){
                         $data_to_display = "<div class='tableme'><input type='hidden' id='payment_for_details' value='[]'><table id='".$object_id."' class='table'><tr><th>No. <input type='checkbox' id='votehead_checks'></th><th>Votehead</th><th>Role</th><th>Total amount to pay</th><th>Amount</th></tr><tbody>";
                         foreach ($all_course_fees as $key => $course_fees) {
                             $data_to_display .= "<tr><td>".($key+1).". <input type='hidden' value='".json_encode($course_fees)."' id='course_details_".($key+1)."'><input type='checkbox' class='votehead_checks' id='votehead_checks_".($key+1)."'></td><td>".$course_fees->fees_name."</td><td><span class='badge bg-primary'>".$course_fees->fees_role."</span></td><td>Kes ".$course_fees->fees_amount."</td><td><input type='number' placeholder='Amount' class='form-control disabled votehead_amounts w-100' disabled='' id='votehead_amounts_".($key+1)."' value='0'></td></tr>";
@@ -103,7 +103,11 @@
                         $data_to_display .= "</tbody></table></div>";
                         echo $data_to_display;
                     }else{
-                        echo "<p class='text-danger'>There is no payment option set by the administrator</p>";
+                        if(!$issetup){
+                            echo "<p class='text-danger'>There is no votehead option set by the administrator</p>";
+                        }else{
+                            echo "<p class='text-danger'>The student has no voteheads options set for them.</p>";
+                        }
                     }
                 }
             }else {
@@ -358,7 +362,7 @@
                                                 </tr>
                                             </table>
                                         </div><hr>";
-                    $tableinformation1 .= "<p style='margin:10px 0;' >As at <b>" . $times . "</b> on <b>" . $date . "</b> <br>Current Term Enrolled: <b>" . $term_enrolled . "</b><br><span style='color:gray;' ><b>Total Fees Paid this term (without provisionals) : Kes " . number_format($fees_paid) . "</b><br><span style='color:gray;' ><b>Balance Carry Forward : Kes " . number_format($balance_cf) . "</b><br><b>Current Term payment : Kes " . number_format($current_term_fees) . "</b><br><span style='color:gray;' ><b>Total fees to be paid as per Current Term: <b>" . $term_enrolled . "</b>: " . $fees_to_pay . "</b></span><br><span style='color:gray;'><b>System calculated balance: Ksh</b> " . $balancecalc . ".</span>" . $headings . $fees_change . "<hr><strong>Current Balance is: Ksh <span id='closed_balance'  class='queried' title='click to change the student balance'>" . $balance . "</span></strong><input type='text' value='" . $admnos . "'  id='presented' hidden></p>";
+                    $tableinformation1 .= "<p style='margin:10px 0;' >As at <b>" . $times . "</b> on <b>" . $date . "</b> <br>Current Term Enrolled: <b>" . $term_enrolled . "</b><br><span style='color:gray;' ><b>Total Fees Paid this term (without provisionals) : Kes " . number_format($fees_paid) . "</b><br><span style='color:gray;' ><b>Balance Carry Forward : Kes " . number_format($balance_cf) . "</b><br><b>Current Term payment : Kes " . number_format($current_term_fees) . "</b><br><span style='color:gray;' ><b>Total fees to be paid as per Current Term: <b>" . $term_enrolled . "</b>: " . $fees_to_pay . "</b></span><br><span style='color:gray;'><b>System calculated balance: Ksh</b> " . round($balancecalc) . ".</span>" . $headings . $fees_change . "<hr><strong>Current Balance is: Ksh <span id='closed_balance'  class='queried' title='click to change the student balance'>" . round($balance) . "</span></strong><input type='text' value='" . $admnos . "'  id='presented' hidden></p>";
                     $tableinformation1 .= "<p class='red_notice fa-sm hide' id='read_note'>Changing of the student balance is not encouraged, its to be done only when the student is newly registered to the system or there is change in the fees structure</p><br>";
                     $tableinformation1 .= "<div class='hide' id='fee_balance_new'><input type='number' id='new_bala_ces' placeholder='Enter New Balance'> <div class='acc_rej'><p class = 'redAcc' id='accBalance'>✔</p><p class='greenRej' id='rejectBalances' >✖</p></div></div>";
                     $tableinformation = "<p>- Below are the last 5 transactions recorded or less<br>- Find all the transaction made by the student by clicking the <b>Manage transaction</b> button at the menu.</p><p id='reversehandler'></p><p style = 'font-weight:550;font-size:17px;text-align:center;'><u>Finance table</u></p>";
@@ -432,7 +436,7 @@
                     echo "<p style='color:red;'>An error occured!</p>";
                 }
             }else {
-                echo "<p style='color:red;'>Admission number entered is invalid!</p>";
+                echo "<p style='color:red;' id='invalid_admission_search'>Admission number entered is invalid!</p>";
             }
 
         }elseif (isset($_GET['insertpayments'])) {
@@ -455,7 +459,7 @@
                 $pay_ment_for = "<ul>";
                 $pay_for_list = json_decode($payfor, true);
                 for ($index = 0; $index < count($pay_for_list); $index++) {
-                    if ($pay_for_list[$index]['roles'] == "provisional") {
+                    if (strtolower($pay_for_list[$index]['roles']) == "provisional") {
                         continue;
                     }
                     $pay_ment_for .= "<li>".$pay_for_list[$index]['name']."</li>";
@@ -469,7 +473,7 @@
                 $newbalance = $balance - $amount;
             }
 
-            $payby = isset($_GET['paidby']) ? $_GET['paidby'] : $_SESSION['userids'];
+            $payby = isset($_GET['paidby']) && isset($_SESSION['userids']) ? (isset($_GET['paidby']) ? $_GET['paidby'] : $_SESSION['userids']) : "System";
 
             $modeofpay = $_GET['modeofpay'];
             $insert = "INSERT INTO `finance` (`stud_admin`,`time_of_transaction`,`date_of_transaction`,`transaction_code`,`amount`,`balance`,`payment_for`,`payBy`,`mode_of_pay`,`support_document`) VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -605,7 +609,7 @@
                         }
                         //end of sms
                     }
-                echo "<p style='color:green;font-size:13px;'>Transaction completed successfully!</p>";
+                echo "<p style='color:green;font-size:13px;' id='successfull_payment'>Transaction completed successfully!</p>";
 
                 // LOG TEXT
                 $log_text = "Transaction for \"".ucwords(strtolower($student_name))."\" Reg No \"".$studadmin."\" has been completed successfully!";
@@ -631,15 +635,14 @@
             }else{
                 echo "<p style='color:red;font-size:13px;'>An error has occured!</p>";
             }
-
-
+            
             // if the mpesa transaction change the transaction to assigned
             if (isset($_GET['mpesa_id'])) {
-                $update = "UPDATE `mpesa_transactions` SET `std_adm` = ?, `transaction_status` = '1' WHERE `transaction_id` = ?";
+                $update = "UPDATE `mpesa_transactions` SET `std_adm` = ?, `transaction_status` = '1', `assigned_transaction` = ? WHERE `transaction_id` = ?";
                 $stuadmin = $_GET['stuadmin'];
                 $mpesa_id = $_GET['mpesa_id'];
                 $stmt = $conn2->prepare($update);
-                $stmt->bind_param("ss",$stuadmin,$mpesa_id);
+                $stmt->bind_param("sss", $stuadmin, $transaction_id, $mpesa_id);
                 $stmt->execute();
             }
         }elseif(isset($_GET['recover_asset'])){
@@ -4205,12 +4208,14 @@
                 echo "<p class='red_notice'>No records found because the staff first payment was recorded in ".$firstpay_record." and the current selected year is ".$curr_year.".</p>";
             }
         }elseif (isset($_GET['mpesaTransaction'])) {
-            $select = "SELECT `transaction_id`,`mpesa_id`,`amount`,`std_adm`,`transaction_time`,`short_code`,`payment_number`,`fullname`,`transaction_status` FROM `mpesa_transactions` ORDER BY transaction_id DESC;";
+            $select = "SELECT mpesa_transactions.*, CONCAT(student_data.first_name,' ',student_data.second_name) AS 'student_fullname' FROM `mpesa_transactions` LEFT JOIN student_data ON student_data.adm_no = mpesa_transactions.std_adm ORDER BY transaction_id DESC LIMIT 1000;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
                 $data_to_display = "";
+                $data_to_display_2 = "<table class='table' id='mpesa_transactions_table'><thead><tr><th>No.</th><th>Transaction No.</th><th>Amount</th><th>Paid By</th><th>Student Name</th><th>Time Of Transaction</th><th>Action</th></tr></thead><tbody>";
+                $index = 1;
                 while ($row = $result->fetch_assoc()) {
                     $paymentDate = $row['transaction_time'];
                     $year = substr($paymentDate, 0, 4);
@@ -4221,12 +4226,46 @@
                     $sec = substr($paymentDate, 12, 2);
                     $d = mktime($hour, $min, $sec, $month, $day, $year);
                     $transactionDate =  date("D-dS-M-Y  h.i.s A", $d);
-                    $data_to_display.=$row['mpesa_id'].":".$row['amount'].":".getName1($row['std_adm'])." (".$row['std_adm']."):".$transactionDate.":".$row['short_code'].":".$row['payment_number'].":".$row['fullname'].":".$row['transaction_status'].":".$row['transaction_id']."|";
+                    if ($row['transaction_status'] == 0) {
+                        $action = "<span class='link text-danger assign_payment' id='assign_payment_".$row['transaction_id']."'><i class='fas fa-eye'></i> Assign</span>";
+                    } else {
+                        $action = "<span class='link text-success unassign_payment' id='unassign_payment_".$row['transaction_id']."'><i class='fas fa-eye'></i> Un-Assign</span>";
+                    }
+                    $data_to_display .= $row['mpesa_id'] . ":" . $row['amount'] . ":" . getName1($row['std_adm']) . " (" . $row['std_adm'] . "):" . $transactionDate . ":" . $row['short_code'] . ":" . $row['payment_number'] . ":" . $row['fullname'] . ":" . $row['transaction_status'] . ":" . $row['transaction_id'] . "|";
+                    $data_to_display_2 .= "<tr><td>".$index."</td><td>".$row['mpesa_id']."</td><td>Kes ".number_format($row['amount'])."</td><td>".ucwords(strtolower($row['fullname']))."</td><td>".ucwords(strtolower($row['student_fullname']))." (".$row['std_adm'].")</td><td>".$transactionDate."</td><td>".$action."</td></tr>";
+                    $index++;
                 }
-                $data_to_display = substr($data_to_display,0,(strlen($data_to_display)-1));
-                echo $data_to_display;
+                $data_to_display_2.= "</tbody></table>";
+                $data_to_display = substr($data_to_display, 0, (strlen($data_to_display) - 1));
+                echo $data_to_display_2;
             }
-        }elseif (isset($_GET['mpesa_transaction_id'])) {
+        }elseif(isset($_GET['un_assign_payment'])){
+            // transaction
+            $transaction_id = $_GET['transaction_id'];
+
+            // validate the mpesa transaction
+            $select = "SELECT * FROM mpesa_transactions WHERE transaction_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $transaction_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                if ($row = $result->fetch_assoc()) {
+                    $payment_id = $row['assigned_transaction'];
+                    $delete = "DELETE FROM finance WHERE transaction_id = ?";
+                    $stmt = $conn2->prepare($delete);
+                    $stmt->bind_param("s", $payment_id);
+                    $stmt->execute();
+                    
+                    // update the current entry
+                    $update = "UPDATE mpesa_transactions SET assigned_transaction = '0', std_adm = '0', transaction_status = '0' WHERE transaction_id = '$transaction_id'";
+                    $stmt = $conn2->prepare($update);
+                    $stmt->execute();
+
+                    // log it.
+                }
+            }
+        } elseif (isset($_GET['mpesa_transaction_id'])) {
             $select = "SELECT `transaction_id`,`mpesa_id`,`amount`,`std_adm`,`transaction_time`,`short_code`,`payment_number`,`fullname`,`transaction_status` FROM `mpesa_transactions` WHERE `transaction_id` = ?";
             $mpesa_transaction_id = $_GET['mpesa_transaction_id'];
             $stmt = $conn2->prepare($select);
@@ -8608,6 +8647,19 @@
         if ($result) {
             if ($row = $result->fetch_assoc()) {
                 return $row['short_code'];
+            }
+        }
+        return 0;
+    }
+    function getSmsUrl($conn)
+    {
+        $select = "SELECT `send_sms_url` FROM `sms_api`";
+        $stmt = $conn->prepare($select);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result) {
+            if ($row = $result->fetch_assoc()) {
+                return $row['send_sms_url'];
             }
         }
         return 0;

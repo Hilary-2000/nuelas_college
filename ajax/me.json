@@ -8,7 +8,7 @@
             {
                 "id": 1,
                 "term_name": "MODULE 1",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "9500",
@@ -25,14 +25,15 @@
                     },
                     {
                         "votehead": "416",
-                        "pay": false
+                        "pay": true
                     }
-                ]
+                ],
+                "termly_cost": 9500
             },
             {
                 "id": 2,
                 "term_name": "MODULE 2",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "9500",
@@ -49,14 +50,15 @@
                     },
                     {
                         "votehead": "416",
-                        "pay": false
+                        "pay": true
                     }
-                ]
+                ],
+                "termly_cost": 9500
             },
             {
                 "id": 3,
                 "term_name": "MODULE 3",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "9500",
@@ -64,23 +66,24 @@
                 "weekend_cost": "7000",
                 "voteheads": [
                     {
-                        "votehead": "415",
-                        "pay": false
-                    },
-                    {
                         "votehead": "0",
                         "pay": true
                     },
                     {
-                        "votehead": "416",
+                        "votehead": "415",
                         "pay": false
+                    },
+                    {
+                        "votehead": "416",
+                        "pay": true
                     }
-                ]
+                ],
+                "termly_cost": 9500
             },
             {
                 "id": 4,
                 "term_name": "MODULE 4",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "9500",
@@ -97,14 +100,15 @@
                     },
                     {
                         "votehead": "416",
-                        "pay": false
+                        "pay": true
                     }
-                ]
+                ],
+                "termly_cost": 9500
             },
             {
                 "id": 5,
                 "term_name": "MODULE 5",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "9500",
@@ -121,14 +125,15 @@
                     },
                     {
                         "votehead": "416",
-                        "pay": false
+                        "pay": true
                     }
-                ]
+                ],
+                "termly_cost": 9500
             },
             {
                 "id": 6,
                 "term_name": "MODULE 6",
-                "status": 1,
+                "status": "2",
                 "start_date": "20250203140712",
                 "end_date": "20250803140712",
                 "fulltime_cost": "9500",
@@ -137,7 +142,7 @@
                 "voteheads": [
                     {
                         "votehead": "0",
-                        "pay": false
+                        "pay": true
                     },
                     {
                         "votehead": "415",
@@ -148,6 +153,16 @@
                         "pay": false
                     }
                 ]
+            },
+            {
+                "id": 7,
+                "term_name": "MODULE 7",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_fees": 0,
+                "evening_fees": 0,
+                "weekend_fees": 0
             }
         ]
     }

@@ -7113,6 +7113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // echo $fees_payment_opt_holder;
 
         // var_dump($_POST);
+        // return;
 
         if ($reciept_size == "A4") {
             // create the pdf file
@@ -14055,7 +14056,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_SESSION['schname'])) {
     include("../connections/conn1.php");
     include("../connections/conn2.php");
-    // var_dump($_GET);
     if (isset($_GET['effect_month']) && isset($_GET['get_nssf_reports'])) {
         // get staff 
         include("../comma.php");
@@ -15521,6 +15521,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $pdf->Output();
         
     }elseif (isset($_GET['receipt']) && isset($_GET['p_code'])) {
+        echo "<p style='color:green;'>The link is working!</p>";
+        print_A5_receipt($_GET['receipt'], $_GET['p_code']);
+    }
+} elseif($_SERVER['REQUEST_METHOD'] == 'GET'){
+    if (isset($_GET['receipt']) && isset($_GET['p_code'])) {
         // echo "<p style='color:green;'>The link is working!</p>";
         print_A5_receipt($_GET['receipt'], $_GET['p_code']);
     }
@@ -15832,7 +15837,7 @@ function print_A5_receipt($receipt_id, $database)
         $pdf->Cell(20, 7, "Served By : ", 1, 0, "L", true);
         $pdf->SetFont('Helvetica', '', 9);
         $staff_infor = getStaffInformations_report($conn, $finance_data['payBy']);
-        $pdf->Cell(45, 7, explode(" ", count($staff_infor) > 0 ? ucwords(strtolower($staff_infor['fullname'])) : "N/A")[0], 1, 0, "L", false);
+        $pdf->Cell(45, 7, explode(" ", count($staff_infor) > 0 ? ucwords(strtolower($staff_infor['fullname'])) : "System")[0], 1, 0, "L", false);
         $pdf->SetFont('Helvetica', 'B', 9);
         $pdf->Cell(30, 7, "Transaction Code:", 1, 0, "L", true);
         $pdf->SetFont('Helvetica', '', 9);
@@ -18171,6 +18176,9 @@ function getSchoolInfo($conn)
 
 function returnNumbers($number){
     $split_no = explode(" ",$number);
+    if(count($split_no) == 1){
+        return $number;
+    }
     $text = $split_no[1];
 
     $new_string = "";
