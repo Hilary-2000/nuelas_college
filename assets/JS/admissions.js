@@ -4109,11 +4109,22 @@ cObj("resetadmitform").onclick = function () {
 }
 
 // submit the button
+var admit_click = 0;
 cObj("submitbtn").onclick = function () {
+    cObj("erroradm").innerHTML = "";
     //check for any blank field
     let errors = checkAdmission();
     if (errors == 0 && presentBCNO == false) {
         if (typeof (cObj("errolment")) != undefined && cObj("errolment") != null) {
+            if(admit_click != 0){
+                cObj("erroradm").innerHTML = "<p class='text-danger'>Your admission request has been sent, please wait!</p>";
+                return 0;
+            }else{
+                admit_click = 1;
+                setTimeout(() => {
+                    admit_click = 0;
+                }, 5000);
+            }
             //proceed and upload the data
             cObj("erroradm").innerHTML = "<p style='color:green;font-size:14px;'>Good to go!</p>";
             //GET VALUES

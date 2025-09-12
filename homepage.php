@@ -3354,7 +3354,7 @@ function checkPresnt($array, $string){
                         <p id="add_branch_error"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="add_branch_button">Add Course Level</button>
+                        <button type="button" id="add_branch_button">Add Branch</button>
                         <button type="button" id="close_add_branch_modal_2">Close</button>
                     </div>
                 </div>
@@ -3375,7 +3375,7 @@ function checkPresnt($array, $string){
                         <p id="edit_branch_error"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="edit_branch_button">Edit Course Level</button>
+                        <button type="button" id="edit_branch_button">Update Branch</button>
                         <button type="button" id="close_edit_branch_modal_2">Close</button>
                     </div>
                 </div>

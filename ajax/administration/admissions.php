@@ -12940,6 +12940,9 @@ function isJson_report($string) {
 
     // get the course id when given the name
     function get_course_id($course_name, $conn2){
+        if ($course_name == "-1" || $course_name == "-2" || $course_name == "-3") {
+            return $course_name;
+        }
         // get all courses
         $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
         $stmt = $conn2->prepare($select);
@@ -12962,6 +12965,9 @@ function isJson_report($string) {
 
     // get the course id when given the name
     function get_course_level_valid($course_level, $conn2){
+        if ($course_level == "-1" || $course_level == "-2" || $course_level == "-3") {
+            return $course_level;
+        }
         // get all courses
         $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
         $stmt = $conn2->prepare($select);
