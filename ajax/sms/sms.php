@@ -284,7 +284,8 @@
                             for ($indez=0; $indez < count($class_list); $indez++) { 
                                 $data_to_display.="<option value='".$class_list[$indez]."'>".majinaDarasa($class_list[$indez])."</option>";
                             }
-                            $data_to_display.="<option value='others'>Others</option>";
+                            $data_to_display.="<option value='-3'>Student Inquiries</option>";
+                            // $data_to_display.="<option value='others'>Others</option>";
                             $data_to_display.="</select>";
                             echo $data_to_display;
                         }else {
@@ -297,7 +298,7 @@
             }
         }elseif (isset($_GET['get_parents_list'])) {
             $get_parents_list = $_GET['get_parents_list'];
-            $course_selected = isset($_GET['course_selected']) ? "AND course_done = '".$_GET['course_selected']."'" : "";
+            $course_selected = (isset($_GET['course_selected']) && $get_parents_list != "-3") ? "AND course_done = '".$_GET['course_selected']."'" : "";
             $select = "SELECT * FROM `student_data` WHERE `stud_class` = '$get_parents_list' $course_selected";
             if ($get_parents_list == "others") {
                 // get the whole class list
@@ -326,10 +327,10 @@
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $data_to_display = 
+                $data_to_display =
                 "<div class='w-75 my-2'>
                 <hr>
-                <h6 class='text-primary text-center'><u>Student to exempt in ".majinaDarasa($get_parents_list)."</u></h6>
+                <h6 class='text-primary text-center'><u>Student to select in ".majinaDarasa($get_parents_list)."</u></h6>
                 <div class='row'>
                     <div class='col-md-3'>
                         <label for='active_students_check'>Active</label>
@@ -1465,6 +1466,9 @@
         return 0;
     }
     function majinaDarasa($data){
+        if ($data == "-3") {
+            return "Student Enquiries";
+        }
         if (strlen($data)>1) {
             return $data;
         }else {

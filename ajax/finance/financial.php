@@ -96,7 +96,7 @@
                     }
 
                     if(count($all_course_fees) > 0 && !$issetup || count($vhs) > 0 && $issetup){
-                        $data_to_display = "<div class='tableme'><input type='hidden' id='payment_for_details' value='[]'><table id='".$object_id."' class='table'><tr><th>No. <input type='checkbox' id='votehead_checks'></th><th>Votehead</th><th>Role</th><th>Total amount to pay</th><th>Amount</th></tr><tbody>";
+                        $data_to_display = "<div class='tableme'><input type='hidden' id='payment_for_details' value='[]'><table id='".$object_id."' class='table'><tr><th>No. <input type='checkbox' id='votehead_checks' class='d-none'></th><th>Votehead</th><th>Role</th><th>Total amount to pay</th><th>Amount</th></tr><tbody>";
                         foreach ($all_course_fees as $key => $course_fees) {
                             $data_to_display .= "<tr><td>".($key+1).". <input type='hidden' value='".json_encode($course_fees)."' id='course_details_".($key+1)."'><input type='checkbox' class='votehead_checks' id='votehead_checks_".($key+1)."'></td><td>".$course_fees->fees_name."</td><td><span class='badge bg-primary'>".$course_fees->fees_role."</span></td><td>Kes ".$course_fees->fees_amount."</td><td><input type='number' placeholder='Amount' class='form-control disabled votehead_amounts w-100' disabled='' id='votehead_amounts_".($key+1)."' value='0'></td></tr>";
                         }
@@ -152,8 +152,8 @@
                     }
 
                     $data_to_display = "<table class='table' id='student_votehead_table'><tr><th rowspan='2'>No</th><th rowspan='2'>Votehead Name</th><th rowspan='2'>Role</th><th colspan='".count($active_course['module_terms'])."'>MODULES</th></tr><tr>";
-                    foreach($active_course['module_terms'] as $module){
-                        $data_to_display.= "<th>".$module['term_name']." ".($module['status'] == 1 ? "<br> Active" : "In-Active")."</th>";
+                    foreach($active_course['module_terms'] as $key => $module){
+                        $data_to_display.= "<th>".($key+1)." ".($module['status'] == 1 ? "<br> <span class='badge bg-success'>Active</span>" : "<br> <span class='badge bg-secondary'>In-Active</span>")."</th>";
                     }
                     $data_to_display.= "</tr>";
                     

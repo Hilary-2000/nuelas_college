@@ -2797,28 +2797,11 @@ cObj("assigne_payment_btn").onclick = function () {
             cObj("last_receipt_id_take_transfer").value = cObj("last_receipt_id")!= null ? valObj("last_receipt_id") : 0;
             cObj("fees_payment_opt_holder_transfer").value = "auto";
             cObj("nameofstudents_transfer").innerHTML = cObj("std_names").innerText;
-            return 0;
-            var datapass = "?insertpayments=true&stuadmin=" + valObj("stud_admission_no") + "&transcode=" + cObj("mpesa_id").innerText + "&amount=" + amountpaid + "&payfor=" + payfor + "&paidby=mpesa&modeofpay=mpesa&balances=" + balance + "&send_sms=true&mpesa_id=" + cObj("payment_id").innerText+"&supporting_documents_list="+supporting_documents_list;
-            sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("error_handled"), cObj("loadings"));
-            setTimeout(() => {
-                var timeout = 0;
-                var idfs = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(idfs);
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        if (cObj("error_handled").innerText == "Transaction completed successfully!") {
-                            setTimeout(() => {
-                                cObj("goback_link").click();
-                            }, 2000);
-                        }
-                        stopInterval(idfs);
-                    }
-                }, 100);
-            }, 100);
             click = 1;
+            setTimeout(() => {
+                click = 0;
+            }, 2000);
+            return 0;
         }
         setTimeout(() => {
             click = 0;

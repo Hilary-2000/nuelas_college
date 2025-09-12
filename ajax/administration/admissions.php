@@ -4910,6 +4910,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
                 }
             }
+            if($course_level == "-3"){
+                $select .= "<option value='-3'>Student Inquiries</option>";
+            }
             $select .= "</select>";
 
             // select statement
@@ -8336,8 +8339,8 @@ function isJson_report($string) {
     function createStudentn4($conn2,$result,$searchinfor){
         if($result){
             $xs =0;
-            $data="<h6 style='font-size:17px;text-align:center;font-weight:500;'>Results for ".$searchinfor."</h6><div class='row'><div class='col-md-6'></div><div class='col-md-6'><input class='form-control border border-primary' placeholder='Search here' id='search_student_tables'></div></div>";
-            $data.="<div class='tableme'><table class='table' >";
+            $data="<h6 style='font-size:17px;text-align:center;font-weight:500;'>Results for ".$searchinfor."</h6><div class='row'><div class='col-md-6'></div><div class='col-md-6'><input class='form-control border border-primary d-none' placeholder='Search here' id='search_student_tables'></div></div>";
+            $data.="<div class='tableme'><table class='table' id='student-list-table' ><thead>";
             $data.="<tr><th>No.</th>";
             $data.="<th>Student Name</th>";
             //$data.="<th>Middle Name</th>";
@@ -8349,7 +8352,7 @@ function isJson_report($string) {
             // $data.="<th>Department</th>";
             $data.="<th>Course Category</th>";
             $data.="<th>Courses</th>";
-            $data.="<th>Actions</th></tr>";
+            $data.="<th>Actions</th></tr></thead><tbody>";
             include("../finance/financial.php");
 
             // courses
@@ -8412,7 +8415,7 @@ function isJson_report($string) {
                 $data.="<td class='search_this' id='cse".($xs)."' >".$course_name."</td>";
                 $data.="<td>"."<p style='display:flex;'><span style='font-size:12px;' class='link view_students' id='view".$row['adm_no']."'><i class='fa fa-pen-fancy'></i> Edit </span>"."</td></tr>";
             }
-            $data.="</table></div>";
+            $data.="</tbody></table></div>";
             if($xs>0){
                 echo $data;
             }else{

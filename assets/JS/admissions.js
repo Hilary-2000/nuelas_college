@@ -719,6 +719,10 @@ cObj("mpesaTrans").onclick = function () {
     cObj("mpesa_trans").classList.remove("hide");
     removesidebar();
     getMpesaPayments();
+
+    // come back to mpesa payment table
+    cObj("mpesa_payment_tbl").classList.remove("hide");
+    cObj("payment_information").classList.add("hide");
 }
 
 cObj("humanresource").onclick = function () {
@@ -1572,6 +1576,11 @@ cObj("display_my_students").onclick = function () {
                 stopInterval(ids);
             }
             if (cObj("loadings").classList.contains("hide")) {
+                if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                    $(document).ready(function() {
+                        $('#student-list-table').DataTable();  // Just one line!
+                    });
+                }
                 var btns = document.getElementsByClassName("view_students");
                 for (let index = 0; index < btns.length; index++) {
                     const element = btns[index];
@@ -2300,6 +2309,11 @@ cObj("findingstudents").onclick = function () {
                         stopInterval(ids);
                     }
                     if (cObj("loadings").classList.contains("hide")) {
+                        if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                            $(document).ready(function() {
+                                $('#student-list-table').DataTable();  // Just one line!
+                            });
+                        }
                         var btns = document.getElementsByClassName("view_students");
                         for (let index = 0; index < btns.length; index++) {
                             const element = btns[index];
@@ -2396,6 +2410,11 @@ function viewlisteners() {
                 stopInterval(ids);
             }
             if (cObj("loadings").classList.contains("hide")) {
+                if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                    $(document).ready(function() {
+                        $('#student-list-table').DataTable();  // Just one line!
+                    });
+                }
                 var btns = document.getElementsByClassName("view_students");
                 for (let index = 0; index < btns.length; index++) {
                     const element = btns[index];
@@ -2424,6 +2443,11 @@ cObj("name").onkeyup = function () {
                     stopInterval(ids);
                 }
                 if (cObj("names_loaders_find").classList.contains("hide")) {
+                    if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                        $(document).ready(function() {
+                            $('#student-list-table').DataTable();  // Just one line!
+                        });
+                    }
                     var btns = document.getElementsByClassName("view_students");
                     for (let index = 0; index < btns.length; index++) {
                         const element = btns[index];
@@ -2701,12 +2725,28 @@ cObj("bcnosd").onkeyup = function () {
         var datapass = "?find=true&bybcntype=" + bcn;
         sendData("GET", "administration/admissions.php", datapass, cObj("resultsbody"));
         setTimeout(() => {
-            var btns = document.getElementsByClassName("view_students");
-            for (let index = 0; index < btns.length; index++) {
-                const element = btns[index];
-                setListenerBtnTab(element.id);
-            }
-        }, 2000);
+            var timeout = 0;
+            var ids = setInterval(() => {
+                timeout++;
+                //after two minutes of slow connection the next process wont be executed
+                if (timeout == 1200) {
+                    stopInterval(ids);
+                }
+                if (cObj("loadings").classList.contains("hide")) {
+                    if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                        $(document).ready(function() {
+                            $('#student-list-table').DataTable();  // Just one line!
+                        });
+                    }
+                    var btns = document.getElementsByClassName("view_students");
+                    for (let index = 0; index < btns.length; index++) {
+                        const element = btns[index];
+                        setListenerBtnTab(element.id);
+                    }
+                    stopInterval(ids);
+                }
+            }, 100);
+        }, 100);
     }
 }
 
@@ -3808,6 +3848,11 @@ cObj("admno").onkeyup = function () {
                     stopInterval(ids);
                 }
                 if (cObj("admnos_loaders_find").classList.contains("hide")) {
+                    if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                        $(document).ready(function() {
+                            $('#student-list-table').DataTable();  // Just one line!
+                        });
+                    }
                     var btns = document.getElementsByClassName("view_students");
                     for (let index = 0; index < btns.length; index++) {
                         const element = btns[index];

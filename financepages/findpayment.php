@@ -32,7 +32,7 @@
                             <option value="last5days">Last 5 Days</option>
                             <option value="lastoneweek">Last one week</option>
                             <option value="btndates" id="btnd">Between dates</option>
-                            <option value="clased">By class</option>
+                            <option value="clased" hidden>By class</option>
                             <option value="transactioncodes">By Transaction code</option>
                         </select>
                     </div>

@@ -336,3 +336,29 @@
             "MSISDN": "256ba4bdab7e75c9fb99cf9af551b2a8c970777a098d61262a137b8ae59d7b99",
             "FirstName": "HILLARY"
         }
+[2025-09-12 08:15:03] {
+            "TransactionType": "Pay Bill",
+            "TransID": "INVALID",
+            "TransTime": "20250901194603",
+            "TransAmount": "10.00",
+            "BusinessShortCode": "112233",
+            "BillRefNumber": "NC-2025-001",
+            "InvoiceNumber": "",
+            "OrgAccountBalance": "25507.00",
+            "ThirdPartyTransID": "",
+            "MSISDN": "256ba4bdab7e75c9fb99cf9af551b2a8c970777a098d61262a137b8ae59d7b99",
+            "FirstName": "HILLARY"
+        }
+[2025-09-12 08:16:22] {
+            "TransactionType": "Pay Bill",
+            "TransID": "INVALID",
+            "TransTime": "20250901194603",
+            "TransAmount": "10.00",
+            "BusinessShortCode": "112233",
+            "BillRefNumber": "NC-2025-01",
+            "InvoiceNumber": "",
+            "OrgAccountBalance": "25507.00",
+            "ThirdPartyTransID": "",
+            "MSISDN": "256ba4bdab7e75c9fb99cf9af551b2a8c970777a098d61262a137b8ae59d7b99",
+            "FirstName": "HILLARY"
+        }
