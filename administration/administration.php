@@ -147,6 +147,10 @@
                         </select>
                     </div>
                     <div class="conts">
+                        <label for="college_branch_admit" class="form-control-label">College Branch<img src="images/ajax_clock_small.gif" class="hide" id="admit_branch_loader"><br></label>
+                        <div id="admit_branch_holder"></div>
+                    </div>
+                    <div class="conts">
                         <label for="bcno">National ID number:</label>
                         <p id="bcnerr"></p>
                         <input type="text" name="bcno" id="bcno" placeholder="Enter Id number">

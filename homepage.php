@@ -3340,6 +3340,47 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
+        <div class="confirmpaymentwindow hide" style="overflow: auto;"  id="add_branch_modal">
+            <div class="changesubwindow addsubject animate">
+                <div class="conts">
+                    <p class="funga" id="close_add_branch_modal">&times</p>
+                    <h6>Add College Branch</h6>
+                </div>
+                <div class="conts" id="">
+                    <div class="add_expenses">
+                        <label class="form-control-label" for="branch_name">Enter Branch Name: <br></label>
+                        <input class="form-control w-100" type="text" name="branch_name" id="branch_name" placeholder="Branch name">
+                        <img src="images/ajax_clock_small.gif" class="hide" id="add_branch_loader">
+                        <p id="add_branch_error"></p>
+                    </div>
+                    <div class="btns">
+                        <button type="button" id="add_branch_button">Add Course Level</button>
+                        <button type="button" id="close_add_branch_modal_2">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="confirmpaymentwindow hide" style="overflow: auto;"  id="edit_branch_modal">
+            <div class="changesubwindow addsubject animate">
+                <div class="conts">
+                    <p class="funga" id="close_edit_branch_modal">&times</p>
+                    <h6>Edit College Branch</h6>
+                </div>
+                <div class="conts" id="">
+                    <div class="edit_expenses">
+                        <label class="form-control-label" for="edit_branch_name">Enter Branch Name: <br></label>
+                        <input class="form-control w-75" type="text" name="edit_branch_name" id="edit_branch_name" placeholder="Branch name">
+                        <img src="images/ajax_clock_small.gif" class="hide" id="edit_branch_loader">
+                        <input type="hidden" name="" id="branch_id_edit" value="0">
+                        <p id="edit_branch_error"></p>
+                    </div>
+                    <div class="btns">
+                        <button type="button" id="edit_branch_button">Edit Course Level</button>
+                        <button type="button" id="close_edit_branch_modal_2">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="confirmpaymentwindow hide" id="del_classes_win">
             <div class="changesubwindow addsubject animate">
                 <div class="conts">
@@ -3671,6 +3712,19 @@ function checkPresnt($array, $string){
             <div class="buttons">
                 <button type='button' id='yes_delete_revenue_category'>Yes</button>
                 <button type='button' id='no_delete_revenue_category'>No</button>
+            </div>
+        </div>
+    </div>
+    <div class="dialogholder hide" id="delete_college_branch">
+        <div class="dialogwindow animate2">
+            <h6>Confirm</h6>
+            <div class="message">
+                <input type="hidden" id="college_branch_delete_id" value="-1">
+                <p>Are you sure you want to delete <b><span id="college_branch_name">unknown</span></b> permanently ?</p>
+            </div>
+            <div class="buttons">
+                <button type='button' id='yes_delete_college_branch'>Yes</button>
+                <button type='button' id='no_delete_college_branch'>No</button>
             </div>
         </div>
     </div>

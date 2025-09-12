@@ -565,6 +565,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($data_array,$row['student_contact']);
                         array_push($data_array,$row['student_email']);
                         array_push($data_array,$row['study_mode']);
+                        array_push($data_array,$row['branch_name']);
                     }else{
                     }
                 }else {
@@ -853,7 +854,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $fnamed = $_GET['fnamed'];
             $lnamed = $_GET['lnamed'];
             $study_mode = $_GET['study_mode'];
-            // &parentname2="+parname2+"&parentcontact="+parconts2+"&parentrelation="+parrelation2+"&pemails="+pemail2
+            
             $parentname2 = $_GET['parentname2'];
             $parentcontact = $_GET['parentcontact'];
             $parentrelation = $_GET['parentrelation'];
@@ -871,6 +872,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $course_progress = $_GET['course_progress'];
             $student_contacts = $_GET['student_contacts'];
             $student_email = $_GET['student_email'];
+            $college_branch = $_GET['college_branch'];
             // echo $doas." in null";
 
             // process the student course progress
@@ -1021,9 +1023,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
 
             // echo $previous_schools;
-            $update = "UPDATE `student_data` SET `study_mode` = ?, `year_of_study` = ?,`stud_class` = ?, `BCNo`= ?,`index_no` = ?,`gender` = ?, `disabled` = ? , `disable_describe` = ? , `address` = ? ,`parentName` = ?,`parentContacts` = ?,`parent_relation` = ?,`parent_email` = ?,`parent_name2` = ?,`parent_contact2` = ?, `parent_relation2` = ?, `parent_email2` = ?, `first_name` = ? ,`surname` = ? ,`second_name` = ? ,`primary_parent_occupation` = ?, `secondary_parent_occupation` = ?, `medical_history` = ?, `clubs_id` = ?, `prev_sch_attended` = ?,`D_O_A` = ?, `transfered_comment` = ?, `course_done` = ?,`intake_year` = ?, `intake_month` = ?, `course_progress_status` = ?, `student_email` = ?, `student_contact` = ? WHERE `adm_no`=?";
+            $update = "UPDATE `student_data` SET `study_mode` = ?, `branch_name` = ?, `year_of_study` = ?,`stud_class` = ?, `BCNo`= ?,`index_no` = ?,`gender` = ?, `disabled` = ? , `disable_describe` = ? , `address` = ? ,`parentName` = ?,`parentContacts` = ?,`parent_relation` = ?,`parent_email` = ?,`parent_name2` = ?,`parent_contact2` = ?, `parent_relation2` = ?, `parent_email2` = ?, `first_name` = ? ,`surname` = ? ,`second_name` = ? ,`primary_parent_occupation` = ?, `secondary_parent_occupation` = ?, `medical_history` = ?, `clubs_id` = ?, `prev_sch_attended` = ?,`D_O_A` = ?, `transfered_comment` = ?, `course_done` = ?,`intake_year` = ?, `intake_month` = ?, `course_progress_status` = ?, `student_email` = ?, `student_contact` = ? WHERE `adm_no`=?";
             $stmt = $conn2->prepare($update);
-            $stmt->bind_param("ssssssssssssssssssssssssssssssssss",$study_mode, $newYOS,$class,$bcnos,$index,$genders,$disabled,$describe,$address,$pnamed,$pcontacts,$prelation,$pemail,$parentname2,$parentcontact,$parentrelation,$pemails,$fnamed,$snamed,$lnamed,$occupation1,$occupation2,$medical_history,$clubs_in_sporters,$previous_schools,$doas,$reason_for_leaving,$course_chosen,$intake_year_edit,$intake_month_edit,$course_progress,$student_email,$student_contacts,$adminno);
+            $stmt->bind_param("sssssssssssssssssssssssssssssssssss",$study_mode, $college_branch, $newYOS,$class,$bcnos,$index,$genders,$disabled,$describe,$address,$pnamed,$pcontacts,$prelation,$pemail,$parentname2,$parentcontact,$parentrelation,$pemails,$fnamed,$snamed,$lnamed,$occupation1,$occupation2,$medical_history,$clubs_in_sporters,$previous_schools,$doas,$reason_for_leaving,$course_chosen,$intake_year_edit,$intake_month_edit,$course_progress,$student_email,$student_contacts,$adminno);
             if($stmt->execute()){
                 echo "<p style='color:green;font-size:12px;'>Student  data updated successfully!</p>";
                 $log_text = $fnamed." ".$lnamed." - of Reg No. (".$adminno.") data has been updated successfully!";
@@ -4917,6 +4919,212 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
             // select statement
             echo $select;
+        }elseif(isset($_GET['get_branches'])){
+            $select = "SELECT * FROM settings WHERE sett = 'branches'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $branches = [];
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $branches = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+                }
+            }
+
+            $data_to_display = "<table class='table' id='branches_list_table'><thead><tr><th>No.</th><th>Branch Name</th><th>Population</th><th>Actions</th></tr></thead><tbody>";
+            $branch_data = [];
+            foreach($branches as $key => $branch){
+                // get branch population
+                $select = "SELECT COUNT(*) AS 'TOTAL' FROM student_data WHERE branch_name = '".$branch->id."'";
+                $stmt = $conn2->prepare($select);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $total = 0;
+                if($result){
+                    if($row = $result->fetch_assoc()){
+                        $total = $row['TOTAL'];
+                    }
+                }
+                $data_to_display .= "<tr><td><input type='hidden' id='edit_branch_data_holder_".$branch->id."' value='".json_encode($branch)."'>".($key+1).".</td><td>".$branch->name."</td><td>".$total." Student(s)</td><td><span class='mx-1 link edit_branch_details' id='edit_branch_details_".$branch->id."'><i class='fas fa-pen-fancy'></i></span><span class='mx-1 link delete_branch_details' id='delete_branch_details_".$branch->id."'><i class='fas fa-trash'></i></span></td></tr>";
+            }
+            $data_to_display.="</tbody></table><input type='hidden' id='branch_list_arr_holder' value='".json_encode($branches)."'>";
+            echo $data_to_display;
+        }elseif(isset($_GET['add_branch'])){
+            $add_branch = $_GET['add_branch'];
+            $branch_name = $_GET['branch_name'];
+
+            $select = "SELECT * FROM settings WHERE sett = 'branches'";
+            $smt = $conn2->prepare($select);
+            $smt->execute();
+            $result = $smt->get_result();
+            $branch_data = null;
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $branch_data = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+                }
+            }
+
+            if($branch_data === null){
+                $new_branch = [];
+                $new_branch['name']= $branch_name;
+                $new_branch['id']= 1;
+                $branch_data = [];
+                array_push($branch_data, $new_branch);
+
+                $insert = "INSERT INTO settings (sett, valued) VALUES (?,?)";
+                $stmt = $conn2->prepare($insert);
+                $keyword = "branches";
+                $branch_data = json_encode($branch_data);
+                $stmt->bind_param("ss", $keyword, $branch_data);
+                $stmt->execute();
+                echo "<p class='text-success'>Branch has been added successfully!</p>";
+                return 0;
+            }
+
+            $id = 0;
+            foreach($branch_data as $branch){
+                if($branch->id >= $id){
+                    $id = $branch->id;
+                }
+            }
+            
+            $new_branch = [];
+            $new_branch['name']= $branch_name;
+            $new_branch['id']= $id+1;
+            array_push($branch_data, $new_branch);
+
+            // update the settings
+            $update = "UPDATE settings SET valued = ? WHERE sett = 'branches'";
+            $stmt = $conn2->prepare($update);
+            $branch_data = json_encode($branch_data);
+            $stmt->bind_param("s", $branch_data);
+            $stmt->execute();
+
+            echo "<p class='text-success'>Branch has been added successfully!</p>";
+            return 0;
+        }elseif(isset($_GET['edit_branch'])){
+            $branch_name = $_GET['branch_name'];
+            $branch_id = $_GET['branch_id'];
+
+            $select = "SELECT * FROM settings WHERE sett = 'branches'";
+            $smt = $conn2->prepare($select);
+            $smt->execute();
+            $result = $smt->get_result();
+            $branch_data = [];
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $branch_data = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+                }else{
+                    $branch_data = null;
+                }
+            }
+
+            if($branch_data == null){
+                $new_branch = [];
+                $new_branch['name']= $branch_name;
+                $new_branch['id']= 1;
+                $branch_data = [];
+                array_push($branch_data, $new_branch);
+
+                $insert = "INSERT INTO settings (sett, valued) VALUES (?,?)";
+                $stmt = $conn2->prepare($insert);
+                $keyword = "branches";
+                $branch_data = json_encode($branch_data);
+                $stmt->bind_param("ss", $keyword, $branch_data);
+                $stmt->execute();
+                echo "<p class='text-success'>Branch has been added successfully!</p>";
+                return 0;
+            }
+
+            // edt branch
+            $present = false;
+            $id = 0;
+            foreach($branch_data as $key=> $branch){
+                if($branch->id == $branch_id){
+                    $present = true;
+                    $branch->name = $branch_name;
+                    $branch_data[$key]->name = $branch_name;
+                }
+                if($branch->id >= $id){
+                    $id = $branch->id;
+                }
+            }
+
+            if($present){
+                $update = "UPDATE settings SET `valued` = ? WHERE sett = 'branches'";
+                $stmt = $conn2->prepare($update);
+                $branch_data = json_encode($branch_data);
+                $stmt->bind_param("s", $branch_data);
+                $stmt->execute();
+            }else{
+                $new_branch = [];
+                $new_branch['name']= $branch_name;
+                $new_branch['id']= $id+1;
+                $branch_data = [];
+                array_push($branch_data, $new_branch);
+
+                $update = "UPDATE settings SET `valued` = ? WHERE sett = 'branches'";
+                $stmt = $conn2->prepare($update);
+                $stmt->bind_param("s", json_encode($branch_data));
+                $stmt->execute();
+            }
+
+            echo "<p class='text-success'>Branch has been updated successfully!</p>";
+            return 0;
+        }elseif(isset($_GET['delete_college_branch'])){
+            $delete_college_branch = $_GET['delete_college_branch'];
+            $branch_id = $_GET['branch_id'];
+
+            // delete the branch
+
+            $select = "SELECT * FROM settings WHERE sett = 'branches'";
+            $smt = $conn2->prepare($select);
+            $smt->execute();
+            $result = $smt->get_result();
+            $branch_data = [];
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $branch_data = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+                }
+            }
+
+            $new_branch_data = [];
+            foreach($branch_data as $key=> $branch){
+                if($branch->id != $branch_id){
+                    array_push($new_branch_data, $branch);
+                }
+            }
+            $branch_data = $new_branch_data;
+
+            $update = "UPDATE settings SET `valued` = ? WHERE sett = 'branches'";
+            $stmt = $conn2->prepare($update);
+            $branch_data = json_encode($branch_data);
+            $stmt->bind_param("s", $branch_data);
+            $stmt->execute();
+
+            echo "<p class='text-success'>Branch has been deleted successfully!</p>";
+            return 0;
+        }elseif(isset($_GET['display_branches'])){
+            $object_id = $_GET['object_id'];
+            $default_value = $_GET['default_value'];
+            $select = "SELECT * FROM settings WHERE sett = 'branches'";
+            $smt = $conn2->prepare($select);
+            $smt->execute();
+            $result = $smt->get_result();
+            $branch_data = [];
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $branch_data = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+                }
+            }
+
+            $data_to_display = "<select class='form-control' id='".$object_id."'><option hidden value=''>Select branch</option>";
+            foreach($branch_data as $key => $branch){
+                $selected = $branch->id == $default_value ? "selected" : "";
+                $data_to_display.="<option ".$selected." value='".$branch->id."'>".ucwords(strtolower($branch->name))."</option>";
+            }
+            $data_to_display.="</select>";
+            echo $data_to_display;
         }elseif (isset($_GET['get_terms_date'])) {
             $select = "SELECT * FROM `academic_calendar`";
             $stmt = $conn2->prepare($select);
@@ -5491,6 +5699,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $parentrelation2 = $_POST['parentrela2'];
             $course_module_terms = $_POST['course_module_terms'];
             $pmail2 = $_POST['pemail2'];
+            $college_branch = $_POST['college_branch'];
  
             if (strlen($parentname2) < 1) {
                 $parentname2 = "none";
@@ -5606,9 +5815,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $course_details_string = ($classenrol != "-1" && $classenrol != "-2" && $classenrol != "-3") ? json_encode([$course_detail]) : "[]";
 
             // ----------------END OF SETTING COURSE DETAILS--------------
-            $insert = "INSERT INTO `student_data` (`surname`,`adm_no`,`first_name`,`second_name`,`student_upi`,`D_O_B`,`gender`,`stud_class`,`D_O_A`,`parentName`,`parentContacts`,`parent_relation`,`parent_email`,`parent_name2`,`parent_contact2`,`parent_relation2`,`parent_email2`,`address`,`BCNo`,`primary_parent_occupation`,`secondary_parent_occupation`,`course_done`,`my_course_list`,`intake_year`,`intake_month`,`student_contact`,`student_email`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            $insert = "INSERT INTO `student_data` (`surname`,`adm_no`,`first_name`,`second_name`,`branch_name`,`student_upi`,`D_O_B`,`gender`,`stud_class`,`D_O_A`,`parentName`,`parentContacts`,`parent_relation`,`parent_email`,`parent_name2`,`parent_contact2`,`parent_relation2`,`parent_email2`,`address`,`BCNo`,`primary_parent_occupation`,`secondary_parent_occupation`,`course_done`,`my_course_list`,`intake_year`,`intake_month`,`student_contact`,`student_email`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
-            $stmt->bind_param("sssssssssssssssssssssssssss",$suname,$admno,$fname,$sname,$upis,$dob,$gender,$classenrol,$doa,$parentname,$parentcontact,$parentrelation,$parentemail,$parentname2,$parentcontact2,$parentrelation2,$pmail2,$address,$bcno,$parent_accupation1,$parent_accupation2,$course_chosen,$course_details_string,$intake_year,$intake_month,$student_contacts,$student_email);
+            $stmt->bind_param("ssssssssssssssssssssssssssss",$suname,$admno,$fname,$sname,$college_branch,$upis,$dob,$gender,$classenrol,$doa,$parentname,$parentcontact,$parentrelation,$parentemail,$parentname2,$parentcontact2,$parentrelation2,$pmail2,$address,$bcno,$parent_accupation1,$parent_accupation2,$course_chosen,$course_details_string,$intake_year,$intake_month,$student_contacts,$student_email);
             if($stmt->execute()){
                 $latest_student_id = $conn2->insert_id;
                 $data = "<p style ='color:green;font-size:12px;'>".$fname." ".$sname." has been admitted successfully<br>Use their admission number to search their information</p>";

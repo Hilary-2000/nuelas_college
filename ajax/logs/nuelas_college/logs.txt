@@ -1,3 +1,9 @@
+12th Sep 2025 14:51:17PM : Mary  - of Reg No. (NC-2025-004) data has been updated successfully! - {ANN AKOTCH}
+12th Sep 2025 14:49:13PM : Grace  - of Reg No. (NC-2025-002) data has been updated successfully! - {ANN AKOTCH}
+12th Sep 2025 14:48:54PM : Carol  - of Reg No. (NC-2025-001) data has been updated successfully! - {ANN AKOTCH}
+12th Sep 2025 14:46:35PM : Carol  - of Reg No. (NC-2025-001) data has been updated successfully! - {ANN AKOTCH}
+12th Sep 2025 14:46:14PM : Carol  - of Reg No. (NC-2025-001) data has been updated successfully! - {ANN AKOTCH}
+12th Sep 2025 14:23:00PM : CHARLIE KIRK with admission number NC-2025-012 has been admitted successfully - {ANN AKOTCH}
 12th Sep 2025 09:16:50AM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}
 12th Sep 2025 08:35:48AM : JAMES MAKONEN with admission number NC-2025-011 has been admitted successfully - {ANN AKOTCH}
 12th Sep 2025 08:10:30AM : Transaction for "Carol " Reg No "NC-2025-001" has been completed successfully! - {ANN AKOTCH}

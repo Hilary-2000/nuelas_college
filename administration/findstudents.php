@@ -22,7 +22,7 @@
                             <option value="" hidden>Select option..</option>
                             <option value="name">Name</option>
                             <option value="AdmNo">Admission No</option>
-                            <option value="class">Categories</option>
+                            <option value="class">Course Levels</option>
                             <option value="bcno">BC number</option>
                             <option value="allstuds" id ='alstuds'>All students</option>
                             <option value="regtoday" id='regtodays'>Registered today</option>
@@ -346,6 +346,10 @@
                                 <div class="col-md-4">
                                     <label for="edit_student_email"><b>Student email:</b></label>
                                     <input type="email" class="form-control w-100" name="edit_student_email" id="edit_student_email" placeholder = "Enter email">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-control-label" for="college_branch_edit"><b>Course Level: </b><img src="images/ajax_clock_small.gif" class="hide" id="college_branch_loader_edit"><br></label>
+                                    <div id="college_branch_edit_holder"></div>
                                 </div>
                             </div>
                             <div class="form-control d-flex flex-wrap my-2 rounded form-group row">

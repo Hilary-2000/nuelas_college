@@ -346,6 +346,29 @@
                     <p id="display_data_revenue_category"></p>
                 </div>
             </div>
+            <div class="setting_s">
+                <h6>College Branches<span class="hide" id="college_branch_loader"><img src="images/ajax_clock_small.gif"></span></h6>
+                <p>- Add an revenue category to use when recording revenue</p>
+                <input type="hidden" name="" id="college_branch_holder">
+                <div class="container my-1">
+                    <p style="width: fit-content;" class="link" id="add_college_branch_btn"><i class="fa fa-plus"></i> Add Revenue Category</p>
+                    <div class="container my-2 tableme" id="college_branch_table_holder">
+                        <table class="table">
+                            <tr>
+                                <th>No.</th>
+                                <th>Branch.</th>
+                                <th>Population.</th>
+                                <th>Action.</th>
+                            </tr>
+                            <tr>
+                                <td rowspan="4">No results.</td>
+                            </tr>
+                        </table>
+                        <!-- <p class='text-danger border border-success my-2 p-2'>Add revenue categories, they will appear here.</p> -->
+                    </div>
+                    <p id="college_branch_error_display"></p>
+                </div>
+            </div>
         </div>
         <div class="bottom1">
             <p>Managed by Ladybird</p>

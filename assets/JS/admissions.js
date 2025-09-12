@@ -12,6 +12,7 @@ cObj("admitbtn").onclick = function () {
     //get the classes from the database for the admissions window
     getClasses("class_admission", "errolment", "");
     getLastAdm();
+    getBranchesSelect("admit_branch_holder", "college_branch_admit", "admit_branch_loader");
 }
 
 cObj("supplier_btn").onclick = function () {
@@ -773,6 +774,7 @@ cObj("set_btns").onclick = function () {
     displayRevenueCategories();
     get_courses();
     get_admission_prefix();
+    getBranches();
 }
 
 if (typeof (cObj("callrollcall")) != 'undefined' && cObj("callrollcall") != null) {
@@ -2994,6 +2996,7 @@ function tablebtnlistener() {
                     cObj("lastyr_fees_balance").innerText = "Kes "+splitdata[47];
                     cObj("edit_student_contacts").value = splitdata[48];
                     cObj("edit_student_email").value = splitdata[49];
+                    getBranchesSelect("college_branch_edit_holder","college_branch_edit","college_branch_loader_edit",splitdata[51]);
                 }
                 stopInterval(ids);
             }
@@ -3704,6 +3707,7 @@ cObj("updatestudinfor").onclick = function () {
                 var pemail2 = valObj('pemails2');
                 var course_progress = valObj("course_progress");
                 var existing_course = cObj("course_level_value") != undefined ? valObj("course_level_value") : null;
+                var college_branch = cObj("college_branch_edit") != undefined ? valObj("college_branch_edit") : "";
                 //collect the data and send to the database
                 var datapass = "?updatestudinfor=true&class=" + classed + "&index=" + index + "&bcnos=" + bcnos + "&dob=" + dobs + "&genders=" + gender + "&disabled=" + disabled + "&describe=" + describe;
                 datapass += "&address=" + addressed + "&pnamed=" + pnamed + "&pcontacts=" + pcontacted + "&paddress=" + paddressed + "&pemail=" + pemails + "&prelation=" + parrelationship + "&adminnumber=" + admnos;
@@ -3711,7 +3715,7 @@ cObj("updatestudinfor").onclick = function () {
                 datapass += "&occupation1=" + occupation1 + "&occupation2=" + occupation2 + "&medical_history=" + medical_history + "&clubs_in_sporters=" + clubs_in_sporters + "&previous_schools=" + previous_schools + "&doas=" + doas;
                 datapass += "&reason_for_leaving=" + reason_for_leaving+"&course_chosen="+course_chosen+"&course_level_hidden="+course_level_hidden+"&course_chosen_level_hidden="+course_chosen_level_hidden+"&existing_course_details="+existing_course;
                 datapass += "&intake_year_edit="+intake_year_edit+"&intake_month_edit="+intake_month_edit+"&course_progress="+course_progress;
-                datapass += "&student_contacts="+edit_student_contacts+"&student_email="+edit_student_email+"&study_mode="+edit_study_mode;
+                datapass += "&student_contacts="+edit_student_contacts+"&student_email="+edit_student_email+"&study_mode="+edit_study_mode+"&college_branch="+college_branch;
                 cObj("updateerrors").innerHTML = "";
                 sendData1("GET", "administration/admissions.php", datapass, cObj("updateerrors"));
                 setTimeout(() => {
@@ -3747,6 +3751,16 @@ cObj("updatestudinfor").onclick = function () {
         cObj("coppy_cat_err").innerHTML = "<p class='text-danger'>Select class before you proceed!</p>";
     }
 }
+
+// reset vhs
+cObj("reset_vhs").onclick = function() {
+    cObj("error_handler_evh").innerHTML = "<p class='text-success'>Voteheads restored successfully</p>";
+    cObj("edit_votehead_status").click();
+    setTimeout(() => {
+        cObj("error_handler_evh").innerHTML = "";
+    }, 2000);
+}
+
 function checkforchanged(olddata) {
     let changed = 0;
     if (valObj("classed") != olddata[6]) {
@@ -4137,7 +4151,7 @@ cObj("submitbtn").onclick = function () {
                 admno = cObj("autogen").value;
             }
 
-            var study_mode = valObj("study_mode");
+            var college_branch = cObj("college_branch_admit") != null ? valObj("college_branch_admit") : "";
 
             var parent_accupation1 = valObj("parent_accupation1").trim().length > 0 ? valObj("parent_accupation1").trim() : "none";
             var parent_accupation2 = valObj("parent_accupation2").trim().length > 0 ? valObj("parent_accupation2").trim() : "none";
@@ -4147,7 +4161,7 @@ cObj("submitbtn").onclick = function () {
             datapass += "&parentrela2=" + parrelation2 + "&pemail2=" + pemail2 + "&parentname2=" + parname2 + "&parentconts2=" + parconts2;
             datapass += "&parent_accupation1=" + parent_accupation1 + "&parent_accupation2=" + parent_accupation2 + "&last_year_academic_balance=" + last_year_academic_balance;
             datapass += "&course_chosen="+course_chosen+"&adm_option="+valObj("automated_amd");
-            datapass += "&student_contacts="+student_contacts+"&student_email="+student_email;
+            datapass += "&student_contacts="+student_contacts+"&student_email="+student_email+"&college_branch="+college_branch;
             datapass += "&intake_year="+valObj("intake_year")+"&intake_month="+valObj("intake_month")+"&course_module_terms="+course_module_terms;
             datapass += "&study_mode="+module_terms+"&send_student_message="+(cObj("send_student_parent_sms").checked ? "on" : "off")+"&send_first_parent="+(cObj("send_primary_parent_sms").checked ? "on" : "off")+"&send_second_parent="+(cObj("send_secondary_parent_sms").checked ? "on" : "off")+"";
             sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("erroradm"),cObj("loadings"));
@@ -10524,4 +10538,162 @@ cObj("add_modules").onclick = function () {
             }
         }, 100);
     }, 200);
+}
+
+function getBranches() {
+    var datapass = "?get_branches=true";
+    sendData2("GET", "administration/admissions.php", datapass, cObj("college_branch_table_holder"), cObj("college_branch_loader"));
+    setTimeout(() => {
+        var timeout = 0;
+        var ids = setInterval(() => {
+            timeout++;
+            //after two minutes of slow connection the next process wont be executed
+            if (timeout == 1200) {
+                stopInterval(ids);
+            }
+            if (cObj("college_branch_loader").classList.contains("hide")) {
+                if(cObj("branches_list_table") != undefined && cObj("branches_list_table") != null){
+                    // set the datatable
+                    $(document).ready(function() {
+                        $('#branches_list_table').DataTable();  // Just one line!
+                    });
+                }
+
+                if (cObj("branch_list_arr_holder") != null && cObj("branch_list_arr_holder") != undefined) {
+                    cObj("college_branch_holder").value = cObj("branch_list_arr_holder").value;
+                }
+                var edit_branch_details = document.getElementsByClassName("edit_branch_details");
+                for (let index = 0; index < edit_branch_details.length; index++) {
+                    const element = edit_branch_details[index];
+                    element.addEventListener("click", function () {
+                        // SHOW THE BRANCH MODAL
+                        cObj("edit_branch_modal").classList.remove("hide");
+
+                        // SET THE BRANCH ID TO THE MODAL
+                        cObj("branch_id_edit").value = this.id.substring(20);
+
+                        // BRANCH DATA
+                        var branch_data = cObj("edit_branch_data_holder_"+cObj("branch_id_edit").value).value
+                        var decoded_branch = hasJsonStructure(branch_data) ? JSON.parse(branch_data) : null;
+                        if(decoded_branch != null){
+                            cObj("edit_branch_name").value = decoded_branch.name;
+                        }
+                    });
+                }
+                var delete_branch_details = document.getElementsByClassName("delete_branch_details");
+                for (let index = 0; index < delete_branch_details.length; index++) {
+                    const element = delete_branch_details[index];
+                    element.addEventListener("click", function () {
+                        cObj("delete_college_branch").classList.remove("hide");
+
+                        // SET THE BRANCH ID TO THE MODAL
+                        cObj("college_branch_delete_id").value = this.id.substring(22);
+
+                        // BRANCH DATA
+                        var branch_data = cObj("edit_branch_data_holder_"+cObj("college_branch_delete_id").value).value
+                        var decoded_branch = hasJsonStructure(branch_data) ? JSON.parse(branch_data) : null;
+                        if(decoded_branch != null){
+                            cObj("college_branch_name").innerText = decoded_branch.name;
+                        }else{
+                            cObj("college_branch_name").innerText = "this branch";
+                        }
+                    });
+                }
+                stopInterval(ids);
+            }
+        }, 100);
+    }, 200);
+}
+
+cObj("yes_delete_college_branch").onclick = function () {
+    var datapass = "?delete_college_branch=true&branch_id="+valObj("college_branch_delete_id");
+    sendData2("GET","administration/admissions.php", datapass, cObj("college_branch_error_display"), cObj("college_branch_loader"));
+    setTimeout(() => {
+        var timeout = 0;
+        var ids = setInterval(() => {
+            timeout++;
+            //after two minutes of slow connection the next process wont be executed
+            if (timeout == 1200) {
+                stopInterval(ids);
+            }
+            if (cObj("college_branch_loader").classList.contains("hide")) {
+                cObj("no_delete_college_branch").click();
+                getBranches();
+                stopInterval(ids);
+            }
+        }, 100);
+    }, 200);
+}
+
+cObj("no_delete_college_branch").onclick = function () {
+    cObj("delete_college_branch").classList.add("hide");
+}
+
+cObj("close_edit_branch_modal").onclick = function () {
+    cObj("edit_branch_modal").classList.add("hide");
+}
+
+cObj("close_edit_branch_modal_2").onclick = function () {
+    cObj("edit_branch_modal").classList.add("hide");
+}
+
+cObj("edit_branch_button").onclick = function () {
+    var datapass = "?edit_branch=true&branch_name="+valObj("edit_branch_name")+"&branch_id="+cObj("branch_id_edit").value;
+    sendData2("GET", "administration/admissions.php", datapass, cObj("college_branch_error_display"), cObj("college_branch_loader"));
+    setTimeout(() => {
+        var timeout = 0;
+        var ids = setInterval(() => {
+            timeout++;
+            //after two minutes of slow connection the next process wont be executed
+            if (timeout == 1200) {
+                stopInterval(ids);
+            }
+            if (cObj("college_branch_loader").classList.contains("hide")) {
+                cObj("close_edit_branch_modal_2").click();
+                getBranches();
+                stopInterval(ids);
+            }
+        }, 100);
+    }, 200);
+}
+
+cObj("add_college_branch_btn").onclick = function () {
+    cObj("add_branch_modal").classList.remove("hide");
+}
+cObj("close_add_branch_modal").onclick = function () {
+    cObj("add_branch_modal").classList.add("hide");
+}
+cObj("close_add_branch_modal_2").onclick = function () {
+    cObj("add_branch_modal").classList.add("hide");
+}
+
+cObj("add_branch_button").onclick = function () {
+    var err = checkBlank("branch_name");
+    if(err == 0){
+        var datapass = "?add_branch=true&branch_name="+valObj("branch_name");
+        sendData2("GET", "administration/admissions.php", datapass, cObj("college_branch_error_display"), cObj("college_branch_loader"));
+        setTimeout(() => {
+        var timeout = 0;
+        var ids = setInterval(() => {
+            timeout++;
+            //after two minutes of slow connection the next process wont be executed
+            if (timeout == 1200) {
+                stopInterval(ids);
+            }
+            if (cObj("college_branch_loader").classList.contains("hide")) {
+                cObj("close_add_branch_modal").click();
+                cObj("branch_name").value = "";
+                getBranches();
+                stopInterval(ids);
+            }
+        }, 100);
+    }, 200);
+    }else{
+
+    }
+}
+
+function getBranchesSelect(branch_holder, object_id, object_loader, default_value = ''){
+    var datapass = "?display_branches=true&object_id="+object_id+"&default_value="+default_value;
+    sendData2("GET", "administration/admissions.php", datapass, cObj(branch_holder), cObj(object_loader));
 }
