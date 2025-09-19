@@ -253,7 +253,7 @@
                 $times = date("H:i:s");
                 $balance = getBalance($admnos,$term,$conn2);
                 $student_data = students_details($admnos,$conn2);
-                $select = "SELECT `stud_admin` , `transaction_id`, `status`, `transaction_code`, `mode_of_pay` , (SELECT(concat(`first_name`,' ',`second_name`)) FROM `student_data` WHERE `adm_no` = `stud_admin`) AS 'Name' ,  `date_of_transaction` , `time_of_transaction` , `amount` , `balance`, `payment_for` FROM `finance` WHERE `stud_admin` = ? ORDER BY `transaction_id` DESC LIMIT 5 ";
+                $select = "SELECT `stud_admin` , `transaction_id`, `status`, `transaction_code`, `mode_of_pay` , (SELECT(concat(`first_name`,' ',`second_name`)) FROM `student_data` WHERE `adm_no` = `stud_admin` LIMIT 1) AS 'Name' ,  `date_of_transaction` , `time_of_transaction` , `amount` , `balance`, `payment_for` FROM `finance` WHERE `stud_admin` = ? ORDER BY `transaction_id` DESC LIMIT 5 ";
                 $stmt = $conn2->prepare($select);
                 $stmt->bind_param("s",$admnos);
                 $stmt->execute();

@@ -1589,8 +1589,23 @@ cObj("optd").onchange = function () {
             cObj("moreopt2").classList.add("hide");
             cObj("register_btns").classList.remove("hide");
             cObj("moreopt3").classList.add("hide");
+            
             //get classes
             getClasses("class_register_class", "selectclass", "");
+            
+            // get branches
+            getBranchesSelect("register_branch_list_holder", "register_branch_list", "loadings", "", function () {
+                if (cObj("register_branch_list_holder") != null) {
+                    let select = document.getElementById("register_branch_list");
+                    let option = new Option("All branches", "0");
+                    select.add(option);
+
+                    // add event listener
+                    cObj("register_branch_list").addEventListener("change", function () {
+                        cObj("display_student_attendances").click();
+                    });
+                }
+            });
             cObj("attendance_register_one_student").classList.add("hide");
         } else if (valObj("optd") == "view_attendance") {
             cObj("moreopt").classList.add("hide");
@@ -2419,13 +2434,35 @@ cObj("viewpresent").onclick = function () {
         var err = checkBlank("selectclass");
         if (err == 0) {
             var datapass = "?class=" + cObj("hidden_course_level_selected").value + "&course_name="+cObj("hidden_course_name_selected").value+"&dates=today";
-            sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
+            sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"), function () {
+                if (cObj("student_absent_list") != null) {
+                    $(document).ready(function() {
+                        $('#student_absent_list').DataTable();  // Just one line!
+                    });
+                }
+                if (cObj("present_students_list") != null) {
+                    $(document).ready(function() {
+                        $('#present_students_list').DataTable();  // Just one line!
+                    });
+                }
+            });
             cObj("view_attendances").classList.remove("hide");
             cObj("mains").classList.add("hide");
         }
     } else if (valObj("classselected") != "0") {
         var datapass = "?class=" + cObj("hidden_course_level_selected").value + "&course_name="+cObj("hidden_course_name_selected").value+"&dates=today";
-        sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
+        sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"), function () {
+            if (cObj("student_absent_list") != null) {
+                $(document).ready(function() {
+                    $('#student_absent_list').DataTable();  // Just one line!
+                });
+            }
+            if (cObj("present_students_list") != null) {
+                $(document).ready(function() {
+                    $('#present_students_list').DataTable();  // Just one line!
+                });
+            }
+        });
         cObj("view_attendances").classList.remove("hide");
         cObj("mains").classList.add("hide");
     } else {
@@ -2443,6 +2480,11 @@ cObj("show_class_att").onclick = function () {
             sendData1("GET", "administration/admissions.php", datapass, cObj("tableinformation"), function () {
                 if (cObj("present_all") != undefined) {
                     cObj("present_all").addEventListener("change", selectAllPresent);
+                }
+                if (cObj("attendance_table_select") != null) {
+                    $(document).ready(function() {
+                        $('#attendance_table_select').DataTable();  // Just one line!
+                    });
                 }
             });
         }
@@ -2497,7 +2539,18 @@ cObj("display_attendance").onclick = function () {
                 var daro = valObj("classselected");
                 var datapass = "?class=" + cObj("hidden_course_level_selected").value + "&course_name="+cObj("hidden_course_name_selected").value+"&dates=" + date;
                 //showPleasewait();
-                sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
+                sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"), function () {
+                    if (cObj("student_absent_list") != null) {
+                        $(document).ready(function() {
+                            $('#student_absent_list').DataTable();  // Just one line!
+                        });
+                    }
+                    if (cObj("present_students_list") != null) {
+                        $(document).ready(function() {
+                            $('#present_students_list').DataTable();  // Just one line!
+                        });
+                    }
+                });
                 cObj("view_attendances").classList.remove("hide");
                 cObj("mains").classList.add("hide");
             }
@@ -2507,21 +2560,18 @@ cObj("display_attendance").onclick = function () {
             var daro = valObj("hidden_course_level_selected");
             var datapass = "?class=" + daro + "&dates=" + date;
             //showPleasewait();
-            sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(ids);
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        //removePleasewait();
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 500);
+            sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"), function () {
+                if (cObj("student_absent_list") != null) {
+                    $(document).ready(function() {
+                        $('#student_absent_list').DataTable();  // Just one line!
+                    });
+                }
+                if (cObj("present_students_list") != null) {
+                    $(document).ready(function() {
+                        $('#present_students_list').DataTable();  // Just one line!
+                    });
+                }
+            });
             cObj("view_attendances").classList.remove("hide");
             cObj("mains").classList.add("hide");
             console.log(2);
@@ -2529,21 +2579,18 @@ cObj("display_attendance").onclick = function () {
             var daro = valObj("hidden_course_level_selected");
             var datapass = "?class=" + daro + "&dates=" + date;
             //showPleasewait();
-            sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(ids);
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        //removePleasewait();
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 500);
+            sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"), function () {
+                if (cObj("student_absent_list") != null) {
+                    $(document).ready(function() {
+                        $('#student_absent_list').DataTable();  // Just one line!
+                    });
+                }
+                if (cObj("present_students_list") != null) {
+                    $(document).ready(function() {
+                        $('#present_students_list').DataTable();  // Just one line!
+                    });
+                }
+            });
             cObj("view_attendances").classList.remove("hide");
             cObj("mains").classList.add("hide");
             console.log(3);
@@ -2575,11 +2622,16 @@ function selectClass() {
 }
 
 function displayStudentAttendance() {
-    var datapass = "?getclassinformation=true&daro=" + cObj("selectclass").value + "&date_used=" + cObj("class_register_dates").value+"&course_id="+valObj("course_list_attendance");
+    var datapass = "?getclassinformation=true&daro=" + cObj("selectclass").value + "&date_used=" + cObj("class_register_dates").value+"&course_id="+valObj("course_list_attendance")+"&branch_name="+ (cObj("register_branch_list") != undefined ? valObj("register_branch_list") : "0");
     sendData1("GET", "administration/admissions.php", datapass, cObj("tableinformation"), function () {
         //removePleasewait();
         if (cObj("present_all") != undefined) {
             cObj("present_all").addEventListener("change", selectAllPresent);
+        }
+        if (cObj("attendance_table_select") != null) {
+            $(document).ready(function() {
+                $('#attendance_table_select').DataTable();  // Just one line!
+            });
         }
     });
 }
@@ -5552,7 +5604,18 @@ function viewClassAttend() {
     cObj("hidden_course_level_selected").value = valObj("course_level_holder_"+index);
     cObj("hidden_course_name_selected").value = valObj("course_name_holder_"+index);
     //showPleasewait();
-    sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
+    sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"), function () {
+        if (cObj("student_absent_list") != null) {
+            $(document).ready(function() {
+                $('#student_absent_list').DataTable();  // Just one line!
+            });
+        }
+        if (cObj("present_students_list") != null) {
+            $(document).ready(function() {
+                $('#present_students_list').DataTable();  // Just one line!
+            });
+        }
+    });
     cObj("view_attendances").classList.remove("hide");
     cObj("mains").classList.add("hide");
 }

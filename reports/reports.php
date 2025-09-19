@@ -15521,7 +15521,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $pdf->Output();
         
     }elseif (isset($_GET['receipt']) && isset($_GET['p_code'])) {
-        echo "<p style='color:green;'>The link is working!</p>";
+        // echo "<p style='color:green;'>The link is working!</p>";
         print_A5_receipt($_GET['receipt'], $_GET['p_code']);
     }
 } elseif($_SERVER['REQUEST_METHOD'] == 'GET'){

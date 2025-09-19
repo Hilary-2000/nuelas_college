@@ -129,7 +129,7 @@
             </div>
             <div class="setting_s">
                 <div class="bg-secondary mt-0 rounded rounded">
-                    <p class="text-center text-white">Student Account Confirmation Message</p>
+                    <p class="text-center text-white">Student Confirmation Message</p>
                 </div>
                 <div class="conts p-2">
                     <p>- This message is sent to parents when they pay their fees!</p>
@@ -149,7 +149,7 @@
             </div>
             <div class="setting_s">
                 <div class="bg-secondary mt-0 rounded">
-                    <p class="text-center text-white">Parent Account Confirmation Message</p>
+                    <p class="text-center text-white">Parent Confirmation Message</p>
                 </div>
                 <div class="conts p-2">
                     <p>- This message is sent to parents when they pay via their parent account!</p>

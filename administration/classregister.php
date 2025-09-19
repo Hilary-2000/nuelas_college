@@ -90,10 +90,15 @@
                             <input type="hidden" name="" id="attendance_statistics_holder">
                             <label for="class_register_dates" class="form-control-label"><b>Select Date</b></label>
                             <input type="date" class="form-control" id="class_register_dates" value="<?php echo date("Y-m-d")?>" max="<?php echo date("Y-m-d")?>">
-                            <label class="form-control-label" for="selectclass"><b>Select class: </b><br></label>
+                            <label class="form-control-label" for="selectclass"><b>Select Course Level: </b><br></label>
                             <p id="class_register_class"></p>
-                            <label for="course_list_attendance" class="form-control-label"><b>Course List:</b></label>
+
+                            <label for="course_list_attendance" class="form-control-label mt-1"><b>Course List:</b></label>
                             <p id="course_list_attendance_holder"><span class="text-success border border-success p-1">Course list appears here!</span></p>
+
+                            <label for="register_branch_list" class="form-control-label mt-1"><b>Branch Name:</b></label>
+                            <p id="register_branch_list_holder"><span class="text-success border border-success p-1">Branches appears here!</span></p>
+                            
                             <button class="btn btn-secondary btn-sm" id="display_student_attendances" type="button">Display</button>
                         </div>
                         <div class="option2 hide" id="moreopt2">

@@ -1087,9 +1087,20 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 echo "<p style='color:red;font-size:12px;'>Error occured while updating<br>Try restarting your the system!</p>";
             }
         }elseif (isset($_GET['getclassinformation'])) {
+            if (empty($_GET['daro'])){
+                echo "<p class='text-danger'>Select course level to proceed!</p>";
+                return;
+            }
+
+            if (empty($_GET['course_id'])){
+                echo "<p class='text-danger'>Select course to proceed!</p>";
+                return;
+            }
+
             $class = $_GET['daro'];
             $course_id = $_GET['course_id'] ?? "";
             $select = "SELECT * from `student_data` WHERE `course_done` = ? AND `stud_class` = ? AND `deleted` = 0 and activated =1";
+            $select .= !empty($_GET['branch_name']) ? " AND branch_name = '".$_GET['branch_name']."'" : "";
             $stmt=$conn2->prepare($select);
             $stmt->bind_param("ss", $course_id, $class);
             $stmt->execute();
@@ -1327,7 +1338,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
 
             //retrieve data of the class from the database
-            $select = "SELECT attendancetable.time, student_data.course_done, `student_data`.`surname` AS 'surname' ,`student_data`.`first_name` AS 'first_name' ,`student_data`.`second_name` AS 'second_name' ,`student_data`.`adm_no` AS 'adm_no' , `student_data`.`gender` AS 'gender' ,`student_data`.`stud_class` AS 'stud_class' ,`student_data`.`BCNo` AS 'BCNo' from `student_data` JOIN `attendancetable` ON `student_data`.`adm_no` = `attendancetable`.`admission_no` where `attendancetable`.`course_level` = ? AND `attendancetable`.`course_name` = ? AND `attendancetable`.`date` = ?";
+            $select = "SELECT attendancetable.time, student_data.branch_name, student_data.course_done, `student_data`.`surname` AS 'surname' ,`student_data`.`first_name` AS 'first_name' ,`student_data`.`second_name` AS 'second_name' ,`student_data`.`adm_no` AS 'adm_no' , `student_data`.`gender` AS 'gender' ,`student_data`.`stud_class` AS 'stud_class' ,`student_data`.`BCNo` AS 'BCNo' from `student_data` JOIN `attendancetable` ON `student_data`.`adm_no` = `attendancetable`.`admission_no` where `attendancetable`.`course_level` = ? AND `attendancetable`.`course_name` = ? AND `attendancetable`.`date` = ?";
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("sss",$class,$course_name,$date);
             $stmt->execute();
@@ -1341,15 +1352,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $absentno = 0;
                 //Unattendace table
                 $unattendedtable="<h6 style='font-size:15px;text-align:center;margin-top:20px;'><u>Students Absent</u></h6>";
-                $unattendedtable.="<div class='tableme'><table class='table' >";
+                $unattendedtable.="<div class='tableme'><table class='table' id='student_absent_list' ><thead>";
                 $unattendedtable.="<tr><th>No</th>";
                 $unattendedtable.="<th>Student Name</th>";
                 $unattendedtable.="<th>Time In</th>";
-                $unattendedtable.="<th>Gender</th>";
+                $unattendedtable.="<th>Branch</th>";
                 $unattendedtable.="<th>Attendance Stats</th>";
                 $unattendedtable.="<th>Course Level</th>";
                 $unattendedtable.="<th>Course Name</th>";
-                $unattendedtable.="<th>Status</th></tr>";
+                $unattendedtable.="<th>Status</th></tr></thead><tbody>";
                 for ($i=0; $i < count($tata); $i++) {
                     $admno = $tata[$i];
                     $stmt->bind_param("s",$admno);
@@ -1360,7 +1371,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             $unattendedtable.="<tr><td>".($i+1)."</td>";
                             $unattendedtable.="<td>".ucwords(strtolower($rows['first_name']))." ".ucwords(strtolower($rows['second_name']))."<br><small>{".$rows['adm_no']."}</small></td>";
                             $unattendedtable.="<td>-</td>";
-                            $unattendedtable.="<td>".$rows['gender']."</td>";
+                            $unattendedtable.="<td>".branch_name($conn2, $rows['branch_name'])."</td>";
                             $unattendedtable.="<td>".presentStats($conn2,$rows['adm_no'],$rows['stud_class'], $rows['course_done'])."</td>";
                             $unattendedtable.="<td>".classNameAdms($rows['stud_class'])."</td>";
                             $unattendedtable.="<td>".ucwords(strtolower(get_course_name($rows['course_done'], $conn2)))."</td>";
@@ -1370,7 +1381,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
                 }
 
-                $unattendedtable.="</table></div>";
+                $unattendedtable.="</tbody></table></div>";
                 if($absentno>0){
                     echo $unattendedtable;
                 }else {
@@ -5732,7 +5743,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $parentrelation2 = $_POST['parentrela2'];
             $course_module_terms = $_POST['course_module_terms'];
             $pmail2 = $_POST['pemail2'];
-            $college_branch = $_POST['college_branch'];
+            $college_branch = !empty($_POST['college_branch']) ? $_POST['college_branch'] : null;
  
             if (strlen($parentname2) < 1) {
                 $parentname2 = "none";
@@ -8712,7 +8723,7 @@ function isJson_report($string) {
                     $data.="<tr class='search_this_main' id='search_this_main".($xs)."'><td>".($xs)."</td>";
                     $data.="<td class='search_this' id='one".($xs)."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."<br><small>{".$row['adm_no']."}</small></td>";
                     //$data.="<td>".$row['second_name']."</td>";
-                    $data.="<td class='search_this' id='two".($xs)."'>".ucwords(strtolower($row['study_mode']))." Mode</td>";
+                    $data.="<td class='search_this' id='two".($xs)."'>".ucwords(strtolower(strtolower($row['study_mode']) == "evening") ? "Hybrid" : $row['study_mode'])." Mode</td>";
                     //$data.="<td>".$row['BCNo']."</td>";
                     $data.="<td class='search_this' id='f_r".($xs)."' >".branch_name($conn2, $row['branch_name'])."</td>";
                     $classes = classNameAdms($row['stud_class']);
@@ -8797,20 +8808,20 @@ function isJson_report($string) {
             $data="<h6 style='font-size:17px;text-align:center;margin-bottom:5px;'><u>Mark attendance for ".$daros." Members on ".date("D dS M Y", strtotime($date_used)).".</u></h6>";
             $data.="<p>Tick the checkbox "."<input type='checkbox' checked readonly>"." if present or leave blank "."<input type='checkbox' readonly>"." when absent, then <strong>Submit</strong></p>";
             $data.="<p id ='tablein'></p>";
-            $data.="<div class='tableme'><table >";
+            $data.="<div class='tableme'><table id='attendance_table_select'><thead>";
             $data.="<tr><th>No</th>";
             $data.="<th>Student name</th>";
-            $data.="<th>Adm no.</th>";
+            $data.="<th>Branch Name</th>";
             $data.="<th>Gender</th>";
             $data.="<th>Attendance Stats</th>";
             $data.="<th>Course Level</th>";
             $data.="<th>Time</th>";
-            $data.="<th>Present <input type='checkbox' class='present_all' id='present_all'></th></tr>";
+            $data.="<th>Present <input type='checkbox' class='present_all' id='present_all'></th></tr></thead><tbody>";
             while($row = $result->fetch_assoc()){
                 $xs++;
                 $data.="<tr><td>".$xs."</td>";
-                $data.="<td><label for='".$row['adm_no']."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."</label></td>";
-                $data.="<td>".$row['adm_no']."</td>";
+                $data.="<td><label for='".$row['adm_no']."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."<br><small>{".$row['adm_no']."}</small></label></td>";
+                $data.="<td>".branch_name($conn2, $row['branch_name'])."</td>";
                 $data.="<td>".$row['gender']."</td>";
                 $data.="<td><small>".presentStats($conn2,$row['adm_no'], $row['stud_class'], $row['course_done'])."</small></td>";
                 $data.="<td>".classNameAdms($row['stud_class'])."</td>";
@@ -8819,12 +8830,12 @@ function isJson_report($string) {
                 $data.="<td>"."<input type='time' class='form-control' value='".$time."' class='date_time_att' id='date_time_att_".$row['adm_no']."'>"."</td>";
                 $data.="<td>"."<input type='checkbox' ".($date_today != null ? "checked" : "")." class='present' id='".$row['adm_no']."'>"."</td></tr>";
             }
-            $data.="</table></div>";
+            $data.="</tbody></table></div>";
             $data.="<span class='text-danger'>Always confirm the date before submitting!</span>";
             if($xs>0){
                 echo $data;
             }else {
-                echo "<p style='font-size:15px;color:red;'>No students present in ".$daros.".</p>";
+                echo "<p style='font-size:15px;color:red;'>No students found!.</p>";
             }
         }else{
             echo "<p style='font-size:15px;'>No results after results..</p>";
@@ -8973,15 +8984,15 @@ function isJson_report($string) {
     function createTable($results,$arrays,$conn2){
         //Attendace table
         $attendedtable="<h6 style='font-size:15px;text-align:center;margin-top:10px;'><u>Students Present</u></h6>";
-        $attendedtable.="<div class='tableme' style = 'border-bottom:1px dashed gray;' ><table class='table' >";
+        $attendedtable.="<div class='tableme' style = 'border-bottom:1px dashed gray;' ><table class='table' id='present_students_list' ><thead>";
         $attendedtable.="<tr><th>No</th>";
         $attendedtable.="<th>Student Name</th>";
         $attendedtable.="<th>Time In</th>";
-        $attendedtable.="<th>Gender</th>";
+        $attendedtable.="<th>Branch Name</th>";
         $attendedtable.="<th>Attendance Stats</th>";
         $attendedtable.="<th>Course Level</th>";
         $attendedtable.="<th>Course Name</th>";
-        $attendedtable.="<th>Status</th></tr>";
+        $attendedtable.="<th>Status</th></tr></thead><tbody>";
         
         $xs = 0;
         if($results){
@@ -8991,14 +9002,14 @@ function isJson_report($string) {
                 $attendedtable.="<tr><td>".$xs."</p></td>";
                 $attendedtable.="<td>".ucwords(strtolower($rows['first_name']))." ".ucwords(strtolower($rows['second_name']))."<br><small>{".$rows['adm_no']."}</small></p></td>";
                 $attendedtable.="<td>".$rows['time']."</p></td>";
-                $attendedtable.="<td>".$rows['gender']."</p></td>";
+                $attendedtable.="<td>".branch_name($conn2, $rows['branch_name'])."</p></td>";
                 $attendedtable.="<td>".presentStats($conn2, $rows['adm_no'], $rows['stud_class'], $rows['course_done'])."</p></td>";
                 $attendedtable.="<td>".classNameAdms($rows['stud_class'])."</p></td>";
                 $attendedtable.="<td>".ucwords(strtolower(get_course_name($rows['course_done'], $conn2)))."</p></td>";
                 $attendedtable.="<td>"."Present"."</p></td></tr>";
             }
         }
-        $attendedtable.="</table></div>";
+        $attendedtable.="</tbody></table></div>";
         if($xs>0){
             echo "<p>".$attendedtable."</p>";
         }else {
@@ -13114,6 +13125,7 @@ function isJson_report($string) {
         if ($course_level == "-1" || $course_level == "-2" || $course_level == "-3") {
             return $course_level;
         }
+
         // get all courses
         $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
         $stmt = $conn2->prepare($select);
