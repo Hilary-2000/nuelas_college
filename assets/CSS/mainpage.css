@@ -1767,7 +1767,7 @@ select option:hover{
     background-color: white;
 }
 #admitform input[type=text],#admitform select,
-#admitform input[type=number],#admitform input[type=date],
+#admitform input[type=number],#admitform input[type=date], 
 #admitform input[type=email]{
     min-width: 90%;
     font-size: unset;
@@ -2184,7 +2184,7 @@ td{
     position: relative;
     width: 100%;
 }
-.ontop select, .ontop input[type=date], .ontop input[type=text]  {
+.ontop select, .ontop input[type=date],.ontop input[type=text]  {
     position: relative;
     min-width: 150px;
     color: MidnightBlue;

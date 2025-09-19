@@ -46,25 +46,11 @@ function getDepartmentsList() {
 function getCourseList(course_level) {
     // get the course lists
     var datapass = "?get_course_list=true&course_level="+course_level;
-    sendData2("GET","administration/admissions.php",datapass,cObj("course_list_holder"),cObj("course_list_loader"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("course_list_loader").classList.contains("hide")) {
-                if (cObj("course_chosen")!=undefined && cObj("course_chosen")!=null) {
-                    cObj("course_chosen").addEventListener("change", getCourseModuleTerms);
-                }
-                // stop
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 100);
-    
+    sendData2("GET","administration/admissions.php",datapass,cObj("course_list_holder"),cObj("course_list_loader"), function () {
+        if (cObj("course_chosen")!=undefined && cObj("course_chosen")!=null) {
+            cObj("course_chosen").addEventListener("change", getCourseModuleTerms);
+        }
+    });
 }
 
 function getCourseModuleTerms() {
@@ -117,26 +103,17 @@ cObj("pleasewaiting").onclick = function () {
 }
 function getClasses(object_id, select_class_id, value_prefix, obj = null) {
     var datapass = "?getclass=true&select_class_id=" + select_class_id + "&value_prefix=" + value_prefix;
-    obj == null ? sendData1("GET", "administration/admissions.php", datapass, cObj(object_id)) : sendData2("GET", "administration/admissions.php", datapass, cObj(object_id), cObj(obj));
-    if (select_class_id == "errolment") {
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                var loader = obj == null ? cObj("loadings") : obj;
-                if (loader.classList.contains("hide")) {
-                    if (cObj("errolment")!=undefined) {
-                        cObj("errolment").addEventListener("change", select_courses);
-                    }
-                    // stop
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 100);
+    obj == null ? sendData1("GET", "administration/admissions.php", datapass, cObj(object_id), setListernerSetClass) : sendData2("GET", "administration/admissions.php", datapass, cObj(object_id), cObj(obj), setListernerSetClass);
+}
+
+function setListernerSetClass(){
+    if (cObj("errolment")!=undefined) {
+        cObj("errolment").addEventListener("change", select_courses);
+    }
+
+    // selectclass
+    if (cObj("selectclass") != undefined && cObj("selectclass") != null) {
+        cObj("selectclass").addEventListener("change", selectClass);
     }
 }
 
@@ -289,6 +266,13 @@ cObj("findstudsbtn").onclick = function () {
     getClubSportsList();
     cObj("resultsbody").classList.remove("hide");
     cObj("viewinformation").classList.add("hide");
+
+    // GET THE BRANCHES
+    getBranchesSelect("get_college_branch_holder", "college_branch_search_student", "loadings", '', function () {
+        let select = document.getElementById("college_branch_search_student");
+        let option = new Option("All branches", "0");
+        select.add(option);
+    });
 }
 function showClassChange() {
     if (this.value == "-2") {
@@ -1353,8 +1337,11 @@ window.onload = function () {
 
     if (auth == '1') {
         //get number of students
-        var datapass = "?getStudentCount=true";
+        var datapass = "?getStudentCount=true&student_type=active";
         sendData("GET", "administration/admissions.php", datapass, cObj("studentscount"));
+
+        var datapass = "?getStudentCount=true&student_type=inactive";
+        sendData("GET", "administration/admissions.php", datapass, cObj("inactive_students_count"));
 
         //get number of students registerd today
         var datapass = "?studentscounttoday=true";
@@ -1566,42 +1553,26 @@ cObj("display_my_students").onclick = function () {
     //show the students by class
     var datapassing = "?find=true" + "&classes=" + valObj("class_assigned_tr");
     //showPleasewait();
-    sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody"));
-    setTimeout(() => {
-        cObj("resultsbody").classList.remove("hide");
-        cObj("viewinformation").classList.add("hide");
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-                    $(document).ready(function() {
-                        $('#student-list-table').DataTable();  // Just one line!
-                    });
-                }
-                var btns = document.getElementsByClassName("view_students");
-                for (let index = 0; index < btns.length; index++) {
-                    const element = btns[index];
-                    setListenerBtnTab(element.id);
-                }
-                if (valObj("sach") == "allstuds") {
-                    var obj = document.getElementsByClassName("viewclass");
-                    setListenerViewbtn1(obj);
-                } else {
-                }
-                if (cObj("search_student_tables") != undefined && cObj("search_student_tables") != null) {
-                    cObj("search_student_tables").addEventListener("keyup", showStudentData);
-                }
-                //removePleasewait();
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 200);
-
+    sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody"), function () {
+        if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+            $(document).ready(function() {
+                $('#student-list-table').DataTable();  // Just one line!
+            });
+        }
+        var btns = document.getElementsByClassName("view_students");
+        for (let index = 0; index < btns.length; index++) {
+            const element = btns[index];
+            setListenerBtnTab(element.id);
+        }
+        if (valObj("sach") == "allstuds") {
+            var obj = document.getElementsByClassName("viewclass");
+            setListenerViewbtn1(obj);
+        } else {
+        }
+        if (cObj("search_student_tables") != undefined && cObj("search_student_tables") != null) {
+            cObj("search_student_tables").addEventListener("keyup", showStudentData);
+        }
+    });
 }
 
 function createTimetabe(id) {
@@ -1620,22 +1591,6 @@ cObj("optd").onchange = function () {
             cObj("moreopt3").classList.add("hide");
             //get classes
             getClasses("class_register_class", "selectclass", "");
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(ids);
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        if (typeof (cObj("selectclass")) != 'undefined' && cObj("selectclass") != null) {
-                            cObj("selectclass").addEventListener("change", selectClass);
-                        }
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 200);
             cObj("attendance_register_one_student").classList.add("hide");
         } else if (valObj("optd") == "view_attendance") {
             cObj("moreopt").classList.add("hide");
@@ -2177,6 +2132,9 @@ cObj("sach").onchange = function () {
         cObj("course_lists_search_bar").classList.add("hide");
         cObj("intake_month_search_win").classList.add("hide");
         cObj("intake_year_search_win").classList.add("hide");
+        cObj("student_status_window").classList.add("hide");
+        cObj("student_study_mode_search_win").classList.add("hide");
+        cObj("college_branch_search").classList.add("hide");
     } else if (this.value == "AdmNo") {
         cObj("swindow").classList.remove("hide");
         cObj("named").classList.add("hide");
@@ -2186,6 +2144,9 @@ cObj("sach").onchange = function () {
         cObj("bcnos").classList.add("hide");
         cObj("intake_month_search_win").classList.add("hide");
         cObj("intake_year_search_win").classList.add("hide");
+        cObj("student_status_window").classList.add("hide");
+        cObj("student_study_mode_search_win").classList.add("hide");
+        cObj("college_branch_search").classList.add("hide");
     } else if (this.value == "class") {
         cObj("swindow").classList.remove("hide");
         cObj("named").classList.add("hide");
@@ -2195,6 +2156,9 @@ cObj("sach").onchange = function () {
         cObj("bcnos").classList.add("hide");
         cObj("intake_month_search_win").classList.add("hide");
         cObj("intake_year_search_win").classList.add("hide");
+        cObj("student_status_window").classList.remove("hide");
+        cObj("student_study_mode_search_win").classList.remove("hide");
+        cObj("college_branch_search").classList.remove("hide");
     } else if (this.value == "bcno") {
         cObj("swindow").classList.remove("hide");
         cObj("named").classList.add("hide");
@@ -2204,6 +2168,9 @@ cObj("sach").onchange = function () {
         cObj("bcnos").classList.remove("hide");
         cObj("intake_month_search_win").classList.add("hide");
         cObj("intake_year_search_win").classList.add("hide");
+        cObj("student_status_window").classList.add("hide");
+        cObj("student_study_mode_search_win").classList.add("hide");
+        cObj("college_branch_search").classList.add("hide");
     } else if (this.value == "allstuds") {
         cObj("swindow").classList.add("hide");
         cObj("bcnos").classList.add("hide");
@@ -2213,6 +2180,9 @@ cObj("sach").onchange = function () {
         cObj("course_lists_search_bar").classList.add("hide");
         cObj("intake_month_search_win").classList.add("hide");
         cObj("intake_year_search_win").classList.add("hide");
+        cObj("student_status_window").classList.add("hide");
+        cObj("student_study_mode_search_win").classList.add("hide");
+        cObj("college_branch_search").classList.add("hide");
     } else if (this.value == "regtoday") {
         cObj("swindow").classList.add("hide");
         cObj("bcnos").classList.add("hide");
@@ -2222,6 +2192,9 @@ cObj("sach").onchange = function () {
         cObj("course_lists_search_bar").classList.add("hide");
         cObj("intake_month_search_win").classList.add("hide");
         cObj("intake_year_search_win").classList.add("hide");
+        cObj("student_status_window").classList.add("hide");
+        cObj("student_study_mode_search_win").classList.add("hide");
+        cObj("college_branch_search").classList.add("hide");
     } else if (this.value == "registered_in") {
         cObj("swindow").classList.add("hide");
         cObj("bcnos").classList.add("hide");
@@ -2231,6 +2204,9 @@ cObj("sach").onchange = function () {
         cObj("course_lists_search_bar").classList.add("hide");
         cObj("intake_month_search_win").classList.remove("hide");
         cObj("intake_year_search_win").classList.remove("hide");
+        cObj("student_status_window").classList.add("hide");
+        cObj("student_study_mode_search_win").classList.add("hide");
+        cObj("college_branch_search").classList.add("hide");
     }
 }
 
@@ -2298,42 +2274,40 @@ cObj("findingstudents").onclick = function () {
             erroro += checkBlank("intake_month_search");
             erroro += checkBlank("intake_year_search");
         }
+
+
+        if(cObj("student_status_search") != ""){
+            datapassing += "&student_status="+valObj("student_status_search");
+        }
+        if(cObj("study_mode_search") != ""){
+            datapassing += "&study_mode="+valObj("study_mode_search");
+        }
+        if(cObj("college_branch_search_student") != ""){
+            datapassing += "&college_branch="+valObj("college_branch_search_student");
+        }
         if (erroro == 0) {
             //showPleasewait();
             // console.log("No error!");
-            sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody"));
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(ids);
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-                            $(document).ready(function() {
-                                $('#student-list-table').DataTable();  // Just one line!
-                            });
-                        }
-                        var btns = document.getElementsByClassName("view_students");
-                        for (let index = 0; index < btns.length; index++) {
-                            const element = btns[index];
-                            setListenerBtnTab(element.id);
-                        }
-                        if (valObj("sach") == "allstuds") {
-                            var obj = document.getElementsByClassName("viewclass");
-                            setListenerViewbtn1(obj);
-                        } else {
-                        }
-                        if (cObj("search_student_tables") != undefined && cObj("search_student_tables") != null) {
-                            cObj("search_student_tables").addEventListener("keyup", showStudentData);
-                        }
-                        //removePleasewait();
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 200);
+            sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody"), function () {
+                if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                    $(document).ready(function() {
+                        $('#student-list-table').DataTable();  // Just one line!
+                    });
+                }
+                var btns = document.getElementsByClassName("view_students");
+                for (let index = 0; index < btns.length; index++) {
+                    const element = btns[index];
+                    setListenerBtnTab(element.id);
+                }
+                if (valObj("sach") == "allstuds") {
+                    var obj = document.getElementsByClassName("viewclass");
+                    setListenerViewbtn1(obj);
+                } else {
+                }
+                if (cObj("search_student_tables") != undefined && cObj("search_student_tables") != null) {
+                    cObj("search_student_tables").addEventListener("keyup", showStudentData);
+                }
+            });
         }
     } else {
         redBorder(cObj("sach"));
@@ -2403,30 +2377,18 @@ function viewlisteners() {
     var datapassing = "?find=true";
     datapassing += "&classes=" + ids;
     //showPleasewait();
-    sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody")); setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-                    $(document).ready(function() {
-                        $('#student-list-table').DataTable();  // Just one line!
-                    });
-                }
-                var btns = document.getElementsByClassName("view_students");
-                for (let index = 0; index < btns.length; index++) {
-                    const element = btns[index];
-                    setListenerBtnTab(element.id);
-                }
-                //removePleasewait();
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 200);
+    sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody"), function () {
+        if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+            $(document).ready(function() {
+                $('#student-list-table').DataTable();  // Just one line!
+            });
+        }
+        var btns = document.getElementsByClassName("view_students");
+        for (let index = 0; index < btns.length; index++) {
+            const element = btns[index];
+            setListenerBtnTab(element.id);
+        }
+    });
 }
 cObj("name").onkeyup = function () {
     var name = this.value;
@@ -2435,82 +2397,39 @@ cObj("name").onkeyup = function () {
     if (name.length > 0) {
         //query the server
         var datapass = "?find=true&bynametype=" + name;
-        sendData2("GET", "administration/admissions.php", datapass, cObj("resultsbody"), cObj("names_loaders_find"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("names_loaders_find").classList.contains("hide")) {
-                    if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-                        $(document).ready(function() {
-                            $('#student-list-table').DataTable();  // Just one line!
-                        });
-                    }
-                    var btns = document.getElementsByClassName("view_students");
-                    for (let index = 0; index < btns.length; index++) {
-                        const element = btns[index];
-                        setListenerBtnTab(element.id);
-                    }
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 100);
+        sendData2("GET", "administration/admissions.php", datapass, cObj("resultsbody"), cObj("names_loaders_find"), function () {
+            if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                $(document).ready(function() {
+                    $('#student-list-table').DataTable();  // Just one line!
+                });
+            }
+            var btns = document.getElementsByClassName("view_students");
+            for (let index = 0; index < btns.length; index++) {
+                const element = btns[index];
+                setListenerBtnTab(element.id);
+            }
+        });
     }
 }
 
 cObj("viewpresent").onclick = function () {
+    cObj("hidden_course_level_selected").value = cObj("selectclass") != null ? valObj("selectclass") : "";
+    cObj("hidden_course_name_selected").value = cObj("course_list_attendance") ? valObj("course_list_attendance") : "";
     if (typeof (cObj("selectclass")) != 'undefined' && cObj("selectclass") != null) {
         var err = checkBlank("selectclass");
         if (err == 0) {
-            //if(valObj("selectclass").length>0)
-            var daro = valObj("selectclass");
-            var datapass = "?class=" + daro + "&dates=today";
-            //showPleasewait();
+            var datapass = "?class=" + cObj("hidden_course_level_selected").value + "&course_name="+cObj("hidden_course_name_selected").value+"&dates=today";
             sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(ids);
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        //removePleasewait();
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 500);
             cObj("view_attendances").classList.remove("hide");
             cObj("mains").classList.add("hide");
         }
     } else if (valObj("classselected") != "0") {
-        var daro = valObj("classselected");
-        var datapass = "?class=" + daro + "&dates=today";
-        //showPleasewait();
+        var datapass = "?class=" + cObj("hidden_course_level_selected").value + "&course_name="+cObj("hidden_course_name_selected").value+"&dates=today";
         sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    //removePleasewait();
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 500);
         cObj("view_attendances").classList.remove("hide");
         cObj("mains").classList.add("hide");
     } else {
-        alert("Select a class to proceed!")
+        alert("Select a class to proceed!");
     }
 }
 cObj("show_class_att").onclick = function () {
@@ -2521,24 +2440,11 @@ cObj("show_class_att").onclick = function () {
         if (valObj("classselected").length > 0) {
             var datapass = "?getclassinformation=true&daro=" + classed + "&date_used=" + date_used;
             //showPleasewait();
-            sendData1("GET", "administration/admissions.php", datapass, cObj("tableinformation"));
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(ids);
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        //removePleasewait();
-                        if (cObj("present_all") != undefined) {
-                            cObj("present_all").addEventListener("change", selectAllPresent);
-                        }
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 500);
+            sendData1("GET", "administration/admissions.php", datapass, cObj("tableinformation"), function () {
+                if (cObj("present_all") != undefined) {
+                    cObj("present_all").addEventListener("change", selectAllPresent);
+                }
+            });
         }
     }
 }
@@ -2556,7 +2462,23 @@ function selectAllPresent() {
             element.checked = false;
         }
     }
+    check_attendance();
 }
+
+function check_attendance() {
+    var present_data = [];
+    var present = document.getElementsByClassName("present");
+    for (let index = 0; index < present.length; index++) {
+        const element = present[index];
+        if (element.checked) {
+            var element_data = {adm_no:element.id, time: valObj("date_time_att_"+element.id), date: valObj("class_register_dates")};
+            present_data.push(element_data);
+        }
+    }
+
+    cObj("attendance_statistics_holder").value = JSON.stringify(present_data);
+}
+
 cObj("manage_tr_option").onchange = function () {
     if (this.value == "viewstaffavailable") {
         viewstaffavailablebtn();
@@ -2573,30 +2495,16 @@ cObj("display_attendance").onclick = function () {
         if (typeof (cObj("classselected")) != 'undefined' && cObj("classselected") != null) {
             if (valObj("classselected").length > 0) {
                 var daro = valObj("classselected");
-                var datapass = "?class=" + daro + "&dates=" + date;
+                var datapass = "?class=" + cObj("hidden_course_level_selected").value + "&course_name="+cObj("hidden_course_name_selected").value+"&dates=" + date;
                 //showPleasewait();
                 sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
-                setTimeout(() => {
-                    var timeout = 0;
-                    var ids = setInterval(() => {
-                        timeout++;
-                        //after two minutes of slow connection the next process wont be executed
-                        if (timeout == 1200) {
-                            stopInterval(ids);
-                        }
-                        if (cObj("loadings").classList.contains("hide")) {
-                            //removePleasewait();
-                            stopInterval(ids);
-                        }
-                    }, 100);
-                }, 500);
                 cObj("view_attendances").classList.remove("hide");
                 cObj("mains").classList.add("hide");
             }
             console.log(1);
         } else if (valObj("classselected") != "0") {
             var daro = valObj("classselected");
-            var daro = valObj("hidden_class_selected");
+            var daro = valObj("hidden_course_level_selected");
             var datapass = "?class=" + daro + "&dates=" + date;
             //showPleasewait();
             sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
@@ -2618,7 +2526,7 @@ cObj("display_attendance").onclick = function () {
             cObj("mains").classList.add("hide");
             console.log(2);
         } else {
-            var daro = valObj("hidden_class_selected");
+            var daro = valObj("hidden_course_level_selected");
             var datapass = "?class=" + daro + "&dates=" + date;
             //showPleasewait();
             sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
@@ -2647,74 +2555,54 @@ cObj("backtosearch").onclick = function () {
     cObj("view_attendances").classList.add("hide");
     cObj("mains").classList.remove("hide");
 }
+
 cObj("display_student_attendances").onclick = function () {
-    selectClass();
+    displayStudentAttendance();
 }
+
 function selectClass() {
-    var classed = cObj("selectclass").value;
-    var date_used = cObj("class_register_dates").value;
-    if (cObj("selectclass").value.length > 0 && date_used.length > 0) {
+    if (cObj("selectclass").value.length > 0 && cObj("class_register_dates").value.length > 0) {
         cObj("register_btns").classList.remove("hide");
-        var datapass = "?getclassinformation=true&daro=" + classed + "&date_used=" + date_used;
-        //showPleasewait();
-        sendData1("GET", "administration/admissions.php", datapass, cObj("tableinformation"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    //removePleasewait();
-                    cObj("present_all").addEventListener("change", selectAllPresent);
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 200);
+        var datapass = "?get_course_list=true&course_level="+cObj("selectclass").value+"&object_id=course_list_attendance";
+        sendData2("GET","administration/admissions.php", datapass, cObj("course_list_attendance_holder"), cObj("loadings"), function () {
+            if (cObj("course_list_attendance")!=null) {
+                cObj("course_list_attendance").addEventListener("change", function () {
+                    displayStudentAttendance();
+                });
+            }
+        });
     }
 }
 
-var classreg = "";
+function displayStudentAttendance() {
+    var datapass = "?getclassinformation=true&daro=" + cObj("selectclass").value + "&date_used=" + cObj("class_register_dates").value+"&course_id="+valObj("course_list_attendance");
+    sendData1("GET", "administration/admissions.php", datapass, cObj("tableinformation"), function () {
+        //removePleasewait();
+        if (cObj("present_all") != undefined) {
+            cObj("present_all").addEventListener("change", selectAllPresent);
+        }
+    });
+}
+
 cObj("submitclasspresent").onclick = function () {
-    var studpresnt = document.getElementsByClassName("present");
-    var ids = "";
-    let count = 0;
-    for (let index = 0; index < studpresnt.length; index++) {
-        const element = studpresnt[index];
-        if (element.checked) {
-            ids += element.id + ",";
-            count++;
-        }
-    }
-    if (count > 0) {
-        var auth = cObj("authoriti").value;
-        if (auth == 5) {
-            var idcollection = ids.substr(0, ids.length - 1).split(",");
-            var name = cObj("myname").value;
-            var daros = valObj("classselected");
-            name += "," + daros + "," + idcollection;
-            var datapas = "?insertattendance=" + name + "&calldate=" + cObj("class_register_dates_cltr").value;
-            cObj('message').innerHTML = "<p style='font-size:12px;'>Are you sure you want to submit attendance for " + classNameAdms(daros) + " on <b class='text-success'>" + cObj("class_register_dates_cltr").value + "</b>?</p>";
-            classreg = datapas;
-            cObj("dialogholder1").classList.remove("hide");
-        } else {
-            var idcollection = ids.substr(0, ids.length - 1).split(",");
-            var name = cObj("myname").value;
-            var daros = valObj("selectclass");
-            name += "," + daros + "," + idcollection;
-            var datapas = "?insertattendance=" + name + "&calldate=" + cObj("class_register_dates").value;
-            cObj('message').innerHTML = "<p style='font-size:12px;'>Are you sure you want to submit attendance for " + classNameAdms(cObj("selectclass").value) + " on <b class='text-success'>" + cObj("class_register_dates").value + "</b>?</p>";
-            classreg = datapas;
-            cObj("dialogholder1").classList.remove("hide");
-        }
-
+    // check_attendance
+    cObj("error_handler_attendance").innerHTML = "";
+    check_attendance();
+    var attendance_statistics = JSON.parse(valObj("attendance_statistics_holder"));
+    if (attendance_statistics.length > 0) {
+        cObj('message').innerHTML = "<p style='font-size:12px;'>Are you sure you want to submit attendance for " + classNameAdms(valObj("selectclass")) + " on <b class='text-success'>" + cObj("class_register_dates").value + "</b>?</p>";
+        cObj("dialogholder1").classList.remove("hide");
+    }else{
+        cObj("error_handler_attendance").innerHTML = "<p class='text-danger'>Select atleast one student!</p>";
     }
 }
+
+// call class register
 cObj("clasregyes").onclick = function () {
-    sendData1("GET", "administration/admissions.php", classreg, cObj("tablein"));
-    cObj("dialogholder1").classList.add("hide");
+    var datapass = "insertattendance="+valObj("attendance_statistics_holder")+"&call_date=" + cObj("class_register_dates").value+"&course_level="+valObj("selectclass")+"&course_list="+valObj("course_list_attendance");
+    sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("tablein"), cObj("loadings"), function () {
+        cObj("clasregno").click();
+    });
 }
 cObj("clasregno").onclick = function () {
     cObj("dialogholder1").classList.add("hide");
@@ -2725,30 +2613,18 @@ cObj("bcnosd").onkeyup = function () {
     var bcn = this.value;
     if (bcn.length > 0) {
         var datapass = "?find=true&bybcntype=" + bcn;
-        sendData("GET", "administration/admissions.php", datapass, cObj("resultsbody"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-                        $(document).ready(function() {
-                            $('#student-list-table').DataTable();  // Just one line!
-                        });
-                    }
-                    var btns = document.getElementsByClassName("view_students");
-                    for (let index = 0; index < btns.length; index++) {
-                        const element = btns[index];
-                        setListenerBtnTab(element.id);
-                    }
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 100);
+        sendData("GET", "administration/admissions.php", datapass, cObj("resultsbody"), function () {
+            if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                $(document).ready(function() {
+                    $('#student-list-table').DataTable();  // Just one line!
+                });
+            }
+            var btns = document.getElementsByClassName("view_students");
+            for (let index = 0; index < btns.length; index++) {
+                const element = btns[index];
+                setListenerBtnTab(element.id);
+            }
+        });
     }
 }
 
@@ -3852,30 +3728,18 @@ cObj("admno").onkeyup = function () {
     cObj("viewinformation").classList.add("hide");
     if (admissionno.length > 0) {
         var datapass = "?find=true&admnoincomplete=" + admissionno;
-        sendData2("GET", "administration/admissions.php", datapass, cObj("resultsbody"), cObj("admnos_loaders_find"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("admnos_loaders_find").classList.contains("hide")) {
-                    if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-                        $(document).ready(function() {
-                            $('#student-list-table').DataTable();  // Just one line!
-                        });
-                    }
-                    var btns = document.getElementsByClassName("view_students");
-                    for (let index = 0; index < btns.length; index++) {
-                        const element = btns[index];
-                        setListenerBtnTab(element.id);
-                    }
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 100);
+        sendData2("GET", "administration/admissions.php", datapass, cObj("resultsbody"), cObj("admnos_loaders_find"), function () {
+            if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                $(document).ready(function() {
+                    $('#student-list-table').DataTable();  // Just one line!
+                });
+            }
+            var btns = document.getElementsByClassName("view_students");
+            for (let index = 0; index < btns.length; index++) {
+                const element = btns[index];
+                setListenerBtnTab(element.id);
+            }
+        });
     }
 }
 cObj("returnfind").onclick = function () {
@@ -5682,26 +5546,13 @@ cObj("display_attendance_class").onclick = function () {
     }
 }
 function viewClassAttend() {
-    var daro = this.id;
+    var index = this.id.substring(29);
     var date = valObj("sel_att_date");
-    var datapass = "?class=" + daro + "&dates=" + date;
-    cObj("hidden_class_selected").value = daro;
+    var datapass = "?class=" + valObj("course_level_holder_"+index) + "&course_name="+valObj("course_name_holder_"+index)+"&dates=" + date;
+    cObj("hidden_course_level_selected").value = valObj("course_level_holder_"+index);
+    cObj("hidden_course_name_selected").value = valObj("course_name_holder_"+index);
     //showPleasewait();
     sendData1("GET", "administration/admissions.php", datapass, cObj("atendanceinfor"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                //removePleasewait();
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 500);
     cObj("view_attendances").classList.remove("hide");
     cObj("mains").classList.add("hide");
 }
@@ -6274,6 +6125,10 @@ function getEditedStaffRoles(status = "new"){
                 "Status": status == "edit" ? (cObj("manage_stud_sect2") != undefined ? (cObj("manage_stud_sect2").checked ? "yes" : "no") : "no") : (cObj("manage_stud_sect") != undefined ? (cObj("manage_stud_sect").checked ? "yes" : "no") : "no")
             },
             {
+                "name": "callregister",
+                "Status": status == "edit" ? (cObj("student_attendance2") != undefined ? (cObj("student_attendance2").checked ? "yes" : "no") : "no") : (cObj("student_attendance") != undefined ? (cObj("student_attendance").checked ? "yes" : "no") : "no")
+            },
+            {
                 "name": "register_staff",
                 "Status": status == "edit" ? (cObj("register_staff_sect2") != undefined ? (cObj("register_staff_sect2").checked ? "yes" : "no") : "no") : (cObj("register_staff_sect") != undefined ? (cObj("register_staff_sect").checked ? "yes" : "no") : "no")
             },
@@ -6469,24 +6324,13 @@ cObj("add_role_btns2").onclick = function () {
         // roles
         roles = JSON.stringify(roles);
         var datapass = "edit_another_user=true&role_name=" + encodeURIComponent(valObj("role_name2")) + "&old_role_name=" + encodeURIComponent(cObj("old_role_name").innerText) + "&role_values=" + encodeURIComponent(roles);
-        sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("allowance_err4_handler"), cObj("add_user_roles_in2"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("add_user_roles_in2").classList.contains("hide")) {
-                    cObj("cancel_role_btn2").click();
-                    cObj("allowance_err4_handler").innerHTML = "";
-                    cObj("role_name2").value = "";
-                    cObj("set_btns").click();
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 100);
+        sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("allowance_err4_handler"), cObj("add_user_roles_in2"), function () {
+            getRoleData();
+            cObj("cancel_role_btn2").click();
+            cObj("allowance_err4_handler").innerHTML = "";
+            cObj("role_name2").value = "";
+            cObj("set_btns").click();
+        });
 
     } else {
         cObj("allowance_err4_handler").innerHTML = "<p class='text-danger'>Fill all fields covered with red borders</p>";
@@ -6543,7 +6387,6 @@ function editRoleListener() {
     var roles_children = cObj("checkbox_holder_edit_role").children;
     for (let index = 0; index < roles_children.length; index++) {
         const element = roles_children[index];
-        console.log(element.tagName,element.type);
         if(element.tagName === "DIV"){
             for (let index = 0; index < element.children.length; index++) {
                 const element_2 = element.children[index];
@@ -6589,6 +6432,14 @@ function checkRoles(roles, edit_status = "new") {
         var element_id = "";
         if(edit_status == "edit"){
             element_id = "manage_stud_sect2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "callregister"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "student_attendance2";
         }
         if(cObj(element_id) != undefined){ 
             cObj(element_id).checked = roles.Status == "yes";
@@ -10704,7 +10555,7 @@ cObj("add_branch_button").onclick = function () {
     }
 }
 
-function getBranchesSelect(branch_holder, object_id, object_loader, default_value = ''){
+function getBranchesSelect(branch_holder, object_id, object_loader, default_value = '', callback=null){
     var datapass = "?display_branches=true&object_id="+object_id+"&default_value="+default_value;
-    sendData2("GET", "administration/admissions.php", datapass, cObj(branch_holder), cObj(object_loader));
+    sendData2("GET", "administration/admissions.php", datapass, cObj(branch_holder), cObj(object_loader), callback);
 }

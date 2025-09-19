@@ -175,7 +175,7 @@ cObj("back_btns").onmouseleave = function () {
     this.style.cursor = "grab";
 }
  */
-function sendData1(method, file, datapassing, object) {
+function sendData1(method, file, datapassing, object, callback = null) {
     // console.log("ajax/" + file + datapassing);
     // datapassing = escape(datapassing);
     //make the loading window show
@@ -185,6 +185,11 @@ function sendData1(method, file, datapassing, object) {
         if (this.readyState == 4 && this.status == 200) {
             object.innerHTML = this.responseText;
             cObj("loadings").classList.add("hide");
+
+            // ✅ Run the callback after updating DOM
+            if (typeof callback === "function") {
+                callback();
+            }
         } else if (this.status == 500) {
             cObj("loadings").classList.add("hide");
             object.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>";
@@ -201,12 +206,17 @@ function UrlExists(url) {
     return http.status != 404;
 }
 
-function sendData(method, file, datapassing, object) {
+function sendData(method, file, datapassing, object, callback = null) {
     // datapassing = escape(datapassing);
     let xml = new XMLHttpRequest();
     xml.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             object.innerHTML = this.responseText;
+
+            // ✅ Run the callback after updating DOM
+            if (typeof callback === "function") {
+                callback();
+            }
         } else if (this.status == 500) {
             cObj("loadings").classList.add("hide");
             object.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>";
@@ -228,7 +238,7 @@ function isPresent(array, value) {
     return false;
 }
 
-function sendData2(method, file, datapassing, object1, object2) {
+function sendData2(method, file, datapassing, object1, object2, callback = null) {
     // datapassing = escape(datapassing);
     //make the loading window show
     object2.classList.remove("hide");
@@ -237,6 +247,11 @@ function sendData2(method, file, datapassing, object1, object2) {
         if (this.readyState == 4 && this.status == 200) {
             object1.innerHTML = this.responseText;
             object2.classList.add("hide");
+
+            // ✅ Run the callback after updating DOM
+            if (typeof callback === "function") {
+                callback();
+            }
         } else if (this.status == 500) {
             object2.classList.add("hide");
             cObj("loadings").classList.add("hide");
@@ -261,7 +276,7 @@ function classNameAdms(data) {
     return datas;
 }
 
-function sendData4(method, link, datapassing, object) {
+function sendData4(method, link, datapassing, object, callback = null) {
     // datapassing = escape(datapassing);
     //make the loading window show
     cObj("loadings").classList.remove("hide");
@@ -270,6 +285,11 @@ function sendData4(method, link, datapassing, object) {
         if (this.readyState == 4 && this.status == 200) {
             object.innerHTML = this.responseText;
             cObj("loadings").classList.add("hide");
+
+            // ✅ Run the callback after updating DOM
+            if (typeof callback === "function") {
+                callback();
+            }
         } else if (this.status == 500) {
             cObj("loadings").classList.add("hide");
             object.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>";
@@ -298,7 +318,7 @@ function hasJsonStructure(str) {
         return false;
     }
 }
-function sendDataPost(method, file, datapassing, object1, object2) {
+function sendDataPost(method, file, datapassing, object1, object2, callback = null) {
     //make the loading window show
     // datapassing = escape(datapassing);
     cObj(object2.id).classList.remove("hide");
@@ -307,6 +327,11 @@ function sendDataPost(method, file, datapassing, object1, object2) {
         if (this.readyState == 4 && this.status == 200) {
             object1.innerHTML = this.responseText;
             cObj(object2.id).classList.add("hide");
+
+            // ✅ Run the callback after updating DOM
+            if (typeof callback === "function") {
+                callback();
+            }
         } else if (this.status == 500) {
             cObj(object2.id).classList.add("hide");
             object1.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>";
@@ -343,40 +368,7 @@ function setCookie(name, value, days) {
     document.cookie = name + "=" + cookieValue;
 }
 
-// function sendDataPost(method,file,datapassing) {
-//     //make the loading window show
-//     //object2.classList.remove("hide");
-//     let xml = new XMLHttpRequest();
-//     xml.onreadystatechange = function () {
-//         if(this.readyState ==4 && this.status==200){
-//             // object1.innerHTML = this.responseText;
-//             // object2.classList.add("hide");
-//         }else if (this.status == 500) {
-//             // object2.classList.add("hide");
-//             // object1.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>";
-//         }
-//     };
-//     xml.open(method,""+file,true);
-//     xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-//     xml.send(datapassing);
-// }
-// function sendDataPost(method,file,datapassing,object1) {
-//     //make the loading window show
-//     //object2.classList.remove("hide");
-//     let xml = new XMLHttpRequest();
-//     xml.onreadystatechange = function () {
-//         if(this.readyState ==4 && this.status==200){
-//             object1.innerHTML = this.responseText;
-//             // object2.classList.add("hide");
-//         }else if (this.status == 500) {
-//             // object2.classList.add("hide");
-//             object1.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>";
-//         }
-//     };
-//     xml.open(method,""+file,true);
-//     xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-//     xml.send(datapassing);
-// }
+
 function comma3(number) {
     if (number + "".length < 1) {
         return number;

@@ -60,7 +60,7 @@
     <div class="cardholder">
         <div class="cards">
             <div class="conted">
-                <p><strong>Total number of students:</strong></p>
+                <p><strong># of Active students:</strong></p>
             </div>
             <div class="conted">
                 <p id='students'>0 student(s)</p>
@@ -68,6 +68,17 @@
             <div class="conted">
                 <p><a href="#" id="admin_students">More..</a></p>
             </div>    
+        </div>
+        <div class="cards">
+            <div class="conted">
+                <p><strong># of In-Active students:</strong></p>
+            </div>
+            <div class="conted">
+                <p id='inactive_students_count'>0 student(s)</p>
+            </div>    
+            <div class="conted">
+                <p><a href="#">More..</a></p>
+            </div>
         </div>
         <div class="cards">
             <div class="conted">

@@ -6,22 +6,22 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
         $allowed = ["sms_broadcast","update_personal_profile","general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "3") {
-        $allowed = ["admit_student", "manage_student", "register_staff", "manage_staff","update_school_profile", "update_personal_profile", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff","update_school_profile", "update_personal_profile", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "4") {
-        $allowed = ["admit_student", "manage_student", "register_staff", "manage_staff", "update_personal_profile", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "update_personal_profile", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "5") {
-        $allowed = ["admit_student", "manage_student", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "update_personal_profile","general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "update_personal_profile","general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "6") {
         $allowed = ["register_staff", "manage_staff","general_reports"];
@@ -33,7 +33,7 @@ function allowed($id){
         $allowed = ["update_personal_profile"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "9") {
-        $allowed = ["admit_student", "manage_student"];
+        $allowed = ["admit_student", "callregister", "manage_student"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else {
         // get the allowed fields
@@ -131,7 +131,8 @@ function checkPresnt($array, $string){
 
     
     <!-- the customizable text editor documents -->
-        <script src="https://cdn.tiny.cloud/1/7rm4l4e0oa0zq4xscpmjlaybzcu2t0ald5hpigdbevjw9cgp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script src="https://cdn.tiny.cloud/1/7rm4l4e0oa0zq4xscpmjlaybzcu2t0ald5hpigdbevjw9cgp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <!-- ends here -->
 
     <!-- START DATATABLES -->
@@ -399,7 +400,7 @@ function checkPresnt($array, $string){
                     <div class="contsc hide">
                         <button type="button" class="sidebtns <?php echo allowed("admit_student"); ?> htbtn" id="admitbtn"><span><img class="icons" src="images/register.png"></span> Admit students</button>
                         <button type="button" class="sidebtns <?php echo allowed("manage_student"); ?> tr_hides" id="findstudsbtn"><span><img class="icons" src="images/findstud.png"></span>Manage students</button>
-                        <button type='button' class="sidebtns <?php echo allowed("callregister"); ?> tr_hides d-none" id='callregister'><span><img class="icons" src="images/registercall.png"></span>Student Attendance</button>
+                        <button type='button' class="sidebtns <?php echo allowed("callregister"); ?> tr_hides" id='callregister'><span><img class="icons" src="images/registercall.png"></span>Student Attendance</button>
                         <button type='button' class="sidebtns <?php echo allowed("register_staff"); ?> htbtn" id='regstaffs'><span><img class="icons" src="images/registerstaff.png"></span>Register staff</button>
                         <button type='button' class="sidebtns <?php echo allowed("manage_staff"); ?> htbtn" id='managestaf'><span><img class="icons" src="images/managestaff.png"></span>Manage staff</button>
                         <button type='button' class="sidebtns <?php echo allowed("promoteStd"); ?> htbtn d-none" id='promoteStd'><span><img class="icons" src="images/managestaff.png"></span>Promote Students</button>
@@ -1114,11 +1115,15 @@ function checkPresnt($array, $string){
                             <input class='administration1' type='checkbox' name='manage_stud_sect' id='manage_stud_sect'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='register_staff_sect'>3. Register Staff</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='student_attendance'>3. Student Attendance</label>
+                            <input class='administration1' type='checkbox' name='student_attendance' id='student_attendance'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='register_staff_sect'>4. Register Staff</label>
                             <input class='administration1' type='checkbox' name='register_staff_sect' id='register_staff_sect'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_staff_sect'>4. Manage Staff</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_staff_sect'>5. Manage Staff</label>
                             <input class='administration1' type='checkbox' name='manage_staff_sect' id='manage_staff_sect'>
                         </div>
                         <hr>
@@ -1226,11 +1231,15 @@ function checkPresnt($array, $string){
                             <input class='fill_data administration12' type='checkbox' name='manage_stud_sect2' id='manage_stud_sect2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='register_staff_sect2'>3. Register Staff</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='student_attendance2'>3. Student Attendance</label>
+                            <input class='fill_data administration12' type='checkbox' name='student_attendance2' id='student_attendance2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='register_staff_sect2'>4. Register Staff</label>
                             <input class='fill_data administration12' type='checkbox' name='register_staff_sect2' id='register_staff_sect2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_staff_sect2'>4. Manage Staff</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_staff_sect2'>5. Manage Staff</label>
                             <input class='fill_data administration12' type='checkbox' name='manage_staff_sect2' id='manage_staff_sect2'>
                         </div>
                         <hr>
@@ -3464,7 +3473,7 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
-        <div class="confirmpaymentwindow hide" id="edit_course_window">
+        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="edit_course_window">
             <div class="changesubwindow2 addsubject animate p-2">
                 <div class="conts">
                     <p class="funga" id="close_edit_course_win">&times</p>
@@ -3942,40 +3951,87 @@ function checkPresnt($array, $string){
     <script src="assets/JS/chartconfig.js"></script>
 
     <script>
-        tinymce.init({
-        selector: '#email_messages',
-        plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        menubar: true,
-        toolbar: true
-        });
+        // tinymce.init({
+        // selector: '#email_messages',
+        // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
+        // toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        // menubar: true,
+        // toolbar: true
+        // });
         
-        tinymce.init({
-            selector: '#email_editored',
-            plugins: ["link","code","media","image","emoticons"],
-            // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-            menubar: true,
-            toolbar: true,
-            setup : function(ed) {
-                ed.on('keyup', function(e) {
-                    working_onit(ed);
-                });
-            }
-        });
+        // tinymce.init({
+        //     selector: '#email_editored',
+        //     plugins: ["link","code","media","image","emoticons"],
+        //     // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
+        //     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        //     menubar: true,
+        //     toolbar: true,
+        //     setup : function(ed) {
+        //         ed.on('keyup', function(e) {
+        //             working_onit(ed);
+        //         });
+        //     }
+        // });
         
-        tinymce.init({
-            selector: '#email_contents_exam_reports',
-            plugins: ["link","code","media","image","emoticons"],
-            // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-            menubar: true,
-            toolbar: true,
-            setup : function(ed) {
-                ed.on('keyup', function(e) {
-                    editSamplesData(ed);
-                });
-            }
+        // tinymce.init({
+        //     selector: '#email_contents_exam_reports',
+        //     plugins: ["link","code","media","image","emoticons"],
+        //     // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
+        //     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        //     menubar: true,
+        //     toolbar: true,
+        //     setup : function(ed) {
+        //         ed.on('keyup', function(e) {
+        //             editSamplesData(ed);
+        //         });
+        //     }
+        // });
+
+        // email_messages
+        CKEDITOR.replace('email_messages', {
+            height: 400,
+            toolbar: [
+                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
+                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList' ] },
+                { name: 'insert', items: [ 'Image', 'Table', 'Link' ] }
+            ]
+        });
+
+        // email_contents_exam_reports
+        CKEDITOR.replace('email_contents_exam_reports', {
+            height: 400,
+            toolbar: [
+                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
+                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList' ] },
+                { name: 'insert', items: [ 'Image', 'Table', 'Link' ] }
+            ]
+        });
+        CKEDITOR.instances.email_contents_exam_reports.on('contentDom', function () {
+            this.document.on('keyup', function () {
+                var sample_message = CKEDITOR.instances.email_contents_exam_reports.getData();
+                if (sample_message.length > 0) {
+                    cObj("email_contents_exam_reports_preview").innerHTML = sample_message;
+                }else{
+                    cObj("email_contents_exam_reports_preview").innerHTML = "Sample Appear here ..";
+                }
+                html_messageData(CKEDITOR.instances.email_contents_exam_reports.getData());
+            });
+        });
+
+
+        // email_editored
+        CKEDITOR.replace('email_editored', {
+            height: 400,
+            toolbar: [
+                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
+                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList' ] },
+                { name: 'insert', items: [ 'Image', 'Table', 'Link' ] }
+            ]
+        });
+        CKEDITOR.instances.email_editored.on('contentDom', function () {
+            this.document.on('keyup', function () {
+                html_messageData(CKEDITOR.instances.email_editored.getData());
+            });
         });
     </script>
 </body>

@@ -351,7 +351,7 @@
                 <p>- Add an revenue category to use when recording revenue</p>
                 <input type="hidden" name="" id="college_branch_holder">
                 <div class="container my-1">
-                    <p style="width: fit-content;" class="link" id="add_college_branch_btn"><i class="fa fa-plus"></i> Add Revenue Category</p>
+                    <p style="width: fit-content;" class="link" id="add_college_branch_btn"><i class="fa fa-plus"></i> Add College Branch</p>
                     <div class="container my-2 tableme" id="college_branch_table_holder">
                         <table class="table">
                             <tr>

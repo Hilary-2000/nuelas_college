@@ -7625,7 +7625,7 @@
         return 0;
         $stmt->close();
     }
-    function getFeesAsFromTermAdmited($current_term,$conn2,$classes,$admno){
+    function getFeesAsFromTermAdmited($current_term,$conn2,$classes,$admno, $include_bcf = true){
         // get the student term they are in
         $student_data = students_details($admno,$conn2);
         
@@ -7667,7 +7667,7 @@
         // echo json_encode($my_course_list[0]);
 
         // GET THE STUDENT STANDING BALANCE.
-        $student_balance = $student_data['balance_carry_forward'];
+        $student_balance = $include_bcf ? $student_data['balance_carry_forward'] : 0;
 
         // FEES STRUCTURE FEES
         $fees_structure = 0;

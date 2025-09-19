@@ -33,7 +33,7 @@ cObj("email_recipient").onchange = function () {
 
 cObj("send_email_button").onclick = function () {
     var err = 0;
-    var myContent = tinymce.get("email_messages").getContent();
+    var myContent = CKEDITOR.instances['email_messages'].getData();
     console.log(myContent);
     err += checkBlank("email_recipient");
     if (err == 0) {
@@ -57,7 +57,7 @@ cObj("send_email_button").onclick = function () {
                             stopInterval(id23w);
                         }
                         if (cObj("loadings").classList.contains("hide")) {
-                            tinymce.get("email_messages").setContent("");
+                            CKEDITOR.instances['email_messages'].setData('');
                             cObj("staff_email_addressess").value = "";
                             cObj("carbon_copy1").value = "";
                             cObj("blind_carbon_copy1").value = "";
@@ -91,7 +91,7 @@ cObj("send_email_button").onclick = function () {
                             stopInterval(id23w);
                         }
                         if (cObj("loadings").classList.contains("hide")) {
-                            tinymce.get("email_messages").setContent("");
+                            CKEDITOR.instances['email_messages'].setData('');
                             // cObj("select_staff_emails").value = "";
                             cObj("carbon_copy1").value = "";
                             cObj("blind_carbon_copy1").value = "";
@@ -254,25 +254,12 @@ function getStaffLists1() {
 function getStudentsParent() {
     //get classes lists first
     var datapass = "?parents_lists=true";
-    sendData2("GET", "sms/sms.php", datapass, cObj("cl_list_msg"),cObj("loading_my_sms_here"));
-    setTimeout(() => {
-        var timeout = 0;
-        var id23w = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(id23w);
-            }
-            if (cObj("loading_my_sms_here").classList.contains("hide")) {
-                //add a listener
-                if (cObj("my-class") != null) {
-                    cObj("my-class").addEventListener("change", getCourseListSMS);
-                }
-
-                stopInterval(id23w);
-            }
-        }, 100);
-    }, 200);
+    sendData2("GET", "sms/sms.php", datapass, cObj("cl_list_msg"),cObj("loading_my_sms_here"), function () {
+        //add a listener
+        if (cObj("my-class") != null) {
+            cObj("my-class").addEventListener("change", getCourseListSMS);
+        }
+    });
     datapass = "?all_parents=true";
     sendData1("GET", "sms/sms.php", datapass, cObj("all_parents"));
 }
@@ -579,7 +566,7 @@ cObj("send_msg_btns").onclick = function () {
     } else if (send_options == "send_emails") {
         //check error
         var err = checkBlank("email_bulk_subject");
-        err += tinymce.get("email_editored").getContent().length > 0 ? 0 : 1;
+        err += CKEDITOR.instances.email_editored.getData().length > 0 ? 0 : 1;
         if (err == 0) {
             cObj("err_hands_error").innerHTML = "";
             //check if its parent or staff
@@ -602,7 +589,7 @@ cObj("send_msg_btns").onclick = function () {
                 if (checker > 0) {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'></p>";
                     data = data.substr(0, data.length - 1);
-                    var datapass = "?teacher_sms_id_group=" + data + "&messages=" + escape(tinymce.get("email_editored").getContent()) + "&email_subject=" + valObj("email_bulk_subject") + "&email_cc=" + valObj("cc_email_bulk") + "&email_bcc=" + valObj("bcc_email_bulk");
+                    var datapass = "?teacher_sms_id_group=" + data + "&messages=" + escape(CKEDITOR.instances.email_editored.getData()) + "&email_subject=" + valObj("email_bulk_subject") + "&email_cc=" + valObj("cc_email_bulk") + "&email_bcc=" + valObj("bcc_email_bulk");
                     // console.log(datapass);
                     sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"));
                     setTimeout(() => {
@@ -614,7 +601,7 @@ cObj("send_msg_btns").onclick = function () {
                                 stopInterval(id23w);
                             }
                             if (cObj("loadings").classList.contains("hide")) {
-                                tinymce.get("email_editored").setContent("");
+                                CKEDITOR.instances['email_editored'].setData("");
                                 setTimeout(() => {
                                     cObj("err_hands_error").innerText = "";
                                     //cObj("parents_lists_nm").classList.add("hide");
@@ -630,7 +617,7 @@ cObj("send_msg_btns").onclick = function () {
                 }
             } else if (selection == "parents") {
                 var err = checkBlank("send_to_whom");
-                var emeil_message = tinymce.get("email_editored").getContent();
+                var emeil_message = CKEDITOR.instances.email_editored.getData();
                 err += emeil_message.length > 0 ? 0 : 1;
                 if (err == 0) {
                     cObj("err_hands_error").innerHTML = "";
@@ -1129,9 +1116,9 @@ cObj("insert_tag1").onclick = function () {
         cObj("text_message2").value = valued + " {stud_fullname}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {stud_fullname}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_fullname}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag2").onclick = function () {
@@ -1141,9 +1128,9 @@ cObj("insert_tag2").onclick = function () {
         cObj("text_message2").value = valued + " {stud_first_name}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {stud_first_name}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_first_name}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag3").onclick = function () {
@@ -1153,9 +1140,9 @@ cObj("insert_tag3").onclick = function () {
         cObj("text_message2").value = valued + " {stud_class}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {stud_class}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_class}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag4").onclick = function () {
@@ -1165,9 +1152,9 @@ cObj("insert_tag4").onclick = function () {
         cObj("text_message2").value = valued + " {stud_age}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {stud_age}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_age}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag5").onclick = function () {
@@ -1177,9 +1164,9 @@ cObj("insert_tag5").onclick = function () {
         cObj("text_message2").value = valued + " {stud_fees_balance}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {stud_fees_balance}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_fees_balance}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag6").onclick = function () {
@@ -1189,9 +1176,9 @@ cObj("insert_tag6").onclick = function () {
         cObj("text_message2").value = valued + " {stud_fees_to_pay}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {stud_fees_to_pay}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_fees_to_pay}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag7").onclick = function () {
@@ -1201,9 +1188,9 @@ cObj("insert_tag7").onclick = function () {
         cObj("text_message2").value = valued + " {stud_fees_paid}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {stud_fees_paid}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_fees_paid}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag8").onclick = function () {
@@ -1213,9 +1200,9 @@ cObj("insert_tag8").onclick = function () {
         cObj("text_message2").value = valued + " {par_fullname}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {par_fullname}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {par_fullname}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag9").onclick = function () {
@@ -1225,9 +1212,9 @@ cObj("insert_tag9").onclick = function () {
         cObj("text_message2").value = valued + " {today}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {today}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {today}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag10").onclick = function () {
@@ -1237,9 +1224,9 @@ cObj("insert_tag10").onclick = function () {
         cObj("text_message2").value = valued + " {par_first_name}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {par_first_name}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {par_first_name}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag11").onclick = function () {
@@ -1249,9 +1236,9 @@ cObj("insert_tag11").onclick = function () {
         cObj("text_message2").value = valued + " {title_1}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {title_1}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {title_1}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag12").onclick = function () {
@@ -1261,9 +1248,9 @@ cObj("insert_tag12").onclick = function () {
         cObj("text_message2").value = valued + " {title_2}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {title_2}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {title_2}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 cObj("insert_tag13").onclick = function () {
@@ -1273,9 +1260,21 @@ cObj("insert_tag13").onclick = function () {
         cObj("text_message2").value = valued + " {stud_noun}";
         messageData();
     } else {
-        var valued = tinymce.get("email_editored").getContent();
-        tinymce.get("email_editored").setContent(valued + " {stud_noun}");
-        html_messageData(tinymce.get("email_editored").getContent());
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_noun}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
+    }
+}
+cObj("insert_tag14").onclick = function () {
+    var send_options = cObj("send_options").value;
+    if (send_options == "send_sms") {
+        var valued = cObj("text_message2").value.trim();
+        cObj("text_message2").value = valued + " {stud_adm}";
+        messageData();
+    } else {
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {stud_adm}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
 function process_messages(data) {

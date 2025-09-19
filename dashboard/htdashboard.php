@@ -60,7 +60,7 @@
     <div class="cardholder">
         <div class="cards">
             <div class="conted">
-                <p><strong>Total number of students :</strong></p>
+                <p><strong># of Active students:</strong></p>
             </div>
             <div class="conted">
                 <p id="studentscount">0 student(s)</p>
@@ -68,6 +68,17 @@
             <div class="conted">
                 <p><a href="#" id='totalstuds'>More..</a></p>
             </div>    
+        </div>
+        <div class="cards">
+            <div class="conted">
+                <p><strong># of In-Active students:</strong></p>
+            </div>
+            <div class="conted">
+                <p id='inactive_students_count'>0 student(s)</p>
+            </div>    
+            <div class="conted">
+                <p><a href="#">More..</a></p>
+            </div>
         </div>
         <div class="cards">
             <div class="conted">
@@ -102,7 +113,7 @@
                 <p><a href="#regs" id='studentabs'>More..</a></p>
             </div>    
         </div>
-        <div class="cards">
+        <div class="cards d-none">
             <div class="conted">
                 <p><strong>Transfered Students:</strong></p>
             </div>
@@ -170,7 +181,7 @@
             </div>
         </div>
         
-        <div class="cards">
+        <div class="cards d-none">
             <div class="conted">
                 <p><strong>Active exams:</strong></p>
             </div>
@@ -181,7 +192,7 @@
                 <p id="view_active_exams"><a href="#">More..</a></p>
             </div>    
         </div>
-        <div class="cards">
+        <div class="cards d-none">
             <div class="conted">
                 <p><strong>Subjects I teach :</strong></p>
             </div>

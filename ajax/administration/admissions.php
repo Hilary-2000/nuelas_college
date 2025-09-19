@@ -352,16 +352,33 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $conn2->close();
             
         }elseif (isset($_GET['getStudentCount'])) {
-            $count = "SELECT COUNT(activated) as 'Total' FROM `student_data` WHERE `activated` = 1 and `deleted` =0";
+            $count = "SELECT * FROM `student_data` WHERE `activated` = 1 and `deleted` = 0 AND stud_class != '-1' AND stud_class != '-2' AND stud_class != '-3'";
             $stmt = $conn2->prepare($count);
             $stmt->execute();
             $result = $stmt->get_result();
+            $active_students = 0;
+            $inactive_students = 0;
+            $total = 0;
+            $student_status = !empty($_GET['student_type']) ? ($_GET['student_type'] == "active" ? "1" : "0") : "1";
             if($result){
-                if($row = $result->fetch_assoc()){
-                    $counts = $row['Total'];
-                    echo  "<p>".$counts." student(s)</p>";
+                while($row = $result->fetch_assoc()){
+                    $my_course_list = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list'], true) : [];
+                    foreach($my_course_list as $course){
+                        if($course['course_status'] == 1){
+                            foreach($course['module_terms'] as $module){
+                                if($module["status"] == "1"){
+                                    $active_students++;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    $total++;
                 }
             }
+            $inactive_students = $total - $active_students;
+            echo  "<p>".($student_status == "1" ? $active_students : $inactive_students)." student(s)</p>";
             $stmt->close();
             $conn2->close();
         }elseif (isset($_GET['studentscounttoday'])) {
@@ -446,7 +463,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $result = $stmt->get_result();
                 $data_array = [];
                 if($result){
-                    if($row=$result->fetch_assoc()){
+                    if($row = $result->fetch_assoc()){
                         include_once("../finance/financial.php");
                         array_push($data_array,ucwords(strtolower($row['surname'])));
                         array_push($data_array,ucwords(strtolower($row['first_name'])));
@@ -488,7 +505,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($data_array,$row['clubs_id']);
 
                         // set the attendances
-                        $attendance_this_term = presentStats($conn2,$admno,$row['stud_class']);
+                        $attendance_this_term = presentStats($conn2,$admno,$row['stud_class'], $row['course_done']);
                         $attendance_this_year = presentStatsYear($conn2,$admno,$row['stud_class']);
                         array_push($data_array,$attendance_this_term);
                         array_push($data_array,$attendance_this_year);
@@ -566,9 +583,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($data_array,$row['student_email']);
                         array_push($data_array,$row['study_mode']);
                         array_push($data_array,$row['branch_name']);
-                    }else{
                     }
-                }else {
                 }
 
                 // show array
@@ -640,8 +655,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }elseif (isset($_GET['classes'])) {
                 $classenroled = $_GET['classes'];
                 if($classenroled != "others"){
-                    $course_chosen = !isset($_GET['course_chosen']) ? "" : $_GET['course_chosen'];
+                    $course_chosen = empty($_GET['course_chosen']) ? "" : $_GET['course_chosen'];
                     $select = strlen(trim($course_chosen)) == 0 ? "SELECT * from `student_data` WHERE  `stud_class` = ? and `deleted` = 0 and activated =1" : "SELECT * from `student_data` WHERE `course_done` = '".$course_chosen."' AND `stud_class` = ? AND `deleted` = 0 AND activated =1";
+                    
+                    // add study mode
+                    $study_mode = !empty($_GET['study_mode']) ? $_GET['study_mode'] : "all";
+                    $select .= $study_mode != "all" ? " AND study_mode= '".$study_mode."'" : "";
+                    
+                    // add branch
+                    $select .= !empty($_GET['college_branch']) ? " AND branch_name = '".$_GET['college_branch']."'" : "";
                     $stmt=$conn2->prepare($select);
                     $stmt->bind_param("s",$classenroled);
                     $stmt->execute();
@@ -669,7 +691,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     if($_GET['classes'] == "-1"){
                         $searh = "<span style='color:brown;'>\"Alumni\"</span>";
                     }
-                    createStudentn4($conn2,$result,$searh);//creates table
+
+                    // student_status
+                    $student_status = !empty($_GET['student_status']) ? $_GET['student_status'] : "both";
+                    createStudentn4($conn2,$result,$searh, $student_status);//creates table
                 }else{
                     // get the whole class list
                     $select = "SELECT * FROM `settings` WHERE `sett` = 'class';";
@@ -716,20 +741,44 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
                     $males=0;
                     $female = 0;
+                    $active = 0;
+                    $inactive = 0;
                     while ($row=$res->fetch_assoc()) {
                         for ($i=0; $i < count($classes); ++$i) {
                             if ($classes[$i] == trim($row['stud_class'])) {
                                 $classholder[$i]+=1;
                                 if ($row['gender']=='Female') {
                                     $classholderfemale[$i]+=1;
-                                    $female++;
                                 }
                                 if ($row['gender']=='Male') {
                                     $classholdermale[$i]+=1;
-                                    $males++;
                                 }
                                 break;
                             }
+                        }
+                        if ($row['gender']=='Female') {
+                            $female++;
+                        }else{
+                            $males++;
+                        }
+                            
+                        $counted = false;
+                        if(isJson_report($row['my_course_list'])){
+                            $my_course_list = json_decode($row['my_course_list'], true);
+                            for ($i=0; $i < count($my_course_list); $i++) { 
+                                if($my_course_list[$i]['course_status'] == "1"){
+                                    foreach($my_course_list[$i]['module_terms'] as $module_term){
+                                        if($module_term['status'] == "1"){
+                                            $active++;
+                                            $counted = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if(!$counted){
+                            $inactive++;
                         }
                     }
                     $totaled = 0;
@@ -751,13 +800,17 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $tablein4.="<tr><td>".($i+1)."</td><td style='font-size:13px;font-weight:bold;'>".$daros."</td><td>".$classholdermale[$i]." Student(s)</td><td>".$classholderfemale[$i]." Student(s)</td><td>".$classholder[$i]." Student(s)</td><td>"."<span class='link viewclass' style='font-size:12px;' id='".$classes[$i]."'><i class='fa fa-eye'></i> View</span>"."</td></tr>";
                     }
                     $tablein4.="</table></div>";
-                    $table_2 = "<div class = 'table_holders'><table class='align-items-center'>
-                                <tr><th>Gender</th><th>Total</th></tr>
-                                <tr><td><i class='fa fa-male'></i> - Male</td><td>".$males."</td></tr>
-                                <tr><td><i class='fa fa-female'></i> - Female</td><td>".$female."</td></tr>
+                    $table_2 = "<div class = 'table_holders'>
+                                <table class='align-items-center'>
+                                <tr><th>Subject</th><th>Statistic</th><th>Grand Total</th></tr>
+                                <tr><td><i class='fa fa-male'></i> - Male</td><td>".$males." Students</td><td rowspan='2'>".($males+$female)." Students</td></tr>
+                                <tr><td><i class='fa fa-female'></i> - Female</td><td>".$female." Students</td></tr>
+                                <tr><td class='text-success'><i class='fa fa-check'></i> - Active</td><td>".$active." Students</td><td rowspan='2'>".($active+$inactive)." Students</td></tr>
+                                <tr><td class='text-danger'><i class='fa fa-times'></i> - In-Active</td><td>".$inactive." Students</td></tr>
                                 <tr><td><b>Total</b></td><td><b>".$totaled."</b></td></tr>
-                                </table></div>";
-                    $datas = "<span class='text-dark text-lg'>Displaying all students recognized by the system</span><br><spans style='text-align:center;'><u>Gender count table</u> ".$table_2." <br> </span>";
+                                </table>
+                                </div>";
+                    $datas = "<span class='text-dark text-lg'>Displaying all students recognized by the system</span><br><spans style='text-align:center;'><u>Statistics Table</u> ".$table_2." <br> </span>";
                     echo $datas." <p><u>Student count table</u></p>".$tablein4;
                 }else {
                     
@@ -1035,9 +1088,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
         }elseif (isset($_GET['getclassinformation'])) {
             $class = $_GET['daro'];
-            $select = "SELECT * from `student_data` WHERE  `stud_class` = ? and `deleted` = 0 and activated =1";
+            $course_id = $_GET['course_id'] ?? "";
+            $select = "SELECT * from `student_data` WHERE `course_done` = ? AND `stud_class` = ? AND `deleted` = 0 and activated =1";
             $stmt=$conn2->prepare($select);
-            $stmt->bind_param("s",$class);
+            $stmt->bind_param("ss", $course_id, $class);
             $stmt->execute();
             $result=$stmt->get_result();
             createStudentclass($result,$class,$conn2);
@@ -1246,66 +1300,21 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }else {
                 "<p class = 'text-danger'>There are no clubs at the momment!</p>";
             }
-        }
-        elseif (isset($_GET['insertattendance'])) {
-            $data = $_GET['insertattendance'];
-            $datasplit = explode(",",$data);
-            $name = $datasplit[0];
-            $daro = $datasplit[1];
-            /*****check if class register already called** */
-            $select = "SELECT * FROM `attendancetable` WHERE `class`=? AND `date` = ? ";
-            $stmt = $conn2->prepare($select);
-            $date = date("Y-m-d",strtotime($_GET['calldate']));
-            $stmt->bind_param("ss",$daro,$date);
-            $stmt->execute();
-            $stmt->store_result();
-            $rnums=0;
-            $rnums = $stmt->num_rows;
-            /**********end**** */
-            if($rnums==0){
-                $insert = "INSERT INTO `attendancetable` (`admission_no`,`date`,`signedby`,`class`) VALUES (?,?,?,?)";
-                $stmt = $conn2->prepare($insert);
-                $counter = 2;
-                for ($i=2; $i < count($datasplit) ; $i++) { 
-                    $stmt->bind_param("ssss",$datasplit[$i],$date,$name,$daro);
-                    $stmt->execute();
-                    $counter++;
-                }
-                if($counter==count($datasplit)){
-                    echo "<p style='color:green;'>Register successfully called for ".date("D dS M Y",strtotime($date))."!</p>";
-                }
-            }else {
-                $delete = "DELETE FROM `attendancetable` WHERE `class` = ? AND `date` = ?";
-                $stmt= $conn2->prepare($delete);
-                $stmt->bind_param("ss",$daro,$date);
-                $stmt->execute();
-                // proceed and insert
-                $insert = "INSERT INTO `attendancetable` (`admission_no`,`date`,`signedby`,`class`) VALUES (?,?,?,?)";
-                $stmt = $conn2->prepare($insert);
-                $counter = 2;
-                for ($i=2; $i < count($datasplit) ; $i++) { 
-                    $stmt->bind_param("ssss",$datasplit[$i],$date,$name,$daro);
-                    $stmt->execute();
-                    $counter++;
-                }
-                if($counter==count($datasplit)){
-                    echo "<p style='color:green;'>Register successfully called for ".date("D dS M Y",strtotime($date))."!</p>";
-                }
-                echo "<p style='color:red;'>Register was already called!</p>";
-            }
         }elseif (isset($_GET['class'])) {
             $class = $_GET['class'];
             $date = $_GET['dates'];
+            $course_name = $_GET['course_name'];
             if($date=="today"){
                 $date=date("Y-m-d");
             }
             $datas = classNameAdms($class);
             $dated = date_create($date);
             $dated = date_format($dated,"Y-m-d");
-            echo "<p style='font-size:15px;text-align:center;margin-top:5px;'><u>Displaying <span style='color:brown;font-weight:600;'>".$datas."</span> attendance on : <span style='color:brown;font-weight:600;'>".date("l dS \of M Y",strtotime($dated))."</span></u></p>";
-            $select = "SELECT `adm_no` FROM `student_data` WHERE `stud_class` = ? AND `deleted`=0 AND activated=1";
+            $course = get_course_name($course_name, $conn2);
+            echo "<p style='font-size:15px;text-align:center;margin-top:5px;'><u>Displaying <span style='color:brown;font-weight:600;'>".$datas." - ".ucwords(strtolower($course))." </span> attendance on : <span style='color:brown;font-weight:600;'>".date("l dS \of M Y",strtotime($dated))."</span></u></p>";
+            $select = "SELECT `adm_no` FROM `student_data` WHERE `stud_class` = ? AND course_done = ? AND `deleted` = 0 AND activated = 1";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("s",$class);
+            $stmt->bind_param("ss", $class, $course_name);
             $stmt->execute();
             $result = $stmt->get_result();
             $datas = "";
@@ -1316,13 +1325,14 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
                 $datanew = explode(",",substr($datas,0,(strlen($datas)-1)));
             }
+
             //retrieve data of the class from the database
-            $select = "SELECT `student_data`.`surname` AS 'surname' ,`student_data`.`first_name` AS 'first_name' ,`student_data`.`second_name` AS 'second_name' ,`student_data`.`adm_no` AS 'adm_no' , `student_data`.`gender` AS 'gender' ,`student_data`.`stud_class` AS 'stud_class' ,`student_data`.`BCNo` AS 'BCNo' from `student_data` JOIN `attendancetable` ON `student_data`.`adm_no` = `attendancetable`.`admission_no` where `attendancetable`.`class` = ? and `attendancetable`.`date` = ?";
+            $select = "SELECT attendancetable.time, student_data.course_done, `student_data`.`surname` AS 'surname' ,`student_data`.`first_name` AS 'first_name' ,`student_data`.`second_name` AS 'second_name' ,`student_data`.`adm_no` AS 'adm_no' , `student_data`.`gender` AS 'gender' ,`student_data`.`stud_class` AS 'stud_class' ,`student_data`.`BCNo` AS 'BCNo' from `student_data` JOIN `attendancetable` ON `student_data`.`adm_no` = `attendancetable`.`admission_no` where `attendancetable`.`course_level` = ? AND `attendancetable`.`course_name` = ? AND `attendancetable`.`date` = ?";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$class,$date);
+            $stmt->bind_param("sss",$class,$course_name,$date);
             $stmt->execute();
             $results = $stmt->get_result();
-            $tata = createTable($results,$datanew,$conn2);
+            $tata = createTable($results, $datanew, $conn2);
             $stmt->close();
             if(count($tata)>0){
                 $select = "SELECT * from `student_data` where `adm_no` = ? and `deleted` = 0 AND `activated` = 1";
@@ -1334,24 +1344,26 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $unattendedtable.="<div class='tableme'><table class='table' >";
                 $unattendedtable.="<tr><th>No</th>";
                 $unattendedtable.="<th>Student Name</th>";
-                $unattendedtable.="<th>Adm no.</th>";
+                $unattendedtable.="<th>Time In</th>";
                 $unattendedtable.="<th>Gender</th>";
                 $unattendedtable.="<th>Attendance Stats</th>";
-                $unattendedtable.="<th>Class</th>";
+                $unattendedtable.="<th>Course Level</th>";
+                $unattendedtable.="<th>Course Name</th>";
                 $unattendedtable.="<th>Status</th></tr>";
                 for ($i=0; $i < count($tata); $i++) {
                     $admno = $tata[$i];
                     $stmt->bind_param("s",$admno);
                     $stmt->execute();
-                    $res = $stmt->get_result();      
+                    $res = $stmt->get_result();
                     if($res){
                         while ($rows = $res->fetch_assoc()){
                             $unattendedtable.="<tr><td>".($i+1)."</td>";
-                            $unattendedtable.="<td>".ucwords(strtolower($rows['first_name']))." ".ucwords(strtolower($rows['second_name']))."</td>";
-                            $unattendedtable.="<td>".$rows['adm_no']."</td>";
+                            $unattendedtable.="<td>".ucwords(strtolower($rows['first_name']))." ".ucwords(strtolower($rows['second_name']))."<br><small>{".$rows['adm_no']."}</small></td>";
+                            $unattendedtable.="<td>-</td>";
                             $unattendedtable.="<td>".$rows['gender']."</td>";
-                            $unattendedtable.="<td>".presentStats($conn2,$rows['adm_no'],$rows['stud_class'])."</td>";
+                            $unattendedtable.="<td>".presentStats($conn2,$rows['adm_no'],$rows['stud_class'], $rows['course_done'])."</td>";
                             $unattendedtable.="<td>".classNameAdms($rows['stud_class'])."</td>";
+                            $unattendedtable.="<td>".ucwords(strtolower(get_course_name($rows['course_done'], $conn2)))."</td>";
                             $unattendedtable.="<td>"."Absent"."</td></tr>"; 
                             $absentno++;
                         }
@@ -2220,7 +2232,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
                     $counter = 0;
-                    $string_to_display = "<select class='form-control w-100' name='".$select_class_id."' id='".$select_class_id."'> <option value='' hidden>Select..</option>";
+                    $string_to_display = "<select class='form-control w-100' name='".$select_class_id."' id='".$select_class_id."'> <option value='' hidden>Select Course Level</option>";
 
                     if($select_class_id == "selclass"){
                         $string_to_display.="<option value='others'>Other Students</option>";
@@ -3316,7 +3328,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
         }elseif (isset($_GET['today_attendance'])) {
             $class_taught = getClassTaught($conn2);
             if ($class_taught != "Null"){
-                $select = "SELECT COUNT(*) AS 'Total' FROM `attendancetable` WHERE `class` = ? AND `date` = ?";
+                $select = "SELECT COUNT(*) AS 'Total' FROM `attendancetable` WHERE `course_level` = ? AND `date` = ?";
                 $stmt = $conn2->prepare($select);
                 $date = date("Y-m-d");
                 $stmt->bind_param("ss",$class_taught,$date);
@@ -3337,7 +3349,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
         }elseif (isset($_GET['absent_students'])) {
             $class_taught = getClassTaught($conn2);
             if ($class_taught != "Null"){
-                $select = "SELECT COUNT(*) AS 'Total' FROM `attendancetable` WHERE `class` = ? AND `date` = ?";
+                $select = "SELECT COUNT(*) AS 'Total' FROM `attendancetable` WHERE `course_level` = ? AND `date` = ?";
                 $stmt = $conn2->prepare($select);
                 $date = date("Y-m-d");
                 $stmt->bind_param("ss",$class_taught,$date);
@@ -3399,12 +3411,26 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $conn2->close();
         }elseif (isset($_GET['get_attendance_school'])) {
             $class_list = getClasses($conn2);
-            $select = "SELECT COUNT(`admission_no`) AS 'Total' FROM `attendancetable` WHERE `class` = ? AND `date` = ?";
+            // courses
+            $courses = [];
+            $select = "SELECT * FROM settings WHERE sett = 'courses';";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $courses = isJson_report($row['valued']) ? json_decode($row['valued'], true) : [];
+                }
+            }
+
+
+            $select = "SELECT COUNT(`admission_no`) AS 'Total' FROM `attendancetable` WHERE `course_level` = ? AND course_name = ? AND `date` = ?";
             $stmt = $conn2->prepare($select);
             $data_to_display = "<h3 class='my-2'>View Attendances</h3><br><h6>School`s students attendance on <span class='text-primary'>(".date("D M-d-Y",strtotime($_GET['dated'])).")</span></h6><table class='table'>
                                 <tr>
                                     <th>No.</th>
-                                    <th>Class</th>
+                                    <th>Course List</th>
+                                    <th>Course Name</th>
                                     <th>Present</th>
                                     <th>Absent</th>
                                     <th>option</th>
@@ -3412,33 +3438,36 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                 $xs = 0;
                                 $total_present = 0;
                                 $total_absent = 0;
-            for ($index=0; $index < count($class_list); $index++) { 
-                $xs++;
-                $stmt->bind_param("ss",$class_list[$index],$_GET['dated']);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($result) {
-                    if ($row = $result->fetch_assoc()) {
-                        $present_total = $row['Total'];
-                        $class_pop = getClassCount($conn2,$class_list[$index]);
-                        $absent_no = $class_pop - $present_total;
-                        $total_absent+=$absent_no;
-                        $total_present+=$present_total;
-                        $bgs = "color:green;";
-                        if ($absent_no > 0) {
-                            $bgs = "color:red;";
+            for ($index=0; $index < count($class_list); $index++) {
+                foreach($courses as $course){
+                    $xs++;
+                    $stmt->bind_param("sss",$class_list[$index], $course['id'], $_GET['dated']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    if ($result) {
+                        if ($row = $result->fetch_assoc()) {
+                            $present_total = $row['Total'];
+                            $class_pop = getClassCount($conn2, $class_list[$index], $course['id']);
+                            $absent_no = $class_pop - $present_total;
+                            $total_absent+=$absent_no;
+                            $total_present+=$present_total;
+                            $bgs = "color:green;";
+                            if ($absent_no > 0) {
+                                $bgs = "color:red;";
+                            }
+                            $data_to_display.="<tr>
+                                                <td>".$xs.".<input type='hidden' value='".$class_list[$index]."' id='course_level_holder_".$xs."'><input type='hidden' value='".$course['id']."' id='course_name_holder_".$xs."'></td>
+                                                <td>".myClassName($class_list[$index])."</td>
+                                                <td>".ucwords(strtolower($course['course_name']))."</td>
+                                                <td>".$present_total." Student(s)</td>
+                                                <td style='".$bgs."'>".$absent_no." Student(s)</td>
+                                                <td><p class='link view_stud_attendance' style='font-size:12px;' id='view_course_attendance_stats_".$xs."'><i class='fa fa-eye'></i> View</p></td>
+                                            </tr>";
                         }
-                        $data_to_display.="<tr>
-                                            <td>".$xs.".</td>
-                                            <td>".myClassName($class_list[$index])."</td>
-                                            <td>".$present_total." Student(s)</td>
-                                            <td style='".$bgs."'>".$absent_no." Student(s)</td>
-                                            <td><p class='link view_stud_attendance' style='font-size:12px;' id='".$class_list[$index]."'><i class='fa fa-eye'></i> View</p></td>
-                                        </tr>";
                     }
                 }
             }
-            $data_to_display.="<tr><td></td><td>Total</td><td>".$total_present." Student(s)</td><td>".$total_absent." Student(s)</td></tr></table>";
+            $data_to_display.="<tr><td></td><td></td><td>Total</td><td>".$total_present." Student(s)</td><td>".$total_absent." Student(s)</td></tr></table>";
             echo $data_to_display;
         }elseif (isset($_GET['allowct'])) {
             include("../../connections/conn1.php");
@@ -4913,7 +4942,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
             if($course_level == "-3"){
-                $select .= "<option value='-3'>Student Inquiries</option>";
+                $select .= "<option value='".$course_level."'>Student Inquiries</option>";
+            }
+            if($course_level == "-1"){
+                $select .= "<option value='".$course_level."'>Alumnis</option>";
             }
             $select .= "</select>";
 
@@ -5237,11 +5269,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 if ($result) {
                     if ($row = $result->fetch_assoc()) {
                         $present = 1;
-                        $class_in = classNameAdms($row['class']);
+                        $class_in = classNameAdms($row['course_level']);
                     }
                 }
 
-                $select = "SELECT * FROM `attendancetable` WHERE `date` = '".$begin_date."' AND `class` = '".$student_class."'";
+                $select = "SELECT * FROM `attendancetable` WHERE `date` = '".$begin_date."' AND `course_level` = '".$student_class."'";
                 $stmt = $conn2->prepare($select);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -5412,7 +5444,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $class_id = trim($_GET['class_id']);
 
             // attendance table 
-            $update = "UPDATE `attendancetable` SET `class` = '".$new_class_name."' WHERE `class` = '".$old_class_name."'";
+            $update = "UPDATE `attendancetable` SET `course_level` = '".$new_class_name."' WHERE `course_level` = '".$old_class_name."'";
             $stmt = $conn2->prepare($update);
             $stmt->execute();
 
@@ -5657,7 +5689,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             if(count($courses) > 0){
                 foreach($courses as $course){
                     if($course->id == $_GET['get_course_module_terms']){
-                        $data_to_display = "<select class='form-control' id='course_module_terms'><option hidden value=''>Select Term to start from</option>";
+                        $object_id = isset($_GET['object_id']) ? $_GET['object_id'] : "course_module_terms";
+                        $data_to_display = "<select class='form-control' id='$object_id'><option hidden value=''>Select Term to start from</option>";
                         $module_terms = isset($course->no_of_terms) ? $course->no_of_terms : 3;
                         for($index = 0; $index < $module_terms; $index++){
                             $data_to_display .= "<option value='".($index+1)."'>Module Term ".($index+1)."</option>";
@@ -6001,6 +6034,53 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
             $stmt->close();
             $conn2->close();
+        }elseif(isset($_POST['insertattendance'])){
+            $insertattendance = $_POST['insertattendance'];
+            $call_date = $_POST['call_date'];
+            $course_level = $_POST['course_level'];
+            $course_name = $_POST['course_list'];
+            $date = date("Y-m-d",strtotime($call_date));
+
+            $attendance_data = [];
+            if(isJson_report($insertattendance)){
+                $attendance_data = json_decode($insertattendance, true);
+            }
+
+
+            /*****check if class register already called** */
+            $select = "SELECT * FROM attendancetable WHERE course_level = ? AND course_name = ? AND date = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("sss",$course_level,$course_name, $date);
+            $stmt->execute();
+            $stmt->store_result();
+            $rnums=0;
+            $rnums = $stmt->num_rows;
+            /**********end**** */
+            
+
+            if($rnums > 0){
+                $delete = "DELETE FROM `attendancetable` WHERE course_level = ? AND course_name = ? AND date = ?";
+                $stmt= $conn2->prepare($delete);
+                $stmt->bind_param("sss",$course_level,$course_name, $date);
+                $stmt->execute();
+                echo "<p style='color:red;'>Register was already called!</p>";
+            }
+
+            // insert into attendance
+            $insert = "INSERT INTO `attendancetable` (`admission_no`,`date`,`time`,`signedby`,`course_level`,`course_name`) VALUES (?,?,?,?,?,?)";
+            $stmt = $conn2->prepare($insert);
+            $counter = 0;
+            for ($i=0; $i < count($attendance_data) ; $i++) {
+                $attendance = $attendance_data[$i];
+                $stmt->bind_param("ssssss",$attendance['adm_no'],$attendance['date'],$attendance['time'],$_SESSION['username'],$course_level,$course_name);
+                $stmt->execute();
+                $counter++;
+            }
+
+            // counter
+            if($counter == count($attendance_data)){
+                echo "<p style='color:green;'>Register successfully called for ".date("D dS M Y",strtotime($date))."!</p>";
+            }
         }elseif(isset($_POST['update_voteheads'])){
             $votehead_update = isJson_report($_POST['votehead_update']) ? json_decode($_POST['votehead_update']) : null;
             if($votehead_update == null){
@@ -6590,6 +6670,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $active_module->term_details = null;
             $completed_modules = [];
             $inactive_active_modules = [];
+            $completed_new_modules = [];
 
             $student_data = "SELECT * FROM `student_data` WHERE `adm_no` = ?";
             $stmt = $conn2->prepare($student_data);
@@ -6639,8 +6720,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
                 }
             }
-            // echo json_encode($course_list);
-            // return 0;
+
+            foreach($course_updated->module_terms as $module){
+                if($module->status == 2){
+                    array_push($completed_new_modules, $module->id);
+                }
+            }
 
             // UPDATE THE COURSE BEFORE APPLYING NEW CHANGES
             $update = "UPDATE student_data SET my_course_list= ? WHERE adm_no = ?";
@@ -6666,11 +6751,16 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             
             $course_duration = "0 days";
             $course_cost = 0;
-            if(count($courses) > 0 && isset($course_updated->id)){
+            $fulltime_cost = 0;
+            $evening_cost = 0;
+            $weekend_cost = 0;
+            if(!empty($course_updated)){
                 foreach($courses as $course){
                     if($course->id == $course_updated->course_name){
                         $course_duration = $course->term_duration." ".$course->duration_intervals;
-                        $course_cost = $study_mode == "weekend" ? $course->weekend_fees : ($study_mode == "evening" ? $course->evening_fees : $course->fulltime_fees);
+                        $fulltime_cost = isset($course->fulltime_fees) ? $course->fulltime_fees : 0;
+                        $evening_cost = isset($course->evening_fees) ? $course->evening_fees : 0;
+                        $weekend_cost = isset($course->weekend_fees) ? $course->weekend_fees : 0;
                     }
                 }
             }
@@ -6683,7 +6773,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             if($course_updated->module_terms != null){
                 $module_terms = $course_updated->module_terms;
                 for($index = 0; $index < count($module_terms); $index++){
-                    if($module_terms[$index]->status == 2 && !in_array($module_terms[$index]->id, $completed_modules)){
+                    if($module_terms[$index]->status == 2 && in_array($module_terms[$index]->id, $completed_modules)){
                         array_push($updated_completed_modules, $module_terms[$index]->id);
                         $count_module_fees += 1;
                     }
@@ -6698,11 +6788,17 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         if(!$deactivate){
                             $module_terms[$index]->start_date = $module_terms[$index]->start_date != "" ? $module_terms[$index]->start_date : date("YmdHis");
                             $module_terms[$index]->end_date = $module_terms[$index]->end_date != "" ? $module_terms[$index]->end_date : date("YmdHis",strtotime($course_duration));
-                            $module_terms[$index]->termly_cost = $course_cost*1;
+                            // $module_terms[$index]->termly_cost = $course_cost*1;
+                            $module_terms[$index]->fulltime_cost = $fulltime_cost*1;
+                            $module_terms[$index]->evening_cost = $evening_cost*1;
+                            $module_terms[$index]->weekend_cost = $weekend_cost*1;
                         }else{
                             $module_terms[$index]->start_date = "";
                             $module_terms[$index]->end_date = "";
-                            $module_terms[$index]->termly_cost = $course_cost*1;
+                            // $module_terms[$index]->termly_cost = $course_cost*1;
+                            $module_terms[$index]->fulltime_cost = $fulltime_cost*1;
+                            $module_terms[$index]->evening_cost = $evening_cost*1;
+                            $module_terms[$index]->weekend_cost = $weekend_cost*1;
                         }
                         $deactivate = true;
                     }
@@ -6712,7 +6808,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         // term
                         $module_terms[$index]->start_date = "";
                         $module_terms[$index]->end_date = "";
-                        $module_terms[$index]->termly_cost = $course_cost*1;
+                        // $module_terms[$index]->termly_cost = $course_cost*1;
+                        $module_terms[$index]->fulltime_cost = $fulltime_cost*1;
+                        $module_terms[$index]->evening_cost = $evening_cost*1;
+                        $module_terms[$index]->weekend_cost = $weekend_cost*1;
                     }
                 }
                 $course_updated->module_terms = $module_terms;
@@ -6759,16 +6858,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             // GET FEES THE STUDENT PAYS PER TERM
             $term = "TERM_1";
             $fees_to_pay = getFeesAsFromTermAdmited($term,$conn2,$class,$student_id);
+            $this_module_fees = getFeesAsFromTermAdmited($term,$conn2,$class,$student_id, false);
 
-            $balance_to_add = $count_module_fees*$fees_to_pay;
-            $balance_to_deduct = $count_activated_modules_from_completed*$fees_to_pay;
-
+            $balance_to_deduct = $count_module_fees*$this_module_fees;
+            $balance_to_add = $count_activated_modules_from_completed*$this_module_fees;
             if($active_module_deactivated){
                 // update the user balance and course list
                 $term = "TERM_1";
                 // $student_balance = getBalanceReports($student_id,$term,$conn2);
-                $student_balance = $balance_to_add;
-                $student_balance-=$balance_to_deduct;
+                $student_balance = ((count($completed_new_modules) - count($completed_modules)) * $this_module_fees) + $balance_cf;
                 
                 // update the course modules alone incase its active or inactive
                 $update = "UPDATE `student_data` SET `my_course_list` = ?, `balance_carry_forward` = ? WHERE `adm_no` = ?";
@@ -6778,8 +6876,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $stmt->execute();
                 echo "<p class='text-success'>Course updates have been done successfully!</p>";
             }else{
-                $balance_cf+=$balance_to_add;
-                $balance_cf-=$balance_to_deduct;
+                // $balance_cf+=$balance_to_add;
+                // echo $balance_cf." - ".$balance_to_add."<br>";
+                $balance_cf-=$balance_to_add;
                 
                 // update the course modules alone incase its active or inactive
                 $update = "UPDATE `student_data` SET `my_course_list` = ?, `balance_carry_forward` = ?  WHERE `adm_no` = ?";
@@ -8390,10 +8489,11 @@ function isJson_report($string) {
             }
         }
     }
-    function getClassCount($conn2,$classes){
-        $select = "SELECT COUNT(*) AS 'Total' FROM `student_data` WHERE `stud_class` = ?";
+
+    function getClassCount($conn2, $classes, $course_done){
+        $select = "SELECT COUNT(*) AS 'Total' FROM `student_data` WHERE `stud_class` = ? AND course_done = ?";
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("s",$classes);
+        $stmt->bind_param("ss",$classes, $course_done);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -8509,7 +8609,7 @@ function isJson_report($string) {
     }
     function checkIfCallRegister($class){
         include("../../connections/conn2.php");
-        $select = "SELECT * FROM `attendancetable` WHERE `class`=? AND `date` = ? ";
+        $select = "SELECT * FROM `attendancetable` WHERE `course_level`=? AND `date` = ? ";
         $stmt = $conn2->prepare($select);
         $date = date("Y-m-d");
         $stmt->bind_param("ss",$class,$date);
@@ -8545,7 +8645,7 @@ function isJson_report($string) {
         }
         return "Null";
     }
-    function createStudentn4($conn2,$result,$searchinfor){
+    function createStudentn4($conn2,$result,$searchinfor, $student_status = "both"){
         if($result){
             $xs =0;
             $data="<h6 style='font-size:17px;text-align:center;font-weight:500;'>Results for ".$searchinfor."</h6><div class='row'><div class='col-md-6'></div><div class='col-md-6'><input class='form-control border border-primary d-none' placeholder='Search here' id='search_student_tables'></div></div>";
@@ -8553,9 +8653,9 @@ function isJson_report($string) {
             $data.="<tr><th>No.</th>";
             $data.="<th>Student Name</th>";
             //$data.="<th>Middle Name</th>";
-            $data.="<th>Adm no.</th>";
+            $data.="<th>Study Mode</th>";
             //$data.="<th>BC no.</th>";
-            $data.="<th>Gender</th>";
+            $data.="<th>Branch</th>";
             // $data.="<th>Fees Balance</th>";
             $data.="<th>Intake</th>";
             // $data.="<th>Department</th>";
@@ -8605,24 +8705,27 @@ function isJson_report($string) {
                     }
                 }
 
-                // echo json_encode($row);
-                $xs++;
-                $data.="<tr class='search_this_main' id='search_this_main".($xs)."'><td>".($xs)."</td>";
-                $data.="<td class='search_this' id='one".($xs)."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."</td>";
-                //$data.="<td>".$row['second_name']."</td>";
-                $data.="<td class='search_this' id='two".($xs)."'>".$row['adm_no']."</td>";
-                //$data.="<td>".$row['BCNo']."</td>";
-                $data.="<td class='search_this' id='f_r".($xs)."' >".$row['gender']."</td>";
-                $classes = classNameAdms($row['stud_class']);
-                // $fees_paid = getFeespaidByStudentAdm($row['adm_no']);
-                // $balance = getBalanceAdm($row['adm_no'],getTerm(),$conn2);
-                // $data.="<td>Kes ".number_format($fees_paid)."</td>";
-                // $data.="<td>Kes ".number_format($balance)."</td>";
-                $data.="<td>".$row['intake_month']." ".$row['intake_year']."</td>";
-                // $data.="<td class='search_this' id='thr".($xs)."'>".ucwords(strtolower(getSportHouses($conn2,$row['clubs_id'])))."</td>";
-                $data.="<td class='search_this' id='lvl".($xs)."'>".$classes."<br><small class='text-primary'>".$course_status."</small></td>";
-                $data.="<td class='search_this' id='cse".($xs)."' >".$course_name."</td>";
-                $data.="<td>"."<p style='display:flex;'><span style='font-size:12px;' class='link view_students' id='view".$row['adm_no']."'><i class='fa fa-pen-fancy'></i> Edit </span>"."</td></tr>";
+                // course_status
+                if(($course_status == "In-Active" && $student_status == "0") || ($course_status != "In-Active" && $student_status == "1") || $student_status == "both"){
+                    // echo json_encode($row);
+                    $xs++;
+                    $data.="<tr class='search_this_main' id='search_this_main".($xs)."'><td>".($xs)."</td>";
+                    $data.="<td class='search_this' id='one".($xs)."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."<br><small>{".$row['adm_no']."}</small></td>";
+                    //$data.="<td>".$row['second_name']."</td>";
+                    $data.="<td class='search_this' id='two".($xs)."'>".ucwords(strtolower($row['study_mode']))." Mode</td>";
+                    //$data.="<td>".$row['BCNo']."</td>";
+                    $data.="<td class='search_this' id='f_r".($xs)."' >".branch_name($conn2, $row['branch_name'])."</td>";
+                    $classes = classNameAdms($row['stud_class']);
+                    // $fees_paid = getFeespaidByStudentAdm($row['adm_no']);
+                    // $balance = getBalanceAdm($row['adm_no'],getTerm(),$conn2);
+                    // $data.="<td>Kes ".number_format($fees_paid)."</td>";
+                    // $data.="<td>Kes ".number_format($balance)."</td>";
+                    $data.="<td>".$row['intake_month']." ".$row['intake_year']."</td>";
+                    // $data.="<td class='search_this' id='thr".($xs)."'>".ucwords(strtolower(getSportHouses($conn2,$row['clubs_id'])))."</td>";
+                    $data.="<td class='search_this' id='lvl".($xs)."'>".$classes."<br><small class='text-primary'>".$course_status."</small></td>";
+                    $data.="<td class='search_this' id='cse".($xs)."' >".$course_name."</td>";
+                    $data.="<td>"."<p style='display:flex;'><span style='font-size:12px;' class='link view_students' id='view".$row['adm_no']."'><i class='fa fa-pen-fancy'></i> Edit </span>"."</td></tr>";
+                }
             }
             $data.="</tbody></table></div>";
             if($xs>0){
@@ -8633,6 +8736,27 @@ function isJson_report($string) {
         }else{
             echo "<p style='font-size:15px;'>No results..</p>";
         }
+    }
+
+    function branch_name($conn2, $branch_id){
+        $select = "SELECT * FROM settings WHERE sett = 'branches'";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $branches = [];
+        if($result){
+            if($row = $result->fetch_assoc()){
+                $branches = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+            }
+        }
+
+        foreach($branches as $branch){
+            if($branch->id == $branch_id){
+                return ucwords(strtolower($branch->name));
+            }
+        }
+
+        return "Not Set!";
     }
 
     function timeUntilCourseCompletion($rawDate) {
@@ -8670,7 +8794,7 @@ function isJson_report($string) {
         $date_used = $_GET['date_used'];
         if($result){
             $xs =0;
-            $data="<h6 style='font-size:17px;text-align:center;margin-bottom:5px;'><u>Check attendance for ".$daros." Members.</u></h6>";
+            $data="<h6 style='font-size:17px;text-align:center;margin-bottom:5px;'><u>Mark attendance for ".$daros." Members on ".date("D dS M Y", strtotime($date_used)).".</u></h6>";
             $data.="<p>Tick the checkbox "."<input type='checkbox' checked readonly>"." if present or leave blank "."<input type='checkbox' readonly>"." when absent, then <strong>Submit</strong></p>";
             $data.="<p id ='tablein'></p>";
             $data.="<div class='tableme'><table >";
@@ -8679,17 +8803,21 @@ function isJson_report($string) {
             $data.="<th>Adm no.</th>";
             $data.="<th>Gender</th>";
             $data.="<th>Attendance Stats</th>";
-            $data.="<th>Class</th>";
-            $data.="<th>Present <input type='checkbox' class='present' id='present_all'></th></tr>";
+            $data.="<th>Course Level</th>";
+            $data.="<th>Time</th>";
+            $data.="<th>Present <input type='checkbox' class='present_all' id='present_all'></th></tr>";
             while($row = $result->fetch_assoc()){
                 $xs++;
                 $data.="<tr><td>".$xs."</td>";
                 $data.="<td><label for='".$row['adm_no']."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."</label></td>";
                 $data.="<td>".$row['adm_no']."</td>";
                 $data.="<td>".$row['gender']."</td>";
-                $data.="<td><small>".presentStats($conn2,$row['adm_no'],$row['stud_class'])."</small></td>";
+                $data.="<td><small>".presentStats($conn2,$row['adm_no'], $row['stud_class'], $row['course_done'])."</small></td>";
                 $data.="<td>".classNameAdms($row['stud_class'])."</td>";
-                $data.="<td>"."<input type='checkbox' class='present' id='".$row['adm_no']."'>"."</td></tr>";
+                $date_today = presentStudent($conn2,$row['adm_no'],$date_used);
+                $time = $date_today ? date("H:i:s", strtotime($date_today)) : date("H:i:s");
+                $data.="<td>"."<input type='time' class='form-control' value='".$time."' class='date_time_att' id='date_time_att_".$row['adm_no']."'>"."</td>";
+                $data.="<td>"."<input type='checkbox' ".($date_today != null ? "checked" : "")." class='present' id='".$row['adm_no']."'>"."</td></tr>";
             }
             $data.="</table></div>";
             $data.="<span class='text-danger'>Always confirm the date before submitting!</span>";
@@ -8709,7 +8837,7 @@ function isJson_report($string) {
         $calender = yearCalenders($conn2);
         // return $calender[0]." - ".$calender[1];
         // get the total number of days this term we have called register
-        $select = "SELECT COUNT(DISTINCT `date`) AS 'Totals' FROM `attendancetable` WHERE `date` >= ? AND `date` <= ? AND `class` = '".$class_student."'";
+        $select = "SELECT COUNT(DISTINCT `date`) AS 'Totals' FROM `attendancetable` WHERE `date` >= ? AND `date` <= ? AND `course_level` = '".$class_student."'";
         $stmt = $conn2->prepare($select);
         $stmt->bind_param("ss",$calender[0],$calender[1]);
         $stmt->execute();
@@ -8721,7 +8849,7 @@ function isJson_report($string) {
             }
         }
         // get the students attendance report
-        $select = "SELECT COUNT(DISTINCT `date`) AS 'Totals' FROM `attendancetable` WHERE `date` >= ? AND `date` <= ? AND `admission_no` = '".$admno."' AND `class` = '".$class_student."'";
+        $select = "SELECT COUNT(DISTINCT `date`) AS 'Totals' FROM `attendancetable` WHERE `date` >= ? AND `date` <= ? AND `admission_no` = '".$admno."' AND `course_level` = '".$class_student."'";
         $stmt = $conn2->prepare($select);
         $stmt->bind_param("ss",$calender[0],$calender[1]);
         $stmt->execute();
@@ -8736,14 +8864,15 @@ function isJson_report($string) {
         return "".$student_attendance." out of ". $total_attendance.".  <span class='text-primary'>(".$percentages."%)</small>";
     }
 
-    function presentStats($conn2,$admno,$class_student){
+    function presentStats($conn2,$admno, $course_level, $course_name){
         // get the current term its starting period and ending period
         $term = getTermV3($conn2);
+        
         // get when the term is starting and ending
         $calender = getAcademicStartV1($conn2,$term);
-        // return $calender[0]." - ".$calender[1];
+        
         // get the total number of days this term we have called register
-        $select = "SELECT COUNT(DISTINCT `date`) AS 'Totals' FROM `attendancetable` WHERE `date` >= ? AND `date` <= ? AND `class` = '".$class_student."'";
+        $select = "SELECT COUNT(DISTINCT `date`) AS 'Totals' FROM `attendancetable` WHERE `date` >= ? AND `date` <= ? AND `course_level` = '".$course_level."' AND course_name = '".$course_name."'";
         $stmt = $conn2->prepare($select);
         $stmt->bind_param("ss",$calender[0],$calender[1]);
         $stmt->execute();
@@ -8754,8 +8883,9 @@ function isJson_report($string) {
                 $total_attendance = $row['Totals'];
             }
         }
+
         // get the students attendance report
-        $select = "SELECT COUNT(DISTINCT `date`) AS 'Totals' FROM `attendancetable` WHERE `date` >= ? AND `date` <= ? AND `admission_no` = '".$admno."' AND `class` = '".$class_student."'";
+        $select = "SELECT COUNT(DISTINCT `date`) AS 'Totals' FROM `attendancetable` WHERE `date` >= ? AND `date` <= ? AND `admission_no` = '".$admno."' AND `course_level` = '".$course_level."' AND course_name = '".$course_name."'";
         $stmt = $conn2->prepare($select);
         $stmt->bind_param("ss",$calender[0],$calender[1]);
         $stmt->execute();
@@ -8768,6 +8898,20 @@ function isJson_report($string) {
         }
         $percentages = ($total_attendance > 0 ? round(($student_attendance/$total_attendance)*100,1):0);
         return "".$student_attendance." out of ". $total_attendance.".  <span class='text-primary'>(".$percentages."%)</small>";
+    }
+    function presentStudent($conn2,$admno,$date){
+        $date = date("Y-m-d",strtotime($date));
+        $select = "SELECT * FROM attendancetable WHERE admission_no = ? AND date = ?";
+        $stmt = $conn2->prepare($select);
+        $stmt->bind_param("ss", $admno, $date);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result){
+            if ($row = $result->fetch_assoc()) {
+                return $row['time'] ?? date("H:i:s");
+            }
+        }
+        return null;
     }
     function getAcademicStartV1($conn2,$term = "TERM_1"){
         $select = "SELECT * FROM `academic_calendar` WHERE `term` = '".$term."';";
@@ -8832,10 +8976,11 @@ function isJson_report($string) {
         $attendedtable.="<div class='tableme' style = 'border-bottom:1px dashed gray;' ><table class='table' >";
         $attendedtable.="<tr><th>No</th>";
         $attendedtable.="<th>Student Name</th>";
-        $attendedtable.="<th>Adm no.</th>";
+        $attendedtable.="<th>Time In</th>";
         $attendedtable.="<th>Gender</th>";
         $attendedtable.="<th>Attendance Stats</th>";
-        $attendedtable.="<th>Class</th>";
+        $attendedtable.="<th>Course Level</th>";
+        $attendedtable.="<th>Course Name</th>";
         $attendedtable.="<th>Status</th></tr>";
         
         $xs = 0;
@@ -8844,11 +8989,12 @@ function isJson_report($string) {
                 $arrays = checkadmissionno($rows['adm_no'],$arrays);
                 $xs++;
                 $attendedtable.="<tr><td>".$xs."</p></td>";
-                $attendedtable.="<td>".ucwords(strtolower($rows['first_name']))." ".ucwords(strtolower($rows['second_name']))."</p></td>";
-                $attendedtable.="<td>".$rows['adm_no']."</p></td>";
+                $attendedtable.="<td>".ucwords(strtolower($rows['first_name']))." ".ucwords(strtolower($rows['second_name']))."<br><small>{".$rows['adm_no']."}</small></p></td>";
+                $attendedtable.="<td>".$rows['time']."</p></td>";
                 $attendedtable.="<td>".$rows['gender']."</p></td>";
-                $attendedtable.="<td>".presentStats($conn2,$rows['adm_no'],$rows['stud_class'])."</p></td>";
+                $attendedtable.="<td>".presentStats($conn2, $rows['adm_no'], $rows['stud_class'], $rows['course_done'])."</p></td>";
                 $attendedtable.="<td>".classNameAdms($rows['stud_class'])."</p></td>";
+                $attendedtable.="<td>".ucwords(strtolower(get_course_name($rows['course_done'], $conn2)))."</p></td>";
                 $attendedtable.="<td>"."Present"."</p></td></tr>";
             }
         }
@@ -12983,6 +13129,28 @@ function isJson_report($string) {
         foreach ($course_levels as $key => $value) {
             if(strtolower($course_level) == strtolower($value->classes)){
                 return $value->classes;
+            }
+        }
+        return "";
+    }
+
+    // get the course id when given the name
+    function get_course_name($course_id, $conn2){
+        // get all courses
+        $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $course_levels = [];
+        $result = $stmt->get_result();
+        if($result){
+            if($row = $result->fetch_assoc()){
+                $course_levels = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+            }
+        }
+
+        foreach ($course_levels as $key => $value) {
+            if(strtolower($course_id) == strtolower($value->id)){
+                return $value->course_name;
             }
         }
         return "";

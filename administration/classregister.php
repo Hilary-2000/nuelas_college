@@ -21,7 +21,8 @@
                         <p><strong>Note:</strong></p>
                         <p><i>Always confirm that youve checked the students present before submitting.</i></p>
                         <p><i>After submitting the attendance you can view the attendance list.</i></p>
-                        <input type="hidden" name="" id="hidden_class_selected">
+                        <input type="hidden" name="" id="hidden_course_level_selected">
+                        <input type="hidden" name="" id="hidden_course_name_selected">
                     </div>
                     <div class="conts ">
                         <p style=''>You are logged in as <?php 
@@ -86,10 +87,13 @@
                             </select>
                         </div>
                         <div class="option2 hide" id="moreopt">
+                            <input type="hidden" name="" id="attendance_statistics_holder">
                             <label for="class_register_dates" class="form-control-label"><b>Select Date</b></label>
                             <input type="date" class="form-control" id="class_register_dates" value="<?php echo date("Y-m-d")?>" max="<?php echo date("Y-m-d")?>">
                             <label class="form-control-label" for="selectclass"><b>Select class: </b><br></label>
                             <p id="class_register_class"></p>
+                            <label for="course_list_attendance" class="form-control-label"><b>Course List:</b></label>
+                            <p id="course_list_attendance_holder"><span class="text-success border border-success p-1">Course list appears here!</span></p>
                             <button class="btn btn-secondary btn-sm" id="display_student_attendances" type="button">Display</button>
                         </div>
                         <div class="option2 hide" id="moreopt2">
@@ -114,6 +118,7 @@
                     
                 </div>
                 <div class="container hide"  id ="register_btns">
+                    <p id="error_handler_attendance"></p>
                     <div class="btns">
                         <button type='button' id='submitclasspresent'>Submit</button>
                         <button type='button' id='viewpresent'>View attendance</button>

@@ -1,3 +1,27 @@
+19th Sep 2025 08:58:17AM : James Makeba  - of Reg No. (adm_no) data has been updated successfully! - {ANN AKOTCH}
+19th Sep 2025 08:47:24AM : Agnes  - of Reg No. (NC-2025-006) data has been updated successfully! - {ANN AKOTCH}
+19th Sep 2025 08:20:02AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+18th Sep 2025 19:00:54PM : Student_name  - of Reg No. (adm_no) data has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 18:47:33PM : Carol  - of Reg No. (NC-2025-001) data has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 18:41:48PM : Admission prefix has has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 18:34:34PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+18th Sep 2025 18:29:32PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+18th Sep 2025 18:29:21PM : Registration of JAMES WAKANDA as <b>Accountant</b> has been done successfully - {ANN AKOTCH}
+18th Sep 2025 18:16:37PM : Role "Users" has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 18:12:47PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 18:10:03PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 18:07:10PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 18:01:19PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 08:01:00AM : Charlie Charlie of adm no NC-2025-012  balance has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 07:34:55AM : James James of adm no NC-2025-014  balance has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 07:32:45AM : James James of adm no NC-2025-014  balance has been updated successfully! - {ANN AKOTCH}
+18th Sep 2025 07:30:15AM : James James of adm no NC-2025-014  balance has been updated successfully! - {ANN AKOTCH}
+17th Sep 2025 14:51:03PM : James James of adm no NC-2025-014  balance has been updated successfully! - {ANN AKOTCH}
+17th Sep 2025 14:39:37PM : James James of adm no NC-2025-014  balance has been updated successfully! - {ANN AKOTCH}
+17th Sep 2025 14:30:11PM : James James of adm no NC-2025-014  balance has been updated successfully! - {ANN AKOTCH}
+17th Sep 2025 14:29:37PM : JAMES KARANI with admission number NC-2025-014 has been admitted successfully - {ANN AKOTCH}
+17th Sep 2025 14:08:48PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+16th Sep 2025 15:20:54PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 12th Sep 2025 16:17:25PM : JAMES KELVIN with admission number NC-2025-013 has been admitted successfully - {ANN AKOTCH}
 12th Sep 2025 14:51:17PM : Mary  - of Reg No. (NC-2025-004) data has been updated successfully! - {ANN AKOTCH}
 12th Sep 2025 14:49:13PM : Grace  - of Reg No. (NC-2025-002) data has been updated successfully! - {ANN AKOTCH}

@@ -1,14 +1,76 @@
 [
     {
-        "name": "Kahawa Wendani Branch",
-        "id": 1
-    },
-    {
-        "name": "Kiambu Branch",
-        "id": 2
-    },
-    {
-        "name": "Ngara Branch",
-        "id": 3
+        "course_level": 9,
+        "course_name": "1",
+        "course_status": 1,
+        "id": 1,
+        "module_terms": [
+            {
+                "id": 1,
+                "term_name": "MODULE 1",
+                "status": "0",
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": 9500,
+                "evening_cost": 7500,
+                "weekend_cost": 5000,
+                "termly_cost": 9500
+            },
+            {
+                "id": 2,
+                "term_name": "MODULE 2",
+                "status": "0",
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": 9500,
+                "evening_cost": 7500,
+                "weekend_cost": 5000,
+                "termly_cost": 9500
+            },
+            {
+                "id": 3,
+                "term_name": "MODULE 3",
+                "status": "0",
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": 9500,
+                "evening_cost": 7500,
+                "weekend_cost": 5000,
+                "termly_cost": 9500
+            },
+            {
+                "id": 4,
+                "term_name": "MODULE 4",
+                "status": "0",
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": 9500,
+                "evening_cost": 7500,
+                "weekend_cost": 5000,
+                "termly_cost": 9500
+            },
+            {
+                "id": 5,
+                "term_name": "MODULE 5",
+                "status": "0",
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": 9500,
+                "evening_cost": 7500,
+                "weekend_cost": 5000,
+                "termly_cost": 9500
+            },
+            {
+                "id": 6,
+                "term_name": "MODULE 6",
+                "status": "0",
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": 9500,
+                "evening_cost": 7500,
+                "weekend_cost": 5000,
+                "termly_cost": 9500
+            }
+        ]
     }
 ]

@@ -285,6 +285,7 @@
                                 $data_to_display.="<option value='".$class_list[$indez]."'>".majinaDarasa($class_list[$indez])."</option>";
                             }
                             $data_to_display.="<option value='-3'>Student Inquiries</option>";
+                            $data_to_display.="<option value='-1'>Alumnis</option>";
                             // $data_to_display.="<option value='others'>Others</option>";
                             $data_to_display.="</select>";
                             echo $data_to_display;
@@ -298,7 +299,7 @@
             }
         }elseif (isset($_GET['get_parents_list'])) {
             $get_parents_list = $_GET['get_parents_list'];
-            $course_selected = (isset($_GET['course_selected']) && $get_parents_list != "-3") ? "AND course_done = '".$_GET['course_selected']."'" : "";
+            $course_selected = (isset($_GET['course_selected']) && $get_parents_list != "-3" && $get_parents_list != "-1") ? "AND course_done = '".$_GET['course_selected']."'" : "";
             $select = "SELECT * FROM `student_data` WHERE `stud_class` = '$get_parents_list' $course_selected";
             if ($get_parents_list == "others") {
                 // get the whole class list
@@ -1469,6 +1470,9 @@
         if ($data == "-3") {
             return "Student Enquiries";
         }
+        if ($data == "-1") {
+            return "Alumnis";
+        }
         if (strlen($data)>1) {
             return $data;
         }else {
@@ -1520,59 +1524,37 @@
             return $final_message;
         }
         $term = getTerm($conn2);
-        if ($which_parent == "primary") {
-            for ($index=0; $index < count($student_data); $index++) { 
-                if ($student_data[$index]['adm_no'] == $adm_no) {
-                    
-                    $final_message = str_replace("{stud_fullname}",ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name'])),$final_message);
-                    $final_message = str_replace("{stud_first_name}",ucwords(strtolower($student_data[$index]['first_name'])),$final_message);
-                    $final_message = str_replace("{stud_class}",majinaDarasa($student_data[$index]['stud_class']),$final_message);
-                    $dob = date_create($student_data[$index]['D_O_B']);
-                    $today = date_create(date("Y-m-d"));
-                    $date_diff = date_diff($dob,$today);
-                    $date_diff = $date_diff->format("%y Yr(s)");
-                    $balance = number_format(getBalance($student_data[$index]['adm_no'],$term,$conn2));
-                    $fees_paid = number_format(getFeespaidByStudent($student_data[$index]['adm_no'],$conn2));
-                    $fees_to_pay = number_format(getFeesAsPerTermBoarders($term,$conn2,$student_data[$index]['stud_class'],$student_data[$index]['adm_no']));
-                    $final_message = str_replace("{stud_age}",$date_diff,$final_message);
-                    $final_message = str_replace("{stud_fees_balance}",$balance,$final_message);
-                    $final_message = str_replace("{stud_fees_to_pay}",$fees_to_pay,$final_message);
-                    $final_message = str_replace("{stud_fees_paid}",$fees_paid,$final_message);
-                    $final_message = str_replace("{stud_noun}",($student_data[$index]['gender'] == "Female" ?"daughter":"son"),$final_message);
+        for ($index=0; $index < count($student_data); $index++) { 
+            if ($student_data[$index]['adm_no'] == $adm_no) {
+                $final_message = str_replace("{stud_fullname}",ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name'])),$final_message);
+                $final_message = str_replace("{stud_first_name}",ucwords(strtolower($student_data[$index]['first_name'])),$final_message);
+                $final_message = str_replace("{stud_class}",majinaDarasa($student_data[$index]['stud_class']),$final_message);
+                $dob = date_create($student_data[$index]['D_O_B']);
+                $today = date_create(date("Y-m-d"));
+                $date_diff = date_diff($dob,$today);
+                $date_diff = $date_diff->format("%y Yr(s)");
+                $balance = number_format(getBalance($student_data[$index]['adm_no'],$term,$conn2));
+                $fees_paid = number_format(getFeespaidByStudent($student_data[$index]['adm_no'],$conn2));
+                $fees_to_pay = number_format(getFeesAsPerTermBoarders($term,$conn2,$student_data[$index]['stud_class'],$student_data[$index]['adm_no']));
+                $final_message = str_replace("{stud_age}",$date_diff,$final_message);
+                $final_message = str_replace("{stud_fees_balance}",$balance,$final_message);
+                $final_message = str_replace("{stud_fees_to_pay}",$fees_to_pay,$final_message);
+                $final_message = str_replace("{stud_adm}",$student_data[$index]['adm_no'],$final_message);
+                $final_message = str_replace("{stud_fees_paid}",$fees_paid,$final_message);
+                $final_message = str_replace("{stud_noun}",($student_data[$index]['gender'] == "Female" ?"daughter":"son"),$final_message);
+                if ($which_parent == "primary") {
                     $final_message = str_replace("{par_fullname}",ucwords(strtolower($student_data[$index]['parentName'])),$final_message);
                     $final_message = str_replace("{par_first_name}",ucwords(strtolower(explode(" ",$student_data[$index]['parentName'])[0])),$final_message);
                     $final_message = str_replace("{title_1}",(((strtolower($student_data[$index]['parent_relation']) == "guardian") ? "":"check") == "check") ? (strtolower($student_data[$index]['parent_relation']) == "father" ? "Mr" : "Mrs"):"",$final_message);
-                    $final_message = str_replace("{title_2}",(((strtolower($student_data[$index]['parent_relation']) == "guardian") ? "":"check") == "check") ? (strtolower($student_data[$index]['parent_relation']) == "father" ? "Sir" : "Madam"):"",$final_message);
-                    $today = date("D dS M, Y");
-                    $final_message = str_replace("{today}",$today,$final_message);
-                }
-            }
-        }else {
-            for ($index=0; $index < count($student_data); $index++) { 
-                if ($student_data[$index]['adm_no'] == $adm_no) {
-                    
-                    $final_message = str_replace("{stud_fullname}",ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name'])),$final_message);
-                    $final_message = str_replace("{stud_first_name}",ucwords(strtolower($student_data[$index]['first_name'])),$final_message);
-                    $final_message = str_replace("{stud_class}",majinaDarasa($student_data[$index]['stud_class']),$final_message);
-                    $dob = date_create($student_data[$index]['D_O_B']);
-                    $today = date_create(date("Y-m-d"));
-                    $date_diff = date_diff($dob,$today);
-                    $date_diff = $date_diff->format("%y Yr(s)");
-                    $balance = number_format(getBalance($student_data[$index]['adm_no'],$term,$conn2));
-                    $fees_paid = number_format(getFeespaidByStudent($student_data[$index]['adm_no'],$conn2));
-                    $fees_to_pay = number_format(getFeesAsPerTermBoarders($term,$conn2,$student_data[$index]['stud_class'],$student_data[$index]['adm_no']));
-                    $final_message = str_replace("{stud_age}",$date_diff,$final_message);
-                    $final_message = str_replace("{stud_fees_balance}",$balance,$final_message);
-                    $final_message = str_replace("{stud_fees_to_pay}",$fees_to_pay,$final_message);
-                    $final_message = str_replace("{stud_fees_paid}",$fees_paid,$final_message);
-                    $final_message = str_replace("{stud_noun}",($student_data[$index]['gender'] == "Female" ?"daughter":"son"),$final_message);
+                    $final_message = str_replace("{title_2}",(((strtolower($student_data[$index]['parent_relation']) == "guardian") ? "":"check") == "check") ? (strtolower($student_data[$index]['parent_relation']) == "father" ? "Sir" : "Madam"):"",$final_message);   
+                }else{
                     $final_message = str_replace("{par_fullname}",ucwords(strtolower($student_data[$index]['parent_name2'])),$final_message);
                     $final_message = str_replace("{par_first_name}",ucwords(strtolower(explode(" ",$student_data[$index]['parent_name2'])[0])),$final_message);
                     $final_message = str_replace("{title_1}",(((strtolower($student_data[$index]['parent_relation2']) == "guardian") ? "":"check") == "check") ? (strtolower($student_data[$index]['parent_relation2']) == "father" ? "Mr" : "Mrs"):"",$final_message);
                     $final_message = str_replace("{title_2}",(((strtolower($student_data[$index]['parent_relation2']) == "guardian") ? "":"check") == "check") ? (strtolower($student_data[$index]['parent_relation2']) == "father" ? "Sir" : "Madam"):"",$final_message);
-                    $today = date("D dS M, Y");
-                    $final_message = str_replace("{today}",$today,$final_message);
                 }
+                $today = date("D dS M, Y");
+                $final_message = str_replace("{today}",$today,$final_message);
             }
         }
         return $final_message;

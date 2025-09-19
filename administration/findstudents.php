@@ -14,45 +14,45 @@
                     <p>- Student information can be retrieved, changed and deleted at this window. <br>- Start by finding the student by the available options</p>
                     <p>- Its recomended that the student is searched by their admission number <small>(the results are accurate)</small></p>
                 </div>
-                <div class="row my-2">
-                    <div class="col-lg-3">
-                        <p id="errorSearch"></p>
-                        <label for="sach" >Search here by: </label><br>
-                        <select class="form-control-select w-100" name="sach" id="sach">
-                            <option value="" hidden>Select option..</option>
-                            <option value="name">Name</option>
-                            <option value="AdmNo">Admission No</option>
-                            <option value="class">Course Levels</option>
-                            <option value="bcno">BC number</option>
-                            <option value="allstuds" id ='alstuds'>All students</option>
-                            <option value="regtoday" id='regtodays'>Registered today</option>
-                            <option value="registered_in" id='registered_in'>Intake</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-7 row">
-                        <div class="col-md-6 mx-auto hide" id="named">
+                <div class="my-2">
+                    <div class="col-lg-12 row">
+                        <div class="col-md-3">
+                            <p id="errorSearch"></p>
+                            <label for="sach" ><b>Search here by: </b></label><br>
+                            <select class="form-control-select" name="sach" id="sach">
+                                <option value="" hidden>Select option..</option>
+                                <option value="name">Name</option>
+                                <option value="AdmNo">Admission No</option>
+                                <option value="class">Course Levels</option>
+                                <option value="bcno">I`d Number</option>
+                                <option value="allstuds" id ='alstuds'>All students</option>
+                                <option value="regtoday" id='regtodays'>Registered today</option>
+                                <option value="registered_in" id='registered_in'>Intake</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mx-auto hide" id="named">
                             <label class="form-control-label" for="name"><b>Enter name:</b> <br></label>
                             <input type="text" name="name" id="name" placeholder="Type name here">
                             <img src="images/ajax_clock_small.gif" class="hide" id="names_loaders_find">
                         </div>
-                        <div class="col-md-6 mx-auto hide" id="admnosd">
-                            <label class="form-control-label" for="admno"><b>Enter admission no: </b><br></label>
+                        <div class="col-md-3 mx-auto hide" id="admnosd">
+                            <label class="form-control-label" for="admno"><b>Admission no: </b><br></label>
                             <input type="text" name="admno" id="admno" placeholder="Type admission no.">
                             <img src="images/ajax_clock_small.gif" class="hide" id="admnos_loaders_find">
                         </div>
-                        <div class="col-md-6 mx-auto hide bg-red" id="classenroll">
-                            <label class="form-control-label" for="selclass"><b>Select Course Level:</b> <br></label>
+                        <div class="col-md-3 mx-auto hide bg-red" id="classenroll">
+                            <label class="form-control-label" for="selclass"><b>Course Level:</b> <br></label>
                             <p id="stud_class_find"></p>
-                        </div> 
-                        <div class="col-md-6 mx-auto hide" id="course_lists_search_bar">
+                        </div>
+                        <div class="col-md-3 mx-auto hide" id="course_lists_search_bar">
                             <label class="form-control-label" for="course_chosen_search"><b>Select Course:</b> <img class="hide" src="images/ajax_clock_small.gif" id="course_list_find_loader"><br></label>
                             <p id="get_student_class_list" class="text-danger"> Select course level first!</p>
                         </div>
-                        <div class="col-md-6 mx-auto hide" id="bcnos">
-                            <label class="form-control-label" for="bcnosd"><b>Enter birth certifcate no.</b> <br></label>
-                            <input type="text" name="bcnosd" id="bcnosd" placeholder="Enter BC NO.">
-                        </div> 
-                        <div class="col-md-6 mx-auto hide" id="intake_month_search_win">
+                        <div class="col-md-3 mx-auto hide" id="bcnos">
+                            <label class="form-control-label" for="bcnosd"><b>National I`d No.</b> <br></label>
+                            <input type="text" name="bcnosd" id="bcnosd" placeholder="Enter I`d No.">
+                        </div>
+                        <div class="col-md-3 hide" id="intake_month_search_win">
                             <label class="form-control-label" for="intake_month_search"><b>Intake Month.</b> <br></label>
                             <select name="" id="intake_month_search" class="form-control">
                                 <option value="" hidden>Select intake month</option>
@@ -69,8 +69,8 @@
                                 <option value="Nov">Nov</option>
                                 <option value="Dec">Dec</option>
                             </select>
-                        </div> 
-                        <div class="col-md-6 mx-auto hide" id="intake_year_search_win">
+                        </div>
+                        <div class="col-md-3 hide" id="intake_year_search_win">
                             <label class="form-control-label" for="intake_year_search"><b>Intake Year.</b> <br></label>
                             <select name="intake_year_search" id="intake_year_search" class="form-control">
                                 <option value="" hidden>Select an Option</option>
@@ -78,10 +78,33 @@
                                     <option value="<?=$index?>"><?=$index?></option>
                                 <?php endfor;?>
                             </select>
-                        </div> 
-                    </div>
-                    <div class="col-lg-2">
-                        <span id="findingstudents" class="btn btn-primary btn-sm mt-4 rounded" type="button"><i class="fas fa-search"></i> Search</span>
+                        </div>
+                        <div class="col-md-3 hide" id="student_status_window">
+                            <label class="form-control-label" for="student_status_search"><b>Student Search</b> <br></label>
+                            <select name="" id="student_status_search" class="form-control">
+                                <option value="" hidden>Select student status</option>
+                                <option value="1">Active</option>
+                                <option value="0">In-Active</option>
+                                <option value="both">Both</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 hide" id="student_study_mode_search_win">
+                            <label for="study_mode_search" class="form-control-label"><b>Study Mode</b></label>
+                            <select name="study_mode_search" id="study_mode_search" class="form-control">
+                                <option value="" hidden>Select an Option</option>
+                                <option value="fulltime">Fulltime Mode</option>
+                                <option value="evening">Hybrid Mode</option>
+                                <option value="weekend">Weekend Mode</option>
+                                <option value="all">All Modes</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 hide" id="college_branch_search">
+                            <label for="college_branch_search_student" class="form-control-label">College Branch</label>
+                            <span id="get_college_branch_holder"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <span id="findingstudents" class="btn btn-primary btn-sm mt-4 rounded" type="button"><i class="fas fa-search"></i> Search</span>
+                        </div>
                     </div>
                 </div>
                 <hr>
