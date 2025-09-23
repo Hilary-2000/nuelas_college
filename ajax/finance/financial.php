@@ -360,6 +360,10 @@
                                                     <td><b>Discount</b> </td>
                                                     <td>" . $discount . "</td>
                                                 </tr>
+                                                <tr>
+                                                    <td><b>Study Mode</b> </td>
+                                                    <td><span class='badge bg-success text-lg'>" . ucwords(strtolower($student_data['study_mode'] == "evening" ? "Hybrid" : $student_data['study_mode'])) . " Mode</span></td>
+                                                </tr>
                                             </table>
                                         </div><hr>";
                     $tableinformation1 .= "<p style='margin:10px 0;' >As at <b>" . $times . "</b> on <b>" . $date . "</b> <br>Current Term Enrolled: <b>" . $term_enrolled . "</b><br><span style='color:gray;' ><b>Total Fees Paid this term (without provisionals) : Kes " . number_format($fees_paid) . "</b><br><span style='color:gray;' ><b>Balance Carry Forward : Kes " . number_format($balance_cf) . "</b><br><b>Current Term payment : Kes " . number_format($current_term_fees) . "</b><br><span style='color:gray;' ><b>Total fees to be paid as per Current Term: <b>" . $term_enrolled . "</b>: " . $fees_to_pay . "</b></span><br><span style='color:gray;'><b>System calculated balance: Ksh</b> " . round($balancecalc) . ".</span>" . $headings . $fees_change . "<hr><strong>Current Balance is: Ksh <span id='closed_balance'  class='queried' title='click to change the student balance'>" . round($balance) . "</span></strong><input type='text' value='" . $admnos . "'  id='presented' hidden></p>";

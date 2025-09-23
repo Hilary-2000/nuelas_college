@@ -17,6 +17,67 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
         include("../../connections/conn2.php");
         if(isset($_GET['admit'])){
             echo "<p class='text-danger'>Wrong place wrong time! ;-( </p>";
+        }elseif(isset($_GET['reset_course_fees'])){
+            $student_admission = $_GET['student_adm'];
+            $select = "SELECT * FROM student_data WHERE adm_no = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $student_admission);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $student_course = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list'], true) : null;
+                    if($student_course != null){
+                        $select = "SELECT * FROM `settings` WHERE sett = 'courses';";
+                        $stm = $conn2->prepare($select);
+                        $stm->execute();
+                        $res = $stm->get_result();
+                        $course_list = [];
+                        if($res){
+                            if($rowed = $res->fetch_assoc()){
+                                $course_list = isJson_report($rowed['valued']) ? json_decode($rowed['valued'], true) : [];
+                            }
+                        }
+                        
+                        if(empty($course_list)){
+                            echo "<p class='text-danger'>Student has been enrolled in an invalid course!</p>";
+                            return;
+                        }
+
+                        $students_course = null;
+                        foreach ($course_list as $key => $course) {
+                            if($course['id'] == $row['course_done']){
+                                $students_course = $course;
+                                break;
+                            }
+                        }
+
+                        // students_course
+                        if(empty($students_course)){
+                            echo "<p class='text-danger'>Student has been enrolled in an invalid course!</p>";
+                            return;
+                        }
+
+                        foreach($student_course as $key_1 => $course){
+                            if($course['course_status'] == 1){
+                                $module_terms = $course['module_terms'];
+                                foreach ($module_terms as $key_2 => $term) {
+                                    $student_course[$key_1]['module_terms'][$key_2]['fulltime_cost'] = $students_course['fulltime_fees'];
+                                    $student_course[$key_1]['module_terms'][$key_2]['evening_cost'] = $students_course['evening_fees'];
+                                    $student_course[$key_1]['module_terms'][$key_2]['weekend_cost'] = $students_course['weekend_fees'];
+                                }
+                            }
+                        }
+                        $student_course = json_encode($student_course);
+                        $update = "UPDATE student_data SET my_course_list='".$student_course."' WHERE adm_no = '".$student_admission."'";
+                        $stmt = $conn2->prepare($update);
+                        $stmt->execute();
+                        echo "<p class='text-success'>Reset has been done successfully!!</p>";
+                        return;
+                    }else{
+                    }
+                }
+            }
         }elseif(isset($_GET['reset_votehead_settings'])){
             $admission_no = $_GET['adm_no'];
             $select = "SELECT * FROM student_data WHERE adm_no = ?";
@@ -6722,7 +6783,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
                 if($course->id == $course_updated->id){
                     $module_term = $course->module_terms;
-                    foreach($module_term as $term){
+                    foreach($module_term as $key_2 => $term){
                         if($term->status == 2){
                             array_push($completed_modules, $term->id);
                         }else{
@@ -6858,9 +6919,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
             // my course list
+            $reffer_course_update_price = isJson_report($_POST['course_updated']) ? json_decode($_POST['course_updated']) : json_decode("{}");
             foreach($my_course_list as $key => $course){
-                if($course->id == $course_updated->id){
-                    $my_course_list[$key] = $course_updated;
+                if($course->id == $reffer_course_update_price->id){
+                    $my_course_list[$key] = $reffer_course_update_price;
                 }
             }
 
