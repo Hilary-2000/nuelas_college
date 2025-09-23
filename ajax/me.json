@@ -1,28 +1,182 @@
-[
-    {
-        "id": "1",
-        "course_name": "FASHION AND DESIGN",
-        "course_levels": "[]",
-        "department": "FS-001",
-        "course_level": "9",
-        "no_of_terms": "6",
-        "fulltime_fees": "9500",
-        "weekend_fees": "5000",
-        "evening_fees": "7500",
-        "term_duration": "6",
-        "duration_intervals": "months"
-    },
-    {
-        "id": 2,
-        "course_name": "FRUIT MAKER",
-        "course_levels": "[]",
-        "department": "DAT-001",
-        "course_level": "9",
-        "no_of_terms": "6",
-        "fulltime_fees": "5000",
-        "evening_fees": "4000",
-        "weekend_fees": "3000",
-        "term_duration": "1",
-        "duration_intervals": "months"
-    }
-]
+{
+    "course_level": "Short Course",
+    "course_name": 1,
+    "course_status": 1,
+    "id": 1,
+    "module_terms": [
+        {
+            "id": 1,
+            "term_name": "MODULE 1",
+            "status": "0",
+            "start_date": "",
+            "end_date": "",
+            "fulltime_cost": 9500,
+            "evening_cost": 7500,
+            "weekend_cost": 5000,
+            "termly_cost": 9500,
+            "voteheads": [
+                {
+                    "votehead": "0",
+                    "pay": true
+                },
+                {
+                    "votehead": "415",
+                    "pay": false
+                },
+                {
+                    "votehead": "416",
+                    "pay": true
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "term_name": "MODULE 2",
+            "status": "0",
+            "start_date": "",
+            "end_date": "",
+            "fulltime_cost": 9500,
+            "evening_cost": 7500,
+            "weekend_cost": 5000,
+            "termly_cost": 9500,
+            "voteheads": [
+                {
+                    "votehead": "0",
+                    "pay": true
+                },
+                {
+                    "votehead": "415",
+                    "pay": false
+                },
+                {
+                    "votehead": "416",
+                    "pay": true
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "term_name": "MODULE 3",
+            "status": "0",
+            "start_date": "",
+            "end_date": "",
+            "fulltime_cost": 9500,
+            "evening_cost": 7500,
+            "weekend_cost": 5000,
+            "termly_cost": 9500,
+            "voteheads": [
+                {
+                    "votehead": "0",
+                    "pay": true
+                },
+                {
+                    "votehead": "415",
+                    "pay": false
+                },
+                {
+                    "votehead": "416",
+                    "pay": true
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "term_name": "MODULE 4",
+            "status": "0",
+            "start_date": "",
+            "end_date": "",
+            "fulltime_cost": 9500,
+            "evening_cost": 7500,
+            "weekend_cost": 5000,
+            "termly_cost": 9500,
+            "voteheads": [
+                {
+                    "votehead": "0",
+                    "pay": true
+                },
+                {
+                    "votehead": "415",
+                    "pay": false
+                },
+                {
+                    "votehead": "416",
+                    "pay": true
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "term_name": "MODULE 5",
+            "status": "0",
+            "start_date": "",
+            "end_date": "",
+            "fulltime_cost": 9500,
+            "evening_cost": 7500,
+            "weekend_cost": 5000,
+            "termly_cost": 9500,
+            "voteheads": [
+                {
+                    "votehead": "0",
+                    "pay": true
+                },
+                {
+                    "votehead": "415",
+                    "pay": false
+                },
+                {
+                    "votehead": "416",
+                    "pay": true
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "term_name": "MODULE 6",
+            "status": "2",
+            "start_date": "20250203140712",
+            "end_date": "20250803140712",
+            "fulltime_cost": "9500",
+            "evening_cost": "7500",
+            "weekend_cost": "7000",
+            "voteheads": [
+                {
+                    "votehead": "0",
+                    "pay": true
+                },
+                {
+                    "votehead": "415",
+                    "pay": false
+                },
+                {
+                    "votehead": "416",
+                    "pay": true
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "term_name": "MODULE 7",
+            "status": "1",
+            "start_date": "20250803124800",
+            "end_date": "20260311124800",
+            "fulltime_cost": "9500",
+            "evening_cost": "7500",
+            "weekend_cost": "5",
+            "termly_cost": 9500,
+            "voteheads": [
+                {
+                    "votehead": "0",
+                    "pay": true
+                },
+                {
+                    "votehead": "415",
+                    "pay": true
+                },
+                {
+                    "votehead": "416",
+                    "pay": true
+                }
+            ]
+        }
+    ]
+}
