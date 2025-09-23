@@ -3530,19 +3530,19 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
                     $new_admission_no = $prefix.($admno < 10 ? "00".$admno : ($admno < 100 ? "0".$admno : $admno));
                     
-                    $students = getStudentData($new_admission_no, $conn2);
-                    if(count($students) > 0){
-                        $select  = "SELECT * FROM `student_data` WHERE `adm_no` LIKE '$prefix%' ORDER BY adm_no DESC";
-                        $stmt = $conn2->prepare($select);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        if($result){
-                            if($row = $result->fetch_assoc()){
-                                $lastest_admission = (substr($row['adm_no'], strlen($prefix)) * 1) + 1;
-                                $new_admission_no = $prefix.($lastest_admission < 10 ? "00".$lastest_admission : ($lastest_admission < 100 ? "0".$lastest_admission : $lastest_admission));
-                            }
-                        }
-                    }
+                    // $students = getStudentData($new_admission_no, $conn2);
+                    // if(count($students) > 0){
+                    //     $select  = "SELECT * FROM `student_data` WHERE `adm_no` LIKE '$prefix%' ORDER BY adm_no DESC";
+                    //     $stmt = $conn2->prepare($select);
+                    //     $stmt->execute();
+                    //     $result = $stmt->get_result();
+                    //     if($result){
+                    //         if($row = $result->fetch_assoc()){
+                    //             $lastest_admission = (substr($row['adm_no'], strlen($prefix)) * 1) + 1;
+                    //             $new_admission_no = $prefix.($lastest_admission < 10 ? "00".$lastest_admission : ($lastest_admission < 100 ? "0".$lastest_admission : $lastest_admission));
+                    //         }
+                    //     }
+                    // }
                     // prefix
                     echo $new_admission_no;
                 }

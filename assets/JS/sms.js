@@ -46,7 +46,7 @@ cObj("send_email_button").onclick = function () {
             err += checkBlank("email_header");
             if (err == 0) {
                 cObj("email_send_errors").innerHTML = "";
-                var datapass = "send_mail_to=" + valObj("staff_email_addressess") + "&cc=" + valObj("carbon_copy1") + "&bcc=" + valObj("blind_carbon_copy1") + "&message=" + escape(myContent) + "&email_header=" + valObj("email_header");
+                var datapass = "send_mail_to=" + valObj("staff_email_addressess") + "&cc=" + valObj("carbon_copy1") + "&bcc=" + valObj("blind_carbon_copy1") + "&message=" + encodeURIComponent(myContent) + "&email_header=" + valObj("email_header");
                 sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("email_send_errors"), cObj("load_email_sending"));
                 setTimeout(() => {
                     var timeout = 0;
@@ -80,7 +80,7 @@ cObj("send_email_button").onclick = function () {
             err += checkBlank("email_header");
             if (err == 0) {
                 cObj("email_send_errors").innerHTML = "";
-                var datapass = "send_mail_to=" + valObj("select_staff_emails") + "&cc=" + valObj("carbon_copy1") + "&bcc=" + valObj("blind_carbon_copy1") + "&message=" + escape(myContent) + "&email_header=" + valObj("email_header");
+                var datapass = "send_mail_to=" + valObj("select_staff_emails") + "&cc=" + valObj("carbon_copy1") + "&bcc=" + valObj("blind_carbon_copy1") + "&message=" + encodeURIComponent(myContent) + "&email_header=" + valObj("email_header");
                 sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("email_send_errors"), cObj("load_email_sending"));
                 setTimeout(() => {
                     var timeout = 0;
@@ -125,7 +125,7 @@ cObj("send_sms_btns").onclick = function () {
             if (err == 0) {
                 cObj("out_put22").innerHTML = "";
                 //send data to the database
-                var datapass = "?send_sms=true&phone_no=" + valObj("staff_phones") + "&message=" + valObj("text_message");
+                var datapass = "?send_sms=true&phone_no=" + valObj("staff_phones") + "&message=" + encodeURIComponent(valObj("text_message"));
                 //var datapass = "?message="+valObj("text_message")+"&mobile="+valObj("staff_phones")+"&shortcode=JuaMobile&partnerID=3468&apikey=9dbd3d8b9ae3d183db6598e815d66f12";
                 //var link = "https://quicksms.advantasms.com/api/services/sendsms/";
                 //sendData4("POST",link,datapass,cObj("out_put22"));
@@ -180,7 +180,7 @@ cObj("send_sms_btns").onclick = function () {
             if (err == 0) {
                 cObj("out_put22").innerHTML = "";
                 //send data to the database
-                var datapass = "?send_sms=true&phone_no=" + valObj("select_staff_sms") + "&message=" + valObj("text_message");
+                var datapass = "?send_sms=true&phone_no=" + valObj("select_staff_sms") + "&message=" + encodeURIComponent(valObj("text_message"));
                 //var datapass = "?message="+valObj("select_staff_sms")+"&mobile="+valObj("text_message")+"&shortcode=JuaMobile&partnerID=3468&apikey=9dbd3d8b9ae3d183db6598e815d66f12";
                 //var link = "https://quicksms.advantasms.com/api/services/sendsms/";
                 //sendData4("POST",link,datapass,cObj("out_put22"));
@@ -524,7 +524,7 @@ cObj("send_msg_btns").onclick = function () {
                 if (checker > 0) {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'></p>";
                     data = data.substr(0, data.length - 1);
-                    var datapass = "?tr_ids_excempt=" + data + "&messages=" + valObj("text_message2");
+                    var datapass = "?tr_ids_excempt=" + data + "&messages=" + encodeURIComponent(valObj("text_message2"));
                     sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"));
                     setTimeout(() => {
                         var timeout = 0;
@@ -554,7 +554,7 @@ cObj("send_msg_btns").onclick = function () {
                 if (err == 0) {
                     cObj("err_hands_error").innerHTML = "";
                     var data = cObj("seleceted_class").innerText;
-                    var datapass = "?parents_ids_excempt=" + data + "&messages=" + valObj("text_message2") + "&to_whom=" + valObj("send_to_whom");
+                    var datapass = "?parents_ids_excempt=" + data + "&messages=" + encodeURIComponent(valObj("text_message2")) + "&to_whom=" + valObj("send_to_whom");
                     sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"));
                 } else {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select which parents you will want to send SMS.</p>";
@@ -589,7 +589,7 @@ cObj("send_msg_btns").onclick = function () {
                 if (checker > 0) {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'></p>";
                     data = data.substr(0, data.length - 1);
-                    var datapass = "?teacher_sms_id_group=" + data + "&messages=" + escape(CKEDITOR.instances.email_editored.getData()) + "&email_subject=" + valObj("email_bulk_subject") + "&email_cc=" + valObj("cc_email_bulk") + "&email_bcc=" + valObj("bcc_email_bulk");
+                    var datapass = "?teacher_sms_id_group=" + data + "&messages=" + encodeURIComponent(CKEDITOR.instances.email_editored.getData()) + "&email_subject=" + valObj("email_bulk_subject") + "&email_cc=" + valObj("cc_email_bulk") + "&email_bcc=" + valObj("bcc_email_bulk");
                     // console.log(datapass);
                     sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"));
                     setTimeout(() => {
@@ -622,7 +622,7 @@ cObj("send_msg_btns").onclick = function () {
                 if (err == 0) {
                     cObj("err_hands_error").innerHTML = "";
                     var data = cObj("seleceted_class").innerText;
-                    var datapass = "?parents_ids_excempt_email=" + data + "&messages=" + escape(emeil_message) + "&to_whom=" + valObj("send_to_whom") + "&cc=" + valObj("cc_email_bulk") + "&bcc=" + valObj("bcc_email_bulk") + "&subject=" + valObj("email_bulk_subject");
+                    var datapass = "?parents_ids_excempt_email=" + data + "&messages=" + encodeURIComponent(emeil_message) + "&to_whom=" + valObj("send_to_whom") + "&cc=" + valObj("cc_email_bulk") + "&bcc=" + valObj("bcc_email_bulk") + "&subject=" + valObj("email_bulk_subject");
                     sendData2("GET", "sms/sms.php", datapass, cObj("err_hands_error"), cObj("load_bulk_emails_sending"));
                     cObj("err_hands_error").innerHTML = "<p class='text-success'>Sending bulk E-Mails can take some time. <br>Kindly be patient as the process is done by the system</p>";
                 } else {
@@ -649,7 +649,7 @@ cObj("send_post").onclick = function () {
         err += checkBlank("type_notice_here");
         if (err == 0) {
             cObj("notice_errors").innerHTML = "";
-            var datapass = "?send_message_notice=true&recpt_id=" + cObj("select_staff_infors").value + "&message=" + cObj("type_notice_here").value;
+            var datapass = "?send_message_notice=true&recpt_id=" + cObj("select_staff_infors").value + "&message=" + encodeURIComponent(cObj("type_notice_here").value);
             sendData1("GET", "sms/sms.php", datapass, cObj("notice_errors"));
             setTimeout(() => {
                 var timeout = 0;

@@ -1440,7 +1440,7 @@ function closeWin2() {
     }
 }
 function sendMessage() {
-    var datapass = "?send_message=true&to=" + cObj("phone_nos").value + "&message=" + cObj("text_message").value
+    var datapass = "?send_message=true&to=" + cObj("phone_nos").value + "&message=" + encodeURIComponent(cObj("text_message").value)
     sendData1("GET", "finance/financial.php", datapass, cObj("out_put"));
     setTimeout(() => {
         var timeout = 0;

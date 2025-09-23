@@ -1,3 +1,4 @@
+19th Sep 2025 18:17:24PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 19th Sep 2025 16:57:44PM : JAMES WAKILI successfully logged into the system as Attendance Taker - {JAMES WAKILI}
 19th Sep 2025 16:57:22PM : Registration of JAMES WAKILI as <b>Attendance Taker</b> has been done successfully - {ANN AKOTCH}
 19th Sep 2025 16:56:49PM : Role "Attendance Taker" has been added successfully! - {ANN AKOTCH}
