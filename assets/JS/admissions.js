@@ -2932,33 +2932,59 @@ function tablebtnlistener() {
     }, 200);
 }
 
+function getCurrentMonthRange() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1; // JS months are 0–11
+
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0); // last day of month
+
+  const format = (date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
+
+  return {
+    start: format(startDate),
+    end: format(endDate)
+  };
+}
+
 function display_course_list_table(course_history, json_data) {
     let votehead_status = "Regular Only";
     let votehead_counter = 0;
+    var current_month_range = getCurrentMonthRange();
     // course history is null
     if(course_history != null && course_history.module_terms.length > 0){
         // display that in the table.
         var index = 0;
-        var start_date = course_history.module_terms[0].start_date.length > 0 ? formatDate_2(course_history.module_terms[0].start_date) : "";
-        var end_date = course_history.module_terms[0].end_date.length > 0 ? formatDate_2(course_history.module_terms[0].end_date) : "";
+        var start_date = course_history.module_terms[0].start_date!=null && course_history.module_terms[0].start_date.length > 0 ? formatDate_2(course_history.module_terms[0].start_date) : current_month_range.start;
+        var end_date = course_history.module_terms[0].end_date!=null && course_history.module_terms[0].end_date.length > 0 ? formatDate_2(course_history.module_terms[0].end_date) : current_month_range.end;
         var data_status = course_history.module_terms[0].status != 1 ? "d-none" : ""; //MODULE
-        var start_date_end_date = "<div class='row mt-1 "+data_status+"' id='start_date_end_date_window_"+index+"'><div class='col-md-9'><label class='form-control-label' for='start_date_"+index+"'><b>Start Date</b></label><input class='form-control start_date_selector' id='start_date_"+index+"' type='date' value='"+start_date+"'></div><div class='col-md-9 mt-1'><label class='form-control-label' for='end_date_"+index+"' ><b>End Date</b></label><input class='form-control end_date_selector' id='end_date_"+index+"' type='date' value='"+end_date+"'></div></div>";
+        var start_date_end_date = "<div class='row mt-1 "+data_status+"' id='start_date_end_date_window_"+index+"'><div class='col-md-9'><label class='form-control-label' for='start_date_"+index+"'><b>Start Date</b></label><input class='form-control start_date_selector' id='start_date_"+index+"' type='date' value='"+start_date+"'></div><div class='col-md-9 mt-1'><label class='form-control-label' for='end_date_"+index+"' ><b>End Date</b></label><input class='form-control end_date_selector' id='end_date_"+index+"' type='date' value='"+end_date+"'></div>";
+        start_date_end_date += "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "fulltime" ? "" : "d-none")+"'><label class='form-control-label' for='fulltime_amount_"+index+"' ><b>Fulltime Cost</b></label><input class='form-control fulltime_cost_selector' id='fulltime_amount_"+index+"' type='number' value='"+course_history.module_terms[index].fulltime_cost+"'></div>";
+        start_date_end_date += "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "evening" ? "" : "d-none")+"'><label class='form-control-label' for='hybrid_amount_"+index+"' ><b>Hybrid Cost</b></label><input class='form-control hybrid_cost_selector' id='hybrid_amount_"+index+"' type='number' value='"+course_history.module_terms[index].evening_cost+"'></div>";
+        start_date_end_date+= "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "weekend" ? "" : "d-none")+"'><label class='form-control-label' for='weekend_amount_"+index+"' ><b>Weekend Cost</b></label><input class='form-control weekend_cost_selector' id='weekend_amount_"+index+"' type='number' value='"+course_history.module_terms[index].weekend_cost+"'></div></div>";
         var reset_button = course_history.module_terms[0].status == 1 ? "<span class='btn btn-sm btn-outline-success mt-2' id='reset_course_term_module'><i class='fa fa-cog'></i> Reset</span>" : "";
         var data_to_display = "<h4 class='text-center'>Course Progress <input id='course_level_invalue' hidden value='"+JSON.stringify(course_history)+"'><input id='course_level_value' hidden value='"+JSON.stringify(json_data)+"'></h4><table class='table'><tr><th>Course Level</th><th>Course Name</th><th>Module Terms</th><th>Status</th><th>period</th></tr>";
-        data_to_display+="<tr><td rowspan='"+course_history.module_terms.length+"' style='vertical-align: middle;'><b>"+course_history.course_level_name+"</b></td><td rowspan='"+course_history.module_terms.length+"' style='vertical-align: middle;'><b>"+course_history.course_name+"</b></td><td>"+course_history.module_terms[0].term_name+"<br>"+reset_button+"</td><td><label class='form-control-label' for='checked1' >Status : </label> <select class='form-control select_options' id='select_option_0'><option value='' hidden>Select Option</option><option value='0' "+(course_history.module_terms[0].status == 0 ? "selected" : "")+">In-Active</option><option "+(course_history.module_terms[0].status == 1 ? "selected" : "")+" value='1'>Active</option><option "+(course_history.module_terms[0].status == 2 ? "selected" : "")+" value='2'>Completed</option></select>"+start_date_end_date+"</td><td>"+(course_history.module_terms[0].start_date.length > 0 ? "Start Date : "+"<b>"+formatDate_1(course_history.module_terms[0].start_date)+"</b>"+"<br>End Date : "+"<b>"+formatDate_1(course_history.module_terms[0].end_date)+"</b>" : "In-Active") +"</td></tr>";
+        data_to_display+="<tr><td rowspan='"+course_history.module_terms.length+"' style='vertical-align: middle;'><b>"+course_history.course_level_name+"</b></td><td rowspan='"+course_history.module_terms.length+"' style='vertical-align: middle;'><b>"+course_history.course_name+"</b></td><td>"+course_history.module_terms[0].term_name+"<br>"+reset_button+"</td><td><label class='form-control-label' for='checked1' >Status : </label> <select class='form-control select_options' id='select_option_0'><option value='' hidden>Select Option</option><option value='0' "+(course_history.module_terms[0].status == 0 ? "selected" : "")+">In-Active</option><option "+(course_history.module_terms[0].status == 1 ? "selected" : "")+" value='1'>Active</option><option "+(course_history.module_terms[0].status == 2 ? "selected" : "")+" value='2'>Completed</option></select>"+start_date_end_date+"</td><td>"+(course_history.module_terms[0].start_date != null && course_history.module_terms[0].start_date.length > 0 ? "Start Date : "+"<b>"+formatDate_1(course_history.module_terms[0].start_date)+"</b>"+"<br>End Date : "+"<b>"+formatDate_1(course_history.module_terms[0].end_date)+"</b>" : "In-Active") +"</td></tr>";
         
         // loop through the data
         for (let index = 1; index < course_history.module_terms.length; index++) {
             const element = course_history.module_terms[index];
-            var start_date = course_history.module_terms[index].start_date.length > 0 ? formatDate_2(course_history.module_terms[index].start_date) : "";
-            var end_date = course_history.module_terms[index].end_date.length > 0 ? formatDate_2(course_history.module_terms[index].end_date) : "";
+            var start_date = course_history.module_terms[index].start_date!=null && course_history.module_terms[index].start_date.length > 0 ? formatDate_2(course_history.module_terms[index].start_date) : current_month_range.start;
+            var end_date = course_history.module_terms[index].end_date!=null && course_history.module_terms[index].end_date.length > 0 ? formatDate_2(course_history.module_terms[index].end_date) : current_month_range.end;
             var data_status = course_history.module_terms[index].status != 1 ? "d-none" : "";
             var start_date_end_date = "<div class='row mt-1 "+data_status+"' id='start_date_end_date_window_"+index+"'><div class='col-md-9'><label class='form-control-label' for='start_date_"+index+"'><b>Start Date</b></label><input class='form-control start_date_selector' id='start_date_"+index+"' type='date' value='"+start_date+"'></div><div class='col-md-9 mt-1'><label class='form-control-label' for='end_date_"+index+"' ><b>End Date</b></label><input class='form-control end_date_selector' id='end_date_"+index+"' type='date' value='"+end_date+"'></div>";
             start_date_end_date += "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "fulltime" ? "" : "d-none")+"'><label class='form-control-label' for='fulltime_amount_"+index+"' ><b>Fulltime Cost</b></label><input class='form-control fulltime_cost_selector' id='fulltime_amount_"+index+"' type='number' value='"+course_history.module_terms[index].fulltime_cost+"'></div>";
             start_date_end_date += "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "evening" ? "" : "d-none")+"'><label class='form-control-label' for='hybrid_amount_"+index+"' ><b>Hybrid Cost</b></label><input class='form-control hybrid_cost_selector' id='hybrid_amount_"+index+"' type='number' value='"+course_history.module_terms[index].evening_cost+"'></div>";
             start_date_end_date+= "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "weekend" ? "" : "d-none")+"'><label class='form-control-label' for='weekend_amount_"+index+"' ><b>Weekend Cost</b></label><input class='form-control weekend_cost_selector' id='weekend_amount_"+index+"' type='number' value='"+course_history.module_terms[index].weekend_cost+"'></div></div>";
-            let delete_button = (course_history.module_terms[index].status == 1) ? "<span class='btn btn-sm btn-outline-danger' id='delete_course_term_module'><i class='fa fa-trash'></i> Del</span><span class='btn btn-sm btn-outline-success mt-2' id='reset_course_term_module'><i class='fa fa-cog'></i> Reset</span>" : "";
-            data_to_display+="<tr><td>"+course_history.module_terms[index].term_name+"<br>"+delete_button+"</td><td><label class='form-control-label' for='select_option_1' >Status : </label> <select class='form-control select_options' id='select_option_"+index+"'><option value='' hidden>Select Option</option><option value='0' "+(course_history.module_terms[index].status == 0 ? "selected" : "")+">In-Active</option><option "+(course_history.module_terms[index].status == 1 ? "selected" : "")+" value='1'>Active</option><option "+(course_history.module_terms[index].status == 2 ? "selected" : "")+" value='2'>Completed</option></select>"+start_date_end_date+"</td><td>"+(course_history.module_terms[index].start_date.length > 0 ? "Start Date : "+"<b>"+formatDate_1(course_history.module_terms[index].start_date)+"</b>"+"<br>End Date : "+"<b>"+formatDate_1(course_history.module_terms[index].end_date)+"</b>" : "In-Active") +"</td></tr>";
+            let delete_button = (course_history.module_terms.length-1 == index) ? "<span class='btn btn-sm btn-outline-danger' id='delete_course_term_module'><i class='fa fa-trash'></i> Del</span>" : "";
+            let resetBtn =  course_history.module_terms[index].status == 1 ? "<span class='btn btn-sm btn-outline-success mt-2' id='reset_course_term_module'><i class='fa fa-cog'></i> Reset</span>" : "";
+            data_to_display+="<tr><td>"+course_history.module_terms[index].term_name+"<br>"+delete_button+resetBtn+"</td><td><label class='form-control-label' for='select_option_1' >Status : </label> <select class='form-control select_options' id='select_option_"+index+"'><option value='' hidden>Select Option</option><option value='0' "+(course_history.module_terms[index].status == 0 ? "selected" : "")+">In-Active</option><option "+(course_history.module_terms[index].status == 1 ? "selected" : "")+" value='1'>Active</option><option "+(course_history.module_terms[index].status == 2 ? "selected" : "")+" value='2'>Completed</option></select>"+start_date_end_date+"</td><td>"+(course_history.module_terms[index].start_date!=null && course_history.module_terms[index].start_date.length > 0 ? "Start Date : "+"<b>"+formatDate_1(course_history.module_terms[index].start_date)+"</b>"+"<br>End Date : "+"<b>"+formatDate_1(course_history.module_terms[index].end_date)+"</b>" : "In-Active") +"</td></tr>";
             votehead_counter += (course_history.module_terms[index].voteheads != undefined || course_history.module_terms[index].voteheads != null) ? (course_history.module_terms[index].voteheads.length > 0 ? 1 : 0) : 0;
         }
         data_to_display += "</table>";
@@ -3048,6 +3074,7 @@ function display_course_list_table(course_history, json_data) {
                     const elem = module_terms[ind];
                     if (ind == element.id.substring(11)) {
                         let date = element.value.replace(/-/g, "")+elem.start_date.substring(8);
+                        console.log(date);
                         module_terms[ind].start_date = date;
                         json_data.module_terms[ind].start_date = date;
                     }
@@ -3345,6 +3372,8 @@ cObj("save_course_progress").onclick = function () {
             const element = module_terms[index];
             element.status = statuses[index];
             if (element.status == "1") {
+                course_level_value.module_terms[index].start_date = !checkBlank("start_date_"+index) ? valObj("start_date_"+index) : 0
+                course_level_value.module_terms[index].end_date = !checkBlank("end_date_"+index) ? valObj("end_date_"+index) : 0
                 course_level_value.module_terms[index].fulltime_cost = !checkBlank("fulltime_amount_"+index) ? valObj("fulltime_amount_"+index)*1 : 0
                 course_level_value.module_terms[index].evening_cost = !checkBlank("hybrid_amount_"+index) ? valObj("hybrid_amount_"+index)*1 : 0
                 course_level_value.module_terms[index].weekend_cost = !checkBlank("weekend_amount_"+index) ? valObj("weekend_amount_"+index)*1 : 0
@@ -4109,26 +4138,20 @@ cObj("submitbtn").onclick = function () {
             datapass += "&student_contacts="+student_contacts+"&student_email="+student_email+"&college_branch="+college_branch;
             datapass += "&intake_year="+valObj("intake_year")+"&intake_month="+valObj("intake_month")+"&course_module_terms="+course_module_terms;
             datapass += "&study_mode="+module_terms+"&send_student_message="+(cObj("send_student_parent_sms").checked ? "on" : "off")+"&send_first_parent="+(cObj("send_primary_parent_sms").checked ? "on" : "off")+"&send_second_parent="+(cObj("send_secondary_parent_sms").checked ? "on" : "off")+"";
-            sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("erroradm"),cObj("loadings"));
-            setTimeout(() => {
-                var ids = setInterval(() => {
-                    if (cObj("loadings").classList.contains("hide")) {
-                        if (cObj("admnohold") != null) {
-                            var admnos = valObj("admnohold");
-                            var names = valObj("namehold");
-                            cObj("admissionno").innerText = admno;
-                            cObj("studname").innerText = names;
-                            cObj("admitform").reset();
-                            
-                            //bring the complete admission window
-                            hideWindow();
-                            cObj("completeadmission").classList.remove("hide");
-                            getClubsNSports();
-                        }
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 200);
+            sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("erroradm"),cObj("loadings"), function () {
+                if (cObj("admnohold") != null) {
+                    var admnos = valObj("admnohold");
+                    var names = valObj("namehold");
+                    cObj("admissionno").innerText = admno;
+                    cObj("studname").innerText = names;
+                    cObj("admitform").reset();
+                    
+                    //bring the complete admission window
+                    hideWindow();
+                    cObj("completeadmission").classList.remove("hide");
+                    getClubsNSports();
+                }
+            });
         } else {
             cObj("erroradm").innerHTML = "<p style='color:red;font-size:14px;'><strong>Errors</strong><br>No class selected!</p>";
         }
@@ -9651,16 +9674,21 @@ function formatDate_2(dateString) {
 }
 
 function formatDate_1(dateString) {
-    // Parse the input date string
-    const year = dateString.substring(0, 4);
-    const month = parseInt(dateString.substring(4, 6)) - 1; // Months are zero-based
-    const day = parseInt(dateString.substring(6, 8));
-    const hour = parseInt(dateString.substring(8, 10));
-    const minute = parseInt(dateString.substring(10, 12));
-    const second = parseInt(dateString.substring(12, 14));
+    let date = null
+    if (!dateString || dateString.length < 14){
+        date = new Date(); // fallback to current date
+    }else{
+        // Parse the input date string
+        const year = dateString.substring(0, 4);
+        const month = parseInt(dateString.substring(4, 6)) - 1; // Months are zero-based
+        const day = parseInt(dateString.substring(6, 8));
+        const hour = parseInt(dateString.substring(8, 10));
+        const minute = parseInt(dateString.substring(10, 12));
+        const second = parseInt(dateString.substring(12, 14));
 
-    // Create a JavaScript Date object
-    const date = new Date(year, month, day, hour, minute, second);
+        // Create a JavaScript Date object
+        date = new Date(year, month, day, hour, minute, second);
+    }
 
     // Define the weekday names and suffixes for ordinal numbers
     const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -9668,27 +9696,33 @@ function formatDate_1(dateString) {
 
     // Get the weekday, day, month, hour, and minute in the desired format
     const weekday = weekdayNames[date.getDay()];
+    const day = date.getDate();
     const dayWithSuffix = day + ordinalSuffixes[day % 10];
     const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
     const hour12 = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
     const period = date.getHours() >= 12 ? "PM" : "AM";
 
     // Format the date string
-    const formattedDate = `${weekday} ${dayWithSuffix} ${monthName} ${year}`;
+    const formattedDate = `${weekday} ${dayWithSuffix} ${monthName} ${date.getFullYear()}`;
 
     return formattedDate;
 }
 function formatDate(dateString) {
-    // Parse the input date string
-    const year = dateString.substring(0, 4);
-    const month = parseInt(dateString.substring(4, 6)) - 1; // Months are zero-based
-    const day = parseInt(dateString.substring(6, 8));
-    const hour = parseInt(dateString.substring(8, 10));
-    const minute = parseInt(dateString.substring(10, 12));
-    const second = parseInt(dateString.substring(12, 14));
+    let date = null
+    if (!dateString || dateString.length < 14){
+        date = new Date(); // fallback to current date
+    }else{
+        // Parse the input date string
+        const year = dateString.substring(0, 4);
+        const month = parseInt(dateString.substring(4, 6)) - 1; // Months are zero-based
+        const day = parseInt(dateString.substring(6, 8));
+        const hour = parseInt(dateString.substring(8, 10));
+        const minute = parseInt(dateString.substring(10, 12));
+        const second = parseInt(dateString.substring(12, 14));
 
-    // Create a JavaScript Date object
-    const date = new Date(year, month, day, hour, minute, second);
+        // Create a JavaScript Date object
+        date = new Date(year, month, day, hour, minute, second);
+    }
 
     // Define the weekday names and suffixes for ordinal numbers
     const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -9696,6 +9730,7 @@ function formatDate(dateString) {
 
     // Get the weekday, day, month, hour, and minute in the desired format
     const weekday = weekdayNames[date.getDay()];
+    const day = date.getDate();
     const dayWithSuffix = day + ordinalSuffixes[day % 10];
     const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
     const hour12 = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();

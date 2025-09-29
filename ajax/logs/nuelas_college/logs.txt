@@ -1,3 +1,11 @@
+29th Sep 2025 20:23:48PM : Agnes Agnes of adm no NC-2025-006  balance has been updated successfully! - {ANN AKOTCH}
+29th Sep 2025 20:23:34PM : Agnes Agnes of adm no NC-2025-006  balance has been updated successfully! - {ANN AKOTCH}
+29th Sep 2025 19:59:12PM : Agnes Agnes of adm no NC-2025-006  balance has been updated successfully! - {ANN AKOTCH}
+29th Sep 2025 19:50:41PM : Agnes Agnes of adm no NC-2025-006  balance has been updated successfully! - {ANN AKOTCH}
+29th Sep 2025 19:45:45PM : Carol Carol of adm no NC-2025-001  balance has been updated successfully! - {ANN AKOTCH}
+29th Sep 2025 19:44:32PM : Carol Carol of adm no NC-2025-001  balance has been updated successfully! - {ANN AKOTCH}
+29th Sep 2025 19:43:31PM : Carol Carol of adm no NC-2025-001  balance has been updated successfully! - {ANN AKOTCH}
+29th Sep 2025 17:56:02PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 23rd Sep 2025 18:42:28PM : Carol  - of Reg No. (NC-2025-001) data has been updated successfully! - {ANN AKOTCH}
 23rd Sep 2025 16:26:30PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 19th Sep 2025 18:17:24PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}

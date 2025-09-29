@@ -6822,17 +6822,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
             
             $course_duration = "0 days";
-            $course_cost = 0;
-            $fulltime_cost = 0;
-            $evening_cost = 0;
-            $weekend_cost = 0;
             if(!empty($course_updated)){
                 foreach($courses as $course){
                     if($course->id == $course_updated->course_name){
                         $course_duration = $course->term_duration." ".$course->duration_intervals;
-                        $fulltime_cost = isset($course->fulltime_fees) ? $course->fulltime_fees : 0;
-                        $evening_cost = isset($course->evening_fees) ? $course->evening_fees : 0;
-                        $weekend_cost = isset($course->weekend_fees) ? $course->weekend_fees : 0;
                     }
                 }
             }
@@ -6849,8 +6842,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($updated_completed_modules, $module_terms[$index]->id);
                         $count_module_fees += 1;
                     }
-
-                    if($module_terms[$index]->status != 2 && in_array($module_terms[$index]->id, $completed_modules)){
+                    
+                    if($module_terms[$index]->status*1 != 2 && in_array($module_terms[$index]->id, $completed_modules)){
                         $count_activated_modules_from_completed+=1;
                     }
 
@@ -6858,19 +6851,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     if($module_terms[$index]->status == 1){
                         // term
                         if(!$deactivate){
-                            $module_terms[$index]->start_date = $module_terms[$index]->start_date != "" ? $module_terms[$index]->start_date : date("YmdHis");
-                            $module_terms[$index]->end_date = $module_terms[$index]->end_date != "" ? $module_terms[$index]->end_date : date("YmdHis",strtotime($course_duration));
-                            // $module_terms[$index]->termly_cost = $course_cost*1;
-                            $module_terms[$index]->fulltime_cost = $fulltime_cost*1;
-                            $module_terms[$index]->evening_cost = $evening_cost*1;
-                            $module_terms[$index]->weekend_cost = $weekend_cost*1;
+                            $module_terms[$index]->start_date = !empty($module_terms[$index]->start_date) ? date("YmdHis", strtotime($module_terms[$index]->start_date)) : date("YmdHis");
+                            $module_terms[$index]->end_date = !empty($module_terms[$index]->end_date) ? date("YmdHis", strtotime($module_terms[$index]->end_date)) : date("YmdHis",strtotime($course_duration));
                         }else{
                             $module_terms[$index]->start_date = "";
                             $module_terms[$index]->end_date = "";
-                            // $module_terms[$index]->termly_cost = $course_cost*1;
-                            $module_terms[$index]->fulltime_cost = $fulltime_cost*1;
-                            $module_terms[$index]->evening_cost = $evening_cost*1;
-                            $module_terms[$index]->weekend_cost = $weekend_cost*1;
                         }
                         $deactivate = true;
                     }
@@ -6880,10 +6865,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         // term
                         $module_terms[$index]->start_date = "";
                         $module_terms[$index]->end_date = "";
-                        // $module_terms[$index]->termly_cost = $course_cost*1;
-                        $module_terms[$index]->fulltime_cost = $fulltime_cost*1;
-                        $module_terms[$index]->evening_cost = $evening_cost*1;
-                        $module_terms[$index]->weekend_cost = $weekend_cost*1;
                     }
                 }
                 $course_updated->module_terms = $module_terms;
@@ -6918,11 +6899,13 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $my_course_list = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list']) : [];
                 }
             }
+
+
             // my course list
             $reffer_course_update_price = isJson_report($_POST['course_updated']) ? json_decode($_POST['course_updated']) : json_decode("{}");
             foreach($my_course_list as $key => $course){
                 if($course->id == $reffer_course_update_price->id){
-                    $my_course_list[$key] = $reffer_course_update_price;
+                    $my_course_list[$key] = $course_updated;
                 }
             }
 
@@ -6930,7 +6913,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
             // GET FEES THE STUDENT PAYS PER TERM
             $term = "TERM_1";
-            $fees_to_pay = getFeesAsFromTermAdmited($term,$conn2,$class,$student_id);
             $this_module_fees = getFeesAsFromTermAdmited($term,$conn2,$class,$student_id, false);
 
             $balance_to_deduct = $count_module_fees*$this_module_fees;
@@ -6949,8 +6931,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $stmt->execute();
                 echo "<p class='text-success'>Course updates have been done successfully!</p>";
             }else{
-                // $balance_cf+=$balance_to_add;
-                // echo $balance_cf." - ".$balance_to_add."<br>";
                 $balance_cf-=$balance_to_add;
                 
                 // update the course modules alone incase its active or inactive
@@ -8836,6 +8816,7 @@ function isJson_report($string) {
         // Parse the custom format: YYYYmmddHHiiss
         $target = DateTime::createFromFormat('YmdHis', $rawDate);
         if (!$target) {
+            echo $rawDate." -- <br>";
             return "Invalid date format.";
         }
     

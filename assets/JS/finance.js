@@ -2529,39 +2529,27 @@ function getMpesaPayments() {
     // get the exams that are already done
     rowsColStudents = [];
     var datapass = "?mpesaTransaction=true";
-    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("transDataReciever"), cObj("completedTransHolder"));
-    setTimeout(() => {
-        var timeout = 0;
-        var idms = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(idms);
-            }
-            if (cObj("completedTransHolder").classList.contains("hide")) {
-                // get the arrays
-                // set the listener for the assign button
-                var assign_payment = document.getElementsByClassName("assign_payment");
-                for (let index = 0; index < assign_payment.length; index++) {
-                    const element = assign_payment[index];
-                    element.addEventListener("click", find_Payment)
-                }
+    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("transDataReciever"), cObj("completedTransHolder"), function () {
+        // get the arrays
+        // set the listener for the assign button
+        var assign_payment = document.getElementsByClassName("assign_payment");
+        for (let index = 0; index < assign_payment.length; index++) {
+            const element = assign_payment[index];
+            element.addEventListener("click", find_Payment)
+        }
 
-                var unassign_payment = document.getElementsByClassName("unassign_payment");
-                for (let index = 0; index < unassign_payment.length; index++) {
-                    const element = unassign_payment[index];
-                    element.addEventListener("click", un_assign_payments);
-                }
+        var unassign_payment = document.getElementsByClassName("unassign_payment");
+        for (let index = 0; index < unassign_payment.length; index++) {
+            const element = unassign_payment[index];
+            element.addEventListener("click", un_assign_payments);
+        }
 
 
-                // set the datatable
-                $(document).ready(function() {
-                    $('#mpesa_transactions_table').DataTable();  // Just one line!
-                });
-                stopInterval(idms);
-            }
-        }, 100);
-    }, 100);
+        // set the datatable
+        $(document).ready(function() {
+            $('#mpesa_transactions_table').DataTable();  // Just one line!
+        });
+    });
 }
 
 
@@ -2599,33 +2587,21 @@ cObj("confirm_unassign_payments").onclick = function () {
 function find_Payment() {
     // get the transaction information
     var datapass = "?mpesa_transaction_id=" + this.id.substr(15);
-    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("output_mpesa_transactions"), cObj("loadings"));
-    setTimeout(() => {
-        var timeout = 0;
-        var idms = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(idms);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                // get the arrays
-                var results = cObj("output_mpesa_transactions").innerText;
-                var mpesa_data = results.split(":");
-                cObj("mpesa_id").innerText = mpesa_data[1];
-                cObj("assign_payment_amount_paid").innerText = mpesa_data[2];
-                cObj("mpesa_payment_amount_holder").value = mpesa_data[2]*1;
-                cObj("wrong_adm").innerText = mpesa_data[3];
-                cObj("trans_time").innerText = mpesa_data[4];
-                cObj("payer_name").innerText = mpesa_data[7];
-                cObj("msisdn").innerText = mpesa_data[6];
-                cObj("payment_id").innerText = mpesa_data[0];
-                cObj("mpesa_idds").innerText = mpesa_data[1];
-                cObj("amount_to_transfer").innerText = mpesa_data[2];
-                stopInterval(idms);
-            }
-        }, 100);
-    }, 100);
+    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("output_mpesa_transactions"), cObj("loadings"), function () {
+        // get the arrays
+        var results = cObj("output_mpesa_transactions").innerText;
+        var mpesa_data = results.split(":");
+        cObj("mpesa_id").innerText = mpesa_data[1];
+        cObj("assign_payment_amount_paid").innerText = mpesa_data[2];
+        cObj("mpesa_payment_amount_holder").value = mpesa_data[2]*1;
+        cObj("wrong_adm").innerText = mpesa_data[3];
+        cObj("trans_time").innerText = mpesa_data[4];
+        cObj("payer_name").innerText = mpesa_data[7];
+        cObj("msisdn").innerText = mpesa_data[6];
+        cObj("payment_id").innerText = mpesa_data[0];
+        cObj("mpesa_idds").innerText = mpesa_data[1];
+        cObj("amount_to_transfer").innerText = mpesa_data[2];
+    });
 
 
     // switdh through the window
