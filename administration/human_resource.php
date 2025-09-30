@@ -224,7 +224,7 @@
                             <input type="text" name="search" id="searchkey_leaves" class="w-100 form-control rounded-lg p-1" placeholder="Search here ..">
                         </div>
                         <div class="col-md-6 form-group">
-                            <select name="choose_status" id="choose_leave_status" class="form-control">
+                            <select name="choose_status" id="choose_leave_status" class="form-control w-100">
                                 <option value="">Select All</option>
                                 <option value="0">Pending</option>
                                 <option value="1">Accepted</option>
@@ -350,7 +350,7 @@
                                 <div class="form-group">
                                     <input type="hidden" id="leaves_view_id">
                                     <label for="leaves_status" class="form-control-label">Leave Status</label>
-                                    <select name="choose_status" id="choose_leave_status2" class="form-control">
+                                    <select name="choose_status" id="choose_leave_status2" class="form-control w-100">
                                         <option id="p_101" value="">Select Leave status</option>
                                         <option id="p_102" value="0">Pending</option>
                                         <option id="p_103" value="1">Accepted</option>

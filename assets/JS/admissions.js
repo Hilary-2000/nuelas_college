@@ -319,6 +319,10 @@ cObj("apply_leave_staff").onclick = function () {
     removesidebar();
     // get leaves applied
     getLeavesApplied();
+    cObj("leave_duration").value = "";
+    cObj("from_leave_date").value = "";
+    cObj("to_leaves_date").value = "";
+    cObj("leave_comments").value = "";
 }
 cObj("update_personal_profile").onclick = function () {
     hideWindow();
@@ -1277,6 +1281,11 @@ window.onload = function () {
         const element = finance1[index];
         element.addEventListener("change", finance_check);
     }
+    var human_resource_mgmt = document.getElementsByClassName("human_resource_mgmt");
+    for (let index = 0; index < human_resource_mgmt.length; index++) {
+        const element = human_resource_mgmt[index];
+        element.addEventListener("change", hr_check);
+    }
     var routesnvans1 = document.getElementsByClassName("routesnvans1");
     for (let index = 0; index < routesnvans1.length; index++) {
         const element = routesnvans1[index];
@@ -1323,6 +1332,11 @@ window.onload = function () {
     for (let index = 0; index < accounts_section2.length; index++) {
         const element = accounts_section2[index];
         element.addEventListener("change", all_account_settings2);
+    }
+    var human_resource_mgmt_2 = document.getElementsByClassName("human_resource_mgmt_2");
+    for (let index = 0; index < human_resource_mgmt_2.length; index++) {
+        const element = human_resource_mgmt_2[index];
+        element.addEventListener("change", hr_check2);
     }
 
     // get if the reports button is set
@@ -1400,7 +1414,7 @@ window.onload = function () {
         sendData("GET", "academic/academic.php", datapass, cObj("my_subjects"));
 
         // unhide the payment approval button if logged in as the headteacher
-        cObj("approve_payments").classList.remove("hide");
+        // cObj("approve_payments").classList.remove("hide");
     }
 
     //deputy prncipal
@@ -5908,6 +5922,21 @@ function finance_check() {
         cObj("all_finance_sect").checked = false;
     }
 }
+function hr_check() {
+    var human_resource_mgmt = document.getElementsByClassName("human_resource_mgmt");
+    var count = 0;
+    for (let index = 0; index < human_resource_mgmt.length; index++) {
+        const element = human_resource_mgmt[index];
+        if (element.checked == true) {
+            count++;
+        }
+    }
+    if (count == human_resource_mgmt.length) {
+        cObj("all_hr_check").checked = true;
+    } else {
+        cObj("all_hr_check").checked = false;
+    }
+}
 function academic_check() {
     var classin = document.getElementsByClassName("academic_sect");
     var count = 0;
@@ -6000,6 +6029,21 @@ function finance_check2() {
         cObj("all_finance_sect2").checked = false;
     }
 }
+function hr_check2() {
+    var classin = document.getElementsByClassName("human_resource_mgmt_2");
+    var count = 0;
+    for (let index = 0; index < classin.length; index++) {
+        const element = classin[index];
+        if (element.checked == true) {
+            count++;
+        }
+    }
+    if (count == classin.length) {
+        cObj("all_hr_check2").checked = true;
+    } else {
+        cObj("all_hr_check2").checked = false;
+    }
+}
 function all_sms_check2() {
     var classin = document.getElementsByClassName("sms_broadcasted2");
     var count = 0;
@@ -6061,6 +6105,22 @@ cObj("all_finance_sect").onchange = function () {
         }
     }
 }
+// all_hr_check
+cObj("all_hr_check").onchange = function () {
+    var all_hr_check = document.getElementsByClassName("human_resource_mgmt");
+    if (this.checked == true) {
+        for (let index = 0; index < all_hr_check.length; index++) {
+            const element = all_hr_check[index];
+            element.checked = true;
+        }
+    } else {
+        for (let index = 0; index < all_hr_check.length; index++) {
+            const element = all_hr_check[index];
+            element.checked = false;
+        }
+    }
+}
+
 cObj("all_sms_check").onchange = function () {
     var mychecks = document.getElementsByClassName("sms_broadcasted");
     if (this.checked == true) {
@@ -6120,6 +6180,23 @@ cObj("all_finance_sect2").onchange = function () {
         }
     }
 }
+
+// all hr checks
+cObj("all_hr_check2").onchange = function () {
+    var human_resource_mgmt_2 = document.getElementsByClassName("human_resource_mgmt_2");
+    if (this.checked == true) {
+        for (let index = 0; index < human_resource_mgmt_2.length; index++) {
+            const element = human_resource_mgmt_2[index];
+            element.checked = true;
+        }
+    } else {
+        for (let index = 0; index < human_resource_mgmt_2.length; index++) {
+            const element = human_resource_mgmt_2[index];
+            element.checked = false;
+        }
+    }
+}
+
 cObj("all_sms_check2").onchange = function () {
     var mychecks = document.getElementsByClassName("sms_broadcasted2");
     if (this.checked == true) {
@@ -6150,72 +6227,6 @@ cObj("accounts_sector2").onchange = function () {
 }
 /**ENDS HERE BRUH */
 
-function getStaffRole() {
-    var role = "[";
-    var status = cObj("admit_student_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"admitbtn\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_stud_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"findstudsbtn\",\"Status\":\"" + status + "\"},"
-    status = cObj("class_attendance_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"callregister\",\"Status\":\"" + status + "\"},"
-    status = cObj("register_staff_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"regstaffs\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_staff_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"managestaf\",\"Status\":\"" + status + "\"},"
-    status = cObj("promote_students_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"promoteStd\",\"Status\":\"" + status + "\"},"
-    // human resource changed 21st nov 2022
-    status = cObj("human_resource_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"humanresource\",\"Status\":\"" + status + "\"},"
-    // ends here
-    status = cObj("pay_fees-sector").checked == true ? "yes" : "no";
-    role += "{\"name\":\"payfeess\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_transaction_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"findtrans\",\"Status\":\"" + status + "\"},"
-    status = cObj("mpesa_transaction_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"mpesaTrans\",\"Status\":\"" + status + "\"},"
-    status = cObj("fees_structures_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"feestruct\",\"Status\":\"" + status + "\"},"
-    status = cObj("expense_section").checked == true ? "yes" : "no";
-    role += "{\"name\":\"expenses_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("financial_report_section").checked == true ? "yes" : "no";
-    role += "{\"name\":\"finance_report_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("payroll_section").checked == true ? "yes" : "no";
-    role += "{\"name\":\"payroll_sys\",\"Status\":\"" + status + "\"},"
-    status = cObj("route_n_van_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"routes_n_trans\",\"Status\":\"" + status + "\"},"
-    status = cObj("enroll_students_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"enroll_students\",\"Status\":\"" + status + "\"},"
-    status = cObj("register_subject_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"regsub\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_subject_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"managesub\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_teacher_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"managetrnsub\",\"Status\":\"" + status + "\"},"
-    status = cObj("timetables_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"generate_tt_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("exam_management_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"examanagement\",\"Status\":\"" + status + "\"},"
-    status = cObj("student_marks_entry").checked == true ? "yes" : "no";
-    role += "{\"name\":\"exam_fill_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("enroll_boarding_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"enroll_boarding_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_dormitory_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"maanage_dorm\",\"Status\":\"" + status + "\"},"
-    status = cObj("sms_and_broadcast").checked == true ? "yes" : "no";
-    role += "{\"name\":\"sms_broadcast\",\"Status\":\"" + status + "\"},"
-    status = cObj("update_school_profile_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"update_school_profile\",\"Status\":\"" + status + "\"},"
-    status = cObj("update_personal_profile_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"update_personal_profile\",\"Status\":\"" + status + "\"},"
-    status = cObj("settings_sect").checked == true ? "yes" : "no";
-    role += "{\"name\":\"set_btns\",\"Status\":\"" + status + "\"},";
-    status = cObj("my_school_reports").checked == true ? "yes" : "no";
-    role += "{\"name\":\"my_reports\",\"Status\":\"" + status + "\"}]";
-    return role;
-}
-
-/**Hey dont confuse this function to the one above */
 function getEditedStaffRoles(status = "new"){
     var data = {
         "name": status == "edit" ? valObj("role_name2") : valObj("role_name"),
@@ -6261,12 +6272,24 @@ function getEditedStaffRoles(status = "new"){
                 "Status": status == "edit" ? (cObj("expense_section2") != undefined ? (cObj("expense_section2").checked ? "yes" : "no") : "no") : (cObj("expense_section") != undefined ? (cObj("expense_section").checked ? "yes" : "no") : "no")
             },
             {
+                "name": "allow_expenses_approval",
+                "Status": status == "edit" ? (cObj("allow_expense_approvals_2") != undefined ? (cObj("allow_expense_approvals_2").checked ? "yes" : "no") : "no") : (cObj("allow_expense_approvals") != undefined ? (cObj("allow_expense_approvals").checked ? "yes" : "no") : "no")
+            },
+            {
                 "name": "asset_management",
                 "Status": status == "edit" ? (cObj("asset_management2") != undefined ? (cObj("asset_management2").checked ? "yes" : "no") : "no") : (cObj("asset_management") != undefined ? (cObj("asset_management").checked ? "yes" : "no") : "no")
             },
             {
                 "name": "supplier_account",
                 "Status": status == "edit" ? (cObj("supplier_account_2") != undefined ? (cObj("supplier_account_2").checked ? "yes" : "no") : "no") : (cObj("supplier_account") != undefined ? (cObj("supplier_account").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "payroll",
+                "Status": status == "edit" ? (cObj("payroll_management2") != undefined ? (cObj("payroll_management2").checked ? "yes" : "no") : "no") : (cObj("payroll_management") != undefined ? (cObj("payroll_management").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "leave_mgmt",
+                "Status": status == "edit" ? (cObj("leave_management2") != undefined ? (cObj("leave_management2").checked ? "yes" : "no") : "no") : (cObj("leave_management") != undefined ? (cObj("leave_management").checked ? "yes" : "no") : "no")
             },
             {
                 "name": "finance_report",
@@ -6299,88 +6322,10 @@ function getEditedStaffRoles(status = "new"){
     return data;
 }
 
-function getStaffRole2(role_index, role_name) {
-    var role = "[";
-    var status = cObj("admit_student_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"admitbtn\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_stud_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"findstudsbtn\",\"Status\":\"" + status + "\"},"
-    status = cObj("class_attendance_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"callregister\",\"Status\":\"" + status + "\"},"
-    status = cObj("register_staff_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"regstaffs\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_staff_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"managestaf\",\"Status\":\"" + status + "\"},"
-    status = cObj("promote_students_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"promoteStd\",\"Status\":\"" + status + "\"},"
-    // human resource changed 21st nov 2022
-    status = cObj("human_resource_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"humanresource\",\"Status\":\"" + status + "\"},"
-    // ends here
-    status = cObj("pay_fees-sector2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"payfeess\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_transaction_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"findtrans\",\"Status\":\"" + status + "\"},"
-    status = cObj("mpesa_transaction_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"mpesaTrans\",\"Status\":\"" + status + "\"},"
-    status = cObj("fees_structures_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"feestruct\",\"Status\":\"" + status + "\"},"
-    status = cObj("expense_section2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"expenses_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("financial_report_section2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"finance_report_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("asset_management2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"payroll_sys\",\"Status\":\"" + status + "\"},"
-    status = cObj("route_n_van_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"routes_n_trans\",\"Status\":\"" + status + "\"},"
-    status = cObj("enroll_students_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"enroll_students\",\"Status\":\"" + status + "\"},"
-    status = cObj("register_subject_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"regsub\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_subject_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"managesub\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_teacher_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"managetrnsub\",\"Status\":\"" + status + "\"},"
-    status = cObj("timetables_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"generate_tt_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("exam_management_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"examanagement\",\"Status\":\"" + status + "\"},"
-    status = cObj("student_marks_entry2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"exam_fill_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("enroll_boarding_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"enroll_boarding_btn\",\"Status\":\"" + status + "\"},"
-    status = cObj("manage_dormitory_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"maanage_dorm\",\"Status\":\"" + status + "\"},"
-    status = cObj("sms_and_broadcast2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"sms_broadcast\",\"Status\":\"" + status + "\"},"
-    status = cObj("update_school_profile_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"update_school_profile\",\"Status\":\"" + status + "\"},"
-    status = cObj("update_personal_profile_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"update_personal_profile\",\"Status\":\"" + status + "\"},"
-    status = cObj("settings_sect2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"set_btns\",\"Status\":\"" + status + "\"},";
-    status = cObj("my_school_reports2").checked == true ? "yes" : "no";
-    role += "{\"name\":\"my_reports\",\"Status\":\"" + status + "\"}]";
-
-    var data_in = cObj("show_roles").innerText;
-    var roles_upload = "[";
-    if (data_in.length > 0) {
-        var object = JSON.parse(data_in);
-        for (let index = 0; index < object.length; index++) {
-            const element = object[index];
-            if (index == role_index) {
-                roles_upload += "{\"name\":\"" + role_name + "\",\"roles\":" + role + "},";
-            } else {
-                roles_upload += JSON.stringify(element) + ",";
-            }
-        }
-        roles_upload = roles_upload.substring(0, (roles_upload.length - 1)) + "]";
-    }
-    return roles_upload;
-}
 /**IT END HERE */
 cObj("add_role_btns").onclick = function () {
     var role = getEditedStaffRoles("new");
+    console.log(role);
     var roles = [];
     if(hasJsonStructure(cObj("show_roles").innerText)){
         roles = JSON.parse(cObj("show_roles").innerText);
@@ -6411,6 +6356,7 @@ cObj("add_role_btns2").onclick = function () {
     if (err < 1) {
         cObj("allowance_err4_handler").innerHTML = "";
         var role = getEditedStaffRoles("edit");
+        console.log(role);
 
         // hasJsonStructure
         var roles = [];
@@ -6521,6 +6467,7 @@ function editRoleListener() {
     administration_check2();
     finance_check2();
     all_account_settings2();
+    hr_check2();
 }
 
 function checkRoles(roles, edit_status = "new") {
@@ -6608,6 +6555,30 @@ function checkRoles(roles, edit_status = "new") {
         var element_id = "";
         if(edit_status == "edit"){
             element_id = "expense_section2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "allow_expenses_approval"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "allow_expense_approvals_2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "payroll"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "payroll_management2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "leave_mgmt"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "leave_management2";
         }
         if(cObj(element_id) != undefined){ 
             cObj(element_id).checked = roles.Status == "yes";
@@ -8244,25 +8215,21 @@ function getLeaveCategory(select_id, leave_holder, loader) {
 }
 function getLeavesApplied() {
     var datapass = "?my_leaves_application=true";
-    sendData2("GET", "administration/admissions.php", datapass, cObj("my_application_table_data"), cObj("my_leave_list_loader"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("my_leave_list_loader").classList.contains("hide")) {
-                var view_emp_leaves = document.getElementsByClassName("view_emp_leaves");
-                for (let index = 0; index < view_emp_leaves.length; index++) {
-                    const element = view_emp_leaves[index];
-                    element.addEventListener("click", view_my_leaves_data)
-                }
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 100);
+    sendData2("GET", "administration/admissions.php", datapass, cObj("my_application_table_data"), cObj("my_leave_list_loader"), function () {
+        // view employee leaf
+        var view_emp_leaves = document.getElementsByClassName("view_emp_leaves");
+        for (let index = 0; index < view_emp_leaves.length; index++) {
+            const element = view_emp_leaves[index];
+            element.addEventListener("click", view_my_leaves_data)
+        }
+
+        if(cObj("my_leave_applications") != null){
+            // set the datatable
+            $(document).ready(function() {
+                $('#my_leave_applications').DataTable();  // Just one line!
+            });
+        }
+    });
 }
 cObj("back_to_list_emp_leave_list_2").onclick = function () {
     my_leaves_view("display_my_applied_leaves");
@@ -8643,10 +8610,10 @@ cObj("searchkey_leaves").onkeyup = function () {
 //create a function to check if the array has the keyword being searched for
 function check_leave_application(keyword) {
     if (keyword.length > 0) {
-        cObj("tablefooter").classList.add("invisible");
+        cObj("tablefooter_leave_apply").classList.add("invisible");
         // set the 
     } else {
-        cObj("tablefooter").classList.remove("invisible");
+        cObj("tablefooter_leave_apply").classList.remove("invisible");
     }
     var rowsNcol2 = [];
     var keylower = keyword.toString().toLowerCase();
@@ -8779,8 +8746,12 @@ cObj("accept_leave_applications").onclick = function () {
 }
 
 cObj("self_apply_for_leave").onclick = function () {
+    cObj("leave_duration").value = "";
+    cObj("from_leave_date").value = "";
+    cObj("to_leaves_date").value = "";
+    cObj("leave_comments").value = "";
     my_leaves_view("apply_leaves_windows");
-    // get the leaves category
+    // get the leaves category apply_leave_staff
     var select_id = "leave_type";
     var leave_holder = "leave_category_select";
     var loader = "leave_loader_select";
@@ -8923,7 +8894,7 @@ cObj("choose_leave_status").onchange = function () {
             cObj("transDataReciever_leave_apply").innerHTML = displayRecord_leave_application(1, 20, leave_data_display);
             setLeavesListeners();
         } else {
-            cObj("transDataReciever_leave_apply").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! An error has occured while displaying table.<br> Try reloading your page!</p>";
+            cObj("transDataReciever_leave_apply").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! There are no pending leave applications present.</p>";
             cObj("tablefooter_leave_apply").classList.add("invisible");
         }
     } else if (this.value == "1") {

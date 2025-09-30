@@ -6,10 +6,10 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "payroll_sys", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "payroll_sys", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
         $allowed = ["sms_broadcast","update_personal_profile","general_reports"];
@@ -21,7 +21,7 @@ function allowed($id){
         $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "update_personal_profile", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "5") {
-        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "asset_management", "finance_report", "update_personal_profile","general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "update_personal_profile","general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "6") {
         $allowed = ["register_staff", "manage_staff","general_reports"];
@@ -431,12 +431,12 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts d-none">
+            <div class="conts">
                 <button class="navButs htbtn">Human Resource<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc hide">
                         <button type='button' class="sidebtns <?php echo allowed("payroll_sys"); ?> htbtn" id='payroll_sys'><span><img class="icons" src="images/report.png"></span>Payroll</button>
-                        <button type='button' class="sidebtns <?php echo allowed("humanresource"); ?> htbtn" id='humanresource'><span><img class="icons" src="images/managestaff.png"></span>Human Resource</button>
+                        <button type='button' class="sidebtns <?php echo allowed("humanresource"); ?> htbtn" id='humanresource'><span><img class="icons" src="images/managestaff.png"></span>Leave Management</button>
                     </div>
                 </div>
             </div>
@@ -1153,16 +1153,34 @@ function checkPresnt($array, $string){
                             <input class='finance1' type='checkbox' name='expense_section' id='expense_section'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='supplier_account'>6. Supplier Accounts</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='allow_expense_approvals'>6. Allow Expense Approvals</label>
+                            <input class='finance1' type='checkbox' name='allow_expense_approvals' id='allow_expense_approvals'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='supplier_account'>7. Supplier Accounts</label>
                             <input class='finance1' type='checkbox' name='supplier_account' id='supplier_account'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='asset_management'>7. Asset Accounts</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='asset_management'>9. Asset Accounts</label>
                             <input class='finance1' type='checkbox' name='asset_management' id='asset_management'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section'>8. Financial Reports</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section'>9. Financial Reports</label>
                             <input class='finance1' type='checkbox' name='financial_report_section' id='financial_report_section'>
+                        </div>
+                        <hr>
+                        <!-- staft of humanresource section -->
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check'><b>Human Resource</b></label>
+                            <input class='' type='checkbox' name='all_hr_check' id='all_hr_check'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_management'>1. Payroll</label>
+                            <input class='human_resource_mgmt' type='checkbox' name='payroll_management' id='payroll_management'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management'>2. Leave Management</label>
+                            <input class='human_resource_mgmt' type='checkbox' name='leave_management' id='leave_management'>
                         </div>
                         <hr>
                         <!-- staft of sms section -->
@@ -1269,16 +1287,34 @@ function checkPresnt($array, $string){
                             <input class='fill_data finance12' type='checkbox' name='expense_section2' id='expense_section2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='supplier_account_2'>6. Supplier Account</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='allow_expense_approvals_2'>6. Allow Expense Approvals</label>
+                            <input class='finance1' type='checkbox' name='allow_expense_approvals_2' id='allow_expense_approvals_2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='supplier_account_2'>7. Supplier Account</label>
                             <input class='fill_data finance12' type='checkbox' name='supplier_account_2' id='supplier_account_2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='asset_management2'>7. Asset Accounts</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='asset_management2'>8. Asset Accounts</label>
                             <input class='fill_data finance12' type='checkbox' name='asset_management2' id='asset_management2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section2'>8. Financial Reports</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section2'>9. Financial Reports</label>
                             <input class='fill_data finance12' type='checkbox' name='financial_report_section2' id='financial_report_section2'>
+                        </div>
+                        <hr>
+                        <!-- staft of humanresource section -->
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check2'><b>Human Resource</b></label>
+                            <input class='' type='checkbox' name='all_hr_check2' id='all_hr_check2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_management2'>1. Payroll</label>
+                            <input class='human_resource_mgmt_2' type='checkbox' name='payroll_management2' id='payroll_management2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management2'>2. Leave Management</label>
+                            <input class='human_resource_mgmt_2' type='checkbox' name='leave_management2' id='leave_management2'>
                         </div>
                         <hr>
                         <!-- staft of sms section -->
@@ -3016,9 +3052,9 @@ function checkPresnt($array, $string){
                     <div class="col-md-6">
                         <h6 class="text-center">Expense Sub-Categories</h6>
                         <div class="container border border-rounded border-secondary row">
-                            <div class="col-lg-6 my-2">
-                                <label for="edit_expense_sub_categories" class="form-control-label">Expense Categories</label>
-                                <input type="text" placeholder="Exp. Category" class="form-control w-100" id="edit_expense_sub_categories">
+                            <div class="col-lg-12 my-2">
+                                <label for="edit_expense_sub_categories" class="form-control-label">Sub Categories</label>
+                                <input type="text" placeholder="Exp. Sub Category" class="form-control w-100" id="edit_expense_sub_categories">
                                 <input type="hidden" value="[]" id="edit_expense_sub_categories_holder">
                             </div>
                             <div class="col-lg-6">

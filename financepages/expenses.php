@@ -25,7 +25,7 @@
                 <h6><i class="fa fa-file" style="font-size:18px;margin-bottom:10px;"></i> Expenses:</h6>
                 <div class="expeses_options" id="exp_options">
                     <button id="add_exp"><i class="fas fa-plus"></i> Add Expenses</button>
-                    <button class="hide" id="approve_payments"><i class="fas fa-check"></i> Approve Payments</button>
+                    <button class="<?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "d-none" : ""?>" id="approve_payments"><i class="fas fa-check"></i> Approve Payments</button>
                     <button class="hide" id="find_exp_da">Find Expenses</button>
                 </div>
                 <div class="find_exp hide" id="find_exp_date">
@@ -132,6 +132,14 @@
                         <div class="conts col-md-4">
                             <label class="form-control-label" for="document_number"><b>Document Number</b> <br></label>
                             <input class="form-control w-100" type="text" name="document_number" id="document_number"  min = "0" placeholder = "Optional - Receipt, Invoice, Cheque">
+                        </div>
+                        <div class="conts col-md-4 <?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "d-none" : ""?>">
+                            <label for="expense_approval" class="form-control-label">Expense Approval Status </label>
+                            <select name="expense_approval" id="expense_approval" class="form-control w-100">
+                                <option value="" hidden>Select an Option</option>
+                                <option <?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "" : "selected"?> value="1">Approve Expense</option>
+                                <option value="0">Pending Approval</option>
+                            </select>
                         </div>
                         <div class="col-md-12">
                             <label for="new_expense_description" class="form-control-label"><b>Expense Description</b></label>

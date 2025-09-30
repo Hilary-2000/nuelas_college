@@ -4583,7 +4583,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $leave_id = $_GET['get_leave_balance'];
                     // $days_entitled = round(getLeave_Balance($conn,$conn2,$leave_id));
                     $our_days = getLeaveBalance_2($conn,$conn2,$leave_id);
-                    echo $our_days." Days";
+                    echo $our_days." Days: ";
                     echo "<span class='hide' id='days_entittled'>".$our_days."</span><br>";
                 }else{
                     echo "<p class='border border-danger text-danger p-2'>Your date of employment has not been set by your administrator.<br>Kindly contact your administrator first before you proceed.</p>";
@@ -4601,6 +4601,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $date2=date_create($to_date);
                 $diff=date_diff($date1,$date2);
                 $date_differences = $diff->format("%a");
+                // $date_differences+=2;// add the start and end date
 
                 // GET THE WORKING DAYS OF THE WEEK
                 $select = "SELECT * FROM `settings` WHERE `sett` = 'working_days'";
@@ -4617,11 +4618,14 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 // loop through the dates
                 // var_dump($working_days);
                 $days_that_are_holiday_or_weekend = 0;
+                $days_that_are_not_holiday_or_weekend = 0;
                 for ($index=0; $index <= $date_differences; $index++) {
                     $is_date_or_holiday = checkDate_Holiday($from_date,$working_days);
                     if ($is_date_or_holiday > 0) {
                         $days_that_are_holiday_or_weekend+=$is_date_or_holiday;
                         // echo "Today is holiday ".date("D dS M Y",strtotime($from_date))." => ";
+                    }else{
+                        $days_that_are_not_holiday_or_weekend++;
                     }
                     // echo $from_date."<br>";
                     // add one day to from date
@@ -4629,8 +4633,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     date_add($date , date_interval_create_from_date_string("1 day"));
                     $from_date = date_format($date,"Y-m-d");
                 }
-                $date_differences-=$days_that_are_holiday_or_weekend;
-                echo "<span class='hide' id='date_differences_leave_holder'>".$date_differences."</span>";
+                $is_date_or_holiday = checkDate_Holiday($to_date,$working_days);
+                $days_that_are_not_holiday_or_weekend = $is_date_or_holiday > 0 ? $days_that_are_not_holiday_or_weekend : $days_that_are_not_holiday_or_weekend-1;
+                echo "<span class='hide' id='date_differences_leave_holder'>".$days_that_are_not_holiday_or_weekend."</span>";
             }else{
                 echo 0;
             }
@@ -4737,14 +4742,14 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 echo "<p class='text-danger'>An error has occurred!</p>";
             }
         }elseif (isset($_GET['my_leaves_application'])){
-            $select = "SELECT * FROM `apply_leave` WHERE `employee_id` = '".$_SESSION['userids']."'";
+            $select = "SELECT * FROM `apply_leave` WHERE `employee_id` = '".$_SESSION['userids']."' ORDER BY id DESC LIMIT 1000";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
             $win_display = "";
             if ($result) {
                 $counter = 1;
-                $win_display.="<table class='table'><tr><th>#</th><th>Leave Title</th><th>Date Applied</th><th>Dates</th><th>Days Duration</th><th>Status</th><th>Action</th></tr>";
+                $win_display.="<div class='tableme'><table class='table' id='my_leave_applications'><thead><tr><th>#</th><th>Leave Title</th><th>Date Applied</th><th>Dates</th><th>Days Duration</th><th>Status</th><th>Action</th></tr></thead><tbody>";
                 while($row = $result->fetch_assoc()){
                     $status = $row['status'];
                     if ($status == "0") {
@@ -4757,7 +4762,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $win_display.="<tr><td>".$counter."</td><td>".ucwords(strtolower(getLeaveDetails($conn2,$row['leave_category'])['leave_title']))."</td><td>".date("D dS M Y",strtotime($row['date_applied']))."</td><td>".date("D dS M Y",strtotime($row['from']))." to ".date("D dS M Y",strtotime($row['to']))."</td><td>".$row['days_duration']." Days</td><td>".$status."</td><td><p class='link view_emp_leaves' id='view_emp_leaves".$row['id']."'><i class='fas fa-eye'></i> View</p></td></tr>";
                     $counter++;
                 }
-                $win_display.="</table>";
+                $win_display.="</tbody></table></div>";
                 echo $win_display;
             }
         }elseif (isset($_GET['get_my_leave_data'])) {
@@ -7629,6 +7634,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
 
         }elseif(isset($_POST['delete_expense'])){
+            include_once "../finance/financial.php";
             $exp_ids = $_POST['exp_ids'];
             $delete = "DELETE FROM `expenses` WHERE `expid` = '".$exp_ids."'";
             $stmt = $conn2->prepare($delete);
@@ -9811,15 +9817,13 @@ function isJson_report($string) {
                         $doe = date("Ym",strtotime($doe))."01";
                         $last_yr_start = date("Y",strtotime("-1 Year"))."0101";
                         if (($doe*1) > ($last_yr_start*1)) {
-                            // echo $doe;
                             // this means the the staff was registered last year
-
                             if($days_are_accrued == "Monthly"){
                                 // get the number of that were entitled to the staff in last year
                                 $employment_month = date("Ym",strtotime($doe))."01";
                                 $end_of_last_year = date("Y",strtotime("-1 Year"))."1231";
 
-                                // days entitled last year
+                                // days_entitled last year
                                 $days_entitled = differenceDatesMonth($employment_month,$end_of_last_year);
                                 
                                 // days accrued each month
@@ -9867,7 +9871,8 @@ function isJson_report($string) {
 
                                 // get the number of days used this year
                                 $days_used_this_yr = 0;
-                                $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `leave_category` = '".$leave_id."' AND `employee_id` = '".$staff_id."' AND `status` = '1' AND (`from` BETWEEN '".date("Y-m-d",strtotime($start_year))."'  AND '".date("Y-m-d",strtotime($today))."');";
+                                $end_of_this_yr = date("Y")."1231";
+                                $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `leave_category` = '".$leave_id."' AND `employee_id` = '".$staff_id."' AND `status` = '1' AND (`from` BETWEEN '".date("Y-m-d",strtotime($start_year))."'  AND '".date("Y-m-d",strtotime($end_of_this_yr))."');";
                                 $stmt = $conn2->prepare($select);
                                 $stmt->execute();
                                 $result = $stmt->get_result();
@@ -9916,7 +9921,8 @@ function isJson_report($string) {
 
                                 // get the number of days used this year
                                 $days_used_this_yr = 0;
-                                $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `leave_category` = '".$leave_id."' AND `employee_id` = '".$staff_id."' AND `status` = '1' AND (`from` BETWEEN '".date("Y-m-d",strtotime($start_year))."'  AND '".date("Y-m-d",strtotime($today))."');";
+                                $end_of_this_yr = date("Y")."1231";
+                                $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `leave_category` = '".$leave_id."' AND `employee_id` = '".$staff_id."' AND `status` = '1' AND (`from` BETWEEN '".date("Y-m-d",strtotime($start_year))."'  AND '".date("Y-m-d",strtotime($end_of_this_yr))."');";
                                 $stmt = $conn2->prepare($select);
                                 $stmt->execute();
                                 $result = $stmt->get_result();
@@ -9937,14 +9943,17 @@ function isJson_report($string) {
                                 // echo $days_ent;
                                 return $days_ent;
                             }elseif($days_are_accrued == "Weekly"){
+                                $weekly_accrual = $max_days/52;
                                 // get the number of that were entitled to the staff in last year
                                 $employment_month = date("Ym",strtotime($doe))."01";
                                 $end_of_last_year = date("Y",strtotime("-1 Year"))."1231";
 
                                 // days entitled last year
                                 $days_entitled = differenceDatesWeek($employment_month,$end_of_last_year);
+                                // $days_entitled = $days_entitled > 365 ? 365 : $days_entitled;
+
                                 // days accrued each month
-                                $days_accrued_each_week = round($max_days/$days_entitled,2);
+                                $days_accrued_each_week = $weekly_accrual;
 
                                 // days_to_use_current_year
                                 $days_to_use_last_year = 0;
@@ -9988,7 +9997,8 @@ function isJson_report($string) {
 
                                 // get the number of days used this year
                                 $days_used_this_yr = 0;
-                                $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `leave_category` = '".$leave_id."' AND `employee_id` = '".$staff_id."' AND `status` = '1' AND (`from` BETWEEN '".date("Y-m-d",strtotime($start_year))."'  AND '".date("Y-m-d",strtotime($today))."');";
+                                $end_of_this_yr = date("Y")."1231";
+                                $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `leave_category` = '".$leave_id."' AND `employee_id` = '".$staff_id."' AND `status` = '1' AND (`from` BETWEEN '".date("Y-m-d",strtotime($start_year))."'  AND '".date("Y-m-d",strtotime($end_of_this_yr))."');";
                                 $stmt = $conn2->prepare($select);
                                 $stmt->execute();
                                 $result = $stmt->get_result();

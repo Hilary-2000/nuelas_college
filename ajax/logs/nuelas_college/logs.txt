@@ -1,3 +1,36 @@
+30th Sep 2025 21:22:48PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 21:21:55PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 21:20:59PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 21:20:54PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 21:20:49PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 21:19:12PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 21:18:00PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 21:11:05PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 21:10:50PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 14:04:45PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+30th Sep 2025 13:53:38PM : Expense "Karani Karani" uploaded successfully! - {JAMES WAKANDA}
+30th Sep 2025 13:53:08PM : Expense "James Makato" uploaded successfully! - {JAMES WAKANDA}
+30th Sep 2025 13:30:09PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+30th Sep 2025 13:27:44PM : Expense "New Nee Expeee" uploaded successfully! - {JAMES WAKANDA}
+30th Sep 2025 13:15:44PM : Role "Supplier" has been updated successfully! - {JAMES WAKANDA}
+30th Sep 2025 13:07:03PM : Role "Accountant" has been updated successfully! - {JAMES WAKANDA}
+30th Sep 2025 13:06:55PM : Role "Accountant" has been updated successfully! - {JAMES WAKANDA}
+30th Sep 2025 13:06:49PM : Role "Accountant" has been updated successfully! - {JAMES WAKANDA}
+30th Sep 2025 12:29:44PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+30th Sep 2025 12:29:33PM : Changed the password of James Wakanda successfully! - {ANN AKOTCH}
+30th Sep 2025 12:29:14PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 12:29:07PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+30th Sep 2025 12:23:19PM : Expense deleted successfully! - {ANN AKOTCH}
+30th Sep 2025 11:51:58AM : Expense "James Expense" uploaded successfully! - {ANN AKOTCH}
+30th Sep 2025 11:51:35AM : Expense "New Expense" uploaded successfully! - {ANN AKOTCH}
+30th Sep 2025 11:50:29AM : Expense deleted successfully! - {ANN AKOTCH}
+30th Sep 2025 11:49:35AM : Expense "New Expenses" uploaded successfully! - {ANN AKOTCH}
+30th Sep 2025 11:48:55AM : Expense "Furniture" uploaded successfully! - {ANN AKOTCH}
+30th Sep 2025 11:39:38AM : Expense deleted successfully! - {ANN AKOTCH}
+30th Sep 2025 11:37:01AM : Expense deleted successfully! - {ANN AKOTCH}
+30th Sep 2025 11:33:00AM : Expense "New Expense" uploaded successfully! - {ANN AKOTCH}
+30th Sep 2025 11:25:30AM : Expense category "Daily Expense" added successfully! - {ANN AKOTCH}
+30th Sep 2025 11:18:50AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 29th Sep 2025 20:23:48PM : Agnes Agnes of adm no NC-2025-006  balance has been updated successfully! - {ANN AKOTCH}
 29th Sep 2025 20:23:34PM : Agnes Agnes of adm no NC-2025-006  balance has been updated successfully! - {ANN AKOTCH}
 29th Sep 2025 19:59:12PM : Agnes Agnes of adm no NC-2025-006  balance has been updated successfully! - {ANN AKOTCH}

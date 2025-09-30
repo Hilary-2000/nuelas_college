@@ -1715,11 +1715,12 @@
             $document_number = $_GET['document_number'];
             $new_expense_description = $_GET['new_expense_description'];
             $expense_sub_category = $_GET['expense_sub_category'];
+            $expense_approval = isset($_GET['expense_approval']) ? $_GET['expense_approval'] : 0;
             $date = date("Y-m-d",strtotime($expense_record_date));
             $time = date("H:i:s");
-            $insert = "INSERT INTO `expenses` (`expid`,`exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time`,`exp_active`,`expense_categories`,`exp_sub_category`,`document_number`,`expense_description`)VALUES (null,?,?,?,?,?,?,?,?,0,?,?,?,?)";
+            $insert = "INSERT INTO `expenses` (`expid`,`exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time`,`exp_active`,`expense_categories`,`exp_sub_category`,`document_number`,`expense_description`, `approval_status`)VALUES (null,?,?,?,?,?,?,?,?,0,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
-            $stmt->bind_param("ssssssssssss",$exp_name,$exp_cat,$unit_name,$exp_quant,$exp_unit,$exp_totcost,$date,$time,$expense_cash_activity,$expense_sub_category,$document_number,$expense_description);
+            $stmt->bind_param("sssssssssssss",$exp_name, $exp_cat, $unit_name, $exp_quant, $exp_unit, $exp_totcost, $date, $time, $expense_cash_activity, $expense_sub_category, $document_number, $expense_description, $expense_approval);
             if($stmt->execute()){
                 // log text
                 $log_message = "Expense \"".ucwords(strtolower($exp_name))."\" uploaded successfully!";
@@ -1728,10 +1729,9 @@
             }else {
                 echo "<p class='red_notice'>Error occured during upload!</p>";
             }
-
         }elseif (isset($_GET['todays_expense'])) {
             // $select = "SELECT `exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time` FROM `expenses` WHERE `expense_date` = ?";
-            $select = "SELECT * FROM `expenses` ORDER BY `expid` DESC LIMIT 1000";
+            $select = "SELECT expenses.*, expense_category.expense_name FROM `expenses` LEFT JOIN expense_category ON expenses.exp_category = expense_category.expense_id ORDER BY `expid` DESC LIMIT 1000";
             $stmt = $conn2->prepare($select);
             $date = date("Y-m-d");
             // $stmt->bind_param("s",$date);
@@ -1748,9 +1748,10 @@
                                             <th>No.</th>
                                             <th>Expense Name</th>
                                             <th>Expense Category</th>
-                                            <th>Units</th>
-                                            <th>Unit Price</th>
-                                            <th>Total Amount</th>
+                                            <th>Total Unit Cost</th>
+                                            <th>Document Number</th>
+                                            <th>Date</th>
+                                            <th>Action</th>
                                         </tr>";
                                         $xs = 0;
                                         $total_pay = 0;
@@ -1758,12 +1759,13 @@
                     $xs++;
                     $expense_name = get_expense($rows['exp_category'],$conn2);
                     $data_to_display.="<tr>
+                                        <input type=\"hidden\" id=\"data_expenses".$xs."\" value=\"".json_encode($rows)."\">
                                         <td>".$xs."</td>
-                                        <td>".($expense_name != null ? $expense_name['expense_name'] : $rows['exp_name'])."</td>
-                                        <td>".$rows['exp_category']."</td>
-                                        <td>".$rows['exp_quantity']." ".$rows['unit_name']."</td>
-                                        <td>Ksh ".$rows['exp_unit_cost']."</td>
-                                        <td><b>Ksh ".$rows['exp_amount']."</b></td>
+                                        <td>".($rows['exp_name'])."</td>
+                                        <td>".$rows['expense_name']."</td>
+                                        <td>Kes ".number_format($rows['exp_amount'])."</td>
+                                        <td>Ksh ".(!empty($rows['document_number']) ? $rows['document_number'] : "-")."</td>
+                                        <td><span class=\"link edit_expense\" id=\"edit_expense".$xs."\"><i class=\"fas fa-pen-fancy\"></i> Edit</span></td>
                                     </tr>";
                                     $total_pay+=$rows['exp_amount'];
                                     // change some fields
@@ -1781,7 +1783,7 @@
                 $json_2 = substr($json_2,0,(strlen($json_2)-1));
                 $json_2.="]</p>";
                 if ($xs > 0) {
-                    // echo $data_to_display.$json_2;
+                    // echo $data_to_display;
                     echo $json_2;
                 }else {
                     echo "<p class='green_notice' style='text-align:center;'>No expenses recorded today!</p>";
@@ -1789,7 +1791,7 @@
                 //get current year
                 $startdate = date("Y-m")."-01";
                 $enddate = date("Y-m")."-31";
-                $select = "SELECT `exp_category`, sum(`exp_amount`) as 'Total', COUNT(`exp_category`) AS 'Record' FROM `expenses`  GROUP BY `exp_category`;";
+                $select = "SELECT `exp_category`, sum(`exp_amount`) as 'Total', COUNT(`exp_category`) AS 'Record' FROM `expenses` WHERE approval_status != '2' GROUP BY `exp_category`;";
                 // $select = "SELECT `exp_category`, sum(`exp_amount`) as 'Total', COUNT(`exp_category`) AS 'Record' FROM `expenses` WHERE `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`;";
                 $stmt = $conn2->prepare($select);
                 // $stmt->bind_param("ss",$startdate,$enddate);

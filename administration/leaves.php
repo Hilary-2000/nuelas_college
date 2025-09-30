@@ -48,7 +48,7 @@
                     <div class="col-md-6">
                         <div class="form-group my-1">
                             <label for="leave_duration" class="form-control-label"><b>Leave duration in Days<img class="hide" src="images/ajax_clock_small.gif" id="leave_duration_loader"></b></label>
-                            <input type="number" readonly name="leave_duration" value="0" id="leave_duration" placeholder="Calculated Automatically" class="form-control w-100">
+                            <input type="number" readonly name="leave_duration" value="0" id="leave_duration" placeholder="Calculated Automatically - (Select start and end date)" class="form-control w-100">
                             <p class="" id="leave_days_holder"></p>
                             <p id="duration_day_errors"></p>
                         </div>

@@ -1587,41 +1587,30 @@ function addExpense() {
             if (err == 0) {
                 var expense_sub_category = cObj("expense_sub_category") != undefined && cObj("expense_sub_category") != null ? valObj("expense_sub_category") : "";
                 var datapass = "?addExpenses=true&exp_name=" + cObj("exp_named").value + "&expensecat=" + cObj("exp_cat").value + "&quantity=" + cObj("exp_quant").value + "&unitcost=" + cObj("exp_amnt").value + "&total=" + cObj("exp_total_amt").value + "&unit_name=" + cObj("unit_name").value+"&expense_cash_activity="+valObj("expense_cash_activity")+"&expense_record_date="+valObj("expense_record_date")+"&document_number="+valObj("document_number")+"&new_expense_description="+valObj("new_expense_description")+"&expense_sub_category="+expense_sub_category;
-                sendData1("GET", "finance/financial.php", datapass, cObj("err_hndler_expenses"));
-                setTimeout(() => {
-                    var timeout = 0;
-                    var ids = setInterval(() => {
-                        timeout++;
-                        //after two minutes of slow connection the next process wont be executed
-                        if (timeout == 1200) {
-                            stopInterval(ids);
-                        }
-                        if (cObj("loadings").classList.contains("hide")) {
-                            //get the if the expe_err has some text in it
-                            if (cObj("uploaded") != null) {
-                                cObj("exp_named").value = "";
-                                cObj("exp_quant").value = "0";
-                                cObj("exp_amnt").value = "0";
-                                cObj("exp_total_amt").value = "0";
-                                cObj("main_sele").selected = true;
-                                cObj("unit_name").value = "";
-                                cObj("new_expense_description").value = "";
-                                cObj("document_number").value = "";
+                datapass += "&expense_approval="+valObj("expense_approval");
+                sendData1("GET", "finance/financial.php", datapass, cObj("err_hndler_expenses"), function () {
+                    //get the if the expe_err has some text in it
+                    if (cObj("uploaded") != null) {
+                        cObj("exp_named").value = "";
+                        cObj("exp_quant").value = "1";
+                        cObj("exp_amnt").value = "0";
+                        cObj("exp_total_amt").value = "0";
+                        cObj("main_sele").selected = true;
+                        cObj("unit_name").value = "";
+                        cObj("new_expense_description").value = "";
+                        cObj("document_number").value = "";
 
-                                // check if the element is defines
-                                if(cObj("expense_sub_category") != undefined && cObj("expense_sub_category") != null){
-                                    var main_children = cObj("expense_sub_category").children;
-                                    main_children[0].selected = true;
-                                }
-                                displayTodaysExpense();
-                            }
-                            setTimeout(() => {
-                                cObj("err_hndler_expenses").innerHTML = "";
-                            }, 3000);
-                            stopInterval(ids);
+                        // get the expense category
+                        getExpense_Cats();
+
+                        // check if the element is defines
+                        if(cObj("expense_sub_category") != undefined && cObj("expense_sub_category") != null){
+                            var main_children = cObj("expense_sub_category").children;
+                            main_children[0].selected = true;
                         }
-                    }, 100);
-                }, 200);
+                        displayTodaysExpense();
+                    }
+                });
             }
         } else {
             cObj("err_hndler_expenses").innerHTML = "<p class='red_notice'>Please fill all the blank fields</p>";
