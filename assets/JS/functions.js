@@ -96,17 +96,23 @@ function isJSON(value) {
         return false;
     }
 }
-function checkBlank(id) {
+function checkBlank(id, change_obj = true) {
     let err = 0;
     if (cObj(id).value.trim().length > 0) {
         if (cObj(id).value.trim() == 'N/A') {
-            redBorder(cObj(id));
+            if(change_obj){
+                redBorder(cObj(id));
+            }
             err++;
         } else {
-            grayBorder(cObj(id));
+            if(change_obj){
+                grayBorder(cObj(id));
+            }
         }
     } else {
-        redBorder(cObj(id));
+        if(change_obj){
+            redBorder(cObj(id));
+        }
         err++;
     }
     return err;

@@ -1793,6 +1793,7 @@ function incomeStatement(year = null) {
 }
 //create the select teachers to get the teachers in their pay roll
 cObj("enroll_staff_btn").onclick = function () {
+    // payroll details
     cObj("payroll_enroll").classList.remove("hide");
     cObj("viewEnrolledPay").classList.add("hide");
     cObj("salary_infor").classList.add("hide");
@@ -1800,13 +1801,56 @@ cObj("enroll_staff_btn").onclick = function () {
     cObj("view_payment_history").classList.add("hide");
     cObj("salary_infor").classList.add("hide");
     cObj("advance_management").classList.add("hide");
+    cObj("payroll_enroll").reset();
+    resetSalaryCalculator();
+    checkPayrollStaffDetails();
+
     //get the staff information
     getStaff_id();
     hideAllReports();
 }
+cObj("effect_from").addEventListener("change", checkPayrollStaffDetails);
+cObj("effect_year").addEventListener("change", checkPayrollStaffDetails);
+cObj("balances").addEventListener("change", checkPayrollStaffDetails);
+function checkPayrollStaffDetails() {
+    var err = cObj("staff_l") !=undefined ? checkBlank("staff_l", false) : 1;
+    err += checkBlank("amount_to_pay", false);
+    err += checkBlank("effect_from", false);
+    err += checkBlank("effect_year", false);
+    err += checkBlank("balances", false);
+
+    if (err == 0) {
+        cObj("payrollOverlay").classList.add("hide");
+    }else{
+        cObj("payrollOverlay").classList.remove("hide");
+    }
+}
+
+function resetSalaryCalculator(){
+    cObj("gros_salo_rec").innerHTML = "0";
+    cObj("all_allowances").innerHTML = "0";
+    cObj("total_salary").innerHTML = "0";
+    // cObj("nssf_contributes").innerHTML = "Ksh 0";
+    cObj("contributions_before_tax").innerHTML = "Ksh 0";
+    cObj("taxable_income_records").innerHTML = "Ksh 0";
+    cObj("incomeTaxRecord").innerHTML = "Ksh 0";
+    cObj("personal_relief_records").innerHTML = "Ksh 0";
+    cObj("final_income_taxe").innerHTML = "Ksh 0";
+    cObj("income_after_tax").innerHTML = "Ksh 0";
+    cObj("nhif_relief_record").innerHTML = "Ksh 0";
+    cObj("ahl_relief_record").innerHTML = "Ksh 0";
+    cObj("total_relief").innerHTML = "Ksh 0";
+    cObj("deductions_calculate").innerHTML = "Ksh 0";
+    cObj("net_salary_record").innerHTML = "Ksh 0";
+}
+
 function getStaff_id() {
     var datapass = "?mystaff=true";
-    sendData1("GET", "finance/financial.php", datapass, cObj("staff_li"));
+    sendData1("GET", "finance/financial.php", datapass, cObj("staff_li"), function () {
+        if(cObj("staff_l") != undefined){
+            cObj("staff_l").addEventListener("change", checkPayrollStaffDetails);
+        }
+    });
 }
 //save the staff information
 cObj("enrol_staf_btn").onclick = function () {
@@ -1824,6 +1868,7 @@ cObj("enrol_staf_btn").onclick = function () {
             var datapass = "?enroll_payroll=true&staff_id=" + cObj("staff_l").value + "&salary_amount=" + cObj("amount_to_pay").value + "&effect_year=" + cObj("effect_year").value + "&balance=" + cObj("balances").value + "&effect_month=" + cObj("effect_from").value + "&salary_breakdown=" + salary_breakdown;
             sendData1("GET", "finance/financial.php", datapass, cObj("enroll_err_handler"));
             cObj("payroll_enroll").reset();
+            resetSalaryCalculator();
         } else {
             cObj("enroll_err_handler").innerHTML = "<p class='red_notice'>Please fill all the fields covered with red border.</p>";
         }
@@ -1925,6 +1970,22 @@ cObj("display_nhif_reports").onclick = function () {
     }
 }
 
+cObj("delete_advance").onclick = function () {
+    cObj("delete_advance_payments").classList.remove("hide");
+}
+cObj("no_delete_advance").onclick = function () {
+    cObj("delete_advance_payments").classList.add("hide");
+}
+
+cObj("yes_delete_advance").onclick = function () {
+    var datapass = "?delete_advance_payment=true&advance_id="+valObj("hold_advance_payment_id");
+    sendData1("GET", "finance/financial.php", datapass, cObj("error_payroll_holder"), function () {
+        cObj("delete_advance_payments").classList.add("hide");
+        cObj("back_to_view_advance_list").click();
+        getAllAdvances();
+    });
+}
+
 function hideAllReports() {
     cObj("payroll_reports_window").classList.add("hide");
     var my_reports = document.getElementsByClassName("my_reports");
@@ -1948,40 +2009,34 @@ cObj("see_enrolled").onclick = function () {
 //get enrolled class
 function seeEnrolled() {
     var datapass = "?getEnrolled=true";
-    sendData1("GET", "finance/financial.php", datapass, cObj("my_enrolled_staff"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                var edit_salary = document.getElementsByClassName("edit_salary");
-                for (let index = 0; index < edit_salary.length; index++) {
-                    const element = edit_salary[index];
-                    element.addEventListener("click", editSalaries);
-                }
-                var pay_staff_salo = document.getElementsByClassName("pay_staff_salo");
-                for (let index = 0; index < pay_staff_salo.length; index++) {
-                    const element = pay_staff_salo[index];
-                    element.addEventListener("click", showPaymentwin);
-                }
-                var view_salos_pay = document.getElementsByClassName("view_salos_pay");
-                for (let index = 0; index < view_salos_pay.length; index++) {
-                    const element = view_salos_pay[index];
-                    element.addEventListener("click", viewSalaryPay);
-                }
-                var enroll_pays = document.getElementsByClassName("enroll_pays");
-                for (let index = 0; index < enroll_pays.length; index++) {
-                    const element = enroll_pays[index];
-                    element.addEventListener("click", enrollPay);
-                }
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 200);
+    sendData1("GET", "finance/financial.php", datapass, cObj("my_enrolled_staff"), function () {
+        if (cObj("see_enrolled_payroll_table") != undefined) {
+            // set the datatable
+            $(document).ready(function() {
+                $('#see_enrolled_payroll_table').DataTable();  // Just one line!
+            });
+        }
+        var edit_salary = document.getElementsByClassName("edit_salary");
+        for (let index = 0; index < edit_salary.length; index++) {
+            const element = edit_salary[index];
+            element.addEventListener("click", editSalaries);
+        }
+        var pay_staff_salo = document.getElementsByClassName("pay_staff_salo");
+        for (let index = 0; index < pay_staff_salo.length; index++) {
+            const element = pay_staff_salo[index];
+            element.addEventListener("click", showPaymentwin);
+        }
+        var view_salos_pay = document.getElementsByClassName("view_salos_pay");
+        for (let index = 0; index < view_salos_pay.length; index++) {
+            const element = view_salos_pay[index];
+            element.addEventListener("click", viewSalaryPay);
+        }
+        var enroll_pays = document.getElementsByClassName("enroll_pays");
+        for (let index = 0; index < enroll_pays.length; index++) {
+            const element = enroll_pays[index];
+            element.addEventListener("click", enrollPay);
+        }
+    });
 }
 cObj("pay_mode").onchange = function () {
     //hide the bank and cash window when neccessary
@@ -2046,44 +2101,44 @@ function editSalaries() {
                         // get the allowances
                         var allowances = JSON.stringify(obj.allowances);
                         cObj("allowance_holder_edit").innerText = (allowances == '""') ? "" : allowances;
+                        cObj("deductions_holder").innerText = JSON.stringify(obj.deductions);
                         // set the nssf rates
                         var nssf_id = obj.nssf_rates;
                         cObj(nssf_id).selected = true;
+
                         // set the reliefs
-                        var nhif_relief = obj.nhif_relief;
-                        if (nhif_relief == "yes") {
-                            cObj("nhif_relief_accept").checked = true;
-                        } else {
-                            cObj("nhif_relief_accept").checked = false;
-                        }
-                        // personal relief
-                        var personal_relief = obj.personal_relief;
-                        if (personal_relief == "yes") {
-                            cObj("personal_relief_accept").checked = true;
-                        } else {
-                            cObj("personal_relief_accept").checked = false;
-                        }
-    
-                        // deduct NHIF
-                        var deduct_NHIF = obj.deduct_nhif;
-                        if (deduct_NHIF == "yes") {
-                            cObj("dedcut_nhif_edit").checked = true;
-                        } else {
-                            cObj("dedcut_nhif_edit").checked = false;
-                        }
-                        // deduct PAYE
-                        var dedcut_paye_edit = obj.deduct_paye;
-                        if (dedcut_paye_edit == "yes") {
-                            cObj("dedcut_paye_edit").checked = true;
-                        } else {
-                            cObj("dedcut_paye_edit").checked = false;
-                        }
+                        cObj("nhif_relief_accept").checked = obj.nhif_relief != null ? (obj.nhif_relief == "yes") : false;
+                        cObj("personal_relief_accept").checked = obj.personal_relief != null ? (obj.personal_relief == "yes") : false;
+                        cObj("dedcut_nhif_edit").checked = obj.deduct_nhif != null ? (obj.deduct_nhif == "yes") : false;
+                        cObj("edit_deduct_nhds").checked = obj.housing_levy != null ? (obj.housing_levy == "yes") : false;
+                        cObj("dedcut_paye_edit").checked = obj.deduct_paye != null ? (obj.deduct_paye == "yes") : false;
+                        cObj("accept_ahl_relief").checked = obj.ahl_relief != null ? (obj.ahl_relief == "yes") : false;
+
                         var gross_salary = obj.gross_salary;
                         cObj("gross_salary_edit").value = gross_salary;
                         cObj("gross_sa").innerText = gross_salary;
                         //year 
-                        var year = "yr_" + obj.year;
-                        cObj(year).selected = true;
+                        obj.year = obj.year != null ? obj.year : (obj.effect_month != null ? obj.effect_month.split("-")[1] : new Date().getFullYear())
+                        var all_years = cObj("year_of_effect_paye").children;
+                        for (let index = 0; index < all_years.length; index++) {
+                            const element = all_years[index];
+                            if (element.value == obj.year) {
+                                element.selected = true;
+                                break;
+                            }
+                        }
+
+                        var effect_month = obj.effect_month != null ? obj.effect_month.split("-")[0] : "Jan";
+                        var effect_month_payee = cObj("effect_month_payee").children;
+                        for (let index = 0; index < effect_month_payee.length; index++) {
+                            const element = effect_month_payee[index];
+                            if (element.value == effect_month) {
+                                element.selected = true;
+                                break;
+                            }
+                        }
+
+                        // allowances
                         if (obj.allowances.length > 0) {
                             // console.log(obj.allowances);
                             addAllowances2(obj.allowances);
@@ -2097,6 +2152,9 @@ function editSalaries() {
                             cObj("deduction_windows").innerHTML = "<p class='text-success'>No deductions to display at the moment.</p>";
                         }
                         cObj("error_calaculator").innerHTML = "";
+                        breakdownPayments2();
+                    }else{
+                        console.log("Error: Not json format");
                         breakdownPayments2();
                     }
                 } else {
@@ -3435,67 +3493,406 @@ function deleteAllowances2() {
     }
 }
 function breakdownPayments() {
+    var months = ["", "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     // get the additions
-    var gross_salary = valObj("gross_salary");
-    var teir = valObj("nssf_rates") ? valObj("nssf_rates") : "none";
-    var nssf_contribution = getNSSFContribution(gross_salary, teir);
-    var income_after_nssf = gross_salary - nssf_contribution;
-    var allowances = getAllowances();
-    var taxable_income = income_after_nssf + allowances;
-    var year = valObj("paye_effect_year");
-    var income_tax = getIncomeTax(taxable_income, year);
-    var personal_relief = 0;
-    var final_income_tax = income_tax;
-    // console.log(cObj("personal_relief").checked );
-    if (cObj("personal_relief").checked == true) {
-        if (gross_salary > 24000) {
-            personal_relief = 2400;
-            if (income_tax > 2400) {
-                final_income_tax = income_tax - personal_relief;
-            } else {
-                final_income_tax = 0;
-            }
+    var month_index = months.indexOf(valObj("effect_from")) > 9 ? months.indexOf(valObj("effect_from")) : "0"+months.indexOf(valObj("effect_from"));
+    var effect_year = (valObj("effect_year")+""+month_index) * 1;
+    var gross_salary = valObj("gross_salary")*1;
+    var allowances = getAllowances()*1;
+    gross_salary += allowances;
+    var nhif_shif_amount = Nhif_Shif_Amount(gross_salary,effect_year);
+    var nssf_amount = Nssf_Amount(gross_salary, effect_year);
+    var housing_levy = Housing_Levy((gross_salary), effect_year);
+    var taxable_income = Taxable_Income(gross_salary, effect_year, nssf_amount, nhif_shif_amount, housing_levy);
+    var income_tax = Income_Tax((gross_salary), effect_year);
+    var deductions = hasJsonStructure(valObj("deductions_holder_1")) ? JSON.parse(valObj("deductions_holder_1")) : [];
+    var insurance_relief = Nhif_Shif_Relief(gross_salary, effect_year);
+    var income_tax_relief = Income_Tax_Relief(effect_year);
+    var ahl_relief = Ahl_Relief(gross_salary, effect_year);
+    var allowance_holder = hasJsonStructure(valObj("allowance_holder")) ? JSON.parse(valObj("allowance_holder")) : [];
+    var payment_breakdown = {
+        "effect_year": effect_year,
+        "gross_salary_without_allowance": gross_salary - allowances,
+        "gross_salary_with_allowance": gross_salary,
+        "allowance_total": allowances,
+        "allowances": allowance_holder,
+        "nhif_shif_amount": cObj("deduct_NHIF").checked ? nhif_shif_amount : 0,
+        "housing_levy": cObj("deduct_nhds").checked ? housing_levy : 0,
+        "nssf_amount": cObj("nssf_rates").value == "none" ? 0 : nssf_amount,
+        "income_tax": cObj("deduct_paye").checked ? income_tax : 0,
+        "insurance_relief": cObj("deduct_NHIF").checked && cObj("NHIF_relief").checked ? insurance_relief : 0,
+        "income_tax_relief": cObj("deduct_paye").checked && cObj("personal_relief").checked ? income_tax_relief : 0,
+        "ahl_relief": cObj("deduct_nhds").checked && cObj("AHL_relief_checker").checked ? ahl_relief : 0,
+        "taxable_income": taxable_income,
+        "deductions_total": getDeductions_1(),
+        "deductions": deductions,
+        "contributions_before_tax": effect_year <= 202411 ? ["nssf_amount"] : ["nssf_amount","nhif_shif_amount","housing_levy"],
+        "net_salary": 0
+    }
+    // GROSS SALARY
+    // ALLOWANCES
+    // CONTRIBUTION BEFORE TAX
+    // TAXABLE INCOME
+    // CONTRIBUTION AFTER TAX
+    // RELIEFS
+    // DEDUCTION
+
+    // GROSS SALARY
+    cObj("gros_salo_rec").innerHTML = payment_breakdown.gross_salary_without_allowance.toLocaleString();
+
+    // ALLOWANCES
+    cObj("all_allowances").innerText = payment_breakdown.allowance_total.toLocaleString();
+    cObj("total_salary").innerHTML = payment_breakdown.gross_salary_with_allowance.toLocaleString();
+
+    // CONTRIBUTIONS BEFORE TAX
+    var data_to_display = "";
+    if (effect_year < 202411) {
+        data_to_display += "<div class='col-md-6'><p><i>- NSSF Contribution</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nssf_amount.toLocaleString()+"</i></p></div>";
+    }else{
+        data_to_display += "<div class='col-md-6'><p><i>- NSSF Contribution</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nssf_amount.toLocaleString()+"</i></p></div>";
+        data_to_display += "<div class='col-md-6'><p><i>- NHIF/SHIF Contribution</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
+        data_to_display += "<div class='col-md-6'><p><i>- Housing Levy</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.housing_levy.toLocaleString()+"</i></p></div>";
+    }
+    cObj("contributions_before_tax").innerHTML = data_to_display;
+
+    var contribution_before_tax_total = effect_year < 202411 ? payment_breakdown.nssf_amount : (payment_breakdown.nssf_amount + payment_breakdown.nhif_shif_amount + payment_breakdown.housing_levy)
+    cObj("contribution_before_tax_totals").innerText = contribution_before_tax_total.toLocaleString();
+
+    // TAXABLE INCOME
+    cObj("taxable_income_records").innerHTML = "Kes "+payment_breakdown.taxable_income.toLocaleString();
+
+    // TAX
+    cObj("incomeTaxRecord").innerHTML = "Kes "+ payment_breakdown.income_tax.toLocaleString();
+
+    // INCOME AFTER TAX
+    var income_after_taxes = (payment_breakdown.taxable_income - (payment_breakdown.income_tax > payment_breakdown.income_tax_relief ? payment_breakdown.income_tax - payment_breakdown.income_tax_relief : 0));
+    cObj("income_after_tax").innerHTML = "Kes "+(income_after_taxes.toLocaleString());
+
+    // PAYMENTS AFTER TAX
+    var data_to_display = "";
+    if (effect_year < 202411) {
+        data_to_display += "<div class='col-md-6'><p><i>- NHIF/SHIF Contribution</i></p></div><div class='col-md-6 text-left'><p><i>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
+        if (effect_year > 202402) {
+            data_to_display += "<div class='col-md-6'><p><i>- Housing Levy</i></p></div><div class='col-md-6 text-left'><p><i>Ksh "+payment_breakdown.housing_levy.toLocaleString()+"</i></p></div>";
+        }
+    }else{
+        data_to_display += "<div class='col-md-6'><p><i>- Contributions After Tax</i></p></div><div class='col-md-6 text-left'><p><i>Ksh 0</i></p></div>";
+    }
+    cObj("payments_after_tax").innerHTML = data_to_display;
+
+    // RELIEFS
+    cObj("personal_relief_records").innerHTML = "Kes "+payment_breakdown.income_tax_relief.toLocaleString();
+    cObj("nhif_relief_record").innerHTML = "Kes "+payment_breakdown.insurance_relief.toLocaleString();
+    cObj("ahl_relief_record").innerHTML = "Kes "+payment_breakdown.ahl_relief.toLocaleString();
+
+    // total relief
+    cObj("total_relief").innerHTML = "Kes "+((payment_breakdown.insurance_relief+payment_breakdown.ahl_relief).toFixed(2).toLocaleString());
+    
+    // final income tax
+    var final_income_taxes = payment_breakdown.income_tax > payment_breakdown.income_tax_relief ? payment_breakdown.income_tax - payment_breakdown.income_tax_relief : 0;
+    cObj("final_income_taxe").innerHTML = payment_breakdown.income_tax > payment_breakdown.income_tax_relief ? "Kes "+(final_income_taxes.toFixed(2).toLocaleString()) : "Kes 0";
+
+
+    // DEDUCTIONS
+    cObj("deductions_calculate").innerText = "Kes "+payment_breakdown.deductions_total.toLocaleString();
+
+    // NET SALARY
+    var net_salary = Net_Salary_Amount(payment_breakdown);
+    cObj("net_salary_record").innerHTML = "Kes "+net_salary.toLocaleString();
+    cObj("amount_to_pay").value = (net_salary*1).toFixed(0);
+}
+
+function Net_Salary_Amount(payment_breakdown) {
+    var income_tax = payment_breakdown.income_tax > payment_breakdown.income_tax_relief ? payment_breakdown.income_tax - payment_breakdown.income_tax_relief : 0;
+    var nhif_shif_amount = payment_breakdown.nhif_shif_amount - payment_breakdown.insurance_relief;
+    var deductions = income_tax+nhif_shif_amount+payment_breakdown.nssf_amount+payment_breakdown.deductions_total;
+    if (payment_breakdown.effect_year*1 > 202402) {
+        var housing_levy = payment_breakdown.housing_levy - payment_breakdown.ahl_relief;
+        deductions += housing_levy;
+    }
+    
+    // contribution
+    var contributions = payment_breakdown.gross_salary_with_allowance;
+    
+    return (contributions - deductions).toFixed(2);
+}
+
+function Nhif_Shif_Amount(gross_salary, effect_year){
+    if (effect_year >= 201801 && effect_year <= 202410) {
+        if (gross_salary <= 5999) {
+            return 150;
+        } else if (gross_salary > 5999 && gross_salary <= 7999) {
+            return 300;
+        } else if (gross_salary > 7999 && gross_salary <= 11999) {
+            return 400;
+        } else if (gross_salary > 11999 && gross_salary <= 14999) {
+            return 500;
+        } else if (gross_salary > 14999 && gross_salary <= 19999) {
+            return 600;
+        } else if (gross_salary > 19999 && gross_salary <= 24999) {
+            return 750;
+        } else if (gross_salary > 24999 && gross_salary <= 29999) {
+            return 850;
+        } else if (gross_salary > 29999 && gross_salary <= 34999) {
+            return 900;
+        } else if (gross_salary > 34999 && gross_salary <= 39999) {
+            return 950;
+        } else if (gross_salary > 39999 && gross_salary <= 44999) {
+            return 1000;
+        } else if (gross_salary > 44999 && gross_salary <= 49999) {
+            return 1100;
+        } else if (gross_salary > 49999 && gross_salary <= 59999) {
+            return 1200;
+        } else if (gross_salary > 59999 && gross_salary <= 69999) {
+            return 1300;
+        } else if (gross_salary > 69999 && gross_salary <= 79999) {
+            return 1400;
+        } else if (gross_salary > 79999 && gross_salary <= 89999) {
+            return 1500;
+        } else if (gross_salary > 89999 && gross_salary <= 99999) {
+            return 1600;
+        } else if (gross_salary > 99999) {
+            return 1700;
+        }
+    }else if(effect_year >= 202410){
+        return gross_salary * 0.0275;
+    }
+    return 0;
+}
+function Nssf_Amount(gross_salary, effect_year) {
+    if (effect_year >= 200001 && effect_year <= 201501) {
+        return 200;
+    }else if (effect_year >201501 && effect_year <= 202401) {
+        if (gross_salary <= 6000) {
+            return 0.06 * gross_salary;
+        }else if (gross_salary > 6000 && gross_salary <= 18000) {
+            return 360 + ((gross_salary - 6000) * 0.06);
+        }else if (gross_salary > 18000) {
+            return 1080
+        }
+    }else if (effect_year > 202401 && effect_year <= 202501) {
+        if (gross_salary <= 7000) {
+            return 0.06 * gross_salary;
+        }else if (gross_salary > 7000 && gross_salary <= 36000) {
+            return 420 + ((gross_salary - 7000) * 0.06);
+        }else if (gross_salary > 36000) {
+            return 2160;
+        }
+    }else if (effect_year > 202501) {
+        if (gross_salary <= 8000) {
+            return 0.06 * gross_salary;
+        }else if (gross_salary > 8000 && gross_salary <= 72000) {
+            return 480 + ((gross_salary - 8000) * 0.06);
+        }else if (gross_salary > 72000) {
+            return 4320;
         }
     }
-    var nhif_contribution = getNHIFContribution(gross_salary);
-    var prov_relief = (nhif_contribution * 15) / 100;
-    var nhif_relief = nhif_contribution > 200 ? (prov_relief > 255 ? 255 : prov_relief) : 0;
-    var netSalary = (taxable_income - (final_income_tax + (nhif_contribution)));
-    if (cObj("NHIF_relief").checked == true && cObj("deduct_NHIF").checked == true) {
-        netSalary = (taxable_income - (final_income_tax + (nhif_contribution - nhif_relief)));
-    }
-    if (cObj("deduct_paye").checked == false) {
-        netSalary += final_income_tax;
-    }
-    if (cObj("deduct_NHIF").checked == false) {
-        netSalary += nhif_contribution;
-    }
-    cObj("gros_salo_rec").innerText = "Ksh " + comma3(gross_salary);
-    cObj("nssf_contributes").innerText = "Ksh " + comma3(nssf_contribution);
-    cObj("income_after_nssf_contribute").innerText = "Ksh " + comma3(income_after_nssf);
-    cObj("all_allowances").innerText = "Ksh " + comma3(allowances);
-    cObj("taxable_income_records").innerText = "Ksh " + comma3(taxable_income);
-    cObj("incomeTaxRecord").innerText = "Ksh " + comma3(income_tax);
-    cObj("personal_relief_records").innerText = "Ksh " + comma3(personal_relief);
-    cObj("final_income_taxe").innerText = "Ksh " + comma3(final_income_tax);
-    cObj("nhif_contributions_records").innerText = "Ksh " + comma3(nhif_contribution);
-    cObj("nhif_relief_record").innerText = "Ksh " + comma3(nhif_relief);
-    var deductions = getDeductions_1();
-    netSalary -= deductions;
-    cObj("deductions_calculate").innerText = "Ksh "+ comma3(deductions);
-    cObj("net_salary_record").innerText = "Ksh " + comma3(netSalary);
-    cObj("amount_to_pay").value = netSalary.toFixed(0);
+    return 0;
 }
+function Housing_Levy(gross_salary, effect_year) {
+    if (effect_year >= 202402) {
+        return gross_salary * 0.015;
+    }
+    return 0;
+}
+
+function Nhif_Shif_Relief(gross_salary, effect_year) {
+    var nhif_shif_amount = Nhif_Shif_Amount(gross_salary, effect_year)*1;
+    if (effect_year >= 202201) {
+        return 0.15 * nhif_shif_amount > 5000 ? 5000 : 0.15 * nhif_shif_amount;
+    }else{
+        return 0.15 * nhif_shif_amount;
+    }
+}
+
+function Taxable_Income(gross_salary, effect_year, nssf_amount, nhif_shif_amount, housing_levy) {
+    if (effect_year <= 202411) {
+        gross_salary -= nssf_amount;
+    }else{
+        gross_salary -= (nssf_amount + nhif_shif_amount + housing_levy);
+    }
+    return gross_salary;
+}
+
+function Income_Tax_Relief(effect_year){
+    if (effect_year > 202004) {
+        return 2400;
+    }else if (effect_year > 201801) {
+        return 1408;
+    }else{
+        return 1162;
+    }
+}
+function Ahl_Relief(gross_salary, effect_year){
+    if (effect_year >= 202402) {
+        var housing_levy = Housing_Levy(gross_salary, effect_year);
+        var ahl_relief = 0.15 * housing_levy;
+        return ahl_relief > 9000 ? 9000 : ahl_relief;
+    }
+    return 0;
+}
+
+function Income_Tax(gross_salary, effect_year){
+    var housing_levy = Housing_Levy(gross_salary, effect_year)*1;
+    var nhif_shif_amount = Nhif_Shif_Amount(gross_salary, effect_year)*1;
+    var nssf_amount = Nssf_Amount(gross_salary, effect_year)*1;
+    var taxable_income = Taxable_Income(gross_salary, effect_year, nssf_amount, nhif_shif_amount, housing_levy)*1;
+    
+
+    // calculate the income tax
+    gross_salary = taxable_income;
+    var payee = 0;
+    if (effect_year > 201801 && effect_year < 202003) {
+        // THE FIRST BAND
+        if (gross_salary > 12298) {
+            payee += 12298 * 0.1;
+        }else{
+            payee += gross_salary * 0.1;
+            return payee.toFixed(2);
+        }
+        
+        // THE SECOND BAND
+        if (gross_salary > 23885) {
+            payee += 11588 * 0.15;
+        }else{
+            payee += (gross_salary - 12298) * 0.15;
+            return payee.toFixed(2);
+        }
+        
+        // THE THIRD BAND
+        if (gross_salary > 35472) {
+            payee += 11588 * 0.20;
+        }else{
+            payee += (gross_salary - 23885) * 0.20;
+            return payee.toFixed(2);
+        }
+        
+        // THE FOURTH BAND
+        if (gross_salary > 47059) {
+            payee += 11588 * 0.25;
+        }else{
+            payee += (gross_salary - 35472) * 0.25;
+            return payee.toFixed(2);
+        }
+
+        // FIFTH BAND
+        if (gross_salary > 47059) {
+            payee += ((gross_salary - 47059) * 0.3);
+            return payee.toFixed(2);
+        }
+    }else if(effect_year >= 202004 && effect_year < 202012){
+        // THE FIRST BAND
+        if (gross_salary > 24000) {
+            payee += 24000 * 0.1;
+        }else{
+            payee += gross_salary * 0.1;
+            return payee.toFixed(2);
+        }
+        
+        // THE SECOND BAND
+        if (gross_salary > 40667) {
+            payee += 16667 * 0.15;
+        }else{
+            payee += (gross_salary - 24000) * 0.15;
+            return payee.toFixed(2);
+        }
+        
+        // THE THIRD BAND
+        if (gross_salary > 57334) {
+            payee += 16667 * 0.20;
+        }else{
+            payee += (gross_salary - 40667) * 0.20;
+            return payee.toFixed(2);
+        }
+
+        // THE FOURTH BAND
+        if (gross_salary > 57334) {
+            payee += ((gross_salary - 57334) * 0.25);
+            return payee.toFixed(2);
+        }
+    }else if(effect_year >= 202101){
+        // THE FIRST BAND
+        if (gross_salary > 24000) {
+            payee += 24000 * 0.1;
+        }else{
+            payee += gross_salary * 0.1;
+            return payee.toFixed(2);
+        }
+        
+        // THE SECOND BAND
+        if (gross_salary > 32333) {
+            payee += 8333 * 0.25;
+        }else{
+            payee += (gross_salary - 24000) * 0.25;
+            return payee.toFixed(2);
+        }
+        
+        // THE THIRD BAND
+        if (gross_salary > 500000) {
+            payee += 467667 * 0.30;
+        }else{
+            payee += (gross_salary - 32333) * 0.30;
+            return payee.toFixed(2);
+        }
+        
+        // THE FOURTH BAND
+        if (gross_salary > 800000) {
+            payee += 300000 * 0.325;
+        }else{
+            payee += (gross_salary - 500000) * 0.325;
+            return payee.toFixed(2);
+        }
+
+        // THE FIFTH BAND
+        if (gross_salary > 800000) {
+            payee += ((gross_salary - 800000) * 0.35);
+            return payee.toFixed(2);
+        }
+    }
+    return payee.toFixed(2);
+}
+
 function breakdownPayments2() {
+    // effect year
+    var months = ["", "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    var effect_month = valObj("effect_month_payee");
+    var effect_year_edit = valObj("year_of_effect_paye")+""+ (months.indexOf(effect_month) > 9 ? months.indexOf(effect_month) : "0"+months.indexOf(effect_month));
+    
     // get the additions
-    var gross_salary = valObj("gross_salary_edit");
-    var teir = valObj("nssf_rates") ? valObj("nssf_rates_edit") : "none";
-    var nssf_contribution = getNSSFContribution(gross_salary, teir);
-    var income_after_nssf = gross_salary - nssf_contribution;
-    var allowances = getAllowances2();
-    var taxable_income = income_after_nssf + allowances;
-    var year = valObj("year_of_effect_paye");
-    var income_tax = getIncomeTax(taxable_income, year);
+    var allowance_holder = hasJsonStructure(valObj("allowance_holder_edit")) ? JSON.parse(valObj("allowance_holder_edit")) : [];
+    var gross_salary = valObj("gross_salary_edit")*1;
+    var allowances = getAllowances2()*1;
+    gross_salary+=allowances;
+    var nssf_contribution = Nssf_Amount(gross_salary, effect_year_edit)*1;
+    var nhif_shif_amount = Nhif_Shif_Amount(gross_salary, effect_year_edit)*1;
+    var housing_levy = Housing_Levy(gross_salary, effect_year_edit)*1;
+    var taxable_income = Taxable_Income(gross_salary, effect_year_edit, nssf_contribution, nhif_shif_amount, housing_levy)*1;
+    var income_tax = Income_Tax(gross_salary, effect_year_edit)*1;
+    var income_tax_relief = Income_Tax_Relief(effect_year_edit)*1;
+    var insurance_relief = Nhif_Shif_Relief(gross_salary, effect_year_edit)*1;
+    var ahl_relief = Ahl_Relief(gross_salary, effect_year_edit)*1;
+    var deductions = hasJsonStructure(cObj("deductions_holder").innerText) ? JSON.parse(cObj("deductions_holder").innerText) : [];
+    
+    var payment_breakdown = {
+        "effect_year": effect_year_edit,
+        "gross_salary_without_allowance": gross_salary-allowances,
+        "gross_salary_with_allowance": gross_salary,
+        "allowance_total": allowances,
+        "allowances": allowance_holder,
+        "nhif_shif_amount": cObj("dedcut_nhif_edit").checked ? nhif_shif_amount : 0,
+        "housing_levy": cObj("edit_deduct_nhds").checked ? housing_levy : 0,
+        "nssf_amount": cObj("nssf_rates_edit").value == "none" ? 0 : nssf_contribution,
+        "income_tax": cObj("dedcut_paye_edit").checked ? income_tax : 0,
+        "insurance_relief": cObj("dedcut_nhif_edit").checked && cObj("nhif_relief_accept").checked ? insurance_relief : 0,
+        "income_tax_relief": cObj("dedcut_paye_edit").checked && cObj("personal_relief_accept").checked ? income_tax_relief : 0,
+        "ahl_relief": cObj("edit_deduct_nhds").checked && cObj("accept_ahl_relief").checked ? ahl_relief : 0,
+        "taxable_income": taxable_income,
+        "deductions_total": getDeductions(),
+        "deductions": deductions,
+        "contributions_before_tax": effect_year_edit <= 202411 ? ["nssf_amount"] : ["nssf_amount","nhif_shif_amount","housing_levy"],
+        "net_salary": 0
+    }
+    
     var personal_relief = 0;
     var final_income_tax = income_tax;
     // console.log(cObj("personal_relief").checked );
@@ -3509,34 +3906,52 @@ function breakdownPayments2() {
             }
         }
     }
-    var nhif_contribution = getNHIFContribution(gross_salary);
-    var prov_relief = (nhif_contribution * 15) / 100;
-    var nhif_relief = (nhif_contribution > 200 && cObj("nhif_relief_accept").checked == true) ? ((prov_relief > 255) ? 255 : prov_relief) : 0;
-    var netSalary = (taxable_income - (final_income_tax + (nhif_contribution)));
-    if (cObj("nhif_relief_accept").checked == true && cObj("dedcut_nhif_edit").checked == true) {
-        netSalary = (taxable_income - (final_income_tax + (nhif_contribution - nhif_relief)));
+    // contributions before
+    var data_to_display = "";
+    var total_contributions = 0;
+    if (effect_year_edit < 202411) {
+        data_to_display += "<div class='col-md-8'><p><i>- NSSF Contribution</i></p></div><div class='col-md-4 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nssf_amount.toLocaleString()+"</i></p></div>";
+        total_contributions += payment_breakdown.nssf_amount;
+    }else{
+        data_to_display += "<div class='col-md-8'><p><i>- NSSF Contribution</i></p></div><div class='col-md-4 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nssf_amount.toLocaleString()+"</i></p></div>";
+        data_to_display += "<div class='col-md-8'><p><i>- NHIF/SHIF Contribution</i></p></div><div class='col-md-4 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
+        data_to_display += "<div class='col-md-8'><p><i>- Housing Levy</i></p></div><div class='col-md-4 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.housing_levy.toLocaleString()+"</i></p></div>";
+        total_contributions+=payment_breakdown.nssf_amount;
+        total_contributions+=payment_breakdown.housing_levy;
+        total_contributions+=payment_breakdown.nhif_shif_amount;
     }
-    if (cObj("dedcut_paye_edit").checked == false) {
-        netSalary += final_income_tax;
+    cObj("contributions_before_tax_edit").innerHTML = data_to_display;
+    
+    // CONTRIUBUTIONS AFTER TAX
+    // PAYMENTS AFTER TAX
+    var data_to_display = "";
+    if (effect_year_edit < 202411) {
+        data_to_display += "<div class='col-md-8'><p><i>- NHIF/SHIF Contribution</i></p></div><div class='col-md-4 text-left'><p><i>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
+        if (effect_year_edit > 202402) {
+            data_to_display += "<div class='col-md-8'><p><i>- Housing Levy</i></p></div><div class='col-md-4 text-left'><p><i>Ksh "+payment_breakdown.housing_levy.toLocaleString()+"</i></p></div>";
+        }
+    }else{
+        data_to_display += "<div class='col-md-8'><p><i>- Contributions After Tax</i></p></div><div class='col-md-4 text-left'><p><i>Ksh 0</i></p></div>";
     }
-    if (cObj("dedcut_nhif_edit").checked == false) {
-        netSalary += nhif_contribution;
-    }
-    cObj("gros_salo_rec_edit").innerText = "Ksh " + comma3(gross_salary);
-    cObj("nssf_contributes_edit").innerText = "Ksh " + comma3(nssf_contribution);
-    cObj("income_after_nssf_contribute_edit").innerText = "Ksh " + comma3(income_after_nssf);
-    cObj("all_allowances_edit").innerText = "Ksh " + comma3(allowances);
-    cObj("taxable_income_records_edit").innerText = "Ksh " + comma3(taxable_income);
-    cObj("incomeTaxRecord_edit").innerText = "Ksh " + comma3(income_tax);
-    cObj("personal_relief_records_edit").innerText = "Ksh " + comma3(personal_relief);
-    cObj("final_income_taxe_edit").innerText = "Ksh " + comma3(final_income_tax);
-    cObj("nhif_contributions_records_edit").innerText = "Ksh " + comma3(nhif_contribution);
-    cObj("nhif_relief_record_edit").innerText = "Ksh " + comma3(nhif_relief);
-    var deductions = getDeductions();
-    netSalary -= deductions;
-    cObj("all_deductions_edit").innerText = "Kes "+comma3(deductions);
+    cObj("payments_after_tax_edit").innerHTML = data_to_display;
+
+    cObj("total_contributions_edit").innerHTML = "Kes "+ (total_contributions.toLocaleString());
+
+    var netSalary = Net_Salary_Amount(payment_breakdown);
+    cObj("gros_salo_rec_edit").innerText = "Ksh " + comma3(payment_breakdown.gross_salary_without_allowance);
+    cObj("gross_salary_total_edit").innerText = "Ksh "+comma3(payment_breakdown.gross_salary_with_allowance);
+    cObj("all_allowances_edit").innerText = "Ksh " + comma3(payment_breakdown.allowance_total);
+    cObj("taxable_income_records_edit").innerText = "Ksh " + comma3(payment_breakdown.taxable_income);
+    cObj("incomeTaxRecord_edit").innerText = "Ksh " + comma3(payment_breakdown.income_tax);
+    cObj("personal_relief_records_edit").innerText = "Ksh " + comma3(payment_breakdown.income_tax_relief);
+    cObj("nhif_relief_record_edit").innerText = "Ksh " + comma3(payment_breakdown.insurance_relief);
+    cObj("all_deductions_edit").innerText = "Kes "+comma3(payment_breakdown.deductions_total);
+    cObj("final_income_tax").innerHTML = "Kes "+((payment_breakdown.income_tax > payment_breakdown.income_tax_relief ? payment_breakdown.income_tax - payment_breakdown.income_tax_relief : 0).toLocaleString())
+    cObj("AHL_relief_edit").innerHTML = "Kes "+(payment_breakdown.ahl_relief.toLocaleString());
+    cObj("total_reliefs").innerHTML = "Kes "+((payment_breakdown.ahl_relief + payment_breakdown.insurance_relief).toLocaleString());
+    // net salary
     cObj("net_salary_record_edit").innerText = "Ksh " + comma3(netSalary);
-    cObj("change_salary").value = netSalary.toFixed(0);
+    cObj("change_salary").value = (netSalary*1).toFixed(0);
 }
 
 function getNHIFContribution(gross_salary) {
@@ -3748,9 +4163,7 @@ cObj("deduct_paye").onchange = function () {
 cObj("deduct_NHIF").onchange = function () {
     breakdownPayments();
 }
-cObj("paye_effect_year").onchange = function () {
-    breakdownPayments();
-}
+
 function get_salary_breakdown() {
     var salary_breakdown = "[{\"gross_salary\":\"" + valObj("gross_salary") + "\",";
     var personal_relief = cObj("personal_relief").checked ? "yes" : "no";
@@ -3763,8 +4176,10 @@ function get_salary_breakdown() {
     var allowances = cObj("allowance_holder").innerText.length > 0 ? cObj("allowance_holder").innerText : "\"\"";
     salary_breakdown += ",\"allowances\":" + allowances + "";
     var deductions = cObj("deductions_holder_1").innerText.length > 0 ? cObj("deductions_holder_1").innerText : "\"\"";
-    salary_breakdown += ",\"deductions\":"+deductions+""
-    salary_breakdown += ",\"year\":\"" + valObj("paye_effect_year") + "\"}]";
+    salary_breakdown += ",\"deductions\":"+deductions+"";
+    salary_breakdown += ",\"housing_levy\":\""+(cObj("deduct_nhds").checked ? "yes" : "no")+"\"";
+    salary_breakdown += ", \"ahl_relief\":\""+(cObj("AHL_relief_checker").checked ? "yes" : "no")+"\"";
+    salary_breakdown += ",\"effect_month\": \""+valObj("effect_from")+"-"+valObj("effect_year")+"\"}]"
     return salary_breakdown;
 }
 function get_salary_breakdown2() {
@@ -3778,9 +4193,11 @@ function get_salary_breakdown2() {
     salary_breakdown += ",\"deduct_paye\":\"" + deduct_paye + "\",\"deduct_nhif\":\"" + deduct_nhif + "\",\"nssf_rates\":\"" + nssf_rates + "\""
     var allowances = cObj("allowance_holder_edit").innerText.length > 0 ? cObj("allowance_holder_edit").innerText : "\"\"";
     salary_breakdown += ",\"allowances\":" + allowances + "";
-    var deductions = cObj("deductions_holder").innerText.length > 0 ? cObj("deductions_holder").innerText : "\"\"";
+    var deductions = cObj("deductions_holder").innerText;
     salary_breakdown += ",\"deductions\":"+deductions+""
-    salary_breakdown += ",\"year\":\"" + valObj("year_of_effect_paye") + "\"}";
+    salary_breakdown += ",\"housing_levy\":\""+(cObj("edit_deduct_nhds").checked ? "yes" : "no")+"\"";
+    salary_breakdown += ", \"ahl_relief\":\""+(cObj("accept_ahl_relief").checked ? "yes" : "no")+"\"";
+    salary_breakdown += ",\"effect_month\":\""+ valObj("effect_month_payee")+"-"+ valObj("year_of_effect_paye") + "\"}";
     return salary_breakdown;
 }
 
@@ -4082,6 +4499,7 @@ function displayAdvanceData(data) {
         element.classList.add("hide");
     }
     cObj("view_advance_window").classList.remove("hide");
+    cObj("hold_advance_payment_id").value = data[7];
     // assigne the data to the data holders
     cObj("employees_name_view").value = data[4];
     cObj("advance_amount_view").value = "Kes "+formatNum(data[1]);

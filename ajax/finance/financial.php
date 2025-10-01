@@ -3598,130 +3598,146 @@
                 echo "<p class='red_notice border border-danger p-1 my-2'>The user is already enrolled!</p>";
             }
         }elseif (isset($_GET['getEnrolled'])) {
-            $select = "SELECT * FROM `payroll_information`";
-            $stmt = $conn2->prepare($select);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result) {
-                $data_to_display = "<table class='table'>
+        $select = "SELECT * FROM `payroll_information` ORDER BY `payroll_id` DESC";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result) {
+            $data_to_display = "<div class='tableme'><table class='table' id='see_enrolled_payroll_table'><thead>
                                     <tr>
                                         <th>No.</th>
                                         <th>Staff Name</th>
                                         <th>Date Enrolled</th>
                                         <th>Gross Salary</th>
-                                        <th>P.A.Y.E</th>
-                                        <th>N.H.I.F</th>
-                                        <th>N.S.S.F</th>
+                                        <th>PAYE</th>
+                                        <th>SHIF/NHIF</th>
+                                        <th>NSSF</th>
                                         <th>Allowances</th>
                                         <th>Deductions</th>
                                         <th>Net Pay</th>
                                         <th>Options</th>
-                                    </tr>";
-                                    $xs = 0;
-                while ($row = $result->fetch_assoc()) {
-                    //get the last one on the list for year and time
-                    $xs++;
-                    $balance_for = explode(",",$row['current_balance_monNyear']);
-                    $month_N_Year = explode(":",$balance_for[(count($balance_for)-1)]);
-                    //GET THE LAST ONE ON SALARIES
-                    $salary_amount = explode(",",$row['salary_amount']);
-                    $curr_salary = $salary_amount[(count($salary_amount)-1)];
-                    //get the KRA NHIF NSSF Allowances Deductions Net Pay
-                    $paye = 0;
-                    $nhif = 0;
-                    $nssf = 0;
-                    $allowances = 0;
-                    $deduction = 0;
-                    $net_pay = $curr_salary;
-                    $salary_breakdown = $row['salary_breakdown'];
-                    $gross_salary = 0;
-                    $year = date("Y");
-                    $paye_relief = 0;
-                    $nhif_relief = 0;
+                                    </tr></thead><tbody>";
+            $xs = 0;
+            while ($row = $result->fetch_assoc()) {
+                //get the last one on the list for year and time
+                $xs++;
+                $balance_for = explode(",", $row['current_balance_monNyear']);
+                $month_N_Year = explode(":", $balance_for[(count($balance_for) - 1)]);
+                //GET THE LAST ONE ON SALARIES
+                $salary_amount = explode(",", $row['salary_amount']);
+                $curr_salary = $salary_amount[(count($salary_amount) - 1)];
+                //get the KRA NHIF NSSF Allowances Deductions Net Pay
+                $income_tax = 0;
+                $nhif_shif_amount = 0;
+                $nssf_amount = 0;
+                $allowances = 0;
+                $deduction = 0;
+                $net_pay = $curr_salary;
+                $salary_breakdown = $row['salary_breakdown'];
+                $gross_salary = 0;
+                $year = date("Y");
+                $paye_relief = 0;
+                $nhif_relief = 0;
 
-                    // get the breakdown
-                    if (isJson_report_fin($salary_breakdown)) {
-                        $salary_breakdown = json_decode($salary_breakdown);
-                        $salary_break = is_array($salary_breakdown) ? $salary_breakdown[count($salary_breakdown)-1] : $salary_breakdown;
+                // get the breakdown
+                if (isJson_report_fin($salary_breakdown)) {
+                    $salary_breakdown = json_decode($salary_breakdown);
+                    $salary_break = is_array($salary_breakdown) ? $salary_breakdown[count($salary_breakdown) - 1] : $salary_breakdown;
+                    
+                    $effect_year = isset($salary_break->effect_month) ? date("Ym", strtotime($salary_break->effect_month)) : $salary_break->year."01";
+                    // echo $effect_year;
+                    // return;
+                    // assign the deduction and contributions
+                    $gross_salary = $salary_break->gross_salary;
 
-                        // echo json_encode($salary_break);
-                        // assign the deduction and contributions
-                        $gross_salary = $salary_break->gross_salary;
-                        $nhif = $salary_break->deduct_nhif == "yes" ? getNHIFContribution($gross_salary) : 0;
-                        $nhif_relief = ($salary_break->deduct_nhif == "yes" && $salary_break->nhif_relief == "yes") ? (($nhif*0.15) > 255 ? 255 : ($nhif*0.15)) : 0;
-                        $allowances = $salary_break->allowances;
-                        $personal_relief = $salary_break->personal_relief;
-                        $deduct_paye = $salary_break->deduct_paye;
-                        $year = $salary_break->year;
-                        $deductions = isset($salary_break->deductions) ? $salary_break->deductions : [];
-
-                        if (is_array($deductions)) {
-                            for ($index=0; $index < count($deductions); $index++) { 
-                                $deduction += $deductions[$index]->value;
-                            }
+                    // get total allowances
+                    $allowances = $salary_break->allowances;
+                    $total_allowance = 0;
+                    if (is_array($allowances)) {
+                        for ($index = 0; $index < count($allowances); $index++) {
+                            $total_allowance += $allowances[$index]->value;
                         }
-
-                        // get NSSF amount
-                        if($salary_break->nssf_rates == "teir_1"){
-                            $nssf = 360;
-                            $nssf_type = "Teir 1";
-                        }elseif($salary_break->nssf_rates == "teir_1_2"){
-                            $nssf = 1080;
-                            $nssf_type = "Teir 1 & 2";
-                        }elseif($salary_break->nssf_rates == "teir_old"){
-                            $nssf = 200;
-                            $nssf_type = "Old Rates";
-                        }else{
-                            $nssf = 0;
-                            $nssf_type = "none";
-                        }
-
-                        // get total allowances
-                        $total_allowance = 0;
-                        if (is_array($allowances)) {
-                            for ($index=0; $index < count($allowances); $index++) { 
-                                $total_allowance += $allowances[$index]->value;
-                            }
-                        }
-                        $allowances = $total_allowance;
-                        
-                        // get taxable income 
-                        $taxable_income = ($gross_salary + $total_allowance) - $nssf;
-                        
-                        // calculate P.A.Y.E
-                        $paye = ($salary_break->deduct_paye == "yes") ? getPaye($taxable_income,$year) : 0;
-                        
-                        // get reliefs
-                        $paye_relief = ($salary_break->deduct_paye == "yes" && $salary_break->personal_relief == "yes") ? 2400 : 0;
                     }
-                    $data_to_display.="<tr>
-                                            <td>".$xs.". </td>
-                                            <td id='namd".$row['staff_id']."'>".ucwords(strtolower(getStaffName($conn,$row['staff_id'])))."</td>
-                                            <td>".date("M Y",strtotime("01-".str_replace(":","-",explode(",",$row['effect_month'])[0])))."</td>
-                                            <span class='hide' id='montly_sal".$row['staff_id']."'>Kes ".comma($curr_salary)."</span>
-                                            <span class='hide' id='salo_balance".$row['staff_id']."'>Kes ".comma($row['current_balance'])."</span>
-                                            <td>Kes ".number_format($gross_salary)."</td>
-                                            <td><b>PAYE</b>: Kes ".number_format($paye)." <br><b>Relief</b>: Kes ".number_format($paye_relief)." </td>
-                                            <td><b>NHIF</b>: Kes ".number_format($nhif)." <br><b>Relief</b>: Kes ".number_format($nhif_relief)."</td>
-                                            <td>Kes ".number_format($nssf)."</td>
-                                            <td>Kes ".number_format($allowances)."</td>
-                                            <td>Kes ".number_format($deduction)."</td>
-                                            <td>Kes ".number_format($net_pay)."</td>
-                                            <span class='hide' id='salo".$row['staff_id']."'>".$curr_salary."</span>
-                                            <span class='hide' id='lastpay".$row['staff_id']."'>".$month_N_Year[0]." ".$month_N_Year[1]."</span>
-                                            <td '><span  class='edit_salary link'  id = 'stf".$row['staff_id']."' style='font-size:12px;'> <i class='fa fa-pen'></i> Edit</span> / <span class='link view_salos_pay' style='font-size:12px;'  id='viw".$row['staff_id']."'>  <i class='fa fa-eye'></i> View</span> / <span class='link pay_staff_salo' style='font-size:12px';  id='lipa".$row['staff_id']."'>  <i class='fa fa-coins'></i> Pay</span></td>
+                    $allowances = $total_allowance;
+                    $gross_salary += $allowances;
+
+                    $nhif_shif_amount = $salary_break->deduct_nhif == "yes" ? Nhif_Shif_Amount($gross_salary, $effect_year) : 0;
+                    $nhif_relief = ($salary_break->deduct_nhif == "yes" && $salary_break->nhif_relief == "yes") ? Nhif_Shif_Relief($gross_salary, $effect_year) : 0;
+                    $deduct_paye = $salary_break->deduct_paye;
+                    $year = isset($salary_break->year) ? $salary_break->year : date("Y", strtotime("01-".$salary_break->effect_month));
+                    $deductions = isset($salary_break->deductions) ? $salary_break->deductions : [];
+
+                    if (is_array($deductions)) {
+                        for ($index = 0; $index < count($deductions); $index++) {
+                            $deduction += $deductions[$index]->value;
+                        }
+                    }
+
+                    // NSSF AMOUNT
+                    $nssf_amount = $salary_break->nssf_rates == "none" ? 0 : Nssf_Amount($gross_salary, $effect_year);
+                    $housing_levy = isset($salary_break->housing_levy) ? ($salary_break->housing_levy == "yes" ? Housing_Levy($gross_salary, $effect_year) : 0) : 0;
+
+                    // get taxable income
+                    $taxable_income = Taxable_Income($gross_salary, $effect_year, $nssf_amount, $nhif_shif_amount, $housing_levy);
+
+                    // calculate P.A.Y.E
+                    $income_tax = ($salary_break->deduct_paye == "yes") ? Income_Tax($gross_salary, $effect_year) : 0;
+
+                    // get reliefs
+                    $paye_relief = ($salary_break->deduct_paye == "yes" && $salary_break->personal_relief == "yes") ? Income_Tax_Relief($effect_year) : 0;
+                    $ahl_relief = isset($salary_break->ahl_relief) && isset($salary_break->housing_levy) ? ($salary_break->ahl_relief == "yes" ? Ahl_Relief($gross_salary, $effect_year) : 0) : 0;
+                    
+                    // PAYMENT BREAKDOWN
+                    $payment_breakdown = new stdClass();
+                    $payment_breakdown->effect_year = $effect_year;
+                    $payment_breakdown->gross_salary_without_allowance = $gross_salary-$allowances;
+                    $payment_breakdown->gross_salary_with_allowance = $gross_salary;
+                    $payment_breakdown->allowance_total = $allowances;
+                    $payment_breakdown->allowances = $salary_break->allowances;
+                    $payment_breakdown->nhif_shif_amount = $nhif_shif_amount;
+                    $payment_breakdown->housing_levy = $housing_levy;
+                    $payment_breakdown->nssf_amount = $nssf_amount;
+                    $payment_breakdown->income_tax = $income_tax;
+                    $payment_breakdown->insurance_relief = $nhif_relief;
+                    $payment_breakdown->income_tax_relief = $paye_relief;
+                    $payment_breakdown->ahl_relief = $ahl_relief;
+                    $payment_breakdown->taxable_income = $taxable_income;
+                    $payment_breakdown->deductions_total = $deduction;
+                    $payment_breakdown->deductions = $deductions;
+                    $payment_breakdown->contributions_before_tax = $effect_year <= 202411 ? ["nssf_amount"] : ["nssf_amount","nhif_shif_amount","housing_levy"];
+                    $payment_breakdown->net_salary = 0;
+                    
+                    // net salary
+                    $net_pay = Net_Salary_Amount($payment_breakdown);
+                }
+                $data_to_display .= "<tr>
+                                            <td>" . $xs . ". </td>
+                                            <td id='namd" . $row['staff_id'] . "'>" . ucwords(strtolower(getStaffName($conn, $row['staff_id']))) . "</td>
+                                            <td>" . date("M Y", strtotime("01-" . str_replace(":", "-", explode(",", $row['effect_month'])[0]))) . "</td>
+                                            <span class='hide' id='montly_sal" . $row['staff_id'] . "'>Kes " . number_format($curr_salary) . "</span>
+                                            <span class='hide' id='salo_balance" . $row['staff_id'] . "'>Kes " . number_format($row['current_balance']) . "</span>
+                                            <td>Kes " . number_format($gross_salary) . "</td>
+                                            <td><b>PAYE</b>: Kes " . number_format($income_tax) . " <br><b>Relief</b>: Kes " . number_format($paye_relief) . " </td>
+                                            <td><b>NHIF</b>: Kes " . number_format($nhif_shif_amount) . " <br><b>Relief</b>: Kes " . number_format($nhif_relief) . "</td>
+                                            <td>Kes " . number_format($nssf_amount) . "</td>
+                                            <td>Kes " . number_format($allowances) . "</td>
+                                            <td>Kes " . number_format($deduction) . "</td>
+                                            <td>Kes " . number_format($net_pay) . "</td>
+                                            <span class='hide' id='salo" . $row['staff_id'] . "'>" . $curr_salary . "</span>
+                                            <span class='hide' id='lastpay" . $row['staff_id'] . "'>" . $month_N_Year[0] . " " . $month_N_Year[1] . "</span>
+                                            <td '><span  class='edit_salary link'  id = 'stf" . $row['staff_id'] . "' style='font-size:12px;'> <i class='fa fa-pen'></i> Edit</span> / <span class='link view_salos_pay' style='font-size:12px;'  id='viw" . $row['staff_id'] . "'>  <i class='fa fa-eye'></i> View</span> / <span class='link pay_staff_salo' style='font-size:12px';  id='lipa" . $row['staff_id'] . "'>  <i class='fa fa-coins'></i> Pay</span></td>
                                         </tr>";
-                }
-                $data_to_display.="</table>";
-                if ($xs > 0) {
-                    echo $data_to_display;
-                }else {
-                    echo "<div class='conts' style='margin:auto;width:250px;display:flex;flex-direction:column;align-items:center;'><p class='green_notice' style='text-align:center;'>There are no staff enrolled in the payroll system currently!<br><p class='block_btn enroll_pays' id='enroll_staff_btn'><i class=' fa fa-plus'></i> Enroll staff</p></p>";
-                }
-            }else {
-                echo "<p class='red_notice' style='text-align:center;'>There are no staff enrolled in the payroll system currently!</p>";
             }
-        }elseif (isset($_GET['change_salo'])) {
+            $data_to_display .= "</tbody></table></div>";
+            if ($xs > 0) {
+                echo $data_to_display;
+            } else {
+                echo "<div class='conts' style='margin:auto;width:250px;display:flex;flex-direction:column;align-items:center;'><p class='green_notice' style='text-align:center;'>There are no staff enrolled in the payroll system currently!<br><p class='block_btn enroll_pays' id='enroll_staff_btn'><i class=' fa fa-plus'></i> Enroll staff</p></p>";
+            }
+        } else {
+            echo "<p class='red_notice' style='text-align:center;'>There are no staff enrolled in the payroll system currently!</p>";
+        }
+    }elseif (isset($_GET['change_salo'])) {
             $id = $_GET['id'];
             $new_amnt = $_GET['new_amnt'];
             $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = ?";
@@ -4077,141 +4093,154 @@
         }elseif (isset($_GET['view_salo_history'])) {
             $staff_id = $_GET['staff_id'];
             $curr_year = $_GET['curr_year'];
-            $salary_details_per_month = getSalaryDetails($conn2,$staff_id);
-            // echo json_encode($salary_details_per_month);
+            $salary_details_per_month = getSalaryDetails($conn2, $staff_id);
+            
             //get all the amount the staff has been paid as salo
-            $total_salo = getTotalSalo($conn2,$staff_id);
+            $total_salo = getTotalSalo($conn2, $staff_id);
+
             //get the first month staff was paid
-            $firstpay_record = getFirstPayDate($conn2,$staff_id);
-            $current_bal = getCurrentBalTime($conn2,$staff_id);
-            $lasttimepaid = explode(",",$current_bal);
-            $times = explode(":",$firstpay_record);
+            $firstpay_record = getFirstPayDate($conn2, $staff_id);
+            $current_bal = getCurrentBalTime($conn2, $staff_id);
+            $lasttimepaid = explode(",", $current_bal);
+            $times = explode(":", $firstpay_record);
+
+
             //if the current year is less than the given year we display the else code
             if ($times[1] <= $curr_year) {
                 //get the first time the staff was paid
                 if ($total_salo > 0) {
                     $data_to_display = "";
-                    $data_to_display .="
-                    <div class='conts' style='margin:10px 0;'>
-                        <p class='embold'>Staff name: <span class='color_brown'>".getStaffName($conn,$staff_id)."</span></p>
-                        <p class='embold'>Year : <span class='color_brown'>$curr_year</span></p>
-                        <p class='embold'>Total salary paid: <span class='color_brown'>Kes ".comma($total_salo)."</span></p>
-                    </div><div class='my_salo-flexbox'>";
+                    $data_to_display .= "
+                        <div class='conts' style='margin:10px 0;'>
+                            <p class='embold'>Staff name: <span class='color_brown'>" . getStaffName($conn, $staff_id) . "</span></p>
+                            <p class='embold'>Year : <span class='color_brown'>$curr_year</span></p>
+                            <p class='embold'>Total salary paid: <span class='color_brown'>Kes " . number_format($total_salo) . "</span></p>
+                        </div><div class='my_salo-flexbox'>";
                     // loop through the salary breakdown of each user
-                    $start_dates = date("Y-m-d",strtotime("01-01-".$curr_year));
-                    for ($counter=0; $counter < 12; $counter++) { 
-                        $keys = date("M-Y",strtotime($start_dates));
+                    $start_dates = date("Y-m-d", strtotime("01-01-" . $curr_year));
+                    for ($counter = 0; $counter < 12; $counter++) {
+                        $keys = date("M-Y", strtotime($start_dates));
 
                         // look if the key has some data in the salary breakdown
-                        $salo_brek_down = getMonthlySaloBreak($salary_details_per_month,$keys);
+                        $salo_brek_down = getMonthlySaloBreak($salary_details_per_month, $keys);
                         $total_paid = 0;
                         $fund_details = "<p class='text-secondary'><u>Payment Breakdown</u></p>";
-                        if($salo_brek_down != null){
+                        if ($salo_brek_down != null) {
                             if (count($salo_brek_down) > 0) {
-                                $fund_details.="";
-                                for ($indx=0; $indx < count($salo_brek_down); $indx++) {
+                                $fund_details .= "";
+                                for ($indx = 0; $indx < count($salo_brek_down); $indx++) {
                                     $fund_dets = $salo_brek_down[$indx];
-                                    $mode_of_payment = ($fund_dets['mode_of_payment'] != "cash" && $fund_dets['mode_of_payment'] != "mpesa") ?"<b class='text-success'>-b</b>":($fund_dets['mode_of_payment'] == "mpesa" ? "<b class='text-success'>-m</b>":"<b class='text-success'>-c</b>");
-                                    $fund_details.="<p>- ".comma($fund_dets['amount_paid'])." (".date("M dS y",strtotime($fund_dets['date_paid']))." - ".date("H:iA",strtotime($fund_dets['time_paid'])).") ".$mode_of_payment."</p>";
-                                    $total_paid+=($fund_dets['amount_paid']*1);
+                                    $mode_of_payment = ($fund_dets['mode_of_payment'] != "cash" && $fund_dets['mode_of_payment'] != "mpesa") ? "<b class='text-success'>-b</b>" : ($fund_dets['mode_of_payment'] == "mpesa" ? "<b class='text-success'>-m</b>" : "<b class='text-success'>-c</b>");
+                                    $fund_details .= "<p>- " . number_format($fund_dets['amount_paid']) . " (" . date("M dS y", strtotime($fund_dets['date_paid'])) . " - " . date("H:iA", strtotime($fund_dets['time_paid'])) . ") " . $mode_of_payment . "</p>";
+                                    $total_paid += ($fund_dets['amount_paid'] * 1);
                                 }
-                            }else{
+                            } else {
                                 $fund_details .= "<p class='green_notice p-1 border border-success'> No payment records found!</p>";
                             }
-                        }else{
+                        } else {
                             $fund_details .= "<p class='green_notice p-1 border border-success'> No payment records found!</p>";
                         }
-                        $emp_salary = getMySalary($staff_id,$conn2,$start_dates);
-                        $balance = $emp_salary-$total_paid;
+
+                        $emp_salary = getMySalary($staff_id, $conn2, $start_dates);
+                        // echo $start_dates." ".$emp_salary." <br>";
+                        // echo $emp_salary."<br>";
+                        // return 0;
+                        $balance = $emp_salary - $total_paid;
                         // get allowances
-                        $allowances_bonus = getAllowanceBonusRelief($staff_id,$conn2,$start_dates);
+                        $allowances_bonus = getAllowanceBonusRelief($staff_id, $conn2, $start_dates);
                         // echo $keys." ".json_encode($allowances_bonus)."<br>count ".count($allowances_bonus[0])."<hr>";
+
                         $allowance_display = "";
                         $total_allowance = 0;
                         if (count($allowances_bonus[0]) > 0 && $total_paid > 0) {
-                            for ($ind=0; $ind < count($allowances_bonus[0]); $ind++) { 
+                            for ($ind = 0; $ind < count($allowances_bonus[0]); $ind++) {
                                 foreach ($allowances_bonus[0][$ind] as $key => $value) {
-                                    $allowance_display .= "<p>- ".ucwords(strtolower(str_replace("_"," ",$key)))." => Kes ".comma($value)."</p>";
-                                    $total_allowance+=$value;
+                                    $allowance_display .= "<p>- " . ucwords(strtolower(str_replace("_", " ", $key))) . " => Kes " . number_format($value) . "</p>";
+                                    $total_allowance += $value;
                                 }
                             }
-                            // for ($counting=0; $counting < count($allowances_bonus[0]); $counting++) { 
-                            //     $allowance_display.="<p>- ".$allowances_bonus[0][$counting]."</p>";
-                            // }
-                            $allowance_display.="<p class='bordered_bottom'></p><p><b>Total Allowances: Kes ".comma($total_allowance)."</b></p>";
-                        }else{
+                            $allowance_display .= "<p class='bordered_bottom'></p><p><b>Total Allowances: Kes " . number_format($total_allowance) . "</b></p>";
+                        } else {
                             $allowance_display = "<p class='text-success p-1 border border-success'>No allowance records available!</p>";
                         }
+
                         // get reliefs
                         $display_reliefs = "";
                         $staff_reliefs = $allowances_bonus[1];
                         // echo json_encode($staff_reliefs)."<br>";
-                        if(count($staff_reliefs) > 0 && $total_paid > 0){
+                        if (count($staff_reliefs) > 0 && $total_paid > 0) {
                             $jumla2 = 0;
-                            for ($ind=0; $ind < count($staff_reliefs); $ind++) { 
+                            for ($ind = 0; $ind < count($staff_reliefs); $ind++) {
                                 foreach ($staff_reliefs[$ind] as $key => $value) {
-                                    $display_reliefs .= "<p>- ".ucwords(strtolower(str_replace("_"," ",$key)))." => Kes ".comma($value)."</p>";
-                                    $jumla2+=$value;
+                                    $display_reliefs .= "<p>- " . ucwords(strtolower(str_replace("_", " ", $key))) . " => Kes " . number_format($value) . "</p>";
+                                    $jumla2 += $value;
                                 }
                             }
-                            $display_reliefs.="<p class='bordered_bottom'></p><p><b>Total Reliefs: Kes ".comma($jumla2)."</b></p>";
-                        }else{
+                            $display_reliefs .= "<p class='bordered_bottom'></p><p><b>Total Reliefs: Kes " . number_format($jumla2) . "</b></p>";
+                        } else {
                             $display_reliefs = "<p class='text-success p-1 border border-success'>No reliefs records available!</p>";
                         }
+
                         // get deductions
                         $display_deductions = "";
                         $deductions_dis = $allowances_bonus[2];
-                        $advances_deduct = getAdvacesDeductions($staff_id,$conn2,$start_dates);
-                        $deductions_dis = array_merge($deductions_dis,$advances_deduct);
+                        $advances_deduct = getAdvacesDeductions($staff_id, $conn2, $start_dates);
+                        $deductions_dis = array_merge($deductions_dis, $advances_deduct);
+                        
                         // echo json_encode($deductions_dis);
-                        if(count($deductions_dis) > 0 && $total_paid > 0){
+                        if (count($deductions_dis) > 0 && $total_paid > 0) {
                             $jumla3 = 0;
-                            for ($ind=0; $ind < count($deductions_dis); $ind++) { 
+                            for ($ind = 0; $ind < count($deductions_dis); $ind++) {
                                 foreach ($deductions_dis[$ind] as $key => $value) {
-                                    $display_deductions .= "<p>- ".((str_replace("_"," ",$key)))." => Kes ".comma($value)."</p>";
-                                    $jumla3+=$value;
+                                    $display_deductions .= "<p>- " . ((str_replace("_", " ", $key))) . " => Kes " . number_format($value) . "</p>";
+                                    $jumla3 += $value;
                                 }
                             }
-                            $display_deductions.="<p class='bordered_bottom'></p><p><b>Total Deductions: Kes ".comma($jumla3)."</b></p>";
-                        }else{
+                            // echo json_encode($advances_deduct)."<hr>";
+                            $display_deductions .= "<p class='bordered_bottom'></p><p><b>Total Deductions: Kes " . number_format($jumla3) . "</b></p>";
+                        } else {
                             $display_deductions = "<p class='text-success p-1 border border-success'>No deductions records available!</p>";
                         }
-                        $data_to_display.="
-                                    <div class='year_card'>
-                                        <div class='margin-bottom-5px width_100per bordered_bottom'>
-                                            <p class='embold'>Month: <span class='color_brown'>".date("M - Y",strtotime($start_dates))."</span></p>
+                        
+                        // deduct the advance salary
+                        $advance_salary = monthly_deduction_amount($staff_id,$conn2,$start_dates)*1;
+                        $emp_salary -= $advance_salary;
+                        $data_to_display .= "
+                                        <div class='year_card'>
+                                            <div class='margin-bottom-5px width_100per bordered_bottom'>
+                                                <p class='embold'>Month: <span class='color_brown'>" . date("M - Y", strtotime($start_dates)) . "</span></p>
+                                            </div>
+                                            <div class='salary-amount bordered_bottom'>
+                                                <p class='embold'>Net Salary : <span class='color_brown'> Kes " . number_format($emp_salary) . "</span></p>
+                                            </div>
+                                            <div class='payments-details'>" . $fund_details . "</div>
+                                            <div class='total_payments'>
+                                                <p class='embold bordered_bottom'>Total paid: <span class='color_brown'> Kes " . number_format($total_paid) . "</span></p>
+                                                <p class='embold bordered_bottom'>Balance : <span class='color_brown'>Kes " . number_format($balance) . "</span></p>
+                                            </div>
+                                            <p class='link show_salo_break_down' id='" . date("M_Y", strtotime($start_dates)) . "'><i class='fas fa-eye'></i> See More</p>
+                                            <div class='total_payments hide border border-secondary p-1 rounded' id='" . date("M_Y", strtotime($start_dates)) . "_1'>
+                                                <p class='text-secondary p-0 text-center my-1'><u>Allowances & Bonus</u></p>
+                                                " . $allowance_display . "
+                                                <p class='text-secondary p-0 text-center my-1'><u>Reliefs</u></p>
+                                                " . $display_reliefs . "
+                                                <p class='text-secondary p-0 text-center my-1'><u>Deductions</u></p>
+                                                " . $display_deductions . "
+                                            </div>
                                         </div>
-                                        <div class='salary-amount bordered_bottom'>
-                                            <p class='embold'>Net Salary : <span class='color_brown'> Kes ".comma($emp_salary)."</span></p>
-                                        </div>
-                                        <div class='payments-details'>".$fund_details."</div>
-                                        <div class='total_payments'>
-                                            <p class='embold bordered_bottom'>Total paid: <span class='color_brown'> Kes ".comma($total_paid)."</span></p>
-                                            <p class='embold bordered_bottom'>Balance : <span class='color_brown'>Kes ".comma($balance)."</span></p>
-                                        </div>
-                                        <p class='link show_salo_break_down' id='".date("M_Y",strtotime($start_dates))."'><i class='fas fa-eye'></i> See More</p>
-                                        <div class='total_payments hide border border-secondary p-1 rounded' id='".date("M_Y",strtotime($start_dates))."_1'>
-                                            <p class='text-secondary p-0 text-center my-1'><u>Allowances & Bonus</u></p>
-                                            ".$allowance_display."
-                                            <p class='text-secondary p-0 text-center my-1'><u>Reliefs</u></p>
-                                            ".$display_reliefs."
-                                            <p class='text-secondary p-0 text-center my-1'><u>Deductions</u></p>
-                                            ".$display_deductions."
-                                        </div>
-                                    </div>
-                        ";
+                            ";
 
-                        $date=date_create($start_dates);
-                        date_add($date,date_interval_create_from_date_string("1 Month"));
-                        $start_dates = date_format($date,"Y-m-d");
+                        $date = date_create($start_dates);
+                        date_add($date, date_interval_create_from_date_string("1 Month"));
+                        $start_dates = date_format($date, "Y-m-d");
                     }
-                    $data_to_display.="</div>";
+                    $data_to_display .= "</div>";
                     echo $data_to_display;
-                }else {
-                    echo "<p class='red_notice'>No records found for this year for ".getStaffName($conn,$staff_id)."</p>";
+                } else {
+                    echo "<p class='red_notice'>No records found for this year for " . getStaffName($conn, $staff_id) . "</p>";
                 }
-            }else {
-                echo "<p class='red_notice'>No records found because the staff first payment was recorded in ".$firstpay_record." and the current selected year is ".$curr_year.".</p>";
+            } else {
+                echo "<p class='red_notice'>No records found because the staff first payment was recorded in " . $firstpay_record . " and the current selected year is " . $curr_year . ".</p>";
             }
         }elseif (isset($_GET['mpesaTransaction'])) {
             $select = "SELECT mpesa_transactions.*, CONCAT(student_data.first_name,' ',student_data.second_name) AS 'student_fullname' FROM `mpesa_transactions` LEFT JOIN student_data ON student_data.adm_no = mpesa_transactions.std_adm ORDER BY transaction_id DESC LIMIT 1000;";
@@ -4694,20 +4723,20 @@
             $result = $stmt->get_result();
             $data = [];
             if ($result) {
-                while($row = $result->fetch_assoc()){
+                while ($row = $result->fetch_assoc()) {
                     // check if the staff was paid by the month the user has chosen
-                    $effect_month = explode(",",$row['effect_month'])[0];
+                    $effect_month = explode(",", $row['effect_month'])[0];
                     $current_balance = $row['current_balance'];
                     $current_balance_monNyear = $row['current_balance_monNyear'];
 
                     // get the joined_date 
-                    $joined_date = date("Y-m-d",strtotime("01-".str_replace(":","-",$effect_month)));
-                    $last_paid_date = date("Y-m-d",strtotime("01-".str_replace(":","-",$current_balance_monNyear)));
+                    $joined_date = date("Y-m-d", strtotime("01-" . str_replace(":", "-", $effect_month)));
+                    $last_paid_date = date("Y-m-d", strtotime("01-" . str_replace(":", "-", $current_balance_monNyear)));
                     // echo "<br>".$effect_month." effect_month ".$current_balance." current_balance ".$current_balance_monNyear." current_balance_monNyear <br>";
-                    
+
                     // selected month
-                    $selected_month = date("Y-m-d",strtotime($selected_month."-01"));
-                    /** TEST WITH THIS**/ 
+                    $selected_month = date("Y-m-d", strtotime($selected_month . "-01"));
+                    /** TEST WITH THIS**/
                     // $staff_information = getStaffInformations($conn,$row['staff_id']);
                     // $staff_name = count($staff_information)>0 ? ucwords(strtolower($staff_information['fullname'])):"Null";
                     // echo $staff_name." ||(".$selected_month.">". $joined_date ."&&". $selected_month ."<". $last_paid_date.") || (".$joined_date." == ". $selected_month." && ".$last_paid_date." > ".$joined_date.") || (".$last_paid_date." == ".$selected_month." && ".$current_balance." == 0).||<br>";
@@ -4717,16 +4746,16 @@
                     if (($selected_month > $joined_date && $selected_month < $last_paid_date) || ($joined_date == $selected_month && $last_paid_date > $joined_date) || ($last_paid_date == $selected_month && $current_balance == 0)) {
                         // with the staff data create a table showing
                         $row_data = [];
-                        $staff_information = getStaffInformations($conn,$row['staff_id']);
+                        $staff_information = getStaffInformations($conn, $row['staff_id']);
                         // echo json_encode($staff_information);
-                        $staff_name = count($staff_information)>0 ? ucwords(strtolower($staff_information['fullname'])):"Null";
+                        $staff_name = count($staff_information) > 0 ? ucwords(strtolower($staff_information['fullname'])) : "Null";
                         $id_no = count($staff_information) > 0 ? $staff_information['nat_id'] : "Null";
                         $nssf_no = count($staff_information) > 0 ? $staff_information['nssf_number'] : "Null";
                         $nhif_no = count($staff_information) > 0 ? $staff_information['nhif_number'] : "Null";
                         // get if the staff gets the nssf deduction
                         $salary_details = count($staff_information) > 0 ? $row['salary_breakdown'] : "Null";
-                        $salary_details = getMySalaryBreakdown($row['staff_id'],$conn2,$selected_month);
-                        $gross_salary = getSalary($selected_month,$conn2,$row['staff_id']);
+                        $salary_details = getMySalaryBreakdown($row['staff_id'], $conn2, $selected_month);
+                        $gross_salary = getSalary($selected_month, $conn2, $row['staff_id']);
                         $nssf_amounts = 0;
                         $nssf_type = "none";
                         $contributions = 0;
@@ -4737,113 +4766,110 @@
                         if ($salary_details != null) {
                             // decode the salary details to get the nssf amount
                             $decode_salary = ($salary_details);
-                            if($decode_salary->nssf_rates == "teir_1"){
-                                $nssf_amounts = 360;
+                            // get gross salary
+                            $gross_salary = $decode_salary->gross_salary;
+
+                            // effect year
+                            $effect_year = isset($decode_salary->effect_month) ? date("Ym", strtotime($decode_salary->effect_month)) : $decode_salary->year."01";
+                            $nssf_amounts = $decode_salary->nssf_rates != "none" ? Nssf_Amount($gross_salary, $effect_year) : 0;
+                            if ($decode_salary->nssf_rates == "teir_1") {
                                 $nssf_type = "Teir 1";
-                            }elseif($decode_salary->nssf_rates == "teir_1_2"){
-                                $nssf_amounts = 1080;
+                            } elseif ($decode_salary->nssf_rates == "teir_1_2") {
                                 $nssf_type = "Teir 1 & 2";
-                            }elseif($decode_salary->nssf_rates == "teir_old"){
-                                $nssf_amounts = 200;
+                            } elseif ($decode_salary->nssf_rates == "teir_old") {
                                 $nssf_type = "Old Rates";
-                            }else{
-                                $nssf_amounts = 0;
+                            } else {
                                 $nssf_type = "none";
                             }
-                            // year 
-                            $year = $decode_salary->year;
                             // get allowances
                             $total_allowances = 0;
                             $allowances = $decode_salary->allowances;
                             if (is_array($allowances)) {
-                                for ($in=0; $in < count($allowances); $in++) { 
-                                    $total_allowances+= $allowances[$in]->value;
+                                for ($in = 0; $in < count($allowances); $in++) {
+                                    $total_allowances += $allowances[$in]->value;
                                 }
                             }
 
-                            // get gross salary
-                            $gross_salary = $decode_salary->gross_salary;
-
                             // get the nhif contribution
                             $nhif_status = $decode_salary->deduct_nhif;
-                            $nhif_amounts = ($nhif_status == "yes") ? getNHIFContribution($gross_salary) : 0;
+                            $nhif_amounts = ($nhif_status == "yes") ? Nhif_Shif_Amount($gross_salary, $effect_year) : 0;
+                            $housing_levy = isset($decode_salary->housing_levy) ? ($decode_salary->housing_levy == "yes" ? Housing_Levy($gross_salary, $effect_year) : 0) : 0;
 
                             // nssf & nhif
                             $contributions = $nssf_amounts + $nhif_amounts;
 
                             // get taxable income 
-                            $taxable_income = ($gross_salary + $total_allowances) - $nssf_amounts;
+                            $taxable_income = Taxable_Income($gross_salary, $effect_year, $nssf_amounts, $nhif_amounts, $housing_levy);
 
                             // calculate P.A.Y.E
-                            $paye = ($decode_salary->deduct_paye == "yes") ? getPaye($taxable_income,$year) : 0;
+                            $paye = ($decode_salary->deduct_paye == "yes") ? Income_Tax($gross_salary, $effect_year) : 0;
 
                             // get reliefs
-                            $paye_relief = ($decode_salary->deduct_paye == "yes" && $decode_salary->personal_relief == "yes") ? 2400 : 0;
-                            $nhif_relief = ($decode_salary->deduct_nhif == "yes" && $decode_salary->nhif_relief == "yes") ? (($nhif_amounts*0.15) > 255 ? 255 : ($nhif_amounts*0.15)) : 0;
-                            
+                            $paye_relief = ($decode_salary->deduct_paye == "yes" && $decode_salary->personal_relief == "yes") ? Income_Tax_Relief($effect_year) : 0;
+                            $nhif_relief = ($decode_salary->deduct_nhif == "yes" && $decode_salary->nhif_relief == "yes") ? Nhif_Shif_Relief($gross_salary, $effect_year) : 0;
+
                             // total reliefs
                             $reliefs = $paye_relief;
                             // get deductions
                             $deductions = $nhif_amounts + $paye;
                         }
-                        $final_paye = $paye-$paye_relief;
+                        $final_paye = $paye - $paye_relief;
                         // employees amounts
                         $employers_amount = $nssf_amounts;
                         $total_to_pay = $employers_amount + $nssf_amounts;
-                        array_push($row_data,$staff_name,round($gross_salary),$total_allowances,round($taxable_income),round($contributions),round($deductions),round($paye),round($reliefs),round($final_paye),$row['staff_id']);
-                        array_push($data,$row_data);
+                        array_push($row_data, $staff_name, round($gross_salary), $total_allowances, round($taxable_income), round($contributions), round($deductions), round($paye), round($reliefs), round($final_paye), $row['staff_id']);
+                        array_push($data, $row_data);
                         // break;
                     }
                 }
             }
             // display table
-            $data_to_display = "<hr><h5 class='my-1 text-center'><u>KRA reports for ".date("M Y",strtotime($selected_month."-01"))."</u></h5><a target='_blank' href='reports/reports.php?get_kra_reports=true&effect_month=".$selected_month."' class='btn btn-sm btn-secondary text-white'><i class='fas fa-file-pdf'></i> PDF</a><table class='table'><tr>
-                                <th>#</th>
-                                <th>Staff Name</th>
-                                <th>Gross Salary.</th>
-                                <th>Allowances.</th>
-                                <th>Taxable Income</th>
-                                <th>P.A.Y.E</th>
-                                <th>Relief</th>
-                                <th>Final PAYE</th>
-                                <th>Action</th>
-                                </tr>";
-                                // loop through the data
-                                $total = 0;
-                                $total1 = 0;
-                                $total2 = 0;
-                                $total3 = 0;
-                                $total4 = 0;
-                                $total5 = 0;
-                                $total6 = 0;
-        $total_1 = 0;
-            for ($index=0; $index < count($data); $index++) { 
-                $data_to_display.="<tr>
-                                    <td>".($index+1).". </td>
-                                    <td>".$data[$index][0]."</td>
-                                    <td>Kes ".comma($data[$index][1])."</td>
-                                    <td>Kes ".comma($data[$index][2])."</td>
-                                    <td>Kes ".comma($data[$index][3])."</td>
-                                    <td>Kes ".comma($data[$index][6])."</td>
-                                    <td>Kes ".comma($data[$index][7])."</td>
-                                    <td>Kes ".comma($data[$index][8])."</td>
-                                    <td><a href='reports/reports.php?generate_slip=true&staff_slip=".$data[$index][9]."&selected_month=".$selected_month."' target='_blank'class='btn btn-secondary btn-sm text-white'><i class='fas fa-print'></i> Print</a></td>
-                                </tr>";
-                                $total_1 += $data[$index][1];
-                                $total6 += $data[$index][2];
-                                $total5 += $data[$index][3];
-                                $total3 += $data[$index][4];
-                                $total2 += $data[$index][5];
-                                $total1 += $data[$index][6];
-                                $total += $data[$index][7];
-                                $total4 += $data[$index][8];
+            $data_to_display = "<hr><h5 class='my-1 text-center'><u>KRA reports for " . date("M Y", strtotime($selected_month . "-01")) . "</u></h5><a target='_blank' href='reports/reports.php?get_kra_reports=true&effect_month=" . $selected_month . "' class='btn btn-sm btn-secondary text-white'><i class='fas fa-file-pdf'></i> PDF</a><table class='table'><tr>
+                                    <th>#</th>
+                                    <th>Staff Name</th>
+                                    <th>Gross Salary.</th>
+                                    <th>Allowances.</th>
+                                    <th>Taxable Income</th>
+                                    <th>P.A.Y.E</th>
+                                    <th>Relief</th>
+                                    <th>Final PAYE</th>
+                                    <th>Action</th>
+                                    </tr>";
+            // loop through the data
+            $total = 0;
+            $total1 = 0;
+            $total2 = 0;
+            $total3 = 0;
+            $total4 = 0;
+            $total5 = 0;
+            $total6 = 0;
+            $total_1 = 0;
+            for ($index = 0; $index < count($data); $index++) {
+                $data_to_display .= "<tr>
+                                        <td>" . ($index + 1) . ". </td>
+                                        <td>" . $data[$index][0] . "</td>
+                                        <td>Kes " . number_format($data[$index][1]) . "</td>
+                                        <td>Kes " . number_format($data[$index][2]) . "</td>
+                                        <td>Kes " . number_format($data[$index][3]) . "</td>
+                                        <td>Kes " . number_format($data[$index][6]) . "</td>
+                                        <td>Kes " . number_format($data[$index][7]) . "</td>
+                                        <td>Kes " . number_format($data[$index][8]) . "</td>
+                                        <td><a href='reports/reports.php?generate_slip=true&staff_slip=" . $data[$index][9] . "&selected_month=" . $selected_month . "' target='_blank'class='btn btn-secondary btn-sm text-white'><i class='fas fa-print'></i> Print</a></td>
+                                    </tr>";
+                $total_1 += $data[$index][1];
+                $total6 += $data[$index][2];
+                $total5 += $data[$index][3];
+                $total3 += $data[$index][4];
+                $total2 += $data[$index][5];
+                $total1 += $data[$index][6];
+                $total += $data[$index][7];
+                $total4 += $data[$index][8];
             }
-            $data_to_display .= "
-                                <tr><td colspan='1'></td><td><b>Total</b></td><td><b>Kes ".comma($total_1)."</b></td><td><b>Kes ".comma($total6)."</b></td><td><b>Kes ".comma($total5)."</b></td><td><b>Kes ".comma($total1)."</b></td><td><b>Kes ".comma($total)."</b></td><td><b>Kes ".comma($total4)."</b></td></table>";
+            $data_to_display .= "<tr><td colspan='1'></td><td><b>Total</b></td><td><b>Kes " . number_format($total_1) . "</b></td><td><b>Kes " . number_format($total6) . "</b></td><td><b>Kes " . number_format($total5) . "</b></td><td><b>Kes " . number_format($total1) . "</b></td><td><b>Kes " . number_format($total) . "</b></td><td><b>Kes " . number_format($total4) . "</b></td></table>";
             if (count($data) > 0) {
                 echo $data_to_display;
-            }else{
-                echo "<p class='border border-danger text-danger p-2 my-2'>No data to display!<br> Only your staff in the payroll system will be displayed here <b>OR</b> <br>The staff who have been cleared by the month of ".date("M Y",strtotime($selected_month."-01"))."!</p>";
+            } else {
+                echo "<p class='border border-danger text-danger p-2 my-2'>No data to display!<br> Only your staff in the payroll system will be displayed here <b>OR</b> <br>The staff who have been cleared by the month of " . date("M Y", strtotime($selected_month . "-01")) . "!</p>";
             }
         }elseif (isset($_GET['get_nhif_reports'])) {
             // get staff 
@@ -4965,6 +4991,14 @@
             }else{
                 echo "<p class='border border-danger text-danger p-2 my-2'>No data to display!<br> Only your staff in the payroll system will be displayed here <b>OR</b> <br>The staff who have been cleared by the month of ".date("M Y",strtotime($selected_month."-01"))."!</p>";
             }
+        }elseif(isset($_GET['delete_advance_payment'])){
+            $advance_id = $_GET['advance_id'];
+            $delete = "DELETE FROM advance_pay WHERE advance_id = '$advance_id'";
+            $stmt = $conn2->prepare($delete);
+            $stmt->execute();
+            
+            // advance deleted successfully
+            echo "<p class='text-danger'>Advance deleted successfully!</p>";
         }elseif (isset($_GET['delete_file'])){
             $delete_file = $_GET['delete_file'];
             $file_details = $_GET['file_details'];
@@ -8023,11 +8057,74 @@
         }
         return $deduction_breakdown;
     }
-    function getAllowanceBonusRelief($staff_id,$conn2,$start_dates){
-        $payroll_data = getMySalaryBreakdown($staff_id,$conn2,$start_dates);
+    function monthly_deduction_amount($staff_id,$conn2,$time){
+        $select = "SELECT * FROM `advance_pay` WHERE `employees_id` = '".$staff_id."'";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $specific_month = date("M:Y",strtotime($time));
+        $monthly_advance_payment = 0;
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $month_effect = $row['month_effect'];
+                $amount = $row['amount'];
+                $installments = $row['installments'];
+
+                // from the month effect count the number of installments
+                // and if the month is part of the period add the installment amount
+                $date = explode("-", $month_effect);
+                $start_date = date("Ymd", strtotime("01-".$date[1]."-".$date[0]));
+                $present = false;
+                for ($index=0; $index < $installments; $index++) {
+                    if ($specific_month == date("M:Y", strtotime($start_date))) {
+                        $present = true;
+                        break;
+                    }
+
+                    // add the date by one day
+                    $start_date = addToDate($start_date, 1, "months");
+                }
+
+                // present
+                if ($present) {
+                    $monthly_advance_payment+= round($amount*1/$installments*1);
+                }
+            }
+        }
+        return $monthly_advance_payment;
+    }
+    
+    function addToDate(string $date, int $amount, string $unit = 'days', string $format = "Ymd"): string {
+        // Normalize the unit
+        $unit = strtolower($unit);
+
+        // Map units to DateInterval format
+        $intervalMap = [
+            'days'   => 'P' . $amount . 'D',
+            'weeks'  => 'P' . $amount . 'W',
+            'months' => 'P' . $amount . 'M',
+            'years'  => 'P' . $amount . 'Y',
+        ];
+
+        if (!array_key_exists($unit, $intervalMap)) {
+            throw new InvalidArgumentException("Invalid unit. Use days, weeks, months, or years.");
+        }
+
+        // Create DateTime object
+        $dt = new DateTime($date);
+
+        // Add interval
+        $dt->add(new DateInterval($intervalMap[$unit]));
+
+        // Return in Y-m-d format (you can adjust this)
+        return $dt->format($format);
+    }
+
+    function getAllowanceBonusRelief($staff_id, $conn2, $start_dates)
+    {
+        $payroll_data = getMySalaryBreakdown($staff_id, $conn2, $start_dates);
         // check payroll data if its json format
         // bonuses and allowances || deductions
-        // echo json_encode($payroll_data);
         $allowance_bonus = [];
         $deductions = [];
         $reliefs = [];
@@ -8035,57 +8132,75 @@
             // $payroll_data = json_decode($payroll_data);
             // gross salary
             $gross_salary = $payroll_data->gross_salary;
+            $effect_year = isset($payroll_data->effect_month) ? date("Ym", strtotime($payroll_data->effect_month)) : $payroll_data->year."01";
             // get allowances
             $sum_allowances = 0;
             $allowances = $payroll_data->allowances;
-            if(is_array($allowances)){
-                for ($i=0; $i < count($allowances); $i++) { 
+            if (is_array($allowances)) {
+                for ($i = 0; $i < count($allowances); $i++) {
                     $sum_allowances += $allowances[$i]->value;
-                    $all_data = (($allowances[$i]->name))." - Kes ".comma($allowances[$i]->value);
+                    $all_data = (($allowances[$i]->name)) . " - Kes " . number_format($allowances[$i]->value);
                     $allowance = array($allowances[$i]->name => $allowances[$i]->value);
-                    array_push($allowance_bonus,$allowance);
+                    array_push($allowance_bonus, $allowance);
                     // echo $all_data;
                 }
             }
             // personal realief
             $personal_relief = $payroll_data->personal_relief;
             if ($personal_relief == "yes") {
-                $relief = array("personal_relief" => 2400);
-                array_push($reliefs,$relief);
+                $personal_relief = Income_Tax_Relief($effect_year);
+                $relief = array("Income Tax Relief" => $personal_relief);
+                array_push($reliefs, $relief);
             }
             // nhif reliefs
             $nhif_relief = $payroll_data->nhif_relief;
             if ($nhif_relief == "yes") {
                 // get the nhif contribution
-                $nhif_contribution = getNHIFContribution($gross_salary);
-                $nhif_contribution = $nhif_contribution*0.15;
-                $nhif_relief = $nhif_contribution>255 ? 255 : $nhif_contribution;
-                $nhif_relief = array("nhif_relief" => $nhif_relief);
-                array_push($reliefs,$nhif_relief);
+                $nhif_relief = Nhif_Shif_Relief($gross_salary, $effect_year);
+                $nhif_relief = array("NHIF Relief" => $nhif_relief);
+                array_push($reliefs, $nhif_relief);
             }
+
+
             // nssf deductions 
-            $nssf_data = $payroll_data->nssf_rates;
-            $nssf_amount = ($nssf_data != "teir_1" && $nssf_data != "teir_1_2") ? 200: ($nssf_data == "teir_1_2" ? 1080:360);
+            $nhif_amounts = $payroll_data->deduct_nhif == "yes" ? Nhif_Shif_Amount($gross_salary,$effect_year) : 0;
+            if($payroll_data->deduct_nhif == "yes"){
+                $nhif_amounts = array("N.H.I.F" => $nhif_amounts);
+                array_push($deductions, $nhif_amounts);
+            }
+
+            // nssf deductions 
+            $nssf_amount = $payroll_data->nssf_rates != "none" ? Nssf_Amount($gross_salary,$effect_year) : 0;
+            if($payroll_data->nssf_rates != "none"){
+                $nssf_amount = array("N.S.S.F" => $nssf_amount);
+                array_push($deductions, $nssf_amount);
+            }
 
             // deductions
             $payes = $payroll_data->deduct_paye;
             if ($payes == "yes") {
-                $taxable_income = ($gross_salary+$sum_allowances) - $nssf_amount;
-                $paye = round(getPaye($taxable_income,$payroll_data->year));
+                $paye = round(Income_Tax($gross_salary,$effect_year));
                 $paye = array("P.A.Y.E" => $paye);
-                array_push($deductions,$paye);
+                array_push($deductions, $paye);
             }
+            
+            if (isset($payroll_data->housing_levy) && $payroll_data->housing_levy == "yes" && $effect_year > 202402) {
+                $housing_levy = round(Housing_Levy($gross_salary, $effect_year));
+                $AHL = array("AHL" => $housing_levy);
+                array_push($deductions, $AHL);
+            }
+
             // get other deductions
             $other_deductions = isset($payroll_data->deductions) ? $payroll_data->deductions : "";
             if (is_array($other_deductions)) {
-                for ($indexing=0; $indexing < count($other_deductions); $indexing++) {
+                for ($indexing = 0; $indexing < count($other_deductions); $indexing++) {
                     $deduction = array($other_deductions[$indexing]->name => $other_deductions[$indexing]->value);
-                    array_push($deductions,$deduction);
+                    array_push($deductions, $deduction);
                 }
             }
-            return [$allowance_bonus,$reliefs,$deductions];
+            return [$allowance_bonus, $reliefs, $deductions];
         }
-        return [[],[],[]];
+        return [[], [], []];
     }
     // get payes
     function getPaye($taxable_income,$year){
@@ -9375,3 +9490,243 @@
         // Invalid number
         return null;
     }
+function Nhif_Shif_Amount($gross_salary, $effect_year){
+    if ($effect_year >= 201801 && $effect_year <= 202410) {
+        if ($gross_salary <= 5999) {
+            return 150;
+        } else if ($gross_salary > 5999 && $gross_salary <= 7999) {
+            return 300;
+        } else if ($gross_salary > 7999 && $gross_salary <= 11999) {
+            return 400;
+        } else if ($gross_salary > 11999 && $gross_salary <= 14999) {
+            return 500;
+        } else if ($gross_salary > 14999 && $gross_salary <= 19999) {
+            return 600;
+        } else if ($gross_salary > 19999 && $gross_salary <= 24999) {
+            return 750;
+        } else if ($gross_salary > 24999 && $gross_salary <= 29999) {
+            return 850;
+        } else if ($gross_salary > 29999 && $gross_salary <= 34999) {
+            return 900;
+        } else if ($gross_salary > 34999 && $gross_salary <= 39999) {
+            return 950;
+        } else if ($gross_salary > 39999 && $gross_salary <= 44999) {
+            return 1000;
+        } else if ($gross_salary > 44999 && $gross_salary <= 49999) {
+            return 1100;
+        } else if ($gross_salary > 49999 && $gross_salary <= 59999) {
+            return 1200;
+        } else if ($gross_salary > 59999 && $gross_salary <= 69999) {
+            return 1300;
+        } else if ($gross_salary > 69999 && $gross_salary <= 79999) {
+            return 1400;
+        } else if ($gross_salary > 79999 && $gross_salary <= 89999) {
+            return 1500;
+        } else if ($gross_salary > 89999 && $gross_salary <= 99999) {
+            return 1600;
+        } else if ($gross_salary > 99999) {
+            return 1700;
+        }
+    }else if($effect_year >= 202410){
+        return $gross_salary * 0.0275;
+    }
+    return 0;
+}
+function Nssf_Amount($gross_salary, $effect_year) {
+    if ($effect_year >= 200001 && $effect_year <= 201501) {
+        return 200;
+    }else if ($effect_year >201501 && $effect_year <= 202401) {
+        if ($gross_salary <= 6000) {
+            return 0.06 * $gross_salary;
+        }else if ($gross_salary > 6000 && $gross_salary <= 18000) {
+            return 360 + (($gross_salary - 6000) * 0.06);
+        }else if ($gross_salary > 18000) {
+            return 1080;
+        }
+    }else if ($effect_year > 202401 && $effect_year <= 202501) {
+        if ($gross_salary <= 7000) {
+            return 0.06 * $gross_salary;
+        }else if ($gross_salary > 7000 && $gross_salary <= 36000) {
+            return 420 + (($gross_salary - 7000) * 0.06);
+        }else if ($gross_salary > 36000) {
+            return 2160;
+        }
+    }else if ($effect_year > 202501) {
+        if ($gross_salary <= 8000) {
+            return 0.06 * $gross_salary;
+        }else if ($gross_salary > 8000 && $gross_salary <= 72000) {
+            return 480 + (($gross_salary - 8000) * 0.06);
+        }else if ($gross_salary > 72000) {
+            return 4320;
+        }
+    }
+    return 0;
+}
+
+function Housing_Levy($gross_salary, $effect_year) {
+    if ($effect_year >= 202402) {
+        return $gross_salary * 0.015;
+    }
+    return 0;
+}
+function Taxable_Income($gross_salary, $effect_year, $nssf_amount, $nhif_shif_amount, $housing_levy) {
+    if ($effect_year >= 202101 && $effect_year <= 202411) {
+        $gross_salary -= $nssf_amount;
+    }else{
+        $gross_salary -= $nssf_amount + $nhif_shif_amount + $housing_levy;
+    }
+    return $gross_salary;
+}
+
+function Income_Tax($gross_salary, $effect_year){
+    $housing_levy = Housing_Levy($gross_salary, $effect_year)*1;
+    $nhif_shif_amount = Nhif_Shif_Amount($gross_salary, $effect_year)*1;
+    $nssf_amount = Nssf_Amount($gross_salary, $effect_year)*1;
+    $taxable_income = Taxable_Income($gross_salary, $effect_year, $nssf_amount, $nhif_shif_amount, $housing_levy)*1;
+    
+
+    // calculate the income tax
+    $gross_salary = $taxable_income;
+    $payee = 0;
+    if ($effect_year > 201801 && $effect_year < 202003) {
+        // THE FIRST BAND
+        if ($gross_salary > 12298) {
+            $payee += 12298 * 0.1;
+        }else{
+            $payee += $gross_salary * 0.1;
+            return round($payee, 2);
+        }
+        
+        // THE SECOND BAND
+        if ($gross_salary > 23885) {
+            $payee += 11588 * 0.15;
+        }else{
+            $payee += ($gross_salary - 12298) * 0.15;
+            return round($payee, 2);
+        }
+        
+        // THE THIRD BAND
+        if ($gross_salary > 35472) {
+            $payee += 11588 * 0.20;
+        }else{
+            $payee += ($gross_salary - 23885) * 0.20;
+            return round($payee, 2);
+        }
+        
+        // THE FOURTH BAND
+        if ($gross_salary > 47059) {
+            $payee += 11588 * 0.25;
+        }else{
+            $payee += ($gross_salary - 35472) * 0.25;
+            return round($payee, 2);
+        }
+
+        // FIFTH BAND
+        if ($gross_salary > 47059) {
+            $payee += (($gross_salary - 47059) * 0.3);
+            return round($payee, 2);
+        }
+    }else if($effect_year >= 202004 && $effect_year < 202012){
+        // THE FIRST BAND
+        if ($gross_salary > 24000) {
+            $payee += 24000 * 0.1;
+        }else{
+            $payee += $gross_salary * 0.1;
+            return round($payee, 2);
+        }
+        
+        // THE SECOND BAND
+        if ($gross_salary > 40667) {
+            $payee += 16667 * 0.15;
+        }else{
+            $payee += ($gross_salary - 24000) * 0.15;
+            return round($payee, 2);
+        }
+        
+        // THE THIRD BAND
+        if ($gross_salary > 57334) {
+            $payee += 16667 * 0.20;
+        }else{
+            $payee += ($gross_salary - 40667) * 0.20;
+            return round($payee, 2);
+        }
+
+        // THE FOURTH BAND
+        if ($gross_salary > 57334) {
+            $payee += (($gross_salary - 57334) * 0.25);
+            return round($payee, 2);
+        }
+    }else if($effect_year >= 202101){
+        // THE FIRST BAND
+        if ($gross_salary > 24000) {
+            $payee += 24000 * 0.1;
+        }else{
+            $payee += $gross_salary * 0.1;
+            return round($payee, 2);
+        }
+        
+        // THE SECOND BAND
+        if ($gross_salary > 32333) {
+            $payee += 8333 * 0.25;
+        }else{
+            $payee += ($gross_salary - 24000) * 0.25;
+            return round($payee, 2);
+        }
+        
+        // THE THIRD BAND
+        if ($gross_salary > 500000) {
+            $payee += 467667 * 0.30;
+        }else{
+            $payee += ($gross_salary - 32333) * 0.30;
+            return round($payee, 2);
+        }
+        
+        // THE FOURTH BAND
+        if ($gross_salary > 800000) {
+            $payee += 300000 * 0.325;
+        }else{
+            $payee += ($gross_salary - 500000) * 0.325;
+            return round($payee, 2);
+        }
+
+        // THE FIFTH BAND
+        if ($gross_salary > 800000) {
+            $payee += (($gross_salary - 800000) * 0.35);
+            return round($payee, 2);
+        }
+    }
+    return round($payee, 2);
+}
+
+function Income_Tax_Relief($effect_year){
+    if ($effect_year > 202004) {
+        return 2400;
+    }else if ($effect_year > 201801) {
+        return 1408;
+    }else{
+        return 1162;
+    }
+}
+function Ahl_Relief($gross_salary, $effect_year){
+    if ($effect_year >= 202402) {
+        $housing_levy = Housing_Levy($gross_salary, $effect_year);
+        $ahl_relief = 0.15 * $housing_levy;
+        return $ahl_relief > 9000 ? 9000 : $ahl_relief;
+    }
+    return 0;
+}
+function Net_Salary_Amount($payment_breakdown) {
+    $income_tax = $payment_breakdown->income_tax > $payment_breakdown->income_tax_relief ? $payment_breakdown->income_tax - $payment_breakdown->income_tax_relief : 0;
+    $nhif_shif_amount = $payment_breakdown->nhif_shif_amount - $payment_breakdown->insurance_relief;
+    $deductions = $income_tax+$nhif_shif_amount+$payment_breakdown->nssf_amount+$payment_breakdown->deductions_total;
+    $housing_levy = 0;
+    if ($payment_breakdown->effect_year*1 > 202402) {
+        $housing_levy = $payment_breakdown->housing_levy - $payment_breakdown->ahl_relief;
+        $deductions += $housing_levy;
+    }
+    
+    // contribution
+    $contributions = $payment_breakdown->gross_salary_with_allowance;
+    
+    return round($contributions - $deductions, 2);
+}

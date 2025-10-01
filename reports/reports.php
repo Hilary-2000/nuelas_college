@@ -14142,9 +14142,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $pdf->NSSF_TABLE($header, $data, $width);
         $pdf->Output("I", str_replace(" ", "_", $pdf->school_document_title) . ".pdf");
     } elseif (isset($_GET['get_kra_reports']) && isset($_GET['effect_month'])) {
+        include("../connections/conn1.php");
+        include("../connections/conn2.php");
         // include("../ajax/finance/financial.php");
         // get staff 
         $selected_month = $_GET['effect_month'];
+        $effect_year = date("Ym", strtotime($selected_month));
         // echo $selected_month;
         $select = "SELECT * FROM `payroll_information`";
         $stmt = $conn2->prepare($select);
@@ -14183,7 +14186,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     $nhif_no = count($staff_information) > 0 ? $staff_information['nhif_number'] : "Null";
                     // get if the staff gets the nssf deduction
                     $salary_details = count($staff_information) > 0 ? $row['salary_breakdown'] : "Null";
-                    $gross_salary = getSalary_Report($selected_month, $conn2, $row['staff_id']);
+                    $gross_salary = getMySalary_reports($row['staff_id'], $conn2, $selected_month);
                     $nssf_amounts = 0;
                     $nssf_type = "none";
                     $contributions = 0;
@@ -14209,7 +14212,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $nssf_type = "none";
                         }
                         // year 
-                        $year = $decode_salary->year;
+                        // $year = $decode_salary->year;
                         // get allowances
                         $total_allowances = 0;
                         $allowances = $decode_salary->allowances;
@@ -14220,27 +14223,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         }
 
                         // get gross salary
-                        $gross_salary = $decode_salary->gross_salary;
+                        $gross_salary = $decode_salary->gross_salary + $total_allowances;
 
                         // get the nhif contribution
                         $nhif_status = $decode_salary->deduct_nhif;
-                        $nhif_amounts = ($nhif_status == "yes") ? getNHIFContribution_reports($gross_salary) : 0;
+                        $nssf_amount = $decode_salary->nssf_rates != "none" ? Nssf_Amount_Report($gross_salary, $effect_year) : 0;
+                        $nhif_amounts = ($nhif_status == "yes") ? Nhif_Shif_Amount_Report($gross_salary, $effect_year) : 0;
+                        $housing_levy = isset($decode_salary->housing_levy) ? ($decode_salary->housing_levy == "yes" ? Housing_Levy_Report($gross_salary, $effect_year) : 0) : 0;
+                        
+                        // get taxable income 
+                        $taxable_income = Taxable_Income_Report($gross_salary, $effect_year, $nssf_amount, $nhif_amounts, $housing_levy);
 
                         // nssf & nhif
-                        $contributions = $nssf_amounts + $nhif_amounts;
+                        $contributions = $gross_salary - $taxable_income;
 
-                        // get taxable income 
-                        $taxable_income = ($gross_salary + $total_allowances) - $nssf_amounts;
 
                         // calculate P.A.Y.E
-                        $paye = ($decode_salary->deduct_paye == "yes") ? getPaye_Report($taxable_income, $year) : 0;
+                        $paye = ($decode_salary->deduct_paye == "yes") ? Income_Tax_Report($gross_salary, $effect_year) : 0;
 
                         // get reliefs
-                        $paye_relief = ($decode_salary->deduct_paye == "yes" && $decode_salary->personal_relief == "yes") ? 2400 : 0;
-                        $nhif_relief = ($decode_salary->deduct_nhif == "yes" && $decode_salary->nhif_relief == "yes") ? (($nhif_amounts * 0.15) > 255 ? 255 : ($nhif_amounts * 0.15)) : 0;
+                        $paye_relief = ($decode_salary->deduct_paye == "yes" && $decode_salary->personal_relief == "yes") ? Income_Tax_Relief_Report($effect_year) : 0;
+                        $nhif_relief = ($decode_salary->deduct_nhif == "yes" && $decode_salary->nhif_relief == "yes") ? Nhif_Shif_Relief_Report($gross_salary, $effect_year) : 0;
+                        $ahl_relief = isset($decode_salary->housing_levy) && isset($decode_salary->ahl_relief) ? (($decode_salary->housing_levy == "yes" && $decode_salary->ahl_relief == "yes") ? Ahl_Relief_Report($gross_salary, $effect_year) : 0) : 0;
 
                         // total reliefs
-                        $reliefs = $paye_relief;
+                        $reliefs = $paye_relief+$nhif_relief+$ahl_relief;
                         // echo $reliefs."<br>";
                         // get deductions
                         $deductions = $nhif_amounts + $paye;
@@ -14249,7 +14256,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     // employees amounts
                     $employers_amount = $nssf_amounts;
                     $total_to_pay = $employers_amount + $nssf_amounts;
-                    array_push($row_data, $staff_name, round($gross_salary), $total_allowances, round($taxable_income), round($contributions), round($deductions), round($paye), round($reliefs), round($final_paye), $row['staff_id']);
+                    array_push($row_data, $staff_name, round($gross_salary - $total_allowances), $total_allowances, round($taxable_income), round($contributions), round($deductions), round($paye), round($reliefs), round($final_paye), $row['staff_id']);
                     array_push($data, $row_data);
                     // break;
                 }
@@ -17437,9 +17444,9 @@ function getMySalaryBreakdown_report($staff_id, $conn2, $date)
     }
     return null;
 }
+
 function getMySalary_reports($staff_id, $conn2, $date)
 {
-    $first_salary = getFirstPaymentAmount($conn2, $staff_id);
     // get last time he was paid
     $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '" . $staff_id . "'";
     $stmt = $conn2->prepare($select);
@@ -17450,39 +17457,149 @@ function getMySalary_reports($staff_id, $conn2, $date)
             $first_time_paid = date("Y-m-d", strtotime("01-" . (explode(":", explode(",", $row['effect_month'])[0])[0]) . "-" . explode(":", explode(",", $row['effect_month'])[0])[1]));
         }
     }
-    if ($first_time_paid == $date) {
-        return $first_salary;
-    }
-    $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '" . $staff_id . "';";
-    $stmt = $conn2->prepare($select);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result) {
-        if ($row = $result->fetch_assoc()) {
-            $effect_month = $row['effect_month'];
-            $salary_amount = $row['salary_amount'];
-            $effect_month = $row['effect_month'];
+    if (isset($first_time_paid)) {
+        if ($first_time_paid == $date) {
+            $first_salary = getFirstPaymentAmountReport($conn2, $staff_id);
+            return $first_salary;
+        }
+        $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '" . $staff_id . "';";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result) {
+            if ($row = $result->fetch_assoc()) {
+                $effect_month = $row['effect_month'];
+                $salary_amount = $row['salary_amount'];
+                $salary_breakdown = isJson_report($row['salary_breakdown']) ? json_decode($row['salary_breakdown']) : [];
+                $salary_breakdown = is_array($salary_breakdown) && count($salary_breakdown) > 0 ? $salary_breakdown : [$salary_breakdown];
+                
+                // salary breakdown
+                for ($index=count($salary_breakdown)-1; $index >= 0; $index--) {
+                    $payroll_data = $salary_breakdown[$index];
+                    $effect_year = isset($payroll_data->effect_month) ? date("Ym", strtotime($payroll_data->effect_month)) : $payroll_data->year."01";
+                    if (date("Ym", strtotime($date)) >= $effect_year) {
+                        $effect_year = date("Ym", strtotime($date));
+                        $gross_salary = $payroll_data->gross_salary;
+                        $allowances = 0;
+                        if(!empty($payroll_data->allowances)){
+                            foreach($payroll_data->allowances as $key => $allowance){
+                                if(isset($allowance->checked) && $allowance->checked){
+                                    $allowances += $allowance->value;
+                                }else{
+                                    if (!isset($allowance->checked)) {
+                                        $allowances += $allowance->value;
+                                    }
+                                }
+                            }
+                        }
 
-            // all salaries
-            $all_salaries = explode(",", $effect_month);
-            $salary_amount = explode(",", $salary_amount);
-            // first recorded date
+                        // gross_salary
+                        $gross_salary += $allowances;
 
-            // loop until today and when we reach the month he was paid 
-            $salo_amount = 0;
-            for ($index = 0; $index < count($all_salaries); $index++) {
-                $salary_month = explode(":", $all_salaries[$index]);
-                $salo_date = date("Y-m-d", strtotime("01-" . $salary_month[0] . "-" . $salary_month[1]));
-                // echo $date ." salo date-> ". $salo_date."<br>";
-                if ($date >= $salo_date) {
-                    $salo_amount = $salary_amount[$index];
+                        // deductions
+                        $deductions = 0;
+                        if (isset($payroll_data->deductions) && !empty($payroll_data->deductions)) {
+                            foreach ($payroll_data->deductions as $key => $deduction) {
+                                if(isset($deduction->checked) && $deduction->checked){
+                                    $deductions += $deduction->value;
+                                }
+                                if (!isset($allowance->checked)) {
+                                    $deductions += $deduction->value;
+                                }
+                            }
+                        }
+                        $nhif_amounts = $payroll_data->deduct_nhif == "yes" ? Nhif_Shif_Amount_Report($gross_salary, $effect_year) : 0;
+                        $housing_levy = isset($payroll_data->housing_levy) ? ($payroll_data->housing_levy == "yes" ? Housing_Levy_Report($gross_salary, $effect_year) : 0) : 0;
+                        $nssf_amount = $payroll_data->nssf_rates != "none" ? Nssf_Amount_Report($gross_salary, $effect_year) : 0;
+                        $income_tax = $payroll_data->deduct_paye == "yes" ? Income_Tax_Report($gross_salary, $effect_year) : 0;
+                        $nhif_relief = $payroll_data->deduct_nhif == "yes" && $payroll_data->nhif_relief == "yes" ? Nhif_Shif_Relief_Report($gross_salary, $effect_year) : 0;
+                        $paye_relief = $payroll_data->deduct_paye == "yes" && $payroll_data->personal_relief == "yes" ? Income_Tax_Relief_Report($effect_year) : 0;
+                        $ahl_relief = (isset($payroll_data->housing_levy) && isset($payroll_data->ahl_relief)) ? (($payroll_data->housing_levy == "yes" && $payroll_data->ahl_relief) ? Ahl_Relief_Report($gross_salary, $effect_year) : 0) : 0;
+                        $taxable_income = Taxable_Income_Report($gross_salary, $effect_year, $nssf_amount, $nhif_amounts, $housing_levy);
+                        
+                        // PAYMENT BREAKDOWN
+                        $payment_breakdown = new stdClass();
+                        $payment_breakdown->effect_year = $effect_year;
+                        $payment_breakdown->gross_salary_without_allowance = $gross_salary-$allowances;
+                        $payment_breakdown->gross_salary_with_allowance = $gross_salary;
+                        $payment_breakdown->allowance_total = $allowances;
+                        $payment_breakdown->allowances = [];
+                        $payment_breakdown->nhif_shif_amount = $nhif_amounts;
+                        $payment_breakdown->housing_levy = $housing_levy;
+                        $payment_breakdown->nssf_amount = $nssf_amount;
+                        $payment_breakdown->income_tax = $income_tax;
+                        $payment_breakdown->insurance_relief = $nhif_relief;
+                        $payment_breakdown->income_tax_relief = $paye_relief;
+                        $payment_breakdown->ahl_relief = $ahl_relief;
+                        $payment_breakdown->taxable_income = $taxable_income;
+                        $payment_breakdown->deductions_total = $deductions;
+                        $payment_breakdown->deductions = [];
+                        $payment_breakdown->contributions_before_tax = $effect_year <= 202411 ? ["nssf_amount"] : ["nssf_amount","nhif_shif_amount","housing_levy"];
+                        $payment_breakdown->net_salary = 0;
+
+                        $net_salary = Net_Salary_Amount_Report($payment_breakdown);
+                        return round($net_salary);
+                    }
                 }
+                // all salaries
+                $all_salaries = explode(",", $effect_month);
+                $salary_amount = explode(",", $salary_amount);
+                return round($salary_amount[count($salary_amount) - 1]);
             }
-            return $salo_amount;
         }
     }
     return 0;
 }
+
+function getFirstPaymentAmountReport($conn2, $staff_id)
+{
+    $total_paid = getTotalSaloReport($conn2, $staff_id);
+    // get the last month balance
+    $firstpay_record = getFirstPayDate_Report($conn2, $staff_id);
+    $times = explode(":", $firstpay_record);
+    $firstpay_dated = date("Y-m-d", strtotime("01-" . $times[0] . "-" . $times[1]));
+
+    // get the current balnce, amount and month
+    $curr_balance = getCurrentBalTimeReport($conn2, $staff_id);
+    $times = explode(":", explode(",", $curr_balance)[0]);
+    $last_date_paid = date("Y-m-d", strtotime("01-" . $times[0] . "-" . $times[1]));
+
+    // get the first pay as a date
+    // loop through the dates untill the last paydate to get 
+    // the total amount paid that period and the first payment amount
+    $total_salary = 0;
+    $overrall_salo = 0;
+    $date = addMonthsFinanceReport(1, $firstpay_dated);
+    
+    // if the last paid date is the same as tthe date with the balance the first amount 
+    // paid is the balance plus the amount paid
+    if ($firstpay_dated == $last_date_paid) {
+        $balance = explode(",", $curr_balance);
+        return $balance[1] + $total_paid;
+    }
+    if ($date < $last_date_paid) {
+        for (;;) {
+            if ($last_date_paid == $date) {
+                break;
+            }
+            $total_salary += getMySalary_reports($staff_id, $conn2, $date);
+            $date = addMonthsFinanceReport(1, $date);
+        }
+    }
+    $overrall_salo = 0;
+    $overall_date = addMonthsFinanceReport(1, $firstpay_dated);
+    for (;;) {
+        if ($last_date_paid < $overall_date) {
+            break;
+        }
+        $overrall_salo += getMySalary_reports($staff_id, $conn2, $overall_date);
+        $overall_date = addMonthsFinanceReport(1, $overall_date);
+    }
+    $last_time_salo = getMySalary_reports($staff_id, $conn2, $last_date_paid) - explode(",", $curr_balance)[1];
+    $total_salary += $last_time_salo;
+    return $total_paid - $total_salary;
+}
+
 function getSalaryDeductionDetails($conn2, $staff_id, $number, $selected_date = null)
 {
     $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '$staff_id'";
@@ -17496,46 +17613,53 @@ function getSalaryDeductionDetails($conn2, $staff_id, $number, $selected_date = 
         $salary_infor = getMySalaryBreakdown_report($staff_id, $conn2, $selected_date);
         if ($salary_infor != null) {
             // $salary_infor = json_decode($row['salary_breakdown']);
-            // echo $row['salary_breakdown'];
+            // echo $selected_date;
             $allowances = is_array($salary_infor->allowances) ? $salary_infor->allowances : [];
             $gross_salary = $salary_infor->gross_salary;
+            $effect_year = date("Ym", strtotime($selected_date));
             $deduct_paye = $salary_infor->deduct_paye;
             $deducts = isset($salary_infor->deductions) ? $salary_infor->deductions : [];
+
+            // ALLOWANCES
+            $total_allowances = 0;
+            for ($ind = 0; $ind < count($allowances); $ind++) {
+                $total_allowances += $allowances[$ind]->value;
+            }
+            $gross_salary+=$total_allowances;
+
             // NSSF
             $nssf_rates = $salary_infor->nssf_rates;
+            $nssf_contribution = 0;
             if (strlen($nssf_rates) > 0) {
-                $nssf_contribution = getNSSFContribution($gross_salary, $nssf_rates);
+                $nssf_contribution = Nssf_Amount_Report($gross_salary, $effect_year);
                 array_push($deductions, array($number, "NSSF Contribution", $nssf_contribution, "30 Day(s)", $nssf_contribution));
                 $number++;
             }
+
             // get P.A.Y.E
             if ($deduct_paye == "yes") {
-                $total_allowances = 0;
-                for ($ind = 0; $ind < count($allowances); $ind++) {
-                    $total_allowances += $allowances[$ind]->value;
-                }
-                $year = $salary_infor->year;
-                $taxable_income = ($total_allowances + $gross_salary) - $nssf_contribution;
-                // echo $taxable_income;
-                $income_tax = getIncomeTax($taxable_income, $year);
-                // echo $income_tax;
-                array_push($deductions, array($number, "P.A.Y.E (" . $year . ")", $income_tax, "30 Day(s)", $income_tax));
+                // taxable income
+                $income_tax = Income_Tax_Report($gross_salary, $effect_year);
+                
+                array_push($deductions, array($number, "P.A.Y.E", $income_tax, "30 Day(s)", $income_tax));
                 $number++;
             }
+
             // nhif
             $deduct_nhif = $salary_infor->deduct_nhif;
             if ($deduct_nhif == "yes") {
-                $nhif_contribution = getNHIFContribution_reports($gross_salary);
+                $nhif_contribution = Nhif_Shif_Amount_Report($gross_salary, $effect_year);
                 array_push($deductions, array($number, "NHIF Contribution", $nhif_contribution, "30 Day(s)", $nhif_contribution));
                 $number++;
             }
-            // get defined deductions
-            // if (is_array($deducts) > 0) {
-            //     // var_dump($deducts);
-            //     for ($count_deduct=0; $count_deduct < count($deducts); $count_deduct++) {
-            //         array_push($deductions,array($number,$deducts[$count_deduct]->name,$deducts[$count_deduct]->value,"30 Day(s)",$deducts[$count_deduct]->value));
-            //     }
-            // }
+
+            // HOUSING LEVY
+            if (isset($salary_infor->housing_levy) && $salary_infor->housing_levy == "yes") {
+                $housing_levy = Housing_Levy_Report($gross_salary, $effect_year);
+                array_push($deductions, array($number, "Housing Levy", $housing_levy, "30 Day(s)", $housing_levy));
+                $number++;
+            }
+
             // get other deductions
             $deduct = isset($salary_infor->deductions) ? $salary_infor->deductions : "";
 
@@ -18272,4 +18396,258 @@ function receiptNo($no){
         }
     }
     return $no;
+}
+
+// ALL TAXES
+function Net_Salary_Amount_Report($payment_breakdown) {
+    $income_tax = $payment_breakdown->income_tax > $payment_breakdown->income_tax_relief ? $payment_breakdown->income_tax - $payment_breakdown->income_tax_relief : 0;
+    $nhif_shif_amount = $payment_breakdown->nhif_shif_amount - $payment_breakdown->insurance_relief;
+    $deductions = $income_tax+$nhif_shif_amount+$payment_breakdown->nssf_amount+$payment_breakdown->deductions_total;
+    $housing_levy = 0;
+    if ($payment_breakdown->effect_year*1 > 202402) {
+        $housing_levy = $payment_breakdown->housing_levy - $payment_breakdown->ahl_relief;
+        $deductions += $housing_levy;
+    }
+    
+    // contribution
+    $contributions = $payment_breakdown->gross_salary_with_allowance;
+    
+    return round($contributions - $deductions, 2);
+}
+
+function Taxable_Income_Report($gross_salary, $effect_year, $nssf_amount, $nhif_shif_amount, $housing_levy) {
+    if ($effect_year >= 202101 && $effect_year <= 202411) {
+        $gross_salary -= $nssf_amount;
+    }else{
+        $gross_salary -= $nssf_amount + $nhif_shif_amount + $housing_levy;
+    }
+    return $gross_salary;
+}
+
+function Nssf_Amount_Report($gross_salary, $effect_year) {
+    if ($effect_year >= 200001 && $effect_year <= 201501) {
+        return 200;
+    }else if ($effect_year >201501 && $effect_year <= 202401) {
+        if ($gross_salary <= 6000) {
+            return 0.06 * $gross_salary;
+        }else if ($gross_salary > 6000 && $gross_salary <= 18000) {
+            return 360 + (($gross_salary - 6000) * 0.06);
+        }else if ($gross_salary > 18000) {
+            return 1080;
+        }
+    }else if ($effect_year > 202401 && $effect_year <= 202501) {
+        if ($gross_salary <= 7000) {
+            return 0.06 * $gross_salary;
+        }else if ($gross_salary > 7000 && $gross_salary <= 36000) {
+            return 420 + (($gross_salary - 7000) * 0.06);
+        }else if ($gross_salary > 36000) {
+            return 2160;
+        }
+    }else if ($effect_year > 202501) {
+        if ($gross_salary <= 8000) {
+            return 0.06 * $gross_salary;
+        }else if ($gross_salary > 8000 && $gross_salary <= 72000) {
+            return 480 + (($gross_salary - 8000) * 0.06);
+        }else if ($gross_salary > 72000) {
+            return 4320;
+        }
+    }
+    return 0;
+}
+
+function Nhif_Shif_Amount_Report($gross_salary, $effect_year){
+    if ($effect_year >= 201801 && $effect_year <= 202410) {
+        if ($gross_salary <= 5999) {
+            return 150;
+        } else if ($gross_salary > 5999 && $gross_salary <= 7999) {
+            return 300;
+        } else if ($gross_salary > 7999 && $gross_salary <= 11999) {
+            return 400;
+        } else if ($gross_salary > 11999 && $gross_salary <= 14999) {
+            return 500;
+        } else if ($gross_salary > 14999 && $gross_salary <= 19999) {
+            return 600;
+        } else if ($gross_salary > 19999 && $gross_salary <= 24999) {
+            return 750;
+        } else if ($gross_salary > 24999 && $gross_salary <= 29999) {
+            return 850;
+        } else if ($gross_salary > 29999 && $gross_salary <= 34999) {
+            return 900;
+        } else if ($gross_salary > 34999 && $gross_salary <= 39999) {
+            return 950;
+        } else if ($gross_salary > 39999 && $gross_salary <= 44999) {
+            return 1000;
+        } else if ($gross_salary > 44999 && $gross_salary <= 49999) {
+            return 1100;
+        } else if ($gross_salary > 49999 && $gross_salary <= 59999) {
+            return 1200;
+        } else if ($gross_salary > 59999 && $gross_salary <= 69999) {
+            return 1300;
+        } else if ($gross_salary > 69999 && $gross_salary <= 79999) {
+            return 1400;
+        } else if ($gross_salary > 79999 && $gross_salary <= 89999) {
+            return 1500;
+        } else if ($gross_salary > 89999 && $gross_salary <= 99999) {
+            return 1600;
+        } else if ($gross_salary > 99999) {
+            return 1700;
+        }
+    }else if($effect_year >= 202410){
+        return $gross_salary * 0.0275;
+    }
+    return 0;
+}
+
+function Housing_Levy_Report($gross_salary, $effect_year) {
+    if ($effect_year >= 202402) {
+        return $gross_salary * 0.015;
+    }
+    return 0;
+}
+
+function Nhif_Shif_Relief_Report($gross_salary, $effect_year) {
+    $nhif_shif_amount = Nhif_Shif_Amount_Report($gross_salary, $effect_year)*1;
+    if ($effect_year >= 202201) {
+        return 0.15 * $nhif_shif_amount > 5000 ? 5000 : 0.15 * $nhif_shif_amount;
+    }else{
+        return 0.15 * $nhif_shif_amount;
+    }
+}
+
+function Income_Tax_Relief_Report($effect_year){
+    if ($effect_year > 202004) {
+        return 2400;
+    }else if ($effect_year > 201801) {
+        return 1408;
+    }else{
+        return 1162;
+    }
+}
+function Ahl_Relief_Report($gross_salary, $effect_year){
+    if ($effect_year >= 202402) {
+        $housing_levy = Housing_Levy_Report($gross_salary, $effect_year);
+        $ahl_relief = 0.15 * $housing_levy;
+        return $ahl_relief > 9000 ? 9000 : $ahl_relief;
+    }
+    return 0;
+}
+
+function Income_Tax_Report($gross_salary, $effect_year){
+    $housing_levy = Housing_Levy_Report($gross_salary, $effect_year)*1;
+    $nhif_shif_amount = Nhif_Shif_Amount_Report($gross_salary, $effect_year)*1;
+    $nssf_amount = Nssf_Amount_Report($gross_salary, $effect_year)*1;
+    $taxable_income = Taxable_Income_Report($gross_salary, $effect_year, $nssf_amount, $nhif_shif_amount, $housing_levy)*1;
+    
+
+    // calculate the income tax
+    $gross_salary = $taxable_income;
+    $payee = 0;
+    if ($effect_year > 201801 && $effect_year < 202003) {
+        // THE FIRST BAND
+        if ($gross_salary > 12298) {
+            $payee += 12298 * 0.1;
+        }else{
+            $payee += $gross_salary * 0.1;
+            return round($payee, 2);
+        }
+        
+        // THE SECOND BAND
+        if ($gross_salary > 23885) {
+            $payee += 11588 * 0.15;
+        }else{
+            $payee += ($gross_salary - 12298) * 0.15;
+            return round($payee, 2);
+        }
+        
+        // THE THIRD BAND
+        if ($gross_salary > 35472) {
+            $payee += 11588 * 0.20;
+        }else{
+            $payee += ($gross_salary - 23885) * 0.20;
+            return round($payee, 2);
+        }
+        
+        // THE FOURTH BAND
+        if ($gross_salary > 47059) {
+            $payee += 11588 * 0.25;
+        }else{
+            $payee += ($gross_salary - 35472) * 0.25;
+            return round($payee, 2);
+        }
+
+        // FIFTH BAND
+        if ($gross_salary > 47059) {
+            $payee += (($gross_salary - 47059) * 0.3);
+            return round($payee, 2);
+        }
+    }else if($effect_year >= 202004 && $effect_year < 202012){
+        // THE FIRST BAND
+        if ($gross_salary > 24000) {
+            $payee += 24000 * 0.1;
+        }else{
+            $payee += $gross_salary * 0.1;
+            return round($payee, 2);
+        }
+        
+        // THE SECOND BAND
+        if ($gross_salary > 40667) {
+            $payee += 16667 * 0.15;
+        }else{
+            $payee += ($gross_salary - 24000) * 0.15;
+            return round($payee, 2);
+        }
+        
+        // THE THIRD BAND
+        if ($gross_salary > 57334) {
+            $payee += 16667 * 0.20;
+        }else{
+            $payee += ($gross_salary - 40667) * 0.20;
+            return round($payee, 2);
+        }
+
+        // THE FOURTH BAND
+        if ($gross_salary > 57334) {
+            $payee += (($gross_salary - 57334) * 0.25);
+            return round($payee, 2);
+        }
+    }else if($effect_year >= 202101){
+        // THE FIRST BAND
+        if ($gross_salary > 24000) {
+            $payee += 24000 * 0.1;
+        }else{
+            $payee += $gross_salary * 0.1;
+            return round($payee, 2);
+        }
+        
+        // THE SECOND BAND
+        if ($gross_salary > 32333) {
+            $payee += 8333 * 0.25;
+        }else{
+            $payee += ($gross_salary - 24000) * 0.25;
+            return round($payee, 2);
+        }
+        
+        // THE THIRD BAND
+        if ($gross_salary > 500000) {
+            $payee += 467667 * 0.30;
+        }else{
+            $payee += ($gross_salary - 32333) * 0.30;
+            return round($payee, 2);
+        }
+        
+        // THE FOURTH BAND
+        if ($gross_salary > 800000) {
+            $payee += 300000 * 0.325;
+        }else{
+            $payee += ($gross_salary - 500000) * 0.325;
+            return round($payee, 2);
+        }
+
+        // THE FIFTH BAND
+        if ($gross_salary > 800000) {
+            $payee += (($gross_salary - 800000) * 0.35);
+            return round($payee, 2);
+        }
+    }
+    return round($payee, 2);
 }

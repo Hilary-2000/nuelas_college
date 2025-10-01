@@ -3723,6 +3723,18 @@ function checkPresnt($array, $string){
             </div>
         </div>
     </div>
+    <div class="dialogholder hide" id="delete_advance_payments">
+        <div class="dialogwindow animate2">
+            <h6>Confirm</h6>
+            <div class="message" id="message">
+                <p>Are you sure you want to delete this staff`s advance payment and its history?</p>
+            </div>
+            <div class="buttons">
+                <button type='button' id='yes_delete_advance'>Yes</button>
+                <button type='button' id='no_delete_advance'>No</button>
+            </div>
+        </div>
+    </div>
     <div class="dialogholder hide" id="pay_salo_winds">
         <div class="dialogwindow animate2">
             <h6>Confirm</h6>

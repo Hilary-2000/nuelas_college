@@ -28,7 +28,7 @@
                     <p class="block_btn" id="advance_pay_view"><i class=" fa fa-cog"></i> Manage Advances</p>
                     <p class="block_btn" id="kra_reports"><i class=" fa fa-flag"></i> KRA reports</p>
                     <p class="block_btn" id="nssf_reports"><i class=" fa fa-flag"></i> NSSF reports</p>
-                    <p class="block_btn" id="nhif_reports"><i class=" fa fa-flag"></i> NHIF reports</p>
+                    <p class="block_btn" id="nhif_reports"><i class=" fa fa-flag"></i> NHIF/SHIF reports</p>
                     <p class="block_btn" id="nita_reports"><i class=" fa fa-flag"></i> NITA reports</p>
                 </div>
                 <div class="staff_information">
@@ -91,202 +91,240 @@
                                     <input class="form-control" type="number" name="balances" id="balances" placeholder="Balances" value="1" min="1">
                                 </div>
                             </div>
-                            <div class=" col-lg-8 my-2" style="border-left: 1px solid black;border-right: 1px solid black;">
-                                <h6 class="text-center"><u>Net Pay Calculator (latest effective Jan 1st 2022)</u></h6>
-                                <!-- get the payments and deductions for the client -->
-                                <div class="row ">
-                                    <div class="col-md-6 h-100" style="border-right: 1px solid gray;">
-                                        <h6 class="text-center"><strong><u>Net Salary Calculator</u></strong></h6>
-                                        <label for="paye_effect_year" class="form-control-label"><strong>Year of P.A.Y.E Rates effect</strong></label>
-                                        <select class="form-control" name="paye_effect_year" id="paye_effect_year">
-                                            <option value="" hidden>Select Year</option>
-                                            <?php
-                                            $year = date("Y");
-                                            for ($count = $year; $count > 2020; $count--) {
-                                                $selected = "";
-                                                if ($count == $year) {
-                                                    $selected = "selected";
-                                                }
-                                                echo "<option " . $selected . " value='$count'>$count</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                        <label for="gross_salary" class="form-control-label"><strong>Gross Salary</strong></label>
-                                        <input type="number" name="gross_salary" id="gross_salary" value="100" class="form-control" placeholder="Gross salary">
-                                        <hr>
-                                        <p class="hide" id="allowance_holder"></p>
-                                        <p><strong>Allowance and Bonuses</strong> <span class="link" id="add_allowances_in"><i class="fa fa-plus"></i> Click to add allowances</span></p>
-                                        <div id="allowances_and_bonuses">
-                                            <p class='text-success border border-success p-1 my-1'>No allowances to display at the moment.</p>
-                                        </div>
-                                        <hr>
-                                        <p class="hide" id="deductions_holder_1"></p>
-                                        <p><strong>Deductions</strong> <span class="link" id="add_deductions_1"><i class="fa fa-plus"></i> Click to add deductions</span></p>
-                                        <div id="deductions_windoww_1">
-                                            <p class='text-success border border-success p-1 my-1'>No deductions to display at the moment.</p>
-                                        </div>
-                                        <hr>
-                                        <p> <strong>Reliefs</strong></p>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="personal_relief"><i>- Personal Relief:</i></label>
+                            <div class=" col-lg-8 my-2" style="border-left: 1px solid black;border-right: 1px solid black;position:relative;">
+                                <div id="payrollOverlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.3); z-index:20;">
+                                    <!-- overlay content -->
+                                </div>
+                                <div>
+                                    <h6 class="text-center"><u>Net Pay Calculator (Based on Finance Act 2023)</u></h6>
+                                    <!-- get the payments and deductions for the client -->
+                                    <div class="row">
+                                        <div class="col-md-6 h-100" style="border-right: 1px solid gray;">
+                                            <h6 class="text-center"><strong><u>Net Salary Calculator</u></strong></h6>
+                                            <label for="gross_salary" class="form-control-label"><strong>Gross Salary</strong></label>
+                                            <input type="number" name="gross_salary" id="gross_salary" value="100" class="form-control" placeholder="Gross salary">
+                                            <hr>
+                                            <p class="hide" id="allowance_holder"></p>
+                                            <p><strong>Allowance and Bonuses</strong> <span class="link" id="add_allowances_in"><i class="fa fa-plus"></i> Click to add allowances</span></p>
+                                            <div id="allowances_and_bonuses">
+                                                <p class='text-success border border-success p-1 my-1'>No allowances to display at the moment.</p>
                                             </div>
-                                            <div class="col-md-2">
-                                                <input type="checkbox" name="personal_relief" id="personal_relief">
+                                            <hr>
+                                            <p class="hide" id="deductions_holder_1"></p>
+                                            <p><strong>Deductions</strong> <span class="link" id="add_deductions_1"><i class="fa fa-plus"></i> Click to add deductions</span></p>
+                                            <div id="deductions_windoww_1">
+                                                <p class='text-success border border-success p-1 my-1'>No deductions to display at the moment.</p>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="NHIF_relief"><i>- NHIF Relief:</i></label>
+                                            <hr>
+                                            <p> <strong>Reliefs</strong></p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="personal_relief"><i>- Personal Relief:</i></label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="checkbox" checked name="personal_relief" id="personal_relief">
+                                                </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <input type="checkbox" name="NHIF_relief" id="NHIF_relief">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="NHIF_relief"><i>- NHIF/SHIF Relief:</i></label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="checkbox" name="NHIF_relief" id="NHIF_relief">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>NSSF Rates</strong></p>
-                                        <label class="form-control-label" for="nssf_rates"><i>- NSSF Rates:</i></label>
-                                        <select name="nssf_rates" id="nssf_rates" class="form-control">
-                                            <option value="" hidden>Select Rates</option>
-                                            <option value="teir_1">Teir 1 (Ksh 360)</option>
-                                            <option selected value="teir_1_2">Teir 1 & 2 (Ksh 1080)</option>
-                                            <option value="teir_old">Old Rates (Ksh 200)</option>
-                                            <option value="none">None</option>
-                                        </select>
-                                        <hr>
-                                        <p class="mt-1"><strong>P.A.Y.E</strong></p>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="deduct_paye"><i>- Deduct P.A.Y.E</i></label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="AHL_relief_checker"><i>- AHL Relief:</i></label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="checkbox" name="AHL_relief_checker" id="AHL_relief_checker">
+                                                </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <input type="checkbox" name="deduct_paye" id="deduct_paye">
+                                            <hr>
+                                            <p><strong>NSSF Rates</strong></p>
+                                            <label class="form-control-label" for="nssf_rates"><i>- NSSF Rates:</i></label>
+                                            <select name="nssf_rates" id="nssf_rates" class="form-control">
+                                                <option value="" hidden>Select Rates</option>
+                                                <option value="teir_1">Teir 1 (Ksh 360)</option>
+                                                <option selected value="teir_1_2">Teir 1 & 2 (Ksh 1080)</option>
+                                                <option value="teir_old">Old Rates (Ksh 200)</option>
+                                                <option value="none">None</option>
+                                            </select>
+                                            <hr>
+                                            <p class="mt-1"><strong>P.A.Y.E</strong></p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="deduct_paye"><i>- Deduct P.A.Y.E</i></label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="checkbox" checked name="deduct_paye" id="deduct_paye">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <p class="mt-1"><strong>NHIF</strong></p>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="deduct_NHIF"><i>- Deduct NHIF</i></label>
+                                            <hr>
+                                            <p class="mt-1"><strong>NHIF/SHIF</strong></p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="deduct_NHIF"><i>- Deduct NHIF/SHIF</i></label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="checkbox" checked name="deduct_NHIF" id="deduct_NHIF">
+                                                </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <input type="checkbox" name="deduct_NHIF" id="deduct_NHIF">
-                                            </div>
-                                        </div>
-                                        <hr>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6 class="text-center"><strong><u>Calculation breakdown</u></strong></h6>
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <p><strong><i>- Gross Salary</i></strong></p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p><strong id="gros_salo_rec">Ksh 0</strong></p>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>Contributions</strong></p>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p><i>- NSSF Contribution</i></p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p><i id="nssf_contributes">Ksh 0</i></p>
+                                            <hr>
+                                            <div class="deduct_housing_levy">
+                                                <p class="mt-1"><strong>Housing Levy</strong></p>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="deduct_nhds"><i>- Housing Levy</i></label>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input type="checkbox" checked name="deduct_nhds" id="deduct_nhds">
+                                                    </div>
+                                                </div>
+                                                <hr>
                                             </div>
                                         </div>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p><i>- NHIF Contribution</i></p>
+                                        <div class="col-md-6">
+                                            <h6 class="text-center"><strong><u>Calculation breakdown</u></strong></h6>
+                                            <div class="row">
+                                                <div class="col-md-12"><p><strong>Gross Salary</strong></p></div>
+                                                <div class="col-md-6">
+                                                    <p>- Basic Salary</p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="gros_salo_rec">Ksh 0</p>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p><i id="nhif_contributions_records">Ksh 0</i></p>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p>- Total Allowances</p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="all_allowances">Ksh 0</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>Income after Contribution</strong></p>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p>- Income after NSSF Contribution</p>
+                                            <hr>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p><b>- Gross Salary</b></p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="total_salary">Ksh 0</p>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p id="income_after_nssf_contribute">Ksh 0</p>
+                                            <hr>
+                                            <p><strong>Contributions before tax</strong></p>
+                                            <div class="row " id="contributions_before_tax">
+                                                <div class="col-md-12">
+                                                    <p><i>- Contributions before tax will appear here</i></p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>Allowances</strong></p>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p>- Total Allowances</p>
+                                            <hr>
+                                            <div class="row " id="contributions_before_tax">
+                                                <div class="col-md-6">
+                                                    <p><b>- Total Contributions</b></p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="contribution_before_tax_totals">Kes 0</p>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p id="all_allowances">Ksh 0</p>
+                                            <hr>
+                                            <p><strong>Taxable Income</strong></p>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p>- Taxable Income</p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="taxable_income_records">Ksh 0</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>Taxable Income</strong></p>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p>- Taxable Income</p>
+                                            <hr>
+                                            <p><strong>Tax / P.A.Y.E</strong></p>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p><i>- Income Tax</i></p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p><i id="incomeTaxRecord">Ksh 0</i></p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p>- Income Tax Relief</p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="personal_relief_records">Ksh 0</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p><b>- Final Income Tax</b></p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p><b id="final_income_taxe">Ksh 0</b></p>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p id="taxable_income_records">Ksh 0</p>
+                                            <hr>
+                                            <p><strong>Income After Tax</strong></p>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p><i>- Income After Tax</i></p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p><i id="income_after_tax">Ksh 0</i></p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>Tax / P.A.Y.E</strong></p>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p><i>- Income Tax</i></p>
+                                            <hr>
+                                            <p><strong>Contributions After Tax</strong></p>
+                                            <div class="row" id="payments_after_tax">
+                                                <div class="col-md-12">
+                                                    <p><i>- Contributions After Tax Appear here</i></p>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p><i id="incomeTaxRecord">Ksh 0</i></p>
+                                            <hr>
+                                            <p><strong>Reliefs</strong></p>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p>- NHIF/SHIF Relief</p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="nhif_relief_record">Ksh 0</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>Reliefs</strong></p>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p>- Personal Relief</p>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p>- AHL Relief</p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="ahl_relief_record">Ksh 0</p>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p id="personal_relief_records">Ksh 0</p>
+                                            <hr>
+                                            <p><strong>Total reliefs</strong></p>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p><i>- Total reliefs</i></p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p><i id="total_relief">Ksh 0</i></p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p>- NHIF Relief</p>
+                                            <hr>
+                                            <hr>
+                                            <p><strong>Deductions</strong></p>
+                                            <div class="row ">
+                                                <div class="col-md-6">
+                                                    <p>- Total Deductions</p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p id="deductions_calculate">Ksh 0</p>
+                                                </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <p id="nhif_relief_record">Ksh 0</p>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>Tax after reliefs</strong></p>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p><i>- Final Income Tax</i></p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p><i id="final_income_taxe">Ksh 0</i></p>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <p><strong>Deductions</strong></p>
-                                        <div class="row ">
-                                            <div class="col-md-8">
-                                                <p>- Total Deductions</p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p id="deductions_calculate">Ksh 0</p>
-                                            </div>
-                                        </div>
-                                        <div class="row border-top border-bottom border-dark p-2 mt-4">
-                                            <div class="col-md-8">
-                                                <p><strong><i>- Net Salary</i></strong></p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p><strong id="net_salary_record">Ksh 0</strong></p>
+                                            <hr>
+                                            <div class="row border-top border-bottom border-dark p-2 mt-4">
+                                                <div class="col-md-6">
+                                                    <p><strong><i>- Net Salary</i></strong></p>
+                                                </div>
+                                                <div class="col-md-6 text-left">
+                                                    <p><strong id="net_salary_record">Ksh 0</strong></p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -422,13 +460,29 @@
                                 </div>
                             </div>
                             <div class="col-md-8">
-                                        <h6 class="text-center"><b>Net Pay Calculator</b></h6>
+                                        <h6 class="text-center"><b>Net Pay Calculator (Based on Finance Act 2023)</b></h6>
                                         <p id="error_calaculator"></p>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="gross_salary_edit" class="form-control-label">Gross salary { <span id="gross_sa"></span>}</label>
                                         <input type="number" value="100" class="form-control" id="gross_salary_edit" placeholder="Gross salary">
-                                        <label for="year_of_effect_paye" class="form-control-label">Year of P.A.Y.E Rates</label>
+                                        <label for="effect_month_payee" class="form-control-label">Effect Month</label>
+                                        <select name="effect_month_payee" id="effect_month_payee" class="form-control">
+                                            <option value="" hidden>Select Month</option>
+                                            <option value="Jan">Jan</option>
+                                            <option value="Feb">Feb</option>
+                                            <option value="Mar">Mar</option>
+                                            <option value="Apr">Apr</option>
+                                            <option value="May">May</option>
+                                            <option value="Jun">Jun</option>
+                                            <option value="Jul">Jul</option>
+                                            <option value="Aug">Aug</option>
+                                            <option value="Sep">Sep</option>
+                                            <option value="Oct">Oct</option>
+                                            <option value="Nov">Nov</option>
+                                            <option value="Dec">Dec</option>
+                                        </select>
+                                        <label for="year_of_effect_paye" class="form-control-label">Effect Year</label>
                                         <select name="year_of_effect_paye" id="year_of_effect_paye" class="form-control">
                                             <option value="" hidden>Select year of effect</option>
                                             <?php
@@ -458,16 +512,24 @@
                                         <label for="dedcut_paye_edit" class="form-control-label">- Deduct P.A.Y.E</label>
                                         <input type="checkbox" name="dedcut_paye_edit" id="dedcut_paye_edit"><br>
                                         <!-- nhif deduct -->
-                                        <label for="dedcut_nhif_edit" class="form-control-label">- Deduct NHIF</label>
+                                        <label for="dedcut_nhif_edit" class="form-control-label">- Deduct NHIF/SHIF</label>
                                         <input type="checkbox" name="dedcut_nhif_edit" id="dedcut_nhif_edit"><br>
+                                        <div class="edit_housing_fund">
+                                        <!-- housing levy -->
+                                        <label for="edit_deduct_nhds" class="form-control-label">- Deduct Housing Levy</label>
+                                        <input type="checkbox" name="edit_deduct_nhds" id="edit_deduct_nhds"><br>
                                         <hr>
-                                        <p><strong>Reliefs.</strong></p>
+                                        </div>
+                                        <p><strong>Reliefs</strong></p>
                                         <!-- nhif relief -->
-                                        <label for="nhif_relief_accept" class="form-control-label">- NHIF Relief</label>
+                                        <label for="nhif_relief_accept" class="form-control-label">- NHIF/SHIF Relief</label>
                                         <input type="checkbox" name="nhif_relief_accept" id="nhif_relief_accept"><br>
                                         <!-- personal relief -->
                                         <label for="personal_relief_accept" class="form-control-label">- Personal Relief</label>
-                                        <input type="checkbox" name="personal_relief_accept" id="personal_relief_accept">
+                                        <input type="checkbox" name="personal_relief_accept" id="personal_relief_accept"><br>
+                                        <!-- AHL relief -->
+                                        <label for="accept_ahl_relief" class="form-control-label">- AHL Relief</label>
+                                        <input type="checkbox" name="accept_ahl_relief" id="accept_ahl_relief"><br>
                                         <hr>
                                         <p class="hide" id="allowance_holder_edit"></p>
                                         <p><strong>Allowances</strong> <span class="link" id="edit_allowances"><i class="fa fa-plus"></i> Add Allowances</span> </p>
@@ -500,48 +562,38 @@
                             <h6 class="text-center"><strong>Calculation breakdown</strong></h6>
                             <div class="row">
                                 <div class="col-md-8">
-                                    <p><strong><i>- Gross Salary</i></strong></p>
+                                    <p><i>- Gross Salary</i></p>
                                 </div>
                                 <div class="col-md-4">
-                                    <p><strong id="gros_salo_rec_edit">Ksh 0</strong></p>
+                                    <p id="gros_salo_rec_edit">Ksh 0</p>
                                 </div>
-                            </div>
-                            <hr>
-                            <p><strong>Contributions</strong></p>
-                            <div class="row ">
-                                <div class="col-md-8">
-                                    <p><i>- NSSF Contribution</i></p>
-                                </div>
-                                <div class="col-md-4">
-                                    <p><i id="nssf_contributes_edit">Ksh 0</i></p>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col-md-8">
-                                    <p><i>- NHIF Contribution</i></p>
-                                </div>
-                                <div class="col-md-4">
-                                    <p><i id="nhif_contributions_records_edit">Ksh 0</i></p>
-                                </div>
-                            </div>
-                            <p><strong>Income after Contribution</strong></p>
-                            <div class="row ">
-                                <div class="col-md-8">
-                                    <p>- Income after NSSF Contribution</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <p id="income_after_nssf_contribute_edit">Ksh 0</p>
-                                </div>
-                            </div>
-                            <p><strong>Allowances</strong></p>
-                            <div class="row ">
                                 <div class="col-md-8">
                                     <p>- Total Allowances</p>
                                 </div>
                                 <div class="col-md-4">
                                     <p id="all_allowances_edit">Ksh 0</p>
                                 </div>
+                                <div class="col-md-8">
+                                    <p><strong><i>- Gross Salary Total</i></strong></p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong id="gross_salary_total_edit">Ksh 0</strong></p>
+                                </div>
                             </div>
+                            <hr>
+                            <p><strong>Contributions Before Tax</strong></p>
+                            <div class="row " id="contributions_before_tax_edit">
+                                <p>Contributions before tax will appear here...</p>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-8">
+                                    <p><b>- Total Contribution</b></p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong id="total_contributions_edit">Ksh 0</strong></p>
+                                </div>
+                            </div>
+                            <hr>
                             <p><strong>Taxable Income</strong></p>
                             <div class="row ">
                                 <div class="col-md-8">
@@ -551,6 +603,7 @@
                                     <p id="taxable_income_records_edit">Ksh 0</p>
                                 </div>
                             </div>
+                            <hr>
                             <p><strong>Tax / P.A.Y.E</strong></p>
                             <div class="row ">
                                 <div class="col-md-8">
@@ -559,33 +612,51 @@
                                 <div class="col-md-4">
                                     <p><i id="incomeTaxRecord_edit">Ksh 0</i></p>
                                 </div>
-                            </div>
-                            <p><strong>Reliefs</strong></p>
-                            <div class="row ">
                                 <div class="col-md-8">
-                                    <p>- Personal Relief</p>
+                                    <p>- Income Tax Relief</p>
                                 </div>
                                 <div class="col-md-4">
                                     <p id="personal_relief_records_edit">Ksh 0</p>
                                 </div>
+                                <div class="col-md-8">
+                                    <p><strong>- Final Income Tax</strong></p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong id="final_income_tax">Ksh 0</strong></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <p><strong>Reliefs</strong></p>
+                            <div class="row ">
                             </div>
                             <div class="row ">
                                 <div class="col-md-8">
-                                    <p>- NHIF Relief</p>
+                                    <p>- NHIF/SHIF Relief</p>
                                 </div>
                                 <div class="col-md-4">
                                     <p id="nhif_relief_record_edit">Ksh 0</p>
                                 </div>
-                            </div>
-                            <p><strong>Tax after relief</strong></p>
-                            <div class="row ">
                                 <div class="col-md-8">
-                                    <p><i>- Final Income Tax</i></p>
+                                    <p>- AHL Relief</p>
                                 </div>
                                 <div class="col-md-4">
-                                    <p><i id="final_income_taxe_edit">Ksh 0</i></p>
+                                    <p id="AHL_relief_edit">Ksh 0</p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p><strong>- Total Reliefs</strong></p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong id="total_reliefs">Ksh 0</strong></p>
                                 </div>
                             </div>
+                            <hr>
+                            <p><strong>Contributions After Tax</strong></p>
+                            <div class="row" id="payments_after_tax_edit">
+                                <div class="col-md-12">
+                                    <p><i>- Contributions After Tax Appear here</i></p>
+                                </div>
+                            </div>
+                            <hr>
                             <p><strong>Deductions</strong></p>
                             <div class="row ">
                                 <div class="col-md-8">
@@ -970,7 +1041,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="advance_installments" class="form-control-label">Advance Installments</label>
-                                    <input type="number" class="w-100 form-control border border-gray rounded p-2 text-xs font-weight-bold" id="advance_installments" value="1" min="1" placeholder="Advance Installments">
+                                    <input type="number" class="w-100 form-control border border-gray rounded p-2 text-xs font-weight-bold" id="advance_installments" value="1" min="1" placeholder="Pay in how many months eg(2 months)">
                                     <p id="advance_installments_price"></p>
                                 </div>
                                 <div class="col-md-6"></div>
@@ -982,7 +1053,17 @@
                         </div>
                         <div class="container advances hide" id="view_advance_window">
                             <h6 class="text-center"><u>View Advance Details</u> <small class="text-danger">(Readonly)</small></h6>
-                            <p class="link" style="width: fit-content;" id="back_to_view_advance_list"><i class="fas fa-arrow-left"></i> Back to list</p>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <input type="hidden" value="0" id="hold_advance_payment_id">
+                                    <p class="link" style="width: fit-content;" id="back_to_view_advance_list"><i class="fas fa-arrow-left"></i> Back to list</p>
+                                </div>
+                                <div class="col-md-8"></div>
+                                <div class="col-md-2">
+                                    <span class="btn btn-sm btn-danger text-sm" id="delete_advance"><i class="fa fa-trash"></i></span>
+                                    <div id="error_payroll_holder"></div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="" class="form-control-label">Employee`s Name</label>
@@ -1069,7 +1150,7 @@
                             </div>
                         </div>
                         <div class="my_reports hide" id="nhif_reports_window">
-                            <h5 class="text-center"><u>N.H.I.F reports</u></h5>
+                            <h5 class="text-center"><u>S.H.I.F/N.H.I.F reports</u></h5>
                             <div class="container row">
                                 <div class="col-md-6">
                                     <label for="select_nhif_months" class="form-control-label">Select Month</label>
@@ -1085,8 +1166,8 @@
                                         <th>#</th>
                                         <th>Staff Name</th>
                                         <th>Id No.</th>
-                                        <th>NHIF No.</th>
-                                        <th>NHIF Payments</th>
+                                        <th>NHIF/SHIF No.</th>
+                                        <th>NHIF/SHIF Payments</th>
                                         <th>Employees Amount</th>
                                         <th>Total</th>
                                     </tr>
