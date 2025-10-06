@@ -113,6 +113,27 @@
             }else {
                 echo "<p style='color:green;'>Display a student with their admission number to display their available votehead!</p>";
             }
+        }elseif(isset($_GET['last_time_paid'])){
+            $staff_id = $_GET['staff_id'];
+            $select = "SELECT * FROM `payroll_information` WHERE staff_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $staff_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $last_month = null;
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $last_month = $row['current_balance_monNyear'];
+                }
+            }
+
+            if(!empty($last_month)){
+                $last_month = explode(":", $last_month);
+                $last_month = "[\"".$last_month[0]."\",\"".$last_month[1]."\"]";
+                echo $last_month;
+                return;
+            }
+            echo "[\"Jan\",\"2019\"]";
         }elseif(isset($_GET['get_student_voteheads'])){
             $student_id = $_GET['student_id'];
             $select = "SELECT * FROM student_data WHERE adm_no = ?";
@@ -805,7 +826,7 @@
                     $date=date_create($startperiod);
                     date_add($date,date_interval_create_from_date_string("1 day"));
                     $dates = date_format($date,"Y-m-d");
-                    $select = "SELECT *, (SELECT(concat(`first_name`,' ',`second_name`)) FROM `student_data` WHERE `adm_no` = `stud_admin`) AS 'Name' FROM `finance` WHERE date_of_transaction BETWEEN ? and ? OR (date_of_transaction = ? and `time_of_transaction` > ?) ORDER BY `transaction_id` DESC";
+                    $select = "SELECT *, (SELECT(concat(`first_name`,' ',`second_name`)) FROM `student_data` WHERE `adm_no` = `stud_admin` LIMIT 1) AS 'Name' FROM `finance` WHERE date_of_transaction BETWEEN ? and ? OR (date_of_transaction = ? and `time_of_transaction` > ?) ORDER BY `transaction_id` DESC";
                     $stmt = $conn2->prepare($select);
                     $stmt->bind_param("ssss",$dates,$endperiod,$startperiod,$time);
                     $stmt->execute();
@@ -1730,11 +1751,10 @@
                 echo "<p class='red_notice'>Error occured during upload!</p>";
             }
         }elseif (isset($_GET['todays_expense'])) {
-            // $select = "SELECT `exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time` FROM `expenses` WHERE `expense_date` = ?";
-            $select = "SELECT expenses.*, expense_category.expense_name FROM `expenses` LEFT JOIN expense_category ON expenses.exp_category = expense_category.expense_id ORDER BY `expid` DESC LIMIT 1000";
+            // USES A VIEW THAT HAS JOINED THE TWO TABLES.
+            // $select = "SELECT expenses.*, expense_category.expense_name FROM `expenses` LEFT JOIN expense_category ON expenses.exp_category = expense_category.expense_id ORDER BY `expid` DESC LIMIT 1000";
+            $select = "SELECT * FROM `all_expenses` ORDER BY expense_date DESC, expid DESC LIMIT 1000;";
             $stmt = $conn2->prepare($select);
-            $date = date("Y-m-d");
-            // $stmt->bind_param("s",$date);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -1756,6 +1776,8 @@
                                         $xs = 0;
                                         $total_pay = 0;
                 while($rows = $result->fetch_assoc()){
+                    // echo json_encode($rows);
+                    // return 0;
                     $xs++;
                     $expense_name = get_expense($rows['exp_category'],$conn2);
                     $data_to_display.="<tr>
@@ -1788,6 +1810,8 @@
                 }else {
                     echo "<p class='green_notice' style='text-align:center;'>No expenses recorded today!</p>";
                 }
+
+
                 //get current year
                 $startdate = date("Y-m")."-01";
                 $enddate = date("Y-m")."-31";
@@ -2008,7 +2032,7 @@
             }
 
             // start with operating activities
-            $select = "SELECT `revenue_category` ,COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `cash_flow_activities` = '1' AND `reportable_status` = '1' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
+            $select = "SELECT `revenue_category`, COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `cash_flow_activities` = '1' AND `reportable_status` = '1' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
             
             // current year operating activities
             $stmt = $conn2->prepare($select);
@@ -2040,7 +2064,9 @@
             // get the fees for this year
             $student_fees = "SELECT COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `finance` WHERE `date_of_transaction` BETWEEN ? AND ?";
             $stmt = $conn2->prepare($student_fees);
-            $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
+            $start_date = date("Y-m-d",strtotime($curr_year[0]));
+            $end_date = date("Y-m-d",strtotime($curr_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2062,10 +2088,13 @@
 
             // operating revenue previous year
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+            $start_date = date("Y-m-d",strtotime($prev_year[0]));
+            $end_date = date("Y-m-d",strtotime($prev_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
             $stmt->execute();
             $result = $stmt->get_result();
             $prev_operating_activities = [];
+
             // $max_id = 0;
             if ($result) {
                 while($row = $result->fetch_assoc()){
@@ -2087,7 +2116,9 @@
 
             // get the previous year student fees
             $stmt = $conn2->prepare($student_fees);
-            $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+            $start_date = date("Y-m-d",strtotime($prev_year[0]));
+            $end_date = date("Y-m-d",strtotime($prev_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2110,7 +2141,9 @@
 
             // operating revenue previous year
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+            $start_date = date("Y-m-d",strtotime($prev_year_1[0]));
+            $end_date = date("Y-m-d",strtotime($prev_year_1[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
             $stmt->execute();
             $result = $stmt->get_result();
             $prev_operating_activities_1 = [];
@@ -2135,7 +2168,10 @@
 
             // get the previous year student fees
             $stmt = $conn2->prepare($student_fees);
-            $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+            $start_date = date("Y-m-d",strtotime($prev_year[0]));
+            $end_date = date("Y-m-d",strtotime($prev_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2161,6 +2197,7 @@
             $select = "SELECT `revenue_category` ,COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `cash_flow_activities` = '2' AND `reportable_status` = '1' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
             
             // current year investing activities
+            // echo json_encode($curr_year);
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
             $stmt->execute();
@@ -2312,9 +2349,12 @@
             // get the operating expenses of the previous years and this year
             $curr_year_operating_expenses = [];
             $operating_expense_categories = [];
-            $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '1' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+            // $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '1' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+            $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount'  FROM `all_expenses` WHERE `expense_categories` = '1' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
+            $start_date = date("Y-m-d", strtotime($curr_year[0]));
+            $end_date = date("Y-m-d", strtotime($curr_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2329,7 +2369,10 @@
             // get the previoud years
             $prev_year_operating_expenses = [];
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+            $start_date = date("Y-m-d", strtotime($prev_year[0]));
+            $end_date = date("Y-m-d", strtotime($prev_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2344,7 +2387,10 @@
             // get the second previous years
             $prev_year_operating_expenses_1 = [];
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+            $start_date = date("Y-m-d", strtotime($prev_year_1[0]));
+            $end_date = date("Y-m-d", strtotime($prev_year_1[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2360,9 +2406,13 @@
             // get the operating expenses of the previous years and this year
             $curr_year_investing_expenses = [];
             $investing_expense_categories = [];
-            $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '2' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+            // $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '2' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+            $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount'  FROM `all_expenses` WHERE `expense_categories` = '2' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
+            $start_date = date("Y-m-d", strtotime($curr_year[0]));
+            $end_date = date("Y-m-d", strtotime($curr_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2377,7 +2427,10 @@
             // get the previoud years
             $prev_year_investing_expenses = [];
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+            $start_date = date("Y-m-d", strtotime($prev_year[0]));
+            $end_date = date("Y-m-d", strtotime($prev_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2392,7 +2445,10 @@
             // get the previoud years
             $prev_year_investing_expenses_1 = [];
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+            $start_date = date("Y-m-d", strtotime($prev_year_1[0]));
+            $end_date = date("Y-m-d", strtotime($prev_year_1[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2407,9 +2463,13 @@
             // get the operating expenses of the previous years and this year
             $curr_year_financing_expenses = [];
             $financing_expense_categories = [];
-            $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '3' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+            // $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '3' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+            $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount'  FROM `all_expenses` WHERE `expense_categories` = '3' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
+            $start_date = date("Y-m-d", strtotime($curr_year[0]));
+            $end_date = date("Y-m-d", strtotime($curr_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2424,7 +2484,10 @@
             // get the previoud years
             $prev_year_financing_expenses = [];
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+            $start_date = date("Y-m-d", strtotime($prev_year[0]));
+            $end_date = date("Y-m-d", strtotime($prev_year[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -2439,7 +2502,10 @@
             // get the previoud years
             $prev_year_financing_expenses_1 = [];
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+            $start_date = date("Y-m-d", strtotime($prev_year_1[0]));
+            $end_date = date("Y-m-d", strtotime($prev_year_1[1]));
+            $stmt->bind_param("ss",$start_date,$end_date);
+            // $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
@@ -3049,7 +3115,6 @@
             
             // get the term income
             $term_income = getTermIncomeQuaterly($annual_quaters,$conn2);
-            // echo json_encode($revenue);
             // return 0;
             
             // get the expenses per term
@@ -3876,7 +3941,7 @@
             $months_increase = 0;
             while (true) {
                 // salary is either the normal monthly salo or 
-                $salary = ($start_date==$lastdate_paid) ? $balance_left : getSalary($start_date,$conn2,$staff_id);
+                $salary = ($start_date==$lastdate_paid) ? $balance_left : getMySalary($staff_id,$conn2,$start_date);
                 // echo $salary." salaries ".$balance_left." ".$start_date." -- ".$lastdate_paid."<br>";
                 // if salary is less than the amount paid deduct it and move to the next month
                 if ($amount_recieved >= $salary) {
@@ -3915,7 +3980,7 @@
             if ($salo_balance > 0) {
                 $new_balance = $salo_balance;
             }else{
-                $new_balance = getSalary($next_pay_date,$conn2,$staff_id);
+                $new_balance = getMySalary($staff_id,$conn2,$next_pay_date);
             }
             $update = "UPDATE `payroll_information` SET `current_balance` = ?,`current_balance_monNyear` = ? WHERE `staff_id` = ?";
             $stmt = $conn2->prepare($update);
@@ -4141,10 +4206,8 @@
                             $fund_details .= "<p class='green_notice p-1 border border-success'> No payment records found!</p>";
                         }
 
+                        // employer salary
                         $emp_salary = getMySalary($staff_id, $conn2, $start_dates);
-                        // echo $start_dates." ".$emp_salary." <br>";
-                        // echo $emp_salary."<br>";
-                        // return 0;
                         $balance = $emp_salary - $total_paid;
                         // get allowances
                         $allowances_bonus = getAllowanceBonusRelief($staff_id, $conn2, $start_dates);
@@ -4755,7 +4818,7 @@
                         // get if the staff gets the nssf deduction
                         $salary_details = count($staff_information) > 0 ? $row['salary_breakdown'] : "Null";
                         $salary_details = getMySalaryBreakdown($row['staff_id'], $conn2, $selected_month);
-                        $gross_salary = getSalary($selected_month, $conn2, $row['staff_id']);
+                        $gross_salary = getMySalary($row['staff_id'], $conn2, $selected_month);
                         $nssf_amounts = 0;
                         $nssf_type = "none";
                         $contributions = 0;
@@ -5508,7 +5571,7 @@
 
                     // show balance
                     if($balance == 0){
-                        // continue;
+                        continue;
                     }
                     $data_to_display.="<option ".$selected." value='".$row['bill_id']."'>".ucwords(strtolower($row['bill_name']))." - (Bal: Kes ".number_format($balance).")</option>";
                 }
@@ -5986,6 +6049,7 @@
             return "<span class='green_notice'>-u</span>";
         }
     }
+
     function checkIN($array,$element){
         if (count($array) > 0) {
             for ($index=0; $index < count($array); $index++) { 
@@ -5996,54 +6060,6 @@
             }
         }
         return false;
-    }
-    function getSalary($dates,$conn2,$staff_id,$first_salary = -1){
-        $first_pay = getFirstPayDate($conn2,$staff_id);
-        $select = "SELECT `effect_month`, `salary_amount` FROM `payroll_information` WHERE `staff_id` = ?";
-        $stmt = $conn2->prepare($select);
-        $stmt->bind_param("s",$staff_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $times = "";
-        $salary = "";
-        if ($result) {
-            if ($row = $result->fetch_assoc()) {
-                $times = $row['effect_month'];
-                $salary = $row['salary_amount'];
-            }
-        }
-        $f_date = explode(":",$first_pay);
-        $f_d_date = date("Y-m-d",strtotime("01-".$f_date[0]."-".$f_date[1]));
-        if ($f_d_date == $dates && $first_salary != -1) {
-            // echo $first_salary." ".$f_d_date;
-            return $first_salary;
-        }
-        if (isset($times) && strlen($times) > 0) {
-            $time_divide = explode(",",$times);
-            if (count($time_divide) == 1) {
-                return $salary;
-            }elseif (count($time_divide) > 1) {
-                $exploded_salo = explode(",",$salary);
-                for ($index=0; $index < count($time_divide); $index++) {
-                    $epl_time = explode(":",$time_divide[$index]);
-                    if ($index+1 < count($time_divide)) {
-                        $nextMonth = explode(":",$time_divide[$index+1]);
-                    }else {
-                        $count = count($exploded_salo);
-                        return $exploded_salo[$count-1];
-                        break;
-                    }
-                    $date_now = date("Y-m-d",strtotime("01-".$epl_time[0]."-".$epl_time[1]));
-                    $next_mon = date("Y-m-d",strtotime("01-".$nextMonth[0]."-".$nextMonth[1]));
-                    if ($dates >=$date_now && $dates<$next_mon) {
-                        return $exploded_salo[$index];
-                        break;
-                    }
-                }
-            }
-        }else {
-            return 0;
-        }
     }
 
     function getCurrentBalTime($conn2,$staff_id){
@@ -6060,7 +6076,7 @@
                     $data_return = $row['current_balance_monNyear'].",".$row['current_balance'];
                 }
             }else {
-                $data_return = 0;
+                $data_return = "0";
             }
         }
         return $data_return;
@@ -6105,9 +6121,6 @@
     }
 
     function salaryBalanceToBePaid($id,$conn2){
-        $data = getTotalBalance($id,$conn2);
-        // $tot = getTotalSalaryBalance($data);
-        // $tot = 0;
         $ids = $_GET['ids'];
         $tot = totalSalaryBal($ids,$conn2);
         return $tot;
@@ -6196,7 +6209,7 @@
                 }
 
                 // get salary to be paid for that month
-                $salary = getSalary($start_month,$conn2,$staff_id);
+                $salary = getMySalary($staff_id,$conn2,$start_month);
                 // echo "<br>".$start_month." salo = ".$salary;
                 $total_to_be_paid += $salary;
             }
@@ -6631,7 +6644,6 @@
             // array push
             array_push($school_revenue,$revenue);
         }
-        // $stmt->bind_param("ss",)
         return $school_revenue;
     }
 
@@ -8435,22 +8447,30 @@
         return [];
     }
 
-    function getMySalary($staff_id,$conn2,$date){
-        $first_salary = getFirstPaymentAmount($conn2,$staff_id);
+    function getMySalary($staff_id, $conn2, $date)
+    {
         // get last time he was paid
-        $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '".$staff_id."'";
+        $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '" . $staff_id . "'";
         $stmt = $conn2->prepare($select);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
             if ($row = $result->fetch_assoc()) {
-                $first_time_paid = date("Y-m-d",strtotime("01-".(explode(":",explode(",",$row['effect_month'])[0])[0])."-".explode(":",explode(",",$row['effect_month'])[0])[1]));
+                $first_time_paid = date("Y-m-d", strtotime("01-" . (explode(":", explode(",", $row['effect_month'])[0])[0]) . "-" . explode(":", explode(",", $row['effect_month'])[0])[1]));
             }
         }
+        // echo "We are here $staff_id!";
+
+        if (empty($first_time_paid)) {
+            return 0;
+        }
+        
         if ($first_time_paid == $date) {
+            $first_salary = getFirstPaymentAmount($conn2, $staff_id);
             return $first_salary;
         }
-        $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '".$staff_id."';";
+        
+        $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '" . $staff_id . "';";
         $stmt = $conn2->prepare($select);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -8458,24 +8478,82 @@
             if ($row = $result->fetch_assoc()) {
                 $effect_month = $row['effect_month'];
                 $salary_amount = $row['salary_amount'];
-                $effect_month = $row['effect_month'];
+                $salary_breakdown = isJson_report_fin($row['salary_breakdown']) ? json_decode($row['salary_breakdown']) : [];
+                $salary_breakdown = is_array($salary_breakdown) ? $salary_breakdown : [$salary_breakdown];
                 
-                // all salaries
-                $all_salaries = explode(",",$effect_month);
-                $salary_amount = explode(",",$salary_amount);
-                // first recorded date
+                // salary breakdown
+                for ($index=count($salary_breakdown)-1; $index >= 0; $index--) {
+                    $payroll_data = $salary_breakdown[$index];
+                    $effect_year = isset($payroll_data->effect_month) ? date("Ym", strtotime($payroll_data->effect_month)) : $payroll_data->year."01";
+                    // echo $effect_year;
+                    if (date("Ym", strtotime($date)) >= $effect_year) {
+                        $effect_year = date("Ym", strtotime($date));
+                        $gross_salary = $payroll_data->gross_salary;
+                        $allowances = 0;
+                        if(!empty($payroll_data->allowances)){
+                            foreach($payroll_data->allowances as $key => $allowance){
+                                if(isset($allowance->checked) && $allowance->checked){
+                                    $allowances += $allowance->value;
+                                }else{
+                                    if (!isset($allowance->checked)) {
+                                        $allowances += $allowance->value;
+                                    }
+                                }
+                            }
+                        }
+                        $gross_salary += $allowances;
 
-                // loop until today and when we reach the month he was paid 
-                $salo_amount = 0;
-                for ($index=0; $index < count($all_salaries); $index++) {
-                    $salary_month = explode(":",$all_salaries[$index]);
-                    $salo_date = date("Y-m-d",strtotime("01-".$salary_month[0]."-".$salary_month[1]));
-                    // echo $date ." salo date-> ". $salo_date."<br>";
-                    if ($date >= $salo_date) {
-                        $salo_amount = $salary_amount[$index];
+                        // deductions
+                        $deductions = 0;
+                        if(!empty($payroll_data->deductions)){
+                            foreach ($payroll_data->deductions as $key => $deduction) {
+                                if(isset($deduction->checked) && $deduction->checked){
+                                    $deductions += $deduction->value;
+                                }
+                                if (!isset($allowance->checked)) {
+                                    $deductions += $deduction->value;
+                                }
+                            }
+                        }
+                        $nhif_amounts = $payroll_data->deduct_nhif == "yes" ? Nhif_Shif_Amount($gross_salary, $effect_year) : 0;
+                        $housing_levy = isset($payroll_data->housing_levy) ? ($payroll_data->housing_levy == "yes" ? Housing_Levy($gross_salary, $effect_year) : 0) : 0;
+                        $nssf_amount = $payroll_data->nssf_rates != "none" ? Nssf_Amount($gross_salary, $effect_year) : 0;
+                        $income_tax = $payroll_data->deduct_paye == "yes" ? Income_Tax($gross_salary, $effect_year) : 0;
+                        $nhif_relief = $payroll_data->deduct_nhif == "yes" && $payroll_data->nhif_relief == "yes" ? Nhif_Shif_Relief($gross_salary, $effect_year) : 0;
+                        $paye_relief = $payroll_data->deduct_paye == "yes" && $payroll_data->personal_relief == "yes" ? Income_Tax_Relief($effect_year) : 0;
+                        $ahl_relief = (isset($payroll_data->housing_levy) && isset($payroll_data->ahl_relief)) ? (($payroll_data->housing_levy == "yes" && $payroll_data->ahl_relief == "yes") ? Ahl_Relief($gross_salary, $effect_year) : 0) : 0;
+                        $taxable_income = Taxable_Income($gross_salary, $effect_year, $nssf_amount, $nhif_amounts, $housing_levy);
+                        
+                        // PAYMENT BREAKDOWN
+                        $payment_breakdown = new stdClass();
+                        $payment_breakdown->effect_year = $effect_year;
+                        $payment_breakdown->gross_salary_without_allowance = $gross_salary-$allowances;
+                        $payment_breakdown->gross_salary_with_allowance = $gross_salary;
+                        $payment_breakdown->allowance_total = $allowances;
+                        $payment_breakdown->allowances = [];
+                        $payment_breakdown->nhif_shif_amount = number_format($nhif_amounts,2,".","");
+                        $payment_breakdown->housing_levy = number_format($housing_levy,2,".","");
+                        $payment_breakdown->nssf_amount = number_format($nssf_amount,2,".","");
+                        $payment_breakdown->income_tax = number_format($income_tax,2,".","");
+                        $payment_breakdown->insurance_relief = number_format($nhif_relief,2,".","");
+                        $payment_breakdown->income_tax_relief = number_format($paye_relief,2,".","");
+                        $payment_breakdown->ahl_relief = number_format($ahl_relief,2,".","");
+                        $payment_breakdown->taxable_income = number_format($taxable_income,2,".","");
+                        $payment_breakdown->deductions_total = number_format($deductions,2,".","");
+                        $payment_breakdown->deductions = [];
+                        $payment_breakdown->contributions_before_tax = $effect_year <= 202411 ? ["nssf_amount"] : ["nssf_amount","nhif_shif_amount","housing_levy"];
+                        $payment_breakdown->net_salary = 0;
+                        
+
+                        $net_salary = Net_Salary_Amount($payment_breakdown);
+                        $net_salary."<hr>";
+                        return round($net_salary);
                     }
                 }
-                return $salo_amount;
+                // all salaries
+                $all_salaries = explode(",", $effect_month);
+                $salary_amount = explode(",", $salary_amount);
+                return round($salary_amount[count($salary_amount) - 1]);
             }
         }
         return 0;
@@ -8848,52 +8926,67 @@
     }
 
     function getFirstPaymentAmount($conn2,$staff_id){
+        // get total_paid.
         $total_paid = getTotalSalo($conn2,$staff_id);
-        // get the last month balance
-        $firstpay_record = getFirstPayDate($conn2,$staff_id);
-        $times = explode(":",$firstpay_record);
-        $firstpay_dated = date("Y-m-d",strtotime("01-".$times[0]."-".$times[1]));
-        // get the current balnce, amount and month
+        
+        // last month total amount to pay
         $curr_balance = getCurrentBalTime($conn2,$staff_id);
         $times = explode(":",explode(",",$curr_balance)[0]);
         $last_date_paid = date("Y-m-d",strtotime("01-".$times[0]."-".$times[1]));
-        // echo $last_date_paid;
-        // get the first pay as a date
-        // loop through the dates untill the last paydate to get 
-        // the total amount paid that period and the first payment amount
-        $total_salary = 0;
-        $overrall_salo = 0;
-        $date = addMonthsFinance(1,$firstpay_dated);
-        // echo $date;
-        // if the last paid date is the same as tthe date with the balance the first amount 
+
+        // take the balance minus the last month salary amount to get the amount paid that last month
+        // take the total amount paid 
+        // take the total paid minus the last month amount minus the other fully paid mobnths to get the first payment amount
+        
+        // get the month balance
+        $firstpay_record = getFirstPayDate($conn2,$staff_id);
+        $times = explode(":",$firstpay_record);
+        $firstpay_dated = date("Y-m-d",strtotime("01-".$times[0]."-".$times[1]));
+
         // paid is the balance plus the amount paid
         if ($firstpay_dated == $last_date_paid) {
             $balance = explode(",",$curr_balance);
             return $balance[1] + $total_paid;
         }
-        if($date < $last_date_paid){
-            for(;;){
-                if ($last_date_paid == $date) {
-                    break;
-                }
-                $total_salary+=getSalary($date,$conn2,$staff_id);
-                $date = addMonthsFinance(1,$date);
-            }
-        }
-        $overrall_salo = 0;
-        $overall_date = addMonthsFinance(1,$firstpay_dated);
-        for(;;){
-            if ($last_date_paid < $overall_date) {
-                break;
-            }
-            $overrall_salo+=getSalary($overall_date,$conn2,$staff_id);
-            $overall_date = addMonthsFinance(1,$overall_date);
-        }
-        $last_time_salo = getSalary($last_date_paid,$conn2,$staff_id) - explode(",",$curr_balance)[1];
-        $total_salary+=$last_time_salo;
-        return $total_paid - $total_salary;
 
-        // return 0;
+        // get balance
+        $balance = explode(",",$curr_balance);
+
+        // subtract the last month salary with the balance
+        $last_month_paid_salary = getMySalary($staff_id, $conn2, $last_date_paid);
+        $amount_paid_in_the_last_month = $last_month_paid_salary - $balance[1]*1;
+
+        // how many months paid minus the last month
+        $months_difference = monthly_difference($firstpay_dated, $last_date_paid)*1;
+
+        // get the total to pay
+        $amount_to_pay = 0;
+        // this will omit the first and last month
+        for ($index=1; $index < $months_difference; $index++) { 
+            $month = addMonthTOdate($firstpay_dated, $index);
+            $amount_to_pay += getMySalary($staff_id, $conn2, $month);
+        }
+        $first_salary = $total_paid - ($amount_to_pay + $amount_paid_in_the_last_month);
+        return $first_salary;
+    }
+
+    function monthly_difference($date1,$date2){
+        // Declare and define two dates
+        $date1 = strtotime($date1);
+        $date2 = strtotime($date2);
+        
+        // Formulate the Difference between two dates
+        $diff = abs($date2 - $date1);
+        
+        // To get the year divide the resultant date into
+        // total seconds in a year (365*60*60*24)
+        $years = floor($diff / (365*60*60*24));
+        
+        // To get the month, subtract it with years and
+        // divide the resultant date into
+        // total seconds in a month (30*60*60*24)
+        $months = floor(($diff) / (30*60*60*24));
+        return $months;
     }
 
     function getPaymentBreakdown($conn2,$staff_id,$first_pay_amount,$firstpay_dated){
@@ -8932,7 +9025,7 @@
             }
             // echo $amount_paid." index ".$index." ".$salary_rem."<br>";
             if ($salary_rem < 1) {
-                $salary = getSalary($fdate,$conn2,$staff_id,$first_pay_amount);
+                $salary = getMySalary($staff_id,$conn2,$fdate,$first_pay_amount);
                 if ($index == 0) {
                     $salary = $first_pay_amount;
                 }
@@ -8981,7 +9074,7 @@
                         $salary_rem = 0;
                         $fdate = date("Y-m-d",strtotime($fdate));
                     }
-                    $salary = getSalary($fdate,$conn2,$staff_id);
+                    $salary = getMySalary($staff_id,$conn2,$fdate);
                 }
                 if ($amount_paid > 0) {
                     // echo $amount_paid;
@@ -9532,36 +9625,47 @@ function Nhif_Shif_Amount($gross_salary, $effect_year){
     }
     return 0;
 }
+
+
 function Nssf_Amount($gross_salary, $effect_year) {
+    // Old NSSF rates (before Feb 2014)
     if ($effect_year >= 200001 && $effect_year <= 201501) {
         return 200;
-    }else if ($effect_year >201501 && $effect_year <= 202401) {
+
+    // 2014–2023 (Transitional rates)
+    } else if ($effect_year > 201501 && $effect_year <= 202401) {
         if ($gross_salary <= 6000) {
             return 0.06 * $gross_salary;
-        }else if ($gross_salary > 6000 && $gross_salary <= 18000) {
+        } else if ($gross_salary > 6000 && $gross_salary <= 18000) {
             return 360 + (($gross_salary - 6000) * 0.06);
-        }else if ($gross_salary > 18000) {
-            return 1080;
+        } else {
+            return 1080; // Max cap for that period
         }
-    }else if ($effect_year > 202401 && $effect_year <= 202501) {
+
+    // 2024–Jan 2025 (Enhanced rates phase)
+    } else if ($effect_year > 202401 && $effect_year < 202502) {
         if ($gross_salary <= 7000) {
             return 0.06 * $gross_salary;
-        }else if ($gross_salary > 7000 && $gross_salary <= 36000) {
+        } else if ($gross_salary > 7000 && $gross_salary <= 36000) {
             return 420 + (($gross_salary - 7000) * 0.06);
-        }else if ($gross_salary > 36000) {
-            return 2160;
+        } else {
+            return 2160; // Max cap for that phase
         }
-    }else if ($effect_year > 202501) {
+
+    // Feb 2025 and beyond (latest structure)
+    } else if ($effect_year >= 202502) {
         if ($gross_salary <= 8000) {
             return 0.06 * $gross_salary;
-        }else if ($gross_salary > 8000 && $gross_salary <= 72000) {
+        } else if ($gross_salary > 8000 && $gross_salary <= 72000) {
             return 480 + (($gross_salary - 8000) * 0.06);
-        }else if ($gross_salary > 72000) {
-            return 4320;
+        } else {
+            return 4320; // Max cap for salaries above 72,000
         }
     }
-    return 0;
+
+    return 0; // Default fallback
 }
+
 
 function Housing_Levy($gross_salary, $effect_year) {
     if ($effect_year >= 202402) {
@@ -9569,6 +9673,7 @@ function Housing_Levy($gross_salary, $effect_year) {
     }
     return 0;
 }
+
 function Taxable_Income($gross_salary, $effect_year, $nssf_amount, $nhif_shif_amount, $housing_levy) {
     if ($effect_year >= 202101 && $effect_year <= 202411) {
         $gross_salary -= $nssf_amount;

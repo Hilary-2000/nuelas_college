@@ -1821,6 +1821,7 @@ function checkPayrollStaffDetails() {
 
     if (err == 0) {
         cObj("payrollOverlay").classList.add("hide");
+        breakdownPayments();
     }else{
         cObj("payrollOverlay").classList.remove("hide");
     }
@@ -2075,96 +2076,136 @@ function editSalaries() {
     cObj("allowance_html").innerHTML = "<p class='text-success'>No allowances to display at the moment.</p>";
     // get the salary details
     var datapass = "?salary_details=" + stfid;
-    sendData1("GET", "finance/financial.php", datapass, cObj("salary_infor_br"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                var data = cObj("salary_infor_br").innerText;
-                if (hasJsonStructure(data)) {
-                    data = JSON.parse(data);
-                    var date_now = data.date_today;
-                    var salary_breakdown = data.salary_breakdown;
-                    salary_breakdown = salary_breakdown.replace(/'/g,'"');
-                    if (hasJsonStructure(salary_breakdown)) {
-                        salary_breakdown = JSON.parse(salary_breakdown);
+    sendData1("GET", "finance/financial.php", datapass, cObj("salary_infor_br"), function () {
+        var data = cObj("salary_infor_br").innerText;
+        if (hasJsonStructure(data)) {
+            data = JSON.parse(data);
+            var date_now = data.date_today;
+            var salary_breakdown = data.salary_breakdown;
+            salary_breakdown = salary_breakdown.replace(/'/g,'"');
+            if (hasJsonStructure(salary_breakdown)) {
+                salary_breakdown = JSON.parse(salary_breakdown);
 
-                        // if its an array pick the latest data is the one we need if not the data is the effective one
-                        var obj = Array.isArray(salary_breakdown) ? salary_breakdown[salary_breakdown.length-1]:salary_breakdown;
-                        // change the data to JSON format and get the salary and allowances
-                        // var obj = JSON.parse(data);
-                        // get the allowances
-                        var allowances = JSON.stringify(obj.allowances);
-                        cObj("allowance_holder_edit").innerText = (allowances == '""') ? "" : allowances;
-                        cObj("deductions_holder").innerText = JSON.stringify(obj.deductions);
-                        // set the nssf rates
-                        var nssf_id = obj.nssf_rates;
-                        cObj(nssf_id).selected = true;
+                // if its an array pick the latest data is the one we need if not the data is the effective one
+                var obj = Array.isArray(salary_breakdown) ? salary_breakdown[salary_breakdown.length-1]:salary_breakdown;
+                // change the data to JSON format and get the salary and allowances
+                // var obj = JSON.parse(data);
+                // get the allowances
+                var allowances = JSON.stringify(obj.allowances);
+                cObj("allowance_holder_edit").innerText = (allowances == '""') ? "" : allowances;
+                cObj("deductions_holder").innerText = JSON.stringify(obj.deductions);
+                // set the nssf rates
+                var nssf_id = obj.nssf_rates;
+                cObj(nssf_id).selected = true;
 
-                        // set the reliefs
-                        cObj("nhif_relief_accept").checked = obj.nhif_relief != null ? (obj.nhif_relief == "yes") : false;
-                        cObj("personal_relief_accept").checked = obj.personal_relief != null ? (obj.personal_relief == "yes") : false;
-                        cObj("dedcut_nhif_edit").checked = obj.deduct_nhif != null ? (obj.deduct_nhif == "yes") : false;
-                        cObj("edit_deduct_nhds").checked = obj.housing_levy != null ? (obj.housing_levy == "yes") : false;
-                        cObj("dedcut_paye_edit").checked = obj.deduct_paye != null ? (obj.deduct_paye == "yes") : false;
-                        cObj("accept_ahl_relief").checked = obj.ahl_relief != null ? (obj.ahl_relief == "yes") : false;
+                // set the reliefs
+                cObj("nhif_relief_accept").checked = obj.nhif_relief != null ? (obj.nhif_relief == "yes") : false;
+                cObj("personal_relief_accept").checked = obj.personal_relief != null ? (obj.personal_relief == "yes") : false;
+                cObj("dedcut_nhif_edit").checked = obj.deduct_nhif != null ? (obj.deduct_nhif == "yes") : false;
+                cObj("edit_deduct_nhds").checked = obj.housing_levy != null ? (obj.housing_levy == "yes") : false;
+                cObj("dedcut_paye_edit").checked = obj.deduct_paye != null ? (obj.deduct_paye == "yes") : false;
+                cObj("accept_ahl_relief").checked = obj.ahl_relief != null ? (obj.ahl_relief == "yes") : false;
 
-                        var gross_salary = obj.gross_salary;
-                        cObj("gross_salary_edit").value = gross_salary;
-                        cObj("gross_sa").innerText = gross_salary;
-                        //year 
-                        obj.year = obj.year != null ? obj.year : (obj.effect_month != null ? obj.effect_month.split("-")[1] : new Date().getFullYear())
-                        var all_years = cObj("year_of_effect_paye").children;
-                        for (let index = 0; index < all_years.length; index++) {
-                            const element = all_years[index];
-                            if (element.value == obj.year) {
-                                element.selected = true;
-                                break;
-                            }
-                        }
-
-                        var effect_month = obj.effect_month != null ? obj.effect_month.split("-")[0] : "Jan";
-                        var effect_month_payee = cObj("effect_month_payee").children;
-                        for (let index = 0; index < effect_month_payee.length; index++) {
-                            const element = effect_month_payee[index];
-                            if (element.value == effect_month) {
-                                element.selected = true;
-                                break;
-                            }
-                        }
-
-                        // allowances
-                        if (obj.allowances.length > 0) {
-                            // console.log(obj.allowances);
-                            addAllowances2(obj.allowances);
-                        }
-    
-                        // deductions 
-                        if (obj.deductions != null && obj.deductions != undefined) {
-                            // display the data
-                            displayDeductions(obj.deductions);
-                        }else{
-                            cObj("deduction_windows").innerHTML = "<p class='text-success'>No deductions to display at the moment.</p>";
-                        }
-                        cObj("error_calaculator").innerHTML = "";
-                        breakdownPayments2();
-                    }else{
-                        console.log("Error: Not json format");
-                        breakdownPayments2();
+                var gross_salary = obj.gross_salary;
+                cObj("gross_salary_edit").value = gross_salary;
+                cObj("gross_sa").innerText = gross_salary;
+                //year 
+                obj.year = obj.year != null ? obj.year : (obj.effect_month != null ? obj.effect_month.split("-")[1] : new Date().getFullYear())
+                var all_years = cObj("year_of_effect_paye").children;
+                for (let index = 0; index < all_years.length; index++) {
+                    const element = all_years[index];
+                    if (element.value == obj.year) {
+                        element.selected = true;
+                        break;
                     }
-                } else {
-                    cObj("error_calaculator").innerHTML = "<p class='text-success'>The staff salary tax and deductions is not calculated.You can calculate or leave as is.</p>";
                 }
-                stopInterval(ids);
+
+                var effect_month = obj.effect_month != null ? obj.effect_month.split("-")[0] : "Jan";
+                var effect_month_payee = cObj("effect_month_payee").children;
+                for (let index = 0; index < effect_month_payee.length; index++) {
+                    const element = effect_month_payee[index];
+                    if (element.value == effect_month) {
+                        element.selected = true;
+                        break;
+                    }
+                }
+
+                // allowances
+                if (obj.allowances.length > 0) {
+                    // console.log(obj.allowances);
+                    addAllowances2(obj.allowances);
+                }
+
+                // deductions 
+                if (obj.deductions != null && obj.deductions != undefined) {
+                    // display the data
+                    displayDeductions(obj.deductions);
+                }else{
+                    cObj("deduction_windows").innerHTML = "<p class='text-success'>No deductions to display at the moment.</p>";
+                }
+                cObj("error_calaculator").innerHTML = "";
+                breakdownPayments2();
+            }else{
+                console.log("Error: Not json format");
+                breakdownPayments2();
             }
-        }, 100);
-    }, 200);
+        } else {
+            cObj("error_calaculator").innerHTML = "<p class='text-success'>The staff salary tax and deductions is not calculated.You can calculate or leave as is.</p>";
+        }
+    });
+
+    // get the latest month the user can change to
+    var datapass = "?last_time_paid=true&staff_id="+stfid;
+    sendData1("GET","finance/financial.php", datapass, cObj("max_month_holders"), function () {
+        console.log((cObj("max_month_holders").innerText));
+        // restrict month year selection
+        restrictMonthYearSelection("effect_month_payee", "year_of_effect_paye");
+    })
 }
+
+function restrictMonthYearSelection(month_dropdown, year_dropdown) {
+    // Example of the stored max value string
+    const storedValue = cObj("max_month_holders").innerText;
+    
+    // Convert the string into an array
+    const [maxMonthName, maxYear] = JSON.parse(storedValue);
+    
+    // Convert month name to numeric value (1–12)
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const maxMonth = monthNames.indexOf(maxMonthName) + 1; // Feb -> 2
+
+    // Get dropdown elements (update IDs to your actual element IDs)
+    const monthDropdown = cObj(month_dropdown);
+    const yearDropdown = cObj(year_dropdown);
+
+    // Convert selected values to numbers
+    const selectedMonth = parseInt(monthDropdown.value);
+    const selectedYear = parseInt(yearDropdown.value);
+    
+    // unset everything
+    for (let i = 1; i < yearDropdown.options.length; i++) {
+        yearDropdown.options[i].hidden = false;
+    }
+    for (let i = 1; i < monthDropdown.options.length; i++) {
+        monthDropdown.options[i].hidden = false;
+    }
+
+    if(selectedYear == maxYear){
+        // restrict the month if the year is the same as the max.
+        for (let i = 1; i < monthDropdown.options.length; i++) {
+            const optionMonth = monthNames.indexOf(monthDropdown.options[i].value)+1;
+            monthDropdown.options[i].hidden = optionMonth <= maxMonth;
+        }
+    }
+
+    // Restrict years beyond the maximum
+    for (let i = 1; i < yearDropdown.options.length; i++) {
+        const optionYear = parseInt(yearDropdown.options[i].value);
+        yearDropdown.options[i].hidden = optionYear < maxYear;
+    }
+}
+
 function showPaymentwin() {
     let id = this.id.substr(4);
     cObj("viewEnrolledPay").classList.add("hide");
@@ -3529,6 +3570,7 @@ function breakdownPayments() {
         "contributions_before_tax": effect_year <= 202411 ? ["nssf_amount"] : ["nssf_amount","nhif_shif_amount","housing_levy"],
         "net_salary": 0
     }
+    console.log(payment_breakdown);
     // GROSS SALARY
     // ALLOWANCES
     // CONTRIBUTION BEFORE TAX
@@ -4154,6 +4196,12 @@ cObj("personal_relief").onchange = function () {
 cObj("NHIF_relief").onchange = function () {
     breakdownPayments();
 }
+cObj("AHL_relief_checker").onchange = function () {
+    breakdownPayments();
+}
+cObj("deduct_nhds").onchange = function () {
+    breakdownPayments();
+}
 cObj("nssf_rates").onchange = function () {
     breakdownPayments();
 }
@@ -4260,6 +4308,14 @@ cObj("dedcut_paye_edit").onchange = function () {
 }
 cObj("dedcut_nhif_edit").onchange = function () {
     breakdownPayments2();
+}
+cObj("year_of_effect_paye").onchange = function () {
+    breakdownPayments2();
+    restrictMonthYearSelection("effect_month_payee", "year_of_effect_paye");
+}
+cObj("effect_month_payee").onchange = function () {
+    breakdownPayments2();
+    restrictMonthYearSelection("effect_month_payee", "year_of_effect_paye");
 }
 cObj("year_of_effect_paye").onchange = function () {
     breakdownPayments2();

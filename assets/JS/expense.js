@@ -54,6 +54,7 @@ function getExpensesNDisplay(student_data) {
             col.push(element['exp_sub_category']);
             col.push(element['approval_status']);
             col.push(element['approval_comment']);
+            col.push(element['record_type']);
             // var col = element.split(":");
             rowsColStudents_expenses.push(col);
         }
@@ -121,6 +122,13 @@ function editExpense() {
         cObj("edit_document_number").value = data[13];
         cObj("reason_for_payment_decline").innerText = data[17] != null ? (data[17].length > 0 ? data[17] : "Reason not stated!") : "Reason not stated!";
         console.log(data);
+        if(data[18] == "Supplier Payment"){
+            cObj("save_expense_details").classList.add("hide");
+            cObj("no-edit-supplier-details").classList.remove("hide");
+        }else{
+            cObj("save_expense_details").classList.remove("hide");
+            cObj("no-edit-supplier-details").classList.add("hide");
+        }
         
         // set the expense activity
         var edit_expense_cash_activity = cObj("edit_expense_cash_activity").children;
@@ -152,7 +160,7 @@ function editExpense() {
         }
 
         // send data to database
-        var datapass = "getExpenseCategories=true";
+        var datapass = "getExpenseCategories=true&expense_value="+data[12];
         sendDataPost("POST","ajax/administration/admissions.php",datapass,cObj("show_expense_category"),cObj("expense_cat_egories"));
         setTimeout(() => {
             var timeout = 0;
@@ -206,7 +214,7 @@ function displayRecord_expenses(start, finish, arrays) {
         var counter = start+1;
         for (let index = start; index < finish; index++) {
             var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" title="Approved">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" title="Not-Approved">-A</small>' : '<small class="badge bg-danger" title="Payment Declined">-A</small>');
-            tableData += "<tr><input type='hidden' id='data_expenses"+index+"' value='"+JSON.stringify(arrays[index])+"'><td>"+arrays[index][8]+" "+approval_status+"</td><td>"+arrays[index][2]+"</td><td>"+arrays[index][1]+"</td><td>Kes "+arrays[index][0]+"</td><td class='text-center'>"+ (arrays[index][13] != null ? arrays[index][13] : "-") +"</td><td>"+arrays[index][6]+" @ "+arrays[index][4]+"</td><td><span class='link edit_expense' id='edit_expense"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
+            tableData += "<tr><input type='hidden' id='data_expenses"+index+"' value='"+JSON.stringify(arrays[index])+"'><td>"+arrays[index][8]+" "+approval_status+"</td><td>"+arrays[index][2]+"</td><td>"+arrays[index][1]+"</td><td>Kes "+arrays[index][0]+"</td><td class='text-center'>"+ (arrays[index][13] != null ? arrays[index][13] : "-") +"</td><td>"+arrays[index][6]+"</td><td><span class='link edit_expense' id='edit_expense"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
             counter++;
         }
     }else{
@@ -214,7 +222,7 @@ function displayRecord_expenses(start, finish, arrays) {
         var counter = start+1;
         for (let index = start; index < total; index++) {
             var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" title="Approved">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" title="Not-Approved">-A</small>' : '<small class="badge bg-danger" title="Payment Declined">-A</small>');
-            tableData += "<tr><input type='hidden' id='data_expenses"+index+"' value='"+JSON.stringify(arrays[index])+"'><td>"+arrays[index][8]+" "+approval_status+"</td><td>"+arrays[index][2]+"</td><td>"+arrays[index][1]+"</td><td>Kes "+arrays[index][0]+"</td><td class='text-center'>"+ (arrays[index][13] != null ? arrays[index][13] : "-") +"</td><td>"+arrays[index][6]+" @ "+arrays[index][4]+"</td><td><span class='link edit_expense' id='edit_expense"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
+            tableData += "<tr><input type='hidden' id='data_expenses"+index+"' value='"+JSON.stringify(arrays[index])+"'><td>"+arrays[index][8]+" "+approval_status+"</td><td>"+arrays[index][2]+"</td><td>"+arrays[index][1]+"</td><td>Kes "+arrays[index][0]+"</td><td class='text-center'>"+ (arrays[index][13] != null ? arrays[index][13] : "-") +"</td><td>"+arrays[index][6]+"</td><td><span class='link edit_expense' id='edit_expense"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
             counter++;
         }
         fins = total;

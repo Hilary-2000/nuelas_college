@@ -1,3 +1,7 @@
+06th Oct 2025 12:08:25PM : Revenue "New Revenue" has been added successfully! - {ANN AKOTCH}
+06th Oct 2025 08:18:29AM : Expense "New Bike" uploaded successfully! - {ANN AKOTCH}
+06th Oct 2025 08:17:26AM : Expense "1200" uploaded successfully! - {ANN AKOTCH}
+06th Oct 2025 08:06:53AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 30th Sep 2025 21:22:48PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
 30th Sep 2025 21:21:55PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
 30th Sep 2025 21:20:59PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}

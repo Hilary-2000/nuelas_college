@@ -2931,6 +2931,7 @@ function checkPresnt($array, $string){
 
                     <input type="hidden" id="expense_ids_in">
                     <div class="btns">
+                        <p class="border border-secondary text-success p-1" id="no-edit-supplier-details">You can`t edit a supplier payment from here!</p>
                         <button type="button" id="save_expense_details">Update Expense</button>
                         <button type="button" id="close_edit_expense_window">Close</button>
                     </div>

@@ -4538,7 +4538,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 while($row = $result->fetch_assoc()){
                     // get how much is left in the budget
                     // if its less that zero you cant user it.
-                    $selected = "SELECT SUM(`exp_amount`) AS 'expense_amount' FROM `expenses` WHERE `exp_category` = '".$row['expense_id']."' AND `expense_date` BETWEEN '".$row['start_date']."' AND '".$row['end_date']."'";
+                    $selected = "SELECT SUM(`exp_amount`) AS 'expense_amount' FROM `expenses` WHERE `exp_category` = '".$row['expense_id']."' AND `expense_date` BETWEEN '".$row['start_date']."' AND '".$row['end_date']."' AND approval_status != '2'";
                     $statement = $conn2->prepare($selected);
                     $statement->execute();
                     $res = $statement->get_result();
@@ -7574,6 +7574,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
             echo $data_to_display;
         }elseif(isset($_POST['getExpenseCategories'])){
+            $expense_value = isset($_POST['expense_value']) ? $_POST['expense_value'] : "";
             $select = "SELECT * FROM `expense_category`;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
@@ -7582,7 +7583,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             if($result){
                 $data_to_display = "<select class='form-control border border-dark rounded w-75' name='edit_expense_category' id='edit_expense_category'><option value='' id='main_sele' hidden >Select..</option>";
                 while($row = $result->fetch_assoc()){
-                    $data_to_display .= "<option class='exp_cats_exp' value='".$row['expense_id']."'>".ucwords(strtolower($row['expense_name']))."</option>";
+                    $data_to_display .= "<option class='exp_cats_exp' ".($expense_value == $row['expense_id'] ? "selected" : "")." value='".$row['expense_id']."'>".ucwords(strtolower($row['expense_name']))."</option>";
                 }
                 $data_to_display.="</select>";
             }

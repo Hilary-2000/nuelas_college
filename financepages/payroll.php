@@ -146,9 +146,9 @@
                                             <label class="form-control-label" for="nssf_rates"><i>- NSSF Rates:</i></label>
                                             <select name="nssf_rates" id="nssf_rates" class="form-control">
                                                 <option value="" hidden>Select Rates</option>
-                                                <option value="teir_1">Teir 1 (Ksh 360)</option>
-                                                <option selected value="teir_1_2">Teir 1 & 2 (Ksh 1080)</option>
-                                                <option value="teir_old">Old Rates (Ksh 200)</option>
+                                                <option value="teir_1">Teir 1</option>
+                                                <option selected value="teir_1_2">Teir 1 & 2</option>
+                                                <option value="teir_old">Old Rates</option>
                                                 <option value="none">None</option>
                                             </select>
                                             <hr>
@@ -500,9 +500,9 @@
                                         <label class="form-control-label" for="nssf_rates_edit"><i>- NSSF Rates:</i></label>
                                         <select name="nssf_rates_edit" id="nssf_rates_edit" class="form-control">
                                             <option value="" hidden>Select Rates</option>
-                                            <option id="teir_1" value="teir_1">Teir 1 (Ksh 360)</option>
-                                            <option id="teir_1_2" value="teir_1_2">Teir 1 & 2 (Ksh 1080)</option>
-                                            <option id="teir_old" value="teir_old">Old Rates (Ksh 200)</option>
+                                            <option id="teir_1" value="teir_1">Teir 1</option>
+                                            <option id="teir_1_2" value="teir_1_2">Teir 1 & 2</option>
+                                            <option id="teir_old" value="teir_old">Old Rates</option>
                                             <option id="none" value="none">None</option>
                                         </select>
                                     </div>
@@ -561,6 +561,7 @@
                         <div class="container my-2">
                             <h6 class="text-center"><strong>Calculation breakdown</strong></h6>
                             <div class="row">
+                                <p id="max_month_holders" class="d-none">[Jan:2018]</p>
                                 <div class="col-md-8">
                                     <p><i>- Gross Salary</i></p>
                                 </div>

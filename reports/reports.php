@@ -11844,7 +11844,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         }
 
         // start with operating activities
-        $select = "SELECT `revenue_category` ,COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `reportable_status` = '1' AND `cash_flow_activities` = '1' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
+        $select = "SELECT `revenue_category`, COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `cash_flow_activities` = '1' AND `reportable_status` = '1' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
         
         // current year operating activities
         $stmt = $conn2->prepare($select);
@@ -11876,7 +11876,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the fees for this year
         $student_fees = "SELECT COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `finance` WHERE `date_of_transaction` BETWEEN ? AND ?";
         $stmt = $conn2->prepare($student_fees);
-        $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
+        $start_date = date("Y-m-d",strtotime($curr_year[0]));
+        $end_date = date("Y-m-d",strtotime($curr_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -11898,10 +11900,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
         // operating revenue previous year
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+        $start_date = date("Y-m-d",strtotime($prev_year[0]));
+        $end_date = date("Y-m-d",strtotime($prev_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
         $stmt->execute();
         $result = $stmt->get_result();
         $prev_operating_activities = [];
+
         // $max_id = 0;
         if ($result) {
             while($row = $result->fetch_assoc()){
@@ -11923,7 +11928,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
         // get the previous year student fees
         $stmt = $conn2->prepare($student_fees);
-        $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+        $start_date = date("Y-m-d",strtotime($prev_year[0]));
+        $end_date = date("Y-m-d",strtotime($prev_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -11946,7 +11953,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
         // operating revenue previous year
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+        $start_date = date("Y-m-d",strtotime($prev_year_1[0]));
+        $end_date = date("Y-m-d",strtotime($prev_year_1[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
         $stmt->execute();
         $result = $stmt->get_result();
         $prev_operating_activities_1 = [];
@@ -11971,7 +11980,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
         // get the previous year student fees
         $stmt = $conn2->prepare($student_fees);
-        $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+        $start_date = date("Y-m-d",strtotime($prev_year[0]));
+        $end_date = date("Y-m-d",strtotime($prev_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -11994,9 +12006,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // echo $fees_id;
 
         // start with investing activities
-        $select = "SELECT `revenue_category` ,COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `reportable_status` = '1' AND `cash_flow_activities` = '2' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
+        $select = "SELECT `revenue_category` ,COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `cash_flow_activities` = '2' AND `reportable_status` = '1' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
         
         // current year investing activities
+        // echo json_encode($curr_year);
         $stmt = $conn2->prepare($select);
         $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
         $stmt->execute();
@@ -12070,7 +12083,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         }
 
         // start with financing activities
-        $select = "SELECT `revenue_category` ,COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `reportable_status` = '1' AND `cash_flow_activities` = '3' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
+        $select = "SELECT `revenue_category` ,COUNT(*) AS 'Records', SUM(`amount`) AS 'Total' FROM `school_revenue` WHERE `cash_flow_activities` = '3' AND `reportable_status` = '1' AND `date_recorded` BETWEEN ? AND ? GROUP BY `revenue_category`;";
         
         // current year financing activities
         $stmt = $conn2->prepare($select);
@@ -12148,9 +12161,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the operating expenses of the previous years and this year
         $curr_year_operating_expenses = [];
         $operating_expense_categories = [];
-        $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '1' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+        // $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '1' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+        $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount'  FROM `all_expenses` WHERE `expense_categories` = '1' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
+        $start_date = date("Y-m-d", strtotime($curr_year[0]));
+        $end_date = date("Y-m-d", strtotime($curr_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -12165,7 +12181,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the previoud years
         $prev_year_operating_expenses = [];
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+        $start_date = date("Y-m-d", strtotime($prev_year[0]));
+        $end_date = date("Y-m-d", strtotime($prev_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -12180,7 +12199,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the second previous years
         $prev_year_operating_expenses_1 = [];
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+        $start_date = date("Y-m-d", strtotime($prev_year_1[0]));
+        $end_date = date("Y-m-d", strtotime($prev_year_1[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -12196,9 +12218,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the operating expenses of the previous years and this year
         $curr_year_investing_expenses = [];
         $investing_expense_categories = [];
-        $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '2' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+        // $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '2' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+        $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount'  FROM `all_expenses` WHERE `expense_categories` = '2' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
+        $start_date = date("Y-m-d", strtotime($curr_year[0]));
+        $end_date = date("Y-m-d", strtotime($curr_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -12213,7 +12239,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the previoud years
         $prev_year_investing_expenses = [];
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+        $start_date = date("Y-m-d", strtotime($prev_year[0]));
+        $end_date = date("Y-m-d", strtotime($prev_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -12228,7 +12257,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the previoud years
         $prev_year_investing_expenses_1 = [];
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+        $start_date = date("Y-m-d", strtotime($prev_year_1[0]));
+        $end_date = date("Y-m-d", strtotime($prev_year_1[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -12243,9 +12275,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the operating expenses of the previous years and this year
         $curr_year_financing_expenses = [];
         $financing_expense_categories = [];
-        $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '3' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+        // $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount' FROM `expenses`  WHERE `expense_categories` = '3' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
+        $select = "SELECT `exp_category`, COUNT(*) AS 'count_expense_category', SUM(`exp_amount`) AS 'expense_amount'  FROM `all_expenses` WHERE `expense_categories` = '3' AND `expense_date` BETWEEN ? AND ? GROUP BY `exp_category`";
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
+        $start_date = date("Y-m-d", strtotime($curr_year[0]));
+        $end_date = date("Y-m-d", strtotime($curr_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$curr_year[0],$curr_year[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -12260,7 +12296,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the previoud years
         $prev_year_financing_expenses = [];
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
+        $start_date = date("Y-m-d", strtotime($prev_year[0]));
+        $end_date = date("Y-m-d", strtotime($prev_year[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$prev_year[0],$prev_year[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -12275,7 +12314,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // get the previoud years
         $prev_year_financing_expenses_1 = [];
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
+        $start_date = date("Y-m-d", strtotime($prev_year_1[0]));
+        $end_date = date("Y-m-d", strtotime($prev_year_1[1]));
+        $stmt->bind_param("ss",$start_date,$end_date);
+        // $stmt->bind_param("ss",$prev_year_1[0],$prev_year_1[1]);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -15013,7 +15055,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $school_contact = $school_info['school_contact'];
         $website_name = $school_info['website_name'];
 
-        $pdf->Image($school_profile_image, 5, 10, 40, 40);
+        $pdf->Image($school_profile_image, 5, 10, 20, 20);
         // $pdf->Image($pdf->arm_of_gov, 100, 15, 12, 12);
         $pdf->SetFont('Helvetica', 'B', 14);
         $pdf->SetFillColor(100, 100, 100);
@@ -16385,7 +16427,7 @@ function get_note_10($conn2)
             for ($index = 0; $index < count($student_data); $index++) {
                 // get fees to pay by the student
                 $feespaidbystud = getFeespaidByStudent($student_data[$index]['adm_no'], $conn2);
-                $fees_paid = ($feespaidbystud);
+                $fees_paid = round($feespaidbystud);
                 $balanced = getBalanceReports($student_data[$index]['adm_no'], $term, $conn2);
                 $balance = ($balanced * 1);
 
