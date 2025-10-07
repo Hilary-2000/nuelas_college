@@ -19,6 +19,7 @@
                 </div>
                     <p id="my_information_inner"></p>
                     <p class="block_btn" id="apply_leave_staff">Apply Leave <i class="fas fa-send"></i></p>
+                    <p class="block_btn" id="my_payroll_management">Payroll & Advances<i class="fas fa-send"></i></p>
                 <div class="basic_details">
                     <div class="titles">
                         <p>Basic Information</p>

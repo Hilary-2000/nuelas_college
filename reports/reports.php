@@ -14416,7 +14416,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $pdf2->Ln();
                 $pdf2->Cell(190, 5, "", 'B', 0, 'L', 0);
                 $pdf2->Ln(10);
-                // earnings
+                
                 // get the staff earnings and allowances
                 $pdf2->Ln();
                 $pdf2->SetFont('Helvetica', 'BU', 10);
@@ -14428,6 +14428,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $header = array("No.", "Earnings & Reliefs", "Amount", "Working Days", "Total");
                 $w = array(15, 70, 30, 30, 30);
                 $pdf2->salaryTables($header, $earnings, $w);
+                
                 // get the staff deductions
                 $pdf2->Ln(10);
                 $pdf2->SetFont('Helvetica', 'BU', 10);
@@ -17672,7 +17673,7 @@ function getSalaryDeductionDetails($conn2, $staff_id, $number, $selected_date = 
             // NSSF
             $nssf_rates = $salary_infor->nssf_rates;
             $nssf_contribution = 0;
-            if (strlen($nssf_rates) > 0) {
+            if (strlen($nssf_rates) > 0 && $nssf_rates != "none") {
                 $nssf_contribution = Nssf_Amount_Report($gross_salary, $effect_year);
                 array_push($deductions, array($number, "NSSF Contribution", $nssf_contribution, "30 Day(s)", $nssf_contribution));
                 $number++;

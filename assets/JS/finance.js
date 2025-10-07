@@ -6690,3 +6690,42 @@ cObj("expense_type_edit").onchange = function () {
         }
     }
 }
+
+function getMyPayrollInformation() {
+    var datapass = "?my_payslip_information=true";
+    sendData2("GET", "finance/financial.php", datapass, cObj("monthly_payslip_holder"), cObj("loadings"), function () {
+        // set the datatable
+        if(cObj("my_payslip_history") != undefined){
+            $(document).ready(function() {
+                $('#my_payslip_history').DataTable({
+                    pageLength: 20,
+                    lengthMenu: [5, 10, 20, 50, 100] // 👈 Options in the “Show entries” dropdown
+                });  // Just one line!
+            });
+            // set tool tip
+            initiateTooltip();
+        }
+    });
+}
+
+cObj("monthly-payslip-tab").onclick = function () {
+    // get my payroll information
+    getMyPayrollInformation();
+}
+
+cObj("advance-history-tab").onclick = function () {
+    var datapass = "?get_advances_staff=true";
+    sendData2("GET", "finance/financial.php", datapass, cObj("my_advance_application_history"), cObj("loadings"), function () {
+        // set the datatable
+        if(cObj("my_advance_table") != undefined){
+            $(document).ready(function() {
+                $('#my_advance_table').DataTable({
+                    pageLength: 20,
+                    lengthMenu: [5, 10, 20, 50, 100] // 👈 Options in the “Show entries” dropdown
+                });  // Just one line!
+            });
+            // set tool tip
+            initiateTooltip();
+        }
+    });
+}

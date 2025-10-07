@@ -324,6 +324,19 @@ cObj("apply_leave_staff").onclick = function () {
     cObj("to_leaves_date").value = "";
     cObj("leave_comments").value = "";
 }
+
+// get my payroll information
+cObj("my_payroll_management").onclick = function () {
+    hideWindow();
+    unselectbtns();
+    // addselected(this.id);
+    cObj("staff_payroll_information").classList.remove("hide");
+    removesidebar();
+
+    // get the staff payroll information
+    getMyPayrollInformation();
+}
+
 cObj("update_personal_profile").onclick = function () {
     hideWindow();
     unselectbtns();

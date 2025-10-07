@@ -6,7 +6,7 @@
         <div class="top1">
             <div class="row">
                 <div class="col-md-9">
-                    <p>Call register</p>
+                    <p>Leave Management</p>
                 </div>
                 <div class="col-md-3">
                     <!-- <span id="student_attendance_tutorial" class="link"><i class="fas fa-play"></i> Tutorial</span> -->

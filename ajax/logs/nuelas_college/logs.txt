@@ -1,3 +1,7 @@
+07th Oct 2025 20:08:05PM : JAMES WAKILI successfully logged into the system as Attendance Taker - {JAMES WAKILI}
+07th Oct 2025 18:34:54PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+07th Oct 2025 17:49:09PM : JAMES WAKILI successfully logged into the system as Attendance Taker - {JAMES WAKILI}
+07th Oct 2025 17:48:59PM : Changed the password of James Wakili successfully! - {ANN AKOTCH}
 07th Oct 2025 10:25:05AM : Expense "New Tissue" uploaded successfully! - {ANN AKOTCH}
 07th Oct 2025 09:21:45AM : Expense "School Bus" uploaded successfully! - {ANN AKOTCH}
 07th Oct 2025 07:59:10AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}

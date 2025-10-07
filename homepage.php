@@ -531,6 +531,7 @@ function checkPresnt($array, $string){
             include("administration/promote.php");
             include("administration/human_resource.php");
             include("administration/leaves.php");
+            include("administration/staff_payroll_advance.php");
             include("financepages/payfees.php");
             include("financepages/credit_note.php");
             include("financepages/record_school_income.php");

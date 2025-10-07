@@ -1,15 +1,7 @@
 [
     {
-        "gross_salary": "37143",
-        "personal_relief": "yes",
-        "nhif_relief": "no",
-        "deduct_paye": "yes",
-        "deduct_nhif": "yes",
-        "nssf_rates": "teir_1_2",
-        "allowances": "",
-        "deductions": "",
-        "housing_levy": "yes",
-        "ahl_relief": "no",
-        "effect_month": "Jan-2025"
+        "paydate": "20251007174216",
+        "payment_for": "Oct:2025",
+        "amount_paid": 5000
     }
 ]

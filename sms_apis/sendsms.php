@@ -244,7 +244,7 @@
                     <p id="out_put"></p>
                 </div>
             </div>
-            <div class="setting_s">
+            <div class="setting_s d-none">
                 <h6 style='text-align:center;color:cadetblue;' ><u>Send staff notice/Message.</u> </h6>
                 <div class="conts">
                     <p><strong>Note:</strong></p>

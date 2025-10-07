@@ -1854,6 +1854,108 @@
                     }
                 }
             }
+        }elseif(isset($_GET['my_payslip_information'])){
+            $staff_payslip_infor = null;
+            $staff_id = $_SESSION['userids'];
+            $select = "SELECT * FROM payroll_information WHERE staff_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $staff_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $payroll_information = null;
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $payroll_information = $row;
+                }
+            }
+            // echo json_encode(getSalaryDetails($conn2, $staff_id));
+
+            if (empty($payroll_information)) {
+                echo "<p class='text-danger border border-danger p-1'>You  have not been onrolled on payroll!</p>";
+                return;
+            }
+
+            // create the table
+            // rows are determined by the date of enrollment
+            $start_date = "01-".explode(":",explode(",", $payroll_information['effect_month'])[0])[0]."-".explode(":",explode(",", $payroll_information['effect_month'])[0])[1];
+            $start_date = date("Ymd", strtotime($start_date));
+            $total_paid = getTotalSalo($conn2,$staff_id);
+            $index = 1;
+            $year = isset($_GET['year']) ? $_GET['year'] : date("Y");
+            $salary_data = [];
+            do{
+                $salary = getMySalary($staff_id, $conn2, date("Y-m-d", strtotime($start_date)));
+                $this_month_paid = $salary;
+                $this_month_balance = 0;
+                $cleared = true;
+                if($total_paid < $this_month_paid){
+                    $this_month_paid = $total_paid;
+                    $this_month_balance = $salary - $total_paid;
+                    $total_paid = 0;
+                    $cleared = false;
+                }else{
+                    $total_paid -= $salary;
+                }
+                $advance_salary = monthly_deduction_amount($staff_id,$conn2,$start_date)*1;
+                $allowances_bonus = getAllowanceBonusRelief($staff_id, $conn2, date("Y-m-d",strtotime($start_date)));
+                array_push($salary_data, array(
+                    "salary" => $salary,
+                    "month" => $start_date,
+                    "paid" => $this_month_paid,
+                    "balance" => $this_month_balance,
+                    "status" => $cleared,
+                    "advance" => $advance_salary,
+                    "allowances"=>$allowances_bonus[0],
+                    "relief"=>$allowances_bonus[1],
+                    "deductions"=>$allowances_bonus[2],
+                ));
+                // echo $start_date." - ".$salary." - $this_month_paid<br>";
+                $index++;
+                $start_date = addMonthTOdate($start_date, 1);
+                $start_date = date("Ymd", strtotime($start_date))*1;
+            }while($start_date < date("Ymd"));
+
+            // create the table
+            $year = isset($_GET['year']) ? $_GET['year'] : date("Y");
+            $table = "<table class='table' id='my_payslip_history'><thead><tr><th>No.</th><th>Month</th><th>Net Salary Amount</th><th>Deductions</th><th>Status</th><th>Balance</th><th>Action</th></tr></thead>";
+            $got_paid = false;
+            for($index = 1; $index <= 12; $index++){
+                $month = $year."".($index<=9?"0".$index:$index)."01";
+                $present = false;
+                $data = null;
+                foreach($salary_data as $salary){
+                    if($month == $salary['month']){
+                        $present = true;
+                        $data = $salary;
+                        break;
+                    }
+                }
+                if(!empty($data)){
+                    $deductions = $data['advance'] + array_sum(array_map(function($item) {
+                                    return array_values($item)[0]; // get the numeric value
+                                }, $data['deductions']));
+                    $tool_tip = "";
+                    foreach ($data['deductions'] as $deduction) {
+                        foreach ($deduction as $name => $value) {
+                            $tool_tip .= "<b>$name:</b> Kes ".number_format($value)."<br>";
+                        }
+                    }
+                    if($data['advance'] > 0){
+                        $tool_tip .= "<b>Advance: </b>Kes ". number_format($data['advance']);
+                    }
+                    $got_paid = true;
+                    $status = $data['status'] ? "<p class='text-success'>Cleared!</p>" : "<p class='text-secondary'>Pending!</p>";
+                    $table.="<tr><td>".$index."</td><td>".date("M Y", strtotime($month))."</td><td>Kes ".number_format($data['salary']-$data['advance'])."</td><td data-bs-toggle='tooltip' data-bs-placement='top' data-bs-html='true' title='".$tool_tip."'>Kes ".number_format($deductions)."</td><td>".$status."</td><td>Kes ".number_format($data['balance'])."</td><td>".($data['status'] ? "<a class='btn btn-sm btn-primary text-white' target='_blank' href='/nuelas_college/reports/reports.php?generate_slip=true&staff_slip=$staff_id&selected_month=".date("Y-m-d", strtotime($month))."'><i class='fa fa-print'></i> Payslip</a>" : "<p class='text-secondary'>Pending!</p>")."</td></tr>";
+                }else{
+                    if($got_paid){
+                        $table.="<tr><td>".$index."</td><td>".date("M Y", strtotime($month))."</td><td><span class='text-secondary'>Not-processed Yet</span></td><td><span class='text-secondary'>Not-processed Yet</span></td><td><span class='text-secondary'>Not-processed Yet</span></td><td><span class='text-secondary'>Not-processed Yet</span></td><td><span class='text-secondary'>Not-processed Yet</span></td></tr>";
+                    }else{
+                        $table.="<tr><td>".$index."</td><td>".date("M Y", strtotime($month))."</td><td><span class='text-secondary'>Not-enrolled</span></td><td><span class='text-secondary'>Not-enrolled</span></td><td><span class='text-secondary'>Not-enrolled</span></td><td><span class='text-secondary'>Not-enrolled</span></td><td><span class='text-secondary'>Not-enrolled</span></td></tr>";
+                    }
+                }
+            }
+            $table.="</table>";
+            echo $table;
         }elseif (isset($_GET['date_display'])) {
             $select = "SELECT `exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time` FROM `expenses` WHERE `expense_date` = ?";
             $stmt = $conn2->prepare($select);
@@ -4653,7 +4755,8 @@
                 echo "<p class='text-danger border border-danger my-2'>An error has occured !</p>";
             }
         }elseif(isset($_GET['get_advances'])){
-            $select = "SELECT * FROM `advance_pay` ORDER BY `advance_id` DESC";
+            $str = isset($_GET['staff_id']) && !empty($_GET['staff_id']) ? "WHERE employees_id='".$_GET['staff_id']."'" : "";
+            $select = "SELECT * FROM `advance_pay` ".$str." ORDER BY `advance_id` DESC";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -4666,6 +4769,33 @@
                 }
             }
             echo json_encode($staff_information);
+        }elseif(isset($_GET['get_advances_staff'])){
+            $select = "SELECT * FROM `advance_pay` WHERE employees_id = '".$_SESSION['userids']."' ORDER BY `advance_id` DESC";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $table = "<table class='table' id='my_advance_table'><thead><tr><th>No.</th><th>Employee Name</th><th>Amount</th><th>Date Issued</th><th>Installments</th><th>Balance</th></tr></thead><tbody>";
+            if ($result) {
+                $index = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $employee_name = ucwords(strtolower(getStaffName($conn,$row['employees_id'])));
+                    $row['date_taken'] = date("D dS M Y",strtotime($row['date_taken']));
+                    $payment_breakdown = $row['payment_breakdown'];
+                    $tooltip_payment = "";
+                    if(isJson($payment_breakdown)){
+                        $payment_breakdown = json_decode($payment_breakdown, true);
+                        $index_2 = 1;
+                        foreach($payment_breakdown as $payment){
+                            $tooltip_payment .= "<small>$index_2). ".$payment['payment_for']." - Kes ".number_format($payment['amount_paid']). " (".date("dS M Y", strtotime($payment['paydate'])).")</small><hr class=\"p-0 m-0\" >";
+                            $index_2++;
+                        }
+                    }
+                    $table.="<tr><td>$index</td><td>$employee_name</td><td>Kes ".number_format($row['amount'])."</td><td>".date("dS M Y", strtotime($row['date_taken']))."</td><td data-bs-toggle='tooltip' data-bs-placement='top' data-bs-html='true' title='".$tooltip_payment."'>".$row['installments']." Installment(s)</td><td>Kes ".number_format($row['balance_left'])."</td></tr>";
+                    $index++;
+                }
+            }
+            $table."</tbody></table>";
+            echo $table;
         }elseif (isset($_GET['get_nssf_reports'])) {
             // get staff 
             $selected_month = $_GET['selected_month'];
