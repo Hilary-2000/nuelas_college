@@ -5324,7 +5324,7 @@ function display_bills_n_payments(supplier_id) {
 }
 
 function display_suppliers_bill(bills) {
-    var data_to_display = "<table class='table'><tr><th>No.</th><th>Bill Name</th><th>Amount</th><th>Date Registered</th><th>Action</th></tr>";
+    var data_to_display = "<table class='table' id='supplier_bill_table'><thead><tr><th>No.</th><th>Bill Name</th><th>Amount</th><th>Date Registered</th><th>Action</th></tr></thead><tbody>";
     if (bills.length > 0) {
         for (let index = 0; index < bills.length; index++) {
             const element = bills[index];
@@ -5336,7 +5336,7 @@ function display_suppliers_bill(bills) {
             data_to_display+="<td><span class='link supplier_bills' id='supplier_bills_"+element.bill_id+"'><i class='fas fa-eye'></i> View</span></td>";
             data_to_display+="</tr>";
         }
-        data_to_display+="</table>";
+        data_to_display+="</tbody></table>";
     }else{
         data_to_display = "<p class='text-danger text-center'>Supplier bills not present!</p>";
     }
@@ -5349,6 +5349,12 @@ function display_suppliers_bill(bills) {
     for (let index = 0; index < supplier_bills.length; index++) {
         const element = supplier_bills[index];
         element.addEventListener("click",edit_supplier_bills);
+    }
+
+    if (cObj("supplier_bill_table") != undefined) {
+        $(document).ready(function() {
+            $('#supplier_bill_table').DataTable();  // Just one line!
+        });
     }
 }
 
@@ -5492,11 +5498,11 @@ cObj("close_edit_supplier_bill").onclick = function () {
 }
 
 function display_suppliers_payments(payments) {
-    var data_to_display = "<table class='table'><tr><th>No.</th><th>Paid Amount</th><th>Date Paid</th><th>Action</th></tr>";
+    var data_to_display = "<table class='table' id='supplier_bill_payments_table'><thead><tr><th>No.</th><th>Paid Amount</th><th>Date Paid</th><th>Action</th></tr></thead><tbody>";
     if (payments.length > 0) {
         for (let index = 0; index < payments.length; index++) {
             const element = payments[index];
-            var status = element.approval_status == 1 ? "<span class='badge bg-success' title='Payment Approved'>A</span>" : (element.approval_status == 0 ? "<span class='badge bg-warning' title='Payment Not Approved'>-A</span>" : "<span class='badge bg-danger' title='Payment Declined'>-A</span>");
+            var status = element.approval_status == 1 ? "<span class='badge bg-success'  data-bs-toggle='tooltip' data-bs-placement='top' title='Approved by "+element.fullname+"'>A</span>" : (element.approval_status == 0 ? "<span class='badge bg-warning'  data-bs-toggle='tooltip' data-bs-placement='top' title='Payment Not Approved'>-A</span>" : "<span class='badge bg-danger'  data-bs-toggle='tooltip' data-bs-placement='top' title='Payment Declined'>-A</span>");
             var print_enable = element.approval_status == 1 ? "" : "hide";
             var encodedValue = encodeURIComponent(JSON.stringify(element)).replace(/'/g, '%27');
             data_to_display+="<tr>";
@@ -5506,7 +5512,7 @@ function display_suppliers_payments(payments) {
             data_to_display+="<td><span class='link supplier_payment' id='supplier_payment_"+element.payment_id+"'><i class='fas fa-eye'></i> View</span> <br><a class='"+print_enable+" link text-sm' target='_blank' href='reports/reports.php?supplier_payment_id="+element.payment_id+"'><i class='fas fa-print'></i> Print</a></td>";
             data_to_display+="</tr>";
         }
-        data_to_display+="</table>";
+        data_to_display+="</tbody></table>";
     }else{
         data_to_display = "<p class='text-danger text-center'>Supplier payments not present!</p>";
     }
@@ -5519,6 +5525,15 @@ function display_suppliers_payments(payments) {
         const element = supplier_payment[index];
         element.addEventListener("click", edit_supplier_payments);
     }
+    
+    if (cObj("supplier_bill_payments_table") != undefined) {
+        $(document).ready(function() {
+            $('#supplier_bill_payments_table').DataTable();  // Just one line!
+        });
+    }
+
+    // set tool tip
+    initiateTooltip();
 }
 
 function edit_supplier_payments() {
@@ -6380,7 +6395,7 @@ function display_all_payment_requests(data_to_display) {
         data_in_display = "<table id='payment_application_table' class='table'><tr><th>No.</th><th>Payment for</th><th>Expense Categories</th><th>Expense Amount.</th><th>Date Paid</th><th>Document Number</th><th>Action</th></tr>";
         for (let index = 0; index < data_to_display.length; index++) {
             const element = data_to_display[index];
-            var flag = element.table_name == "running_expense" ? " <small class='badge bg-success' title='Running Expenses'>E</small>" : " <small class='badge bg-warning' title='Suppliers'>S</small>";
+            var flag = element.table_name == "running_expense" ? " <small class='badge bg-success' data-bs-toggle='tooltip' data-bs-placement='top' title='Running Expenses'>E</small>" : " <small class='badge bg-warning' data-bs-toggle='tooltip' data-bs-placement='top' title='Suppliers'>S</small>";
             data_in_display+="<tr><td><input type='hidden' id='payment_request_"+element.payment_id+"' value='"+JSON.stringify(element)+"'>"+(index+1)+" "+flag+"</td><td>"+element.exp_name+"</td><td>"+element.exp_category+"</td><td>"+element.amount+"</td><td>"+element.date_paid+"</td><td>"+element.document_number+"</td><td><span style='font-size:12px;' class='link view_payment_requests' id='view_pay_req_"+element.payment_id+"'><i class='fa fa-eye'></i> View </span> <br> <span style='font-size:12px;' class='link accept_pay_request' id='accept_"+element.payment_id+"'><i class='fa fa-check'></i> Accept </span> <br> <span style='font-size:12px; color:red;' class='link decline_pay_request' id='decline_"+element.payment_id+"'><b>X</b> Decline </span></td></tr>";
         }
         data_in_display+="</table>";
@@ -6412,6 +6427,9 @@ function display_all_payment_requests(data_to_display) {
 
     // search keyword
     cObj("search_payment_approvals").addEventListener("keyup",search_payment_approvals);
+
+    // set tool tip
+    initiateTooltip();
 }
 
 function view_payment_request() {

@@ -55,6 +55,7 @@ function getExpensesNDisplay(student_data) {
             col.push(element['approval_status']);
             col.push(element['approval_comment']);
             col.push(element['record_type']);
+            col.push(element['fullname']);
             // var col = element.split(":");
             rowsColStudents_expenses.push(col);
         }
@@ -81,6 +82,9 @@ function setEvents() {
         const element = edit_expense[index];
         element.addEventListener("click",editExpense);
     }
+
+    // set tool tip
+    initiateTooltip();
 }
 
 function activate_amount() {
@@ -213,7 +217,7 @@ function displayRecord_expenses(start, finish, arrays) {
         //create a table of the 50 records
         var counter = start+1;
         for (let index = start; index < finish; index++) {
-            var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" title="Approved">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" title="Not-Approved">-A</small>' : '<small class="badge bg-danger" title="Payment Declined">-A</small>');
+            var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by '+arrays[index][19]+'">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Not-Approved">-A</small>' : '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Payment Declined">-A</small>');
             tableData += "<tr><input type='hidden' id='data_expenses"+index+"' value='"+JSON.stringify(arrays[index])+"'><td>"+arrays[index][8]+" "+approval_status+"</td><td>"+arrays[index][2]+"</td><td>"+arrays[index][1]+"</td><td>Kes "+arrays[index][0]+"</td><td class='text-center'>"+ (arrays[index][13] != null ? arrays[index][13] : "-") +"</td><td>"+arrays[index][6]+"</td><td><span class='link edit_expense' id='edit_expense"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
             counter++;
         }
@@ -221,7 +225,7 @@ function displayRecord_expenses(start, finish, arrays) {
         //create a table of the 50 records
         var counter = start+1;
         for (let index = start; index < total; index++) {
-            var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" title="Approved">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" title="Not-Approved">-A</small>' : '<small class="badge bg-danger" title="Payment Declined">-A</small>');
+            var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by '+arrays[index][19]+'">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Not-Approved">-A</small>' : '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Payment Declined">-A</small>');
             tableData += "<tr><input type='hidden' id='data_expenses"+index+"' value='"+JSON.stringify(arrays[index])+"'><td>"+arrays[index][8]+" "+approval_status+"</td><td>"+arrays[index][2]+"</td><td>"+arrays[index][1]+"</td><td>Kes "+arrays[index][0]+"</td><td class='text-center'>"+ (arrays[index][13] != null ? arrays[index][13] : "-") +"</td><td>"+arrays[index][6]+"</td><td><span class='link edit_expense' id='edit_expense"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
             counter++;
         }
@@ -234,10 +238,6 @@ function displayRecord_expenses(start, finish, arrays) {
     cObj("finishNo_expenses").innerText = fins;
     //set the page number
     cObj("pagenumNav_expenses").innerText = pagecounttrans;
-    // set tool tip
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    });
     setTimeout(() => {
         sortTableExpenses();
     }, 500);

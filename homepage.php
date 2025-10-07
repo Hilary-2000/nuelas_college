@@ -3978,6 +3978,7 @@ function checkPresnt($array, $string){
     </div>
     <script src="assets/JS/functions.js"></script>
     <script src="assets/JS/print.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         cObj("logout").onclick = function() {
             redirect("login.php");

@@ -1737,11 +1737,12 @@
             $new_expense_description = $_GET['new_expense_description'];
             $expense_sub_category = $_GET['expense_sub_category'];
             $expense_approval = isset($_GET['expense_approval']) ? $_GET['expense_approval'] : 0;
+            $approved_by = $expense_approval == 1 ? $_SESSION['userids'] : null;
             $date = date("Y-m-d",strtotime($expense_record_date));
             $time = date("H:i:s");
-            $insert = "INSERT INTO `expenses` (`expid`,`exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time`,`exp_active`,`expense_categories`,`exp_sub_category`,`document_number`,`expense_description`, `approval_status`)VALUES (null,?,?,?,?,?,?,?,?,0,?,?,?,?,?)";
+            $insert = "INSERT INTO `expenses` (`expid`,`exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time`,`exp_active`,`expense_categories`,`exp_sub_category`,`document_number`,`expense_description`, `approval_status`, `approved_by`)VALUES (null,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
-            $stmt->bind_param("sssssssssssss",$exp_name, $exp_cat, $unit_name, $exp_quant, $exp_unit, $exp_totcost, $date, $time, $expense_cash_activity, $expense_sub_category, $document_number, $expense_description, $expense_approval);
+            $stmt->bind_param("ssssssssssssss",$exp_name, $exp_cat, $unit_name, $exp_quant, $exp_unit, $exp_totcost, $date, $time, $expense_cash_activity, $expense_sub_category, $document_number, $expense_description, $expense_approval, $approved_by);
             if($stmt->execute()){
                 // log text
                 $log_message = "Expense \"".ucwords(strtolower($exp_name))."\" uploaded successfully!";
@@ -1791,6 +1792,7 @@
                                     </tr>";
                                     $total_pay+=$rows['exp_amount'];
                                     // change some fields
+                                    $rows['fullname'] = ucwords(strtolower($rows['fullname'] ?? "NotDefined"));
                                     $rows['exp_category'] = ucwords(strtolower($rows['exp_category']));
                                     $rows['exp_quantity'] = trim($rows['exp_quantity']);
                                     $rows['date'] = $rows['expense_date'];
@@ -5724,7 +5726,7 @@
                 if($result){
                     if($row = $result->fetch_assoc()){
                         // update the expense
-                        $update = "UPDATE `expenses` SET `approval_status` = '".$request_status."', `approval_comment` = ? WHERE `expid` = '".$payment_id."'";
+                        $update = "UPDATE `expenses` SET `approval_status` = '".$request_status."',`approved_by` = '".$_SESSION['userids']."', `approval_comment` = ? WHERE `expid` = '".$payment_id."'";
                         $stmt = $conn2->prepare($update);
                         $stmt->bind_param("s",$comment);
                         $stmt->execute();
@@ -5747,7 +5749,7 @@
                 if($result){
                     if($row = $result->fetch_assoc()){
                         // update
-                        $update = "UPDATE `supplier_bill_payments` SET `approval_status` = '".$request_status."', `approval_comment` = ? WHERE `payment_id` = '".$payment_id."'";
+                        $update = "UPDATE `supplier_bill_payments` SET `approval_status` = '".$request_status."', `approved_by` = '".$_SESSION['userids']."', `approval_comment` = ? WHERE `payment_id` = '".$payment_id."'";
                         $stmt = $conn2->prepare($update);
                         $stmt->bind_param("s",$comment);
                         $stmt->execute();

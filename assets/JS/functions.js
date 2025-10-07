@@ -181,6 +181,14 @@ cObj("back_btns").onmouseleave = function () {
     this.style.cursor = "grab";
 }
  */
+
+function initiateTooltip() {
+    // set tool tip
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+}
 function sendData1(method, file, datapassing, object, callback = null) {
     // console.log("ajax/" + file + datapassing);
     // datapassing = escape(datapassing);

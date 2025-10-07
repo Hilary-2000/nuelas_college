@@ -1,3 +1,6 @@
+07th Oct 2025 10:25:05AM : Expense "New Tissue" uploaded successfully! - {ANN AKOTCH}
+07th Oct 2025 09:21:45AM : Expense "School Bus" uploaded successfully! - {ANN AKOTCH}
+07th Oct 2025 07:59:10AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 06th Oct 2025 12:08:25PM : Revenue "New Revenue" has been added successfully! - {ANN AKOTCH}
 06th Oct 2025 08:18:29AM : Expense "New Bike" uploaded successfully! - {ANN AKOTCH}
 06th Oct 2025 08:17:26AM : Expense "1200" uploaded successfully! - {ANN AKOTCH}

@@ -2841,9 +2841,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             // echo
             echo $data_to_display;
         }elseif(isset($_GET['get_supplier_data'])){
-            $select_payments = "SELECT SBP.* FROM `supplier_bill_payments` AS SBP
+            $select_payments = "SELECT SBP.*, ladybird_smis.user_tbl.fullname FROM `supplier_bill_payments` AS SBP
                                 LEFT JOIN `supplier_bills` AS SB
                                 ON SB.bill_id = SBP.payment_for
+                                LEFT JOIN ladybird_smis.user_tbl ON ladybird_smis.user_tbl.user_id = SBP.approved_by
                                 WHERE SB.supplier_id = '".$_GET['get_supplier_data']."' ORDER BY SBP.date_paid DESC";
                                 
             $select_bill = "SELECT * FROM `supplier_bills` WHERE `supplier_id` = '".$_GET['get_supplier_data']."' ORDER BY date_assigned DESC";
@@ -2859,6 +2860,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $row['date'] = date("D dS M Y",strtotime($row['date_assigned']));
                     $row['real_amount'] = $row['bill_amount'];
                     $row['bill_amount'] = "".number_format($row['bill_amount']);
+                    $row['fullname'] = ucwords(strtolower($row['fullname'] ?? "Notdefined"));
                     array_push($supplier_bill,$row);
                 }
             }
@@ -2874,6 +2876,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $row['date'] = date("D dS M Y",strtotime($row['date_paid']));
                     $row['real_amount'] = $row['amount'];
                     $row['amount'] = number_format($row['amount']);
+                    $row['fullname'] = ucwords(strtolower($row['fullname'] ?? "Notdefined"));
                     array_push($supplier_payment,$row);
                 }
             }
