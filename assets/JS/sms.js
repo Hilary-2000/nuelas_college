@@ -1702,14 +1702,9 @@ cObj("close_email_data_windows").onclick = function () {
 }
 
 cObj("rather_view_email_history").onclick = function () {
-    cObj("show_sms_windows").classList.add("hide");
-    cObj("show_email_windows").classList.remove("hide");
     getRecentEmail();
 }
 cObj("rather_view_sms_history").onclick = function () {
-    cObj("show_sms_windows").classList.remove("hide");
-    cObj("show_email_windows").classList.add("hide");
-
     // getRecentMessage()
     getRecentMessage();
 }

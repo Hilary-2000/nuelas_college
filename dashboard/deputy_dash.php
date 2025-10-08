@@ -11,7 +11,7 @@
                     $salute = "";
                 }
                 $named = explode(" ",$_SESSION['fullnames']);
-                echo $salute.$named[0];
+                echo $named[0];
             }else {
                             echo "Username ";
                         }?> </h2>

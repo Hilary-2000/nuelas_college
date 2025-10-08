@@ -8869,7 +8869,7 @@ function isJson_report($string) {
             $data.="<th>Attendance Stats</th>";
             $data.="<th>Course Level</th>";
             $data.="<th>Time</th>";
-            $data.="<th>Present <input type='checkbox' class='present_all' id='present_all'></th></tr></thead><tbody>";
+            $data.="<th>Present <input type='checkbox' class='present_all d-none' id='present_all'></th></tr></thead><tbody>";
             while($row = $result->fetch_assoc()){
                 $xs++;
                 $data.="<tr><td>".$xs."</td>";
@@ -8881,7 +8881,7 @@ function isJson_report($string) {
                 $date_today = presentStudent($conn2,$row['adm_no'],$date_used);
                 $time = $date_today ? date("H:i:s", strtotime($date_today)) : date("H:i:s");
                 $data.="<td>"."<input type='time' class='form-control' value='".$time."' class='date_time_att' id='date_time_att_".$row['adm_no']."'>"."</td>";
-                $data.="<td>"."<input type='checkbox' ".($date_today != null ? "checked" : "")." class='present' id='".$row['adm_no']."'>"."</td></tr>";
+                $data.="<td>"."<input type='checkbox' ".($date_today != null ? "checked" : "")." value='".$row['adm_no']."' class='present all_present_students' id='all_present_students".$xs."'>"."</td></tr>";
             }
             $data.="</tbody></table></div>";
             $data.="<span class='text-danger'>Always confirm the date before submitting!</span>";

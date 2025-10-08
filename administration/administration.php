@@ -54,7 +54,7 @@
                         <input type="text" name="fname" id="fname" placeholder="Enter Firstname">
                     </div>
                     <div class="conts">
-                        <label for="sname">Enter middle name:<span style = 'color:red;'>*</span> <span class="examples"> eg Odongo or Bwire</span><br></label>
+                        <label for="sname">Enter middle name: <span class="examples"> eg Odongo or Bwire</span><br></label>
                         <input type="text" name="sname" id="sname" placeholder="Enter Middle names">
                     </div>
                     <div class="conts">

@@ -2510,7 +2510,11 @@ cObj("show_class_att").onclick = function () {
                 }
                 if (cObj("attendance_table_select") != null) {
                     $(document).ready(function() {
-                        $('#attendance_table_select').DataTable();  // Just one line!
+                        $('#attendance_table_select').DataTable({
+                            columnDefs: [
+                                { orderable: false, targets: [7] } // disable sorting on 1st and 4th columns
+                            ]
+                        });  // Just one line!
                     });
                 }
             });
@@ -2531,7 +2535,6 @@ function selectAllPresent() {
             element.checked = false;
         }
     }
-    check_attendance();
 }
 
 function check_attendance() {
@@ -2657,16 +2660,87 @@ function displayStudentAttendance() {
         }
         if (cObj("attendance_table_select") != null) {
             $(document).ready(function() {
-                $('#attendance_table_select').DataTable();  // Just one line!
+                $('#attendance_table_select').DataTable({
+                    columnDefs: [
+                        {orderable: false, targets: [7] } // disable sorting on 1st and 4th columns
+                    ]
+                });  // Just one line!
             });
         }
+
+        var all_present_students = document.getElementsByClassName("all_present_students");
+        for (let index = 0; index < all_present_students.length; index++) {
+            const element = all_present_students[index];
+            element.addEventListener("change", function () {
+                // add or remove the student from the list of students present
+                if (this.checked) {
+                    // add to list
+                    var attendance_list = valObj("attendance_statistics_holder");
+                    if (hasJsonStructure(attendance_list)) {
+                        var attendance = JSON.parse(attendance_list);
+                        var indexes = 0;
+                        var present = false;
+                        for (let index = 0; index < attendance.length; index++) {
+                            const checkbox = attendance[index];
+                            indexes = checkbox.id;
+                            if (checkbox.adm_no == this.value) {
+                                checkbox.time = valObj("date_time_att_"+this.value);
+                                checkbox.date = valObj("class_register_dates");
+                                present = true;
+                            }
+                        }
+                        if (!present) {
+                            indexes++;
+                            attendance.push({id:indexes, adm_no:this.value, time: valObj("date_time_att_"+this.value), date:valObj("class_register_dates")});
+                        }
+                        cObj("attendance_statistics_holder").value = JSON.stringify(attendance);
+                    }else{
+                        var attendance = [{id:1, adm_no:this.value, time: valObj("date_time_att_"+this.value), date:valObj("class_register_dates")}];
+                        cObj("attendance_statistics_holder").value = JSON.stringify(attendance);
+                    }
+                }else{
+                    // remove if present
+                    // add to list
+                    var attendance_list = valObj("attendance_statistics_holder");
+                    if (hasJsonStructure(attendance_list)) {
+                        var attendance = JSON.parse(attendance_list);
+                        var new_attendance = [];
+                        for (let index = 0; index < attendance.length; index++) {
+                            const checkbox = attendance[index];
+                            if (checkbox.adm_no != this.value) {
+                                new_attendance.push(checkbox);
+                            }
+                        }
+                        cObj("attendance_statistics_holder").value = JSON.stringify(new_attendance);
+                    }else{
+                        cObj("attendance_statistics_holder").value = "[]";
+                    }
+                }
+            });
+        }
+
+        // check attendance
+        checkAttendance();
     });
 }
 
+function checkAttendance(){
+    var all_present_students = document.getElementsByClassName("all_present_students");
+    var attendance_list = [];
+    var indexes = 0;
+    for (let index = 0; index < all_present_students.length; index++) {
+        const element = all_present_students[index];
+        if (element.checked) {
+            // add to list
+            attendance_list.push({id:indexes+1, adm_no:element.value, time: valObj("date_time_att_"+element.value), date:valObj("class_register_dates")});
+            indexes++;
+        }
+    }
+    cObj("attendance_statistics_holder").value = JSON.stringify(attendance_list);
+}
+
 cObj("submitclasspresent").onclick = function () {
-    // check_attendance
     cObj("error_handler_attendance").innerHTML = "";
-    check_attendance();
     var attendance_statistics = JSON.parse(valObj("attendance_statistics_holder"));
     if (attendance_statistics.length > 0) {
         cObj('message').innerHTML = "<p style='font-size:12px;'>Are you sure you want to submit attendance for " + classNameAdms(valObj("selectclass")) + " on <b class='text-success'>" + cObj("class_register_dates").value + "</b>?</p>";
@@ -4217,12 +4291,12 @@ function checkAdmission() {
     }
     // err += checkBlank("surname");//username
     err += checkBlank("fname");
-    err += checkBlank("sname");
+    // err += checkBlank("sname");
     err += checkBlank("dob");
     err += checkBlank("gender");
     err += checkBlank("intake_year");
     err += checkBlank("intake_month");
-    err += checkBlank("bcno");
+    // err += checkBlank("bcno");
     err += (errolment != "-1" && errolment != "-2" && errolment != "-3") ? checkBlank("study_mode") : 0;
     if (typeof (cObj("errolment")) != 'undefined' && cObj("errolment") != null) {
         err += checkBlank("errolment");
@@ -7208,8 +7282,6 @@ function email_settings() {
 
 cObj("rather_send_email_btn").onclick = function () {
     cObj("send_email_button").classList.add("disabled");
-    cObj("send_sms_window").classList.add("hide");
-    cObj("send_email_window").classList.remove("hide");
     // check if the email configuration has been set
     var datapass = "?check_email_setup=true";
     sendData2("GET", "administration/admissions.php", datapass, cObj("email_not_setup_notify"), cObj("load_email_sending"));
@@ -7235,10 +7307,6 @@ cObj("rather_send_email_btn").onclick = function () {
     }, 200);
 }
 
-cObj("rather_send_sms_btn").onclick = function () {
-    cObj("send_sms_window").classList.remove("hide");
-    cObj("send_email_window").classList.add("hide");
-}
 
 cObj("remove_email_settings").onclick = function () {
     var datapass = "?remove_email=true";

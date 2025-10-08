@@ -1738,11 +1738,12 @@
             $expense_sub_category = $_GET['expense_sub_category'];
             $expense_approval = isset($_GET['expense_approval']) ? $_GET['expense_approval'] : 0;
             $approved_by = $expense_approval == 1 ? $_SESSION['userids'] : null;
+            $requested_by = $_SESSION['userids'];
             $date = date("Y-m-d",strtotime($expense_record_date));
             $time = date("H:i:s");
-            $insert = "INSERT INTO `expenses` (`expid`,`exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time`,`exp_active`,`expense_categories`,`exp_sub_category`,`document_number`,`expense_description`, `approval_status`, `approved_by`)VALUES (null,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?)";
+            $insert = "INSERT INTO `expenses` (`expid`,`exp_name`,`exp_category`,`unit_name`,`exp_quantity`,`exp_unit_cost`,`exp_amount`,`expense_date`,`exp_time`,`exp_active`,`expense_categories`,`exp_sub_category`,`document_number`,`expense_description`, `approval_status`, `approved_by`, `requested_by`)VALUES (null,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
-            $stmt->bind_param("ssssssssssssss",$exp_name, $exp_cat, $unit_name, $exp_quant, $exp_unit, $exp_totcost, $date, $time, $expense_cash_activity, $expense_sub_category, $document_number, $expense_description, $expense_approval, $approved_by);
+            $stmt->bind_param("sssssssssssssss",$exp_name, $exp_cat, $unit_name, $exp_quant, $exp_unit, $exp_totcost, $date, $time, $expense_cash_activity, $expense_sub_category, $document_number, $expense_description, $expense_approval, $approved_by, $requested_by);
             if($stmt->execute()){
                 // log text
                 $log_message = "Expense \"".ucwords(strtolower($exp_name))."\" uploaded successfully!";
@@ -1793,6 +1794,7 @@
                                     $total_pay+=$rows['exp_amount'];
                                     // change some fields
                                     $rows['fullname'] = ucwords(strtolower($rows['fullname'] ?? "NotDefined"));
+                                    $rows['requested_fullname'] = ucwords(strtolower($rows['requested_fullname'] ?? "NotDefined"));
                                     $rows['exp_category'] = ucwords(strtolower($rows['exp_category']));
                                     $rows['exp_quantity'] = trim($rows['exp_quantity']);
                                     $rows['date'] = $rows['expense_date'];
@@ -1871,7 +1873,7 @@
             // echo json_encode(getSalaryDetails($conn2, $staff_id));
 
             if (empty($payroll_information)) {
-                echo "<p class='text-danger border border-danger p-1'>You  have not been onrolled on payroll!</p>";
+                echo "<p class='text-danger border border-danger p-1'>You  have not been enrolled on payroll!</p>";
                 return;
             }
 

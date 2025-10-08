@@ -1,3 +1,10 @@
+08th Oct 2025 16:55:47PM : MOSES OMODO with admission number NC-2025-012 has been admitted successfully - {ANN AKOTCH}
+08th Oct 2025 16:46:00PM : Moses James of Reg No (LC-2026-001) discounts have been updated successfully - {ANN AKOTCH}
+08th Oct 2025 12:05:06PM : Expense deleted successfully! - {ANN AKOTCH}
+08th Oct 2025 12:04:28PM : Expense "James Expenses" uploaded successfully! - {ANN AKOTCH}
+08th Oct 2025 11:44:27AM : Expense "NEW NEE EXPENSE" updated successfully! - {ANN AKOTCH}
+08th Oct 2025 11:20:20AM : Expense "Mercedes Benz V-class" uploaded successfully! - {ANN AKOTCH}
+08th Oct 2025 11:06:21AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 07th Oct 2025 20:08:05PM : JAMES WAKILI successfully logged into the system as Attendance Taker - {JAMES WAKILI}
 07th Oct 2025 18:34:54PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 07th Oct 2025 17:49:09PM : JAMES WAKILI successfully logged into the system as Attendance Taker - {JAMES WAKILI}

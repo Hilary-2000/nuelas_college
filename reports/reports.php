@@ -15923,6 +15923,7 @@ function print_A5_receipt($receipt_id, $database)
         $pdf->Cell(200, 7, "", "", 1, "C", false);
         // $pdf->Ln(5);
         // get the school payment option
+        $counter = 1;
         $select = "SELECT * FROM `settings` WHERE `sett` = 'payment details';";
         $stmt = $conn2->prepare($select);
         $stmt->execute();

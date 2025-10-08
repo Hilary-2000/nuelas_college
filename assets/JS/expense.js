@@ -56,6 +56,7 @@ function getExpensesNDisplay(student_data) {
             col.push(element['approval_comment']);
             col.push(element['record_type']);
             col.push(element['fullname']);
+            col.push(element['requested_fullname']);
             // var col = element.split(":");
             rowsColStudents_expenses.push(col);
         }
@@ -217,7 +218,7 @@ function displayRecord_expenses(start, finish, arrays) {
         //create a table of the 50 records
         var counter = start+1;
         for (let index = start; index < finish; index++) {
-            var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by '+arrays[index][19]+'">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Not-Approved">-A</small>' : '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Payment Declined">-A</small>');
+            var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="Requested by '+arrays[index][20]+'<hr class=\'text-left p-0 m-0\'>Approved by '+arrays[index][19]+'">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="Requested by '+arrays[index][20]+'<hr class=\'text-left p-0 m-0\'>Not-Approved">-A</small>' : '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="Requested by '+arrays[index][20]+'<hr class=\'text-left p-0 m-0\'>Declined by '+arrays[index][19]+'">-A</small>');
             tableData += "<tr><input type='hidden' id='data_expenses"+index+"' value='"+JSON.stringify(arrays[index])+"'><td>"+arrays[index][8]+" "+approval_status+"</td><td>"+arrays[index][2]+"</td><td>"+arrays[index][1]+"</td><td>Kes "+arrays[index][0]+"</td><td class='text-center'>"+ (arrays[index][13] != null ? arrays[index][13] : "-") +"</td><td>"+arrays[index][6]+"</td><td><span class='link edit_expense' id='edit_expense"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
             counter++;
         }
@@ -225,7 +226,7 @@ function displayRecord_expenses(start, finish, arrays) {
         //create a table of the 50 records
         var counter = start+1;
         for (let index = start; index < total; index++) {
-            var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Approved by '+arrays[index][19]+'">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Not-Approved">-A</small>' : '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Payment Declined">-A</small>');
+            var approval_status = arrays[index][16] == 1 ? '<small class="badge bg-success" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="Requested by '+arrays[index][20]+'<hr class=\'text-left p-0 m-0\'>Approved by '+arrays[index][19]+'">A</small>' : (arrays[index][16] == 0 ? '<small class="badge bg-warning" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="Requested by '+arrays[index][20]+'<hr class=\'text-left p-0 m-0\'>Not-Approved">-A</small>' : '<small class="badge bg-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="Requested by '+arrays[index][20]+'<hr class=\'text-left p-0 m-0\'>Declined by '+arrays[index][19]+'">-A</small>');
             tableData += "<tr><input type='hidden' id='data_expenses"+index+"' value='"+JSON.stringify(arrays[index])+"'><td>"+arrays[index][8]+" "+approval_status+"</td><td>"+arrays[index][2]+"</td><td>"+arrays[index][1]+"</td><td>Kes "+arrays[index][0]+"</td><td class='text-center'>"+ (arrays[index][13] != null ? arrays[index][13] : "-") +"</td><td>"+arrays[index][6]+"</td><td><span class='link edit_expense' id='edit_expense"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
             counter++;
         }
@@ -308,29 +309,29 @@ function checkName3(keyword) {
         const element = rowsColStudents_expenses[index];
         //column break
         var present = 0;
-        if (element[0].toString().includes(keylower)) {
+        if (element[0] != undefined && (element[0].toString().includes(keylower))) {
             present++;
         }
-        if (element[1].toLowerCase().includes(keylower) || element[1].toUpperCase().includes(keyUpper)) {
+        if (element[1] != undefined && (element[1].toString().toLowerCase().includes(keylower) || element[1].toString().toUpperCase().includes(keyUpper))) {
             present++;
         }
-        if (element[2].toLowerCase().includes(keylower) || element[2].toUpperCase().includes(keyUpper)) {
+        if (element[2] != undefined && (element[2].toString().toLowerCase().includes(keylower) || element[2].toString().toUpperCase().includes(keyUpper))) {
             present++;
         }
-        if (element[3].toString().includes(keylower)) {
+        if (element[3] != undefined && (element[3].toString().includes(keylower))) {
             present++;
         }
-        if (element[4].toLowerCase().includes(keylower) || element[4].toUpperCase().includes(keyUpper)) {
+        if (element[4] != undefined && (element[4].toString().toLowerCase().includes(keylower) || element[4].toString().toUpperCase().includes(keyUpper))) {
             present++;
         }
-        if (element[5].toString().includes(keylower)) {
+        if (element[5] != undefined && (element[5].toString().includes(keylower))) {
             present++;
         }
-        if (element[6].toLowerCase().includes(keyword) || element[6].toLowerCase().includes(keyUpper)) {
+        if (element[6] != undefined && (element[6].toString().toLowerCase().includes(keyword) || element[6].toString().toLowerCase().includes(keyUpper))) {
             present++;
         }
-        if (element[13] != null) {
-            if (element[13].toLowerCase().toString().includes(keylower)) {
+        if (element[13] != undefined && (element[13] != null)) {
+            if (element[13].toString().toLowerCase().includes(keylower)) {
                 present++;
             }
         }
