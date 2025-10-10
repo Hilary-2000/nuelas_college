@@ -1736,8 +1736,8 @@
             $document_number = $_GET['document_number'];
             $new_expense_description = $_GET['new_expense_description'];
             $expense_sub_category = $_GET['expense_sub_category'];
-            $expense_approval = isset($_GET['expense_approval']) ? $_GET['expense_approval'] : 0;
-            $approved_by = $expense_approval == 1 ? $_SESSION['userids'] : null;
+            $expense_approval = !empty($_GET['expense_approval']) ? $_GET['expense_approval'] : 0;
+            $approved_by = $expense_approval == 1 ? $_SESSION['userids'] : "0";
             $requested_by = $_SESSION['userids'];
             $date = date("Y-m-d",strtotime($expense_record_date));
             $time = date("H:i:s");
