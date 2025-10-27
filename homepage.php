@@ -6,34 +6,34 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "payroll_sys", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "humanresource", "payroll_sys", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
-        $allowed = ["sms_broadcast","update_personal_profile","general_reports"];
+        $allowed = ["sms_broadcast","update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "3") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff","update_school_profile", "update_personal_profile", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff","update_school_profile", "update_personal_profile", "general_reports", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "4") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "update_personal_profile", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "update_personal_profile", "general_reports", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "5") {
-        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "update_personal_profile","general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "apply_leave_menu", "payroll_advance", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "update_personal_profile","general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "6") {
-        $allowed = ["register_staff", "manage_staff","general_reports"];
+        $allowed = ["register_staff", "manage_staff","general_reports", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "7") {
-        $allowed = ["update_personal_profile","general_reports"];
+        $allowed = ["update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "8") {
-        $allowed = ["update_personal_profile"];
+        $allowed = ["update_personal_profile", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "9") {
-        $allowed = ["admit_student", "callregister", "manage_student"];
+        $allowed = ["admit_student", "callregister", "manage_student", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else {
         // get the allowed fields
@@ -435,8 +435,10 @@ function checkPresnt($array, $string){
                 <button class="navButs htbtn">Human Resource<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc hide">
-                        <button type='button' class="sidebtns <?php echo allowed("payroll_sys"); ?> htbtn" id='payroll_sys'><span><img class="icons" src="images/report.png"></span>Payroll</button>
-                        <button type='button' class="sidebtns <?php echo allowed("humanresource"); ?> htbtn" id='humanresource'><span><img class="icons" src="images/managestaff.png"></span>Leave Management</button>
+                        <button type='button' class="sidebtns <?php echo allowed("payroll"); ?> htbtn" id='payroll_sys'><span><img class="icons" src="images/report.png"></span>Payroll</button>
+                        <button type='button' class="sidebtns <?php echo allowed("leave_mgmt"); ?> htbtn" id='humanresource'><span><img class="icons" src="images/managestaff.png"></span>Leave Management</button>
+                        <button type='button' class="sidebtns <?php echo allowed("apply_leave_menu"); ?> htbtn" id='apply_leave_menu'><span><img class="icons" src="images/timetable.png"></span>Apply Leave</button>
+                        <button type='button' class="sidebtns <?php echo allowed("payroll_advance"); ?> htbtn" id='payroll_advance'><span><img class="icons" src="images/pay.png"></span>Payroll & Advance</button>
                     </div>
                 </div>
             </div>
@@ -1183,6 +1185,14 @@ function checkPresnt($array, $string){
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management'>2. Leave Management</label>
                             <input class='human_resource_mgmt' type='checkbox' name='leave_management' id='leave_management'>
                         </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='apply_leave_main'>3. Apply Leave</label>
+                            <input class='human_resource_mgmt' type='checkbox' name='apply_leave_main' id='apply_leave_main'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_main'>4. Payroll & Advance</label>
+                            <input class='human_resource_mgmt' type='checkbox' name='payroll_and_advance_main' id='payroll_and_advance_main'>
+                        </div>
                         <hr>
                         <!-- staft of sms section -->
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
@@ -1316,6 +1326,14 @@ function checkPresnt($array, $string){
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management2'>2. Leave Management</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='leave_management2' id='leave_management2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='apply_leave_edit'>3. Apply Leave</label>
+                            <input class='human_resource_mgmt_2' type='checkbox' name='apply_leave_edit' id='apply_leave_edit'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_edit'>4. Payroll & Advance</label>
+                            <input class='human_resource_mgmt_2' type='checkbox' name='payroll_and_advance_edit' id='payroll_and_advance_edit'>
                         </div>
                         <hr>
                         <!-- staft of sms section -->
@@ -2664,12 +2682,12 @@ function checkPresnt($array, $string){
                             <input class="form-control" value="0" type="number" name="term_one" id="term_one" placeholder="Fulltime Amount Amount">
                         </div>
                         <div class="conts">
-                            <label class="form-control-label" for="term_two">Evening Amount: <br></label>
-                            <input class="form-control" value="0" type="number" name="term_two" id="term_two" placeholder="Evening Amount">
+                            <label class="form-control-label" for="term_two">Hybrid Amount: <br></label>
+                            <input class="form-control" value="0" type="number" name="term_two" id="term_two" placeholder="Hybrid Amount">
                         </div>
                         <div class="conts">
-                            <label class="form-control-label" for="term_three">Saturday Amount: <br></label>
-                            <input class="form-control" value="0" type="number" name="term_three" id="term_three" placeholder="Saturday Amount">
+                            <label class="form-control-label" for="term_three">Weekend Amount: <br></label>
+                            <input class="form-control" value="0" type="number" name="term_three" id="term_three" placeholder="Weekend Amount">
                         </div>
                         <div class="conts">
                             <label class="form-control-label" for="boarders_regular">Fees type: <br></label>
@@ -3213,12 +3231,12 @@ function checkPresnt($array, $string){
                             <input class="form-control" type="number" name="term_one1" id="term_one1" placeholder="Fulltime Amount">
                         </div>
                         <div class="conts">
-                            <label class="form-control-label" for="term_two1">Evening Amount: <br></label>
-                            <input class="form-control" value="0" type="number" name="term_two1" id="term_two1" placeholder="Evening Amount">
+                            <label class="form-control-label" for="term_two1">Hybrid Amount: <br></label>
+                            <input class="form-control" value="0" type="number" name="term_two1" id="term_two1" placeholder="Hybrid Amount">
                         </div>
                         <div class="conts">
-                            <label class="form-control-label" for="term_three1">Saturday Amount: <br></label>
-                            <input class="form-control" value="0" type="number" name="term_three1" id="term_three1" placeholder="Saturday Amount">
+                            <label class="form-control-label" for="term_three1">Weekend Amount: <br></label>
+                            <input class="form-control" value="0" type="number" name="term_three1" id="term_three1" placeholder="Weekend Amount">
                         </div>
                         <div class="conts">
                             <label class="form-control-label" for="boarders1_regular1">Fees type: <br></label>
@@ -3975,7 +3993,7 @@ function checkPresnt($array, $string){
     </div>
     </div>
     <div class="copyright">
-        <p> Last System Update: 26th January 2024 @ 10:01AM || Ladybird SMIS Copyright © 2020 - <?php echo date("Y", strtotime("3 hour")); ?> | All rights reserved</p>
+        <p> Last System Update: 28th October 2025 @ 10:01AM || Ladybird SMIS Copyright © 2020 - <?php echo date("Y"); ?> | All rights reserved</p>
     </div>
     <script src="assets/JS/functions.js"></script>
     <script src="assets/JS/print.min.js"></script>

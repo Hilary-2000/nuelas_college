@@ -1,3 +1,32 @@
+27th Oct 2025 20:24:31PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+27th Oct 2025 20:24:08PM : Role "Accountant" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 20:08:41PM : The Sports House / Clubs "ICT department" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 20:03:31PM : Role "NewRole" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 20:01:56PM : Role "NewRole" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:57:46PM : Role "NewRole" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:57:07PM : Role "NewRole" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:54:53PM : Role "NewRole" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:53:34PM : Role "NewRole" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:53:28PM : Role "New `Role" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:52:36PM : Role "NewRole" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:52:23PM : Role "New Role" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:51:46PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+27th Oct 2025 19:49:26PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 19:48:46PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+27th Oct 2025 19:29:35PM : Role "New `role" has been added successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:24:20PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+27th Oct 2025 19:24:07PM : Role "Accountant" has been updated successfully! - {JAMES WAKANDA}
+27th Oct 2025 19:23:35PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+27th Oct 2025 18:50:58PM : Role "Users" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 18:50:52PM : Role "Users" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 18:50:42PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 18:49:21PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 18:43:22PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 18:43:12PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 18:31:47PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 18:29:37PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 17:54:10PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+27th Oct 2025 16:03:51PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 10th Oct 2025 20:05:05PM : Expense "New Expense" uploaded successfully! - {JAMES WAKANDA}
 10th Oct 2025 19:56:02PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
 10th Oct 2025 19:55:43PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}

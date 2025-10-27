@@ -1431,7 +1431,7 @@
                         <th>No.</th>
                         <th>Votehead</th>
                         <th>Fulltime Amount</th>
-                        <th>Evening Amount</th>
+                        <th>Hybrid Amount</th>
                         <th>Weekend Amount</th>
                         <th>Role</th>
                         <th>Edit</th>
@@ -1442,7 +1442,7 @@
                         $total3 =0;
                         $index = 1;
                 while ($row = $res->fetch_assoc()) {
-                    $table.="<tr><td><input hidden id='fees_structure_value_".$row['ids']."' value='".json_encode($row)."'>".$index."</td><td class='vote_heads' id = 'expense_name".$row['ids']."'>".$row['expenses']."</td>";
+                    $table.="<tr><td><input hidden id='fees_structure_value_".$row['ids']."' value='".json_encode($row)."'>".$index."</td><td class='vote_heads' id = 'expense_name".$row['ids']."'>".ucwords(strtolower($row['expenses']))."</td>";
                     $table.="<td class = 't-one' id = 't_one".$row['ids']."'>".$row['TERM_1']."</td>";
                     $table.="<td class = 't-two' id = 't_two".$row['ids']."'>".$row['TERM_2']."</td>";
                     $table.="<td class = 't-three' id = 't_three".$row['ids']."'>".$row['TERM_3']."</td>";

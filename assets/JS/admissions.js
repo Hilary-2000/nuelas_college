@@ -311,7 +311,7 @@ cObj("update_school_profile").onclick = function () {
     removesidebar();
     getSchoolInformation();
 }
-cObj("apply_leave_staff").onclick = function () {
+cObj("apply_leave_menu").onclick = function () {
     hideWindow();
     unselectbtns();
     // addselected(this.id);
@@ -323,10 +323,11 @@ cObj("apply_leave_staff").onclick = function () {
     cObj("from_leave_date").value = "";
     cObj("to_leaves_date").value = "";
     cObj("leave_comments").value = "";
+    addselected(this.id);
 }
 
 // get my payroll information
-cObj("my_payroll_management").onclick = function () {
+cObj("payroll_advance").onclick = function () {
     hideWindow();
     unselectbtns();
     // addselected(this.id);
@@ -335,6 +336,7 @@ cObj("my_payroll_management").onclick = function () {
 
     // get the staff payroll information
     getMyPayrollInformation();
+    addselected(this.id);
 }
 
 cObj("update_personal_profile").onclick = function () {
@@ -6379,6 +6381,14 @@ function getEditedStaffRoles(status = "new"){
                 "Status": status == "edit" ? (cObj("leave_management2") != undefined ? (cObj("leave_management2").checked ? "yes" : "no") : "no") : (cObj("leave_management") != undefined ? (cObj("leave_management").checked ? "yes" : "no") : "no")
             },
             {
+                "name": "apply_leave_menu",
+                "Status": status == "edit" ? (cObj("apply_leave_edit") != undefined ? (cObj("apply_leave_edit").checked ? "yes" : "no") : "no") : (cObj("apply_leave_main") != undefined ? (cObj("apply_leave_main").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "payroll_advance",
+                "Status": status == "edit" ? (cObj("payroll_and_advance_edit") != undefined ? (cObj("payroll_and_advance_edit").checked ? "yes" : "no") : "no") : (cObj("payroll_and_advance_main") != undefined ? (cObj("payroll_and_advance_main").checked ? "yes" : "no") : "no")
+            },
+            {
                 "name": "finance_report",
                 "Status": status == "edit" ? (cObj("financial_report_section2") != undefined ? (cObj("financial_report_section2").checked ? "yes" : "no") : "no") : (cObj("financial_report_section") != undefined ? (cObj("financial_report_section").checked ? "yes" : "no") : "no")
             },
@@ -6443,7 +6453,6 @@ cObj("add_role_btns2").onclick = function () {
     if (err < 1) {
         cObj("allowance_err4_handler").innerHTML = "";
         var role = getEditedStaffRoles("edit");
-        console.log(role);
 
         // hasJsonStructure
         var roles = [];
@@ -6451,7 +6460,7 @@ cObj("add_role_btns2").onclick = function () {
             roles = JSON.parse(cObj("show_roles").innerText);
             for (let index = 0; index < roles.length; index++) {
                 const element = roles[index];
-                if(element.name == valObj("role_name2")){
+                if(element.name == cObj("old_role_name").innerText){
                     roles[index] = role;
                 }
             }
@@ -6460,13 +6469,14 @@ cObj("add_role_btns2").onclick = function () {
         }
         // roles
         roles = JSON.stringify(roles);
+        console.log(roles);
         var datapass = "edit_another_user=true&role_name=" + encodeURIComponent(valObj("role_name2")) + "&old_role_name=" + encodeURIComponent(cObj("old_role_name").innerText) + "&role_values=" + encodeURIComponent(roles);
         sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("allowance_err4_handler"), cObj("add_user_roles_in2"), function () {
             getRoleData();
             cObj("cancel_role_btn2").click();
             cObj("allowance_err4_handler").innerHTML = "";
             cObj("role_name2").value = "";
-            cObj("set_btns").click();
+            // cObj("set_btns").click();
         });
 
     } else {
@@ -6730,6 +6740,22 @@ function checkRoles(roles, edit_status = "new") {
         var element_id = "";
         if(edit_status == "edit"){
             element_id = "my_school_reports2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "apply_leave_menu"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "apply_leave_edit";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "payroll_advance"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "payroll_and_advance_edit";
         }
         if(cObj(element_id) != undefined){ 
             cObj(element_id).checked = roles.Status == "yes";
