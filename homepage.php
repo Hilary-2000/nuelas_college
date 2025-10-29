@@ -438,7 +438,7 @@ function checkPresnt($array, $string){
                         <button type='button' class="sidebtns <?php echo allowed("payroll"); ?> htbtn" id='payroll_sys'><span><img class="icons" src="images/report.png"></span>Payroll</button>
                         <button type='button' class="sidebtns <?php echo allowed("leave_mgmt"); ?> htbtn" id='humanresource'><span><img class="icons" src="images/managestaff.png"></span>Leave Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("apply_leave_menu"); ?> htbtn" id='apply_leave_menu'><span><img class="icons" src="images/timetable.png"></span>Apply Leave</button>
-                        <button type='button' class="sidebtns <?php echo allowed("payroll_advance"); ?> htbtn" id='payroll_advance'><span><img class="icons" src="images/pay.png"></span>Payroll & Advance</button>
+                        <button type='button' class="sidebtns <?php echo allowed("payroll_advance"); ?> htbtn" id='payroll_advance'><span><img class="icons" src="images/pay.png"></span>Payslip & Advance</button>
                     </div>
                 </div>
             </div>
@@ -1190,7 +1190,7 @@ function checkPresnt($array, $string){
                             <input class='human_resource_mgmt' type='checkbox' name='apply_leave_main' id='apply_leave_main'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_main'>4. Payroll & Advance</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_main'>4. Payslip & Advance</label>
                             <input class='human_resource_mgmt' type='checkbox' name='payroll_and_advance_main' id='payroll_and_advance_main'>
                         </div>
                         <hr>
@@ -1332,7 +1332,7 @@ function checkPresnt($array, $string){
                             <input class='human_resource_mgmt_2' type='checkbox' name='apply_leave_edit' id='apply_leave_edit'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_edit'>4. Payroll & Advance</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_edit'>4. Payslip & Advance</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='payroll_and_advance_edit' id='payroll_and_advance_edit'>
                         </div>
                         <hr>

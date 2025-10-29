@@ -393,6 +393,9 @@ class PDF extends FPDF
         // Header
         $w = $width;
         for ($i = 0; $i < count($header); $i++) {
+            if($i == 4 || $i == 3){
+                continue;
+            }
             $this->Cell($w[$i], 8, $header[$i], 1, 0, 'C', true);
         }
 
@@ -412,10 +415,10 @@ class PDF extends FPDF
             $this->Cell($w[0], 6, $index, 1, 0, 'L', $fill);
             $this->Cell($w[1], 6, ucwords(strtolower($row[0])), 1, 0, 'L', $fill);
             $this->Cell($w[2], 6, ucwords(strtolower($row[1])), 1, 0, 'L', $fill);
-            $this->Cell($w[3], 6, ucwords(strtolower($row[2])), 1, 0, 'L', $fill);
-            $this->Cell($w[4], 6, "Kes ".number_format($row[3]), 1, 0, 'L', $fill);
-            $this->Cell($w[5], 6, "Kes ".number_format($row[4]), 1, 0, 'L', $fill);
-            $this->Cell($w[6], 6, date("dS M Y : H:i:s",strtotime($row[5])), 1, 0, 'L', $fill);
+            // $this->Cell($w[3], 6, ucwords(strtolower($row[2])), 1, 0, 'L', $fill);
+            $this->Cell($w[5], 6, "Kes ".number_format($row[3]), 1, 0, 'L', $fill);
+            // $this->Cell($w[5], 6, "Kes ".($row[4]), 1, 0, 'L', $fill);
+            $this->Cell($w[6], 6, date("dS M Y : H:i:s",strtotime($row[5] ?? date("YmdHis"))), 1, 0, 'L', $fill);
             $this->Ln();
             $fill = !$fill;
             $index++;
@@ -4349,8 +4352,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $pdf->Cell(40, 5, "Note :", 0, 0, 'L', false);
                         $pdf->Ln();
                         $pdf->SetFont('Times', 'I', 10);
-                        $pdf->Cell(200, 5, "- The balances are " . "as of " . ucwords(strtolower($term)) . " inclusive of the previous academic years balance.", 0, 0, 'L', false);
-                        $pdf->Ln();
+                        // $pdf->Cell(200, 5, "- The balances are " . "as of " . ucwords(strtolower($term)) . " inclusive of the previous academic years balance.", 0, 0, 'L', false);
+                        // $pdf->Ln();
                         $pdf->Cell(200, 5, "- When you sum the \"Balance\" and the \"Fees paid\" you get the total amount the student is supposed to pay.", 0, 0, 'L', false);
                         $pdf->Cell(40, 10, "Statistics", 0, 0, 'L', false);
                         $pdf->Ln();
@@ -4366,7 +4369,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $pdf->Ln();
                         $pdf->SetFont('Times', 'IU', 12);
                         $pdf->Ln();
-                        $pdf->Cell(200, 8, "Fees Balances for - " . classNameReport($student_class_fin) . "".$course_names. " - as of " . ucwords(strtolower($term)), 0, 0, 'C', false);
+                        $pdf->Cell(200, 8, "Fees Balances for - " . classNameReport($student_class_fin) . " ".$course_names, 0, 0, 'C', false);
                         $pdf->Ln();
                         $pdf->SetFont('Helvetica', 'B', 8);
                         $width = array(8, 33, 18, 15, 8, 38, 38, 38);
@@ -4468,8 +4471,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $pdf->Cell(40, 5, "Note :", 0, 0, 'L', false);
                                 $pdf->Ln();
                                 $pdf->SetFont('Times', 'I', 10);
-                                $pdf->Cell(200, 5, "- The balances are " . "as of " . ucwords(strtolower($term)) . " inclusive of the previous academic years balance.", 0, 0, 'L', false);
-                                $pdf->Ln();
+                                // $pdf->Cell(200, 5, "- The balances are " . "as of " . ucwords(strtolower($term)) . " inclusive of the previous academic years balance.", 0, 0, 'L', false);
+                                // $pdf->Ln();
                                 $pdf->Cell(200, 5, "- When you sum the \"Balance\" and the \"Fees paid\" you get the total amount the student is supposed to pay.", 0, 0, 'L', false);
                                 $pdf->Cell(40, 10, "Statistics", 0, 0, 'L', false);
                                 $pdf->Ln();
@@ -4485,7 +4488,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $pdf->Ln();
                                 $pdf->SetFont('Times', 'IU', 12);
                                 $pdf->Ln();
-                                $pdf->Cell(200, 8, "Fees Balances for " . classNameReport($student_class_fin) . "".$course_names."" . " as of " . ucwords(strtolower($term)), 0, 0, 'C', false);
+                                $pdf->Cell(200, 8, "Fees Balances for " . classNameReport($student_class_fin) . "".$course_names, 0, 0, 'C', false);
                                 $pdf->Ln();
                                 $pdf->SetFont('Helvetica', 'B', 8);
                                 $width = array(8, 33, 18, 15, 8, 38, 38, 38);
@@ -5529,7 +5532,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
                 // display the data in tables
                 // echo json_encode($expense_data);
-                $width = array(8, 40, 40, 20, 25, 25, 35);
+                $width = array(8, 50, 50, 20, 25, 50, 35);
                 $pdf->Ln();
                 $pdf->SetFont('Helvetica', 'B', 8);
                 $pdf->expenseTable($header, $expense_data, $width);

@@ -132,7 +132,7 @@ function display_revenue(data,start_from) {
     var data_to_display = "<br><h4 class='text-center'><u>Revenue List</u></h4><table class='table'><thead><tr><th>No.</th><th>Name</th><th>Amount</th><th>Date Recorded.</th><th>Revenue Name.</th><th>Contact Person</th><th>Customer Contact</th><th>Action</th></tr></thead><tbody id='revenue_lists_all_display'>";
     for (let index = 0; index < data.length; index++) {
         const element = data[index];
-        data_to_display+="<tr><td><input hidden value='"+JSON.stringify(element)+"' id='revenue_values_"+element.id+"'>"+(start_from+index+1)+"</td><td>"+element.name+"</td><td>Kes "+comma3(element.amount)+"</td><td>"+formatDate_1(element.date_recorded+"000000")+"</td><td>"+element.revenue_category_name+"</td><td>"+element.contact_person+"</td><td>"+element.customer_contact+"</td><td><span style='font-size:12px;' class='link edit_revenue_window' id='edit_revenue_window_"+element.id+"'><i class='fa fa-pen-fancy'></i> Edit </span> <br> <span style='font-size:12px;' class='link delete_revenue_window' id='delete_revenue_window_"+element.id+"'><i class='fa fa-trash'></i> Del</span> <br> <a target='_blank' href='/college_sims/reports/reports.php?revenue_receipt=true&revenue_details="+JSON.stringify(element)+"'><span style='font-size:12px;'><i class='fa fa-print'></i> Print</span></a></td></tr>";
+        data_to_display+="<tr><td><input hidden value='"+JSON.stringify(element)+"' id='revenue_values_"+element.id+"'>"+(start_from+index+1)+"</td><td>"+element.name+"</td><td>Kes "+comma3(element.amount)+"</td><td>"+formatDate_1(element.date_recorded+"000000")+"</td><td>"+element.revenue_category_name+"</td><td>"+element.contact_person+"</td><td>"+element.customer_contact+"</td><td><span style='font-size:12px;' class='link edit_revenue_window' id='edit_revenue_window_"+element.id+"'><i class='fa fa-pen-fancy'></i> Edit </span> <br> <span style='font-size:12px;' class='link delete_revenue_window' id='delete_revenue_window_"+element.id+"'><i class='fa fa-trash'></i> Del</span> <br> <a target='_blank' href='/nuelas_college/reports/reports.php?revenue_receipt=true&revenue_details="+JSON.stringify(element)+"'><span style='font-size:12px;'><i class='fa fa-print'></i> Print</span></a></td></tr>";
     }
     data_to_display+="</tbody></table>";
 
@@ -4713,7 +4713,7 @@ cObj("upload_supporting_documents").onclick = function () {
         formData.append("student_admission", customFileName);
       
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/college_sims/ajax/finance/financial.php", true);
+        xhr.open("POST", "/nuelas_college/ajax/finance/financial.php", true);
         
         xhr.upload.onprogress = function (e) {
           if (e.lengthComputable) {

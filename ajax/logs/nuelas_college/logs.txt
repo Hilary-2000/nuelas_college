@@ -1,3 +1,14 @@
+29th Oct 2025 14:28:18PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+29th Oct 2025 12:58:12PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+28th Oct 2025 09:23:59AM : Expense "Furniture" uploaded successfully! - {ANN AKOTCH}
+28th Oct 2025 09:22:27AM : Expense category "Furnitures & Office Equipments" added successfully! - {ANN AKOTCH}
+28th Oct 2025 09:17:46AM : Revenue "Bus Hire" has been added successfully! - {ANN AKOTCH}
+28th Oct 2025 09:08:42AM : Transaction for "Daniel Moses" Reg No "LC-2025-001" has been completed successfully! - {ANN AKOTCH}
+28th Oct 2025 09:00:53AM : Fees structure has been modified. Votehead "Admission Fees" has been added successfully! - {ANN AKOTCH}
+28th Oct 2025 08:58:52AM : Course "FASHION AND DESIGN II" has been added successfully! - {ANN AKOTCH}
+28th Oct 2025 07:45:17AM : Revenue category "Sale Of Goods" updated successfully! - {ANN AKOTCH}
+28th Oct 2025 07:33:21AM : School information changed successfully! - {ANN AKOTCH}
+28th Oct 2025 07:18:33AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 27th Oct 2025 20:24:31PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
 27th Oct 2025 20:24:08PM : Role "Accountant" has been updated successfully! - {JAMES WAKANDA}
 27th Oct 2025 20:08:41PM : The Sports House / Clubs "ICT department" has been updated successfully! - {JAMES WAKANDA}
