@@ -145,6 +145,10 @@ function checkPresnt($array, $string){
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <!-- END DATATABLES -->
+     
+    <!-- chartjs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- end chartjs -->
 
     
   <!-- Google tag (gtag.js) -->
@@ -697,9 +701,9 @@ function checkPresnt($array, $string){
                         <label for="reciept_size_transfer" class="form-control-label"><b>Select receipt size</b></label>
                         <select name="reciept_size" id="reciept_size_transfer" class="form-control">
                             <option value="" hidden>Select reciept Size</option>
-                            <option value="A4">A4 Size Full</option>
+                            <option hidden value="A4">A4 Size Full</option>
                             <option value="A51">A5 Size Sample 1</option>
-                            <option value="thermal1">Thermal paper size 80mm Sample 1</option>
+                            <option hidden value="thermal1">Thermal paper size 80mm Sample 1</option>
                         </select>
                     </p>
                     <input type="hidden" name="student_admission_no" id="student_admission_no_transfer">
@@ -3487,10 +3491,6 @@ function checkPresnt($array, $string){
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="no_of_terms" class="form-control-label">No of Terms</label>
-                        <input type="number" name="no_of_terms" id="no_of_terms" class="form-control" placeholder="No of Terms(5 terms)">
-                    </div>
-                    <div class="form-group">
                         <label for="fulltime_fees" class="form-control-label">Fulltime Fees</label>
                         <input type="number" name="fulltime_fees" value="0" id="fulltime_fees" class="form-control" placeholder="Fulltime Fees(Kes 20,000)">
                     </div>
@@ -3503,7 +3503,11 @@ function checkPresnt($array, $string){
                         <input type="number" name="weekend_fees" value="0" id="weekend_fees" class="form-control" placeholder="Weekend Fees(Kes 20,000)">
                     </div>
                     <div class="form-group">
-                        <label for="duration_in_figures" class="form-control-label">Term Durations</label>
+                        <label for="no_of_terms" class="form-control-label">No of Modules</label>
+                        <input type="number" name="no_of_terms" id="no_of_terms" class="form-control" placeholder="No of Modules(5 Modules)">
+                    </div>
+                    <div class="form-group">
+                        <label for="duration_in_figures" class="form-control-label">Modules Durations</label>
                         <input type="number" name="term_duration" id="term_duration" class="form-control" placeholder="Duration e.g, 10 months">
                     </div>
                     <div class="form-group">
@@ -3550,10 +3554,6 @@ function checkPresnt($array, $string){
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="edit_no_of_terms" class="form-control-label">No of Terms</label>
-                            <input type="number" name="edit_no_of_terms" id="edit_no_of_terms" class="form-control" placeholder="No of Terms(5 terms)">
-                        </div>
-                        <div class="form-group">
                             <label for="edit_fulltime_fees" class="form-control-label">Fulltime Fees</label>
                             <input type="number" name="edit_fulltime_fees" value="0" id="edit_fulltime_fees" class="form-control" placeholder="Fulltime Fees(Kes 20,000)">
                         </div>
@@ -3566,7 +3566,11 @@ function checkPresnt($array, $string){
                             <input type="number" name="edit_weekend_fees" value="0" id="edit_weekend_fees" class="form-control" placeholder="Weekend Fees(Kes 20,000)">
                         </div>
                         <div class="form-group">
-                            <label for="edit_term_duration" class="form-control-label">Term Durations</label>
+                            <label for="edit_no_of_terms" class="form-control-label">No of Modules</label>
+                            <input type="number" name="edit_no_of_terms" id="edit_no_of_terms" class="form-control" placeholder="No of Modules(5 Modules)">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_term_duration" class="form-control-label">Modules Durations</label>
                             <input type="number" name="edit_term_duration" id="edit_term_duration" class="form-control" placeholder="Duration e.g, 10 months">
                         </div>
                         <div class="form-group">

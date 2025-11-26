@@ -172,7 +172,7 @@
                         return;
                     }
 
-                    $data_to_display = "<table class='table' id='student_votehead_table'><tr><th rowspan='2'>No</th><th rowspan='2'>Votehead Name</th><th rowspan='2'>Role</th><th colspan='".count($active_course['module_terms'])."'>MODULES</th></tr><tr>";
+                    $data_to_display = "<div class='tableme'><table class='table' id='student_votehead_table'><tr><th rowspan='2'>No</th><th rowspan='2'>Votehead Name</th><th rowspan='2'>Role</th><th colspan='".count($active_course['module_terms'])."'>MODULES</th></tr><tr>";
                     foreach($active_course['module_terms'] as $key => $module){
                         $data_to_display.= "<th>".($key+1)." ".($module['status'] == 1 ? "<br> <span class='badge bg-success'>Active</span>" : "<br> <span class='badge bg-secondary'>In-Active</span>")."</th>";
                     }
@@ -199,7 +199,7 @@
                         }
                         $data_to_display.="</tr>";
                     }
-                    $data_to_display.="</table>";
+                    $data_to_display.="</table></div>";
                     echo $data_to_display;
                     return;
                 }
@@ -374,7 +374,7 @@
                                                     <td><input hidden id='course_value_finance' value='".$student_data['course_done']."'>" . ucwords(strtolower($course_name)) . "</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><b>Term Currently Enrolled</b></td>
+                                                    <td><b>Module Currently Enrolled</b></td>
                                                     <td>" . $term_enrolled . "</td>
                                                 </tr>
                                                 <tr>
@@ -387,7 +387,7 @@
                                                 </tr>
                                             </table>
                                         </div><hr>";
-                    $tableinformation1 .= "<p style='margin:10px 0;' >As at <b>" . $times . "</b> on <b>" . $date . "</b> <br>Current Term Enrolled: <b>" . $term_enrolled . "</b><br><span style='color:gray;' ><b>Total Fees Paid this term (without provisionals) : Kes " . number_format($fees_paid) . "</b><br><span style='color:gray;' ><b>Balance Carry Forward : Kes " . number_format($balance_cf) . "</b><br><b>Current Term payment : Kes " . number_format($current_term_fees) . "</b><br><span style='color:gray;' ><b>Total fees to be paid as per Current Term: <b>" . $term_enrolled . "</b>: " . $fees_to_pay . "</b></span><br><span style='color:gray;'><b>System calculated balance: Ksh</b> " . round($balancecalc) . ".</span>" . $headings . $fees_change . "<hr><strong>Current Balance is: Ksh <span id='closed_balance'  class='queried' title='click to change the student balance'>" . round($balance) . "</span></strong><input type='text' value='" . $admnos . "'  id='presented' hidden></p>";
+                    $tableinformation1 .= "<p style='margin:10px 0;' >As at <b>" . $times . "</b> on <b>" . $date . "</b> <br>Current Module Enrolled: <b>" . $term_enrolled . "</b><br><span style='color:gray;' ><b>Total Fees Paid this Module (without provisionals) : Kes " . number_format($fees_paid) . "</b><br><span style='color:gray;' ><b>Balance Carry Forward : Kes " . number_format($balance_cf) . "</b><br><b>Current Module payment : Kes " . number_format($current_term_fees) . "</b><br><span style='color:gray;' ><b>Total fees to be paid as per Current Module: <b>" . $term_enrolled . "</b>: " . $fees_to_pay . "</b></span><br><span style='color:gray;'><b>System calculated balance: Ksh</b> " . round($balancecalc) . ".</span>" . $headings . $fees_change . "<hr><strong>Current Balance is: Ksh <span id='closed_balance'  class='queried' title='click to change the student balance'>" . round($balance) . "</span></strong><input type='text' value='" . $admnos . "'  id='presented' hidden></p>";
                     $tableinformation1 .= "<p class='red_notice fa-sm hide' id='read_note'>Changing of the student balance is not encouraged, its to be done only when the student is newly registered to the system or there is change in the fees structure</p><br>";
                     $tableinformation1 .= "<div class='hide' id='fee_balance_new'><input type='number' id='new_bala_ces' placeholder='Enter New Balance'> <div class='acc_rej'><p class = 'redAcc' id='accBalance'>✔</p><p class='greenRej' id='rejectBalances' >✖</p></div></div>";
                     $tableinformation = "<p>- Below are the last 5 transactions recorded or less<br>- Find all the transaction made by the student by clicking the <b>Manage transaction</b> button at the menu.</p><p id='reversehandler'></p><p style = 'font-weight:550;font-size:17px;text-align:center;'><u>Finance table</u></p>";

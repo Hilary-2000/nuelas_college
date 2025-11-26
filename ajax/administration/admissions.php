@@ -17,6 +17,292 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
         include("../../connections/conn2.php");
         if(isset($_GET['admit'])){
             echo "<p class='text-danger'>Wrong place wrong time! ;-( </p>";
+        }elseif(isset($_GET['get_student_population'])){
+            $by_gender = $_GET['by_gender'];
+            $by_class = $_GET['by_class'];
+            $select = "SELECT `valued` FROM `settings` WHERE `sett` = 'class'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $classes = [];
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $classes = ($row['valued']);
+                }
+            }
+
+            if (isJson_report($classes)) {
+                $classes = json_decode($classes, true);
+            }else{
+                $classes = [];
+            }
+
+            for ($i=0; $i < count($classes); $i++) {
+                $classes[$i] = "'".$classes[$i]['classes']."'";
+            }
+
+            $select = "SELECT gender, COUNT(gender) AS gender_count, stud_class FROM student_data WHERE stud_class IN (".implode(",", $classes).") GROUP BY gender, stud_class;";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $class_result = [];
+            if($result){
+                while($row = $result->fetch_assoc()){
+                    array_push($class_result, $row);
+                }
+            }
+            for ($i=0; $i < count($classes); $i++) { 
+                $classes[$i] = substr($classes[$i],1,(strlen($classes[$i])-2));
+            }
+
+            // create the final array
+            $final_array = [];
+            for($index = 0; $index < count($classes); $index++){
+                $male = 0;
+                $female = 0;
+                for($index_2 = 0; $index_2 < count($class_result); $index_2++){
+                    if($class_result[$index_2]['stud_class'] == $classes[$index] && strtolower($class_result[$index_2]['gender']) == "male"){
+                        $male = $class_result[$index_2]['gender_count'];
+                    }
+                    if($class_result[$index_2]['stud_class'] == $classes[$index] && strtolower($class_result[$index_2]['gender']) == "female"){
+                        $female = $class_result[$index_2]['gender_count'];
+                    }
+                }
+                array_push($final_array, array(
+                    "class" => myClassName($classes[$index]),
+                    "male" => $male,
+                    "female" => $female,
+                    "male_active" => 0,
+                    "female_active" => 0,
+                    "male_inactive" => 0,
+                    "female_inactive" => 0
+                ));
+            }
+
+            // for every course get thos active and inactive
+            for ($index=0; $index < count($final_array); $index++) {
+                $select = "SELECT * FROM student_data WHERE stud_class IN (?)";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("s", $final_array[$index]['class']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if($result){
+                    while($row = $result->fetch_assoc()){
+                        $my_course_list = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list'], true) : [];
+                        $active_students = false;
+                        foreach($my_course_list as $course){
+                            if($course['course_status'] == 1){
+                                foreach($course['module_terms'] as $module){
+                                    if($module["status"] == "1"){
+                                        $active_students = true;
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+
+                        // active_students
+                        if($active_students){
+                            if($row['gender'] == "Male"){
+                                $final_array[$index]['male_active'] += 1;
+                            }else{
+                                $final_array[$index]['female_active'] += 1;
+                            }
+                        }
+                    }
+                }
+
+                $final_array[$index]['male_inactive'] = $final_array[$index]['male'] - $final_array[$index]['male_active'];
+                $final_array[$index]['female_inactive'] = $final_array[$index]['female'] - $final_array[$index]['female_active'];
+            }
+
+            echo json_encode($final_array);
+        }elseif(isset($_GET['get_student_fees'])){
+            include("../finance/financial.php");
+            $term = getTermV3($conn2);
+            $by_gender = $_GET['by_gender'];
+            $by_class = $_GET['by_class'];
+            $select = "SELECT `valued` FROM `settings` WHERE `sett` = 'class'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $classes = [];
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $classes = ($row['valued']);
+                }
+            }
+            if (isJson_report($classes)) {
+                $classes = json_decode($classes, true);
+            }else{
+                $classes = [];
+            }
+            for ($i=0; $i < count($classes); $i++) { 
+                $classes[$i] = $classes[$i]['classes'];
+            }
+            // term dates
+            $term_dates = getTermPeriod($conn2, $term);
+            $final_array = [];
+            for($index = 0; $index < count($classes); $index++){
+                $amount_paid = 0;
+                $balance = 0;
+                $select = "SELECT * FROM student_data WHERE stud_class = ?";
+                $stmt_2 = $conn2->prepare($select);
+                $stmt_2->bind_param("s", $classes[$index]);
+                $stmt_2->execute();
+                $result = $stmt_2->get_result();
+                if($result){
+                    while($row = $result->fetch_assoc()){
+                        $amount_paid += getFeespaidByStudent($row['adm_no'], $conn2, $term_dates);
+                        $balance += getBalanceReports($row['adm_no'],$term,$conn2);
+                    }
+                }
+                array_push($final_array, array(
+                    "class" => myClassName($classes[$index]),
+                    "amount_paid" => $amount_paid,
+                    "balance" => number_format($balance, 2, ".", "")
+                ));
+            }
+
+            echo json_encode($final_array);
+        }elseif(isset($_GET['get_expense_income_pie'])){
+            $term = getTermV3($conn2);
+            $term_periods = getAcademicStartV1($conn2, $term);
+            $select = "SELECT SUM(amount) AS total FROM `finance` WHERE date_of_transaction >= ? AND date_of_transaction <= ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss", $term_periods[0], $term_periods[1]);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $income = 0;
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $income = $row['total'] ?? 0;
+                }
+            }
+
+            // GET EXPENSE
+            $expense = 0;
+            $select = "SELECT SUM(exp_amount) AS total FROM `expenses` WHERE expense_date >= ? AND expense_date <= ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss", $term_periods[0], $term_periods[1]);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $expense = $row['total'] ?? 0;
+                }
+            }
+            echo json_encode(array(
+                "income" => $income,
+                "expense" => $expense
+            ));
+        }elseif (isset($_GET['student_attendance_statistics'])){
+            $select = "SELECT `valued` FROM `settings` WHERE `sett` = 'class'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $classes = [];
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $classes = ($row['valued']);
+                }
+            }
+            if (isJson_report($classes)) {
+                $classes = json_decode($classes, true);
+            }else{
+                $classes = [];
+            }
+            for ($i=0; $i < count($classes); $i++) { 
+                $classes[$i] = $classes[$i]['classes'];
+            }
+            
+            $class_attendance_stats = [];
+            for ($index=0; $index < count($classes); $index++) {
+                $select = "SELECT COUNT(*) AS total FROM attendancetable WHERE course_level = ? AND date = ?";
+                $stmt = $conn2->prepare($select);
+                $att_date = date("Y-m-d");
+                $stmt->bind_param("ss", $classes[$index], $att_date);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                $students_present = 0;
+                if($res){
+                    if($row = $res->fetch_assoc()){
+                        $students_present = $row['total']*1;
+                    }
+                }
+
+                // get the student population
+                $select = "SELECT COUNT(*) AS total FROM `student_data` WHERE stud_class = ?";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("s", $classes[$index]);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $student_population = 0;
+                if ($result) {
+                    if ($row = $result->fetch_assoc()) {
+                        $student_population = $row['total']*1;
+                    }
+                }
+
+                // students absent
+                $students_absent = $student_population - $students_present;
+                
+                array_push($class_attendance_stats, array(
+                    "class" => myClassName($classes[$index]),
+                    "total_population" => $student_population,
+                    "present" => $students_present,
+                    "absent" => $students_absent
+                ));
+            }
+
+            // class attendance stats
+            echo json_encode($class_attendance_stats);
+        }elseif(isset($_GET['get_income_per_mode_of_pay'])){
+            $term = getTermV3($conn2);
+            $term_periods = getAcademicStartV1($conn2, $term);
+            $select = "SELECT SUM(amount) AS amount, mode_of_pay FROM `finance` WHERE date_of_transaction >= ? AND date_of_transaction <= ? GROUP BY mode_of_pay;";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss", $term_periods[0], $term_periods[1]);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $mode_of_payment = [];
+            $cash_present = false;
+            $bank_present = false;
+            $mpesa_present = false;
+            if($result){
+                while($row = $result->fetch_assoc()){
+                    if($row['mode_of_pay'] == "mpesa"){
+                        $mpesa_present = true;
+                    }
+                    if($row['mode_of_pay'] == "cash"){
+                        $cash_present = true;
+                    }
+                    if($row['mode_of_pay'] == "bank"){
+                        $bank_present = true;
+                    }
+                    array_push($mode_of_payment, $row);
+                }
+            }
+            if(!$cash_present){
+                array_push($mode_of_payment, array(
+                    "mode_of_pay" => "cash",
+                    "amount" => "0"
+                ));
+            }
+            if(!$mpesa_present){
+                array_push($mode_of_payment, array(
+                    "mode_of_pay" => "mpesa",
+                    "amount" => "0"
+                ));
+            }
+            if(!$bank_present){
+                array_push($mode_of_payment, array(
+                    "mode_of_pay" => "bank",
+                    "amount" => "0"
+                ));
+            }
+            echo json_encode($mode_of_payment);
         }elseif(isset($_GET['reset_course_fees'])){
             $student_admission = $_GET['student_adm'];
             $select = "SELECT * FROM student_data WHERE adm_no = ?";
@@ -3592,22 +3878,34 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         }
                     }
 
+                    $select = "SELECT adm_no FROM `student_data` ORDER BY adm_no DESC LIMIT 1;";
+                    $stmt = $conn2->prepare($select);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $last_admission = null;
+                    if($result){
+                        if($row = $result->fetch_assoc()){
+                            $last_admission = $row['adm_no'];
+                        }
+                    }
+                    if($last_admission != null){
+                        $last_postfix = null;
+                        $max_iterations = 9;
+                        for ($index=$max_iterations; $index >= 3; $index--) {
+                            // last_admission
+                            if(strlen($last_admission) <= $index){
+                                break;
+                            }
+                            if(is_numeric(substr($last_admission, (-1*$index))) && !str_contains(substr($last_admission, (-1*$index)), "-")){
+                                $last_postfix = substr($last_admission, (-1*$index))*1;
+                                break;
+                            }
+                        }
+                        if($last_postfix != null){
+                            $admno = $last_postfix + 1;
+                        }
+                    }
                     $new_admission_no = $prefix.($admno < 10 ? "00".$admno : ($admno < 100 ? "0".$admno : $admno));
-                    
-                    // $students = getStudentData($new_admission_no, $conn2);
-                    // if(count($students) > 0){
-                    //     $select  = "SELECT * FROM `student_data` WHERE `adm_no` LIKE '$prefix%' ORDER BY adm_no DESC";
-                    //     $stmt = $conn2->prepare($select);
-                    //     $stmt->execute();
-                    //     $result = $stmt->get_result();
-                    //     if($result){
-                    //         if($row = $result->fetch_assoc()){
-                    //             $lastest_admission = (substr($row['adm_no'], strlen($prefix)) * 1) + 1;
-                    //             $new_admission_no = $prefix.($lastest_admission < 10 ? "00".$lastest_admission : ($lastest_admission < 100 ? "0".$lastest_admission : $lastest_admission));
-                    //         }
-                    //     }
-                    // }
-                    // prefix
                     echo $new_admission_no;
                 }
             }

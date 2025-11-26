@@ -448,3 +448,541 @@ setInterval(() => {
     var datapass = "?notices=true";
     sendData("GET","notices/notices.php",datapass,cObj("note_2"));
 }, 60000);
+
+let studentPopulationChartInstance = null;
+let attendanceChartInstance = null;
+let modeOfPayChartInstance = null;
+let feesBalanceChartInstance = null;
+let incomePieInstance = null;
+let expensePieInstance = null;
+let genderPopulationPieInstance = null;
+function load_dash_graphs() {
+
+    if (studentPopulationChartInstance !== null) {
+        studentPopulationChartInstance.destroy();
+    }
+    if (attendanceChartInstance !== null) {
+        attendanceChartInstance.destroy();
+    }
+    if (modeOfPayChartInstance !== null) {
+        modeOfPayChartInstance.destroy();
+    }
+    if (feesBalanceChartInstance !== null) {
+        feesBalanceChartInstance.destroy();
+    }
+    if (incomePieInstance !== null) {
+        incomePieInstance.destroy();
+    }
+    if (expensePieInstance !== null) {
+        expensePieInstance.destroy();
+    }
+    if (genderPopulationPieInstance !== null) {
+        genderPopulationPieInstance.destroy();
+    }
+
+    if(!cObj("student_population_loader").classList.contains("hide") || !cObj("fees_balance_data_loader").classList.contains("hide") || !cObj("income_and_expense_pie_loader").classList.contains("hide") || !cObj("student_attendance_data_loader").classList.contains("hide") || !cObj("fees_collection_modeofpay_loader").classList.contains("hide")){
+        return;
+    }
+
+    // student population chart
+    if (cObj("studentPopulationChart") != undefined) {
+        // get the student population
+        var datapass = "?get_student_population=true&by_gender=true&by_class=true";
+        sendData2("GET", "administration/admissions.php", datapass, cObj("student_population_data"), cObj("student_population_loader"), function () {
+            // create the chart
+            var student_population = cObj("student_population_data").innerText;
+            if (hasJsonStructure(student_population)) {
+                var student_pop = JSON.parse(student_population);
+                const labels = student_pop.map(item => item.class);
+
+                const maleActive = student_pop.map(item => item.male_active);
+                const maleInactive = student_pop.map(item => item.male_inactive);
+
+                const femaleActive = student_pop.map(item => item.female_active);
+                const femaleInactive = student_pop.map(item => item.female_inactive);
+
+
+                const ctx = document.getElementById('studentPopulationChart').getContext('2d');
+                studentPopulationChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            // MALE STACK
+                            {
+                                label: 'Male Active',
+                                data: maleActive,
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                stack: 'male'
+                            },
+                            {
+                                label: 'Male Inactive',
+                                data: maleInactive,
+                                backgroundColor: 'rgba(54, 162, 235, 0.3)',
+                                stack: 'male'
+                            },
+
+                            // FEMALE STACK
+                            {
+                                label: 'Female Active',
+                                data: femaleActive,
+                                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                                stack: 'female'
+                            },
+                            {
+                                label: 'Female Inactive',
+                                data: femaleInactive,
+                                backgroundColor: 'rgba(255, 99, 132, 0.3)',
+                                stack: 'female'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Student Population by Course Level',
+                                font: {
+                                    family: 'Nunito',
+                                    size: 15,
+                                    weight: '700'
+                                },
+                                padding: { top: 10, bottom: 20 }
+                            },
+                            legend: {
+                                labels: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                ticks: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                ticks: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+
+                // get male and female population
+                const male = student_pop.map(item => item.male);
+                const female = student_pop.map(item => item.female);
+                var male_pop = 0;
+                var female_pop = 0;
+                for (let index = 0; index < male.length; index++) {
+                    const element = male[index];
+                    male_pop+=element;
+                }
+                for (let index = 0; index < female.length; index++) {
+                    const element = female[index];
+                    female_pop+=element;
+                }
+                var pieLabels = ["Male Students", "Female Students"];
+                const ctx2 = document.getElementById('gender_population_pie').getContext('2d');
+
+                genderPopulationPieInstance = new Chart(ctx2, {
+                    type: 'pie',
+                    data: {
+                        labels: pieLabels,
+                        datasets: [{
+                            label:"Gender Population",
+                            data: [male_pop, female_pop],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 99, 132, 0.7)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Gender Population',
+                                font: {
+                                    family: 'Nunito',
+                                    size: 15,
+                                    weight: '700'
+                                },
+                                padding: { top: 10, bottom: 20 }
+                            },
+                            legend: {
+                                labels: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    // get the student fees by class
+
+    if(cObj("studentFeesBalanceData") != undefined){
+        // get the student fees balance
+        var datapass = "?get_student_fees=true&by_gender=true&by_class=true";
+        sendData2("GET", "administration/admissions.php", datapass, cObj("student_fees_balance_data"), cObj("fees_balance_data_loader"), function () {
+            // create the chart
+            var student_population = cObj("student_fees_balance_data").innerText;
+            if (hasJsonStructure(student_population)) {
+                var student_pop = JSON.parse(student_population);
+                const labels = student_pop.map(item => item.class);
+                const amount_paid = student_pop.map(item => item.amount_paid);
+                const balance = student_pop.map(item => item.balance);
+                const ctx = document.getElementById('studentFeesBalanceData').getContext('2d');
+
+                feesBalanceChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Fees Paid',
+                                data: amount_paid,
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                            },
+                            {
+                                label: 'Balance',
+                                data: balance,
+                                backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Student Fees Balances by Course Level',
+                                font: {
+                                    family: 'Nunito',
+                                    size: 15,
+                                    weight: '700'
+                                },
+                                padding: { top: 10, bottom: 20 }
+                            },
+                            legend: {
+                                labels: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // pie chart
+                var fullBalance = 0;
+                var fullAmountPaid = 0;
+                for (let index = 0; index < balance.length; index++) {
+                    const element = balance[index];
+                    fullBalance+=(element*1);
+                }
+                for (let index = 0; index < amount_paid.length; index++) {
+                    const element = amount_paid[index];
+                    fullAmountPaid+=(element*1);
+                }
+
+                var pieLabels = ["Fees Paid", "Balance"];
+                const ctx2 = document.getElementById('studentFeesBalanceDataPie').getContext('2d');
+
+                incomePieInstance = new Chart(ctx2, {
+                    type: 'pie',
+                    data: {
+                        labels: pieLabels,
+                        datasets: [{
+                            label:"Payment Details",
+                            data: [fullAmountPaid, fullBalance],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 99, 132, 0.7)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Fees Paid against Fees Balances',
+                                font: {
+                                    family: 'Nunito',
+                                    size: 15,
+                                    weight: '700'
+                                },
+                                padding: { top: 10, bottom: 20 }
+                            },
+                            legend: {
+                                labels: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    if(cObj("studentIncomeDataPie") != undefined){
+        // get the term expense and income comparison in a pie chart
+        var datapass = "?get_expense_income_pie=true";
+        sendData2("GET", "administration/admissions.php", datapass, cObj("income_and_expense_pie"), cObj("income_and_expense_pie_loader"), function () {
+            var income_and_expense_pie = cObj("income_and_expense_pie").innerText;
+            if (hasJsonStructure(income_and_expense_pie)){
+                var income_expense = JSON.parse(income_and_expense_pie);
+                const labels = ["Fees & Revenue", "Expenses"];
+                const income = income_expense.income;
+                const expense = income_expense.expense;
+                const ctx = document.getElementById('studentIncomeDataPie').getContext('2d');
+                expensePieInstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label:"Income & Expense",
+                            data: [income, expense],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 99, 132, 0.7)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Income against Expenses',
+                                font: {
+                                    family: 'Nunito',
+                                    size: 15,
+                                    weight: '700'
+                                },
+                                padding: { top: 10, bottom: 20 }
+                            },
+                            legend: {
+                                labels: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    if(cObj("student_attendance_data_chart") != undefined){
+        // get the student fees balance
+        var datapass = "?student_attendance_statistics=true&by_gender=true&by_class=true";
+            sendData2("GET", "administration/admissions.php", datapass, cObj("student_attendance_data_stats"), cObj("student_attendance_data_loader"), function () {
+                // create the chart
+                var student_population = cObj("student_attendance_data_stats").innerText;
+                if (hasJsonStructure(student_population)) {
+                    var student_pop = JSON.parse(student_population);
+                    const labels = student_pop.map(item => item.class);
+                    const present = student_pop.map(item => item.present);
+                    const absent = student_pop.map(item => item.absent);
+                    const ctx = document.getElementById('student_attendance_data_chart').getContext('2d');
+
+                    attendanceChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: 'Present',
+                                    data: present,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                                },
+                                {
+                                    label: 'Absent',
+                                    data: absent,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            interaction: {
+                                mode: 'index',
+                                intersect: false
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Student attendance by Course Level (Today)',
+                                    font: {
+                                        family: 'Nunito',
+                                        size: 15,
+                                        weight: '700'
+                                    },
+                                    padding: { top: 10, bottom: 20 }
+                                },
+                                legend: {
+                                    labels: {
+                                        font: {
+                                            family: 'Nunito'
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        font: {
+                                            family: 'Nunito'
+                                        }
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        font: {
+                                            family: 'Nunito'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+    }
+
+    if(cObj("fees_collection_modeofpay_chart") != undefined){
+        // get the student fees balance
+        var datapass = "?get_income_per_mode_of_pay=true";
+        sendData2("GET", "administration/admissions.php", datapass, cObj("fees_collection_modeofpay"), cObj("fees_collection_modeofpay_loader"), function () {
+            // create the chart
+            var mode_of_pay_data = cObj("fees_collection_modeofpay").innerText;
+            if (hasJsonStructure(mode_of_pay_data)) {
+                var mode_of_pay = JSON.parse(mode_of_pay_data);
+                const labels = mode_of_pay.map(item => item.mode_of_pay);
+                const amount = mode_of_pay.map(item => item.amount);
+                const ctx = document.getElementById('fees_collection_modeofpay_chart').getContext('2d');
+
+                modeOfPayChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Fees Paid',
+                                data: amount,
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Fees Collection by Mode of Pay',
+                                font: {
+                                    family: 'Nunito',
+                                    size: 15,
+                                    weight: '700'
+                                },
+                                padding: { top: 10, bottom: 20 }
+                            },
+                            legend: {
+                                labels: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    font: {
+                                        family: 'Nunito'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+}

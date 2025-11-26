@@ -208,6 +208,9 @@ cObj("dash").onclick = function () {
     } else {
         cObj("tr_dash").classList.remove("hide");
     }
+
+    // load the dashboard graphs
+    load_dash_graphs();
 }
 cObj("skip").onclick = function () {
     hideWindow();
@@ -1529,8 +1532,25 @@ window.onload = function () {
         //my subjects
         var datapass = "?subs_lists=true";
         sendData("GET", "academic/academic.php", datapass, cObj("my_subjects"));
-
     }
+
+    // hide the graphs not to display
+    if (cObj("findtrans").classList.contains("d-none")) {
+        var finance_graphs = document.getElementsByClassName("finance_graphs");
+        for (let index = 0; index < finance_graphs.length; index++) {
+            const element = finance_graphs[index];
+            element.classList.add("d-none");
+        }
+    }else{
+        var finance_graphs = document.getElementsByClassName("finance_graphs");
+        for (let index = 0; index < finance_graphs.length; index++) {
+            const element = finance_graphs[index];
+            element.classList.remove("d-none");
+        }
+    }
+
+    // load dashboard
+    load_dash_graphs();
 }
 
 /*******end of it********/
@@ -4233,14 +4253,14 @@ cObj("submitbtn").onclick = function () {
             var parent_accupation1 = valObj("parent_accupation1").trim().length > 0 ? valObj("parent_accupation1").trim() : "none";
             var parent_accupation2 = valObj("parent_accupation2").trim().length > 0 ? valObj("parent_accupation2").trim() : "none";
 
-            var datapass = "admit=true&surname=" + surname + "&fname=" + fname + "&sname=" + sname +"&doa="+ doa +"&dob=" + dob + "&gender=" + gender + "&enrolment=" + errolment + "&parentname=" + parname + "&parentconts=" + parconts + "&upis=" + upis;
-            datapass += "&parentrela=" + parrelation + "&pemail=" + pemail + "&bcno=" + bcno + "&address=" + address + "&admnos=" + admno;
-            datapass += "&parentrela2=" + parrelation2 + "&pemail2=" + pemail2 + "&parentname2=" + parname2 + "&parentconts2=" + parconts2;
-            datapass += "&parent_accupation1=" + parent_accupation1 + "&parent_accupation2=" + parent_accupation2 + "&last_year_academic_balance=" + last_year_academic_balance;
-            datapass += "&course_chosen="+course_chosen+"&adm_option="+valObj("automated_amd");
-            datapass += "&student_contacts="+student_contacts+"&student_email="+student_email+"&college_branch="+college_branch;
-            datapass += "&intake_year="+valObj("intake_year")+"&intake_month="+valObj("intake_month")+"&course_module_terms="+course_module_terms;
-            datapass += "&study_mode="+module_terms+"&send_student_message="+(cObj("send_student_parent_sms").checked ? "on" : "off")+"&send_first_parent="+(cObj("send_primary_parent_sms").checked ? "on" : "off")+"&send_second_parent="+(cObj("send_secondary_parent_sms").checked ? "on" : "off")+"";
+            var datapass = "admit=true&surname=" + encodeURIComponent(surname) + "&fname=" + encodeURIComponent(fname) + "&sname=" + encodeURIComponent(sname) +"&doa="+ encodeURIComponent(doa) +"&dob=" + encodeURIComponent(dob) + "&gender=" + encodeURIComponent(gender) + "&enrolment=" + encodeURIComponent(errolment) + "&parentname=" + encodeURIComponent(parname) + "&parentconts=" + encodeURIComponent(parconts) + "&upis=" + encodeURIComponent(upis);
+            datapass += "&parentrela=" + encodeURIComponent(parrelation) + "&pemail=" + encodeURIComponent(pemail) + "&bcno=" + encodeURIComponent(bcno) + "&address=" + encodeURIComponent(address) + "&admnos=" + encodeURIComponent(admno);
+            datapass += "&parentrela2=" + encodeURIComponent(parrelation2) + "&pemail2=" + encodeURIComponent(pemail2) + "&parentname2=" + encodeURIComponent(parname2) + "&parentconts2=" + encodeURIComponent(parconts2);
+            datapass += "&parent_accupation1=" + encodeURIComponent(parent_accupation1) + "&parent_accupation2=" + encodeURIComponent(parent_accupation2) + "&last_year_academic_balance=" + encodeURIComponent(last_year_academic_balance);
+            datapass += "&course_chosen="+encodeURIComponent(course_chosen)+"&adm_option="+encodeURIComponent(valObj("automated_amd"));
+            datapass += "&student_contacts="+encodeURIComponent(student_contacts)+"&student_email="+encodeURIComponent(student_email)+"&college_branch="+encodeURIComponent(college_branch);
+            datapass += "&intake_year="+encodeURIComponent(valObj("intake_year"))+"&intake_month="+encodeURIComponent(valObj("intake_month"))+"&course_module_terms="+encodeURIComponent(course_module_terms);
+            datapass += "&study_mode="+encodeURIComponent(module_terms)+"&send_student_message="+(cObj("send_student_parent_sms").checked ? "on" : "off")+"&send_first_parent="+(cObj("send_primary_parent_sms").checked ? "on" : "off")+"&send_second_parent="+(cObj("send_secondary_parent_sms").checked ? "on" : "off")+"";
             sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("erroradm"),cObj("loadings"), function () {
                 if (cObj("admnohold") != null) {
                     var admnos = valObj("admnohold");
@@ -4315,9 +4335,9 @@ function checkAdmission() {
     }
     if (valObj("automated_amd") == "insertmanually") {
         err += checkBlank("mangen");
-    }
-    if (cObj("admgenman").innerText.length > 0) {
-        err++;
+        if (cObj("admgenman").innerText.length > 0) {
+            err++;
+        }
     }
 
     if (cObj("course_module_terms") != undefined) {
@@ -10306,8 +10326,8 @@ cObj("add_course_btn").onclick = function () {
     if (err == 0) {
         // proceed and save the course levels
         var dept_name = valObj("department_id");
-        var datapass = "?add_course=true&course_name="+valObj("course_input_text")+"&course_level="+valObj("course_list_setup")+"&department_name="+dept_name;
-        datapass += "&no_of_terms="+valObj("no_of_terms")+"&fulltime_fees="+valObj("fulltime_fees")+"&evening_fees="+valObj("evening_fees")+"&weekend_fees="+valObj("weekend_fees")+"&term_duration="+valObj("term_duration")+"&duration_intervals="+valObj("duration_intervals");
+        var datapass = "?add_course=true&course_name="+encodeURIComponent(valObj("course_input_text"))+"&course_level="+encodeURIComponent(valObj("course_list_setup"))+"&department_name="+encodeURIComponent(dept_name);
+        datapass += "&no_of_terms="+encodeURIComponent(valObj("no_of_terms"))+"&fulltime_fees="+encodeURIComponent(valObj("fulltime_fees"))+"&evening_fees="+encodeURIComponent(valObj("evening_fees"))+"&weekend_fees="+encodeURIComponent(valObj("weekend_fees"))+"&term_duration="+encodeURIComponent(valObj("term_duration"))+"&duration_intervals="+encodeURIComponent(valObj("duration_intervals"));
         sendData2("GET","administration/admissions.php",datapass, cObj("add_course_outputtxt"), cObj("add_course_clock"));
         setTimeout(() => {
             var timeout = 0;
@@ -10355,9 +10375,9 @@ cObj("Edit_course_btn").onclick = function () {
     if (err == 0) {
         // proceed and save the course levels
         var dept_name = valObj("department_id_edit");
-        var datapass = "?edit_course=true&course_name="+valObj("course_edit_input_text")+"&course_levels="+JSON.stringify([])+"&department_name="+dept_name+"&course_id="+valObj("course_id_holder");
-        datapass += "&course_level="+valObj("course_list_setup_edit")+"&no_of_terms="+valObj("edit_no_of_terms")+"&termly_fees="+valObj("edit_termly_fees")+"&term_duration="+valObj("edit_term_duration");
-        datapass += "&duration_intervals="+valObj("edit_duration_intervals")+"&fulltime_fees="+valObj("edit_fulltime_fees")+"&evening_fees="+valObj("edit_evening_fees")+"&weekend_fees="+valObj("edit_weekend_fees");
+        var datapass = "?edit_course=true&course_name="+encodeURIComponent(valObj("course_edit_input_text"))+"&course_levels="+JSON.stringify([])+"&department_name="+encodeURIComponent(dept_name)+"&course_id="+encodeURIComponent(valObj("course_id_holder"));
+        datapass += "&course_level="+encodeURIComponent(valObj("course_list_setup_edit"))+"&no_of_terms="+encodeURIComponent(valObj("edit_no_of_terms"))+"&termly_fees="+encodeURIComponent(valObj("edit_termly_fees"))+"&term_duration="+encodeURIComponent(valObj("edit_term_duration"));
+        datapass += "&duration_intervals="+encodeURIComponent(valObj("edit_duration_intervals"))+"&fulltime_fees="+encodeURIComponent(valObj("edit_fulltime_fees"))+"&evening_fees="+encodeURIComponent(valObj("edit_evening_fees"))+"&weekend_fees="+encodeURIComponent(valObj("edit_weekend_fees"));
         sendData2("GET","administration/admissions.php",datapass, cObj("edit_course_outputtxt"), cObj("edit_course_clock"));
         setTimeout(() => {
             var timeout = 0;

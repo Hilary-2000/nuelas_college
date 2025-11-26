@@ -1,3 +1,17 @@
+26th Nov 2025 20:26:22PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+26th Nov 2025 20:14:57PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+26th Nov 2025 16:43:08PM : Transaction for "Alex Mukwana" Reg No "NC-2025-017" has been completed successfully! - {ANN AKOTCH}
+26th Nov 2025 16:16:00PM : ALEX MUKWANA with admission number NC-2025-017 has been admitted successfully - {ANN AKOTCH}
+26th Nov 2025 16:08:12PM : James Karani of Reg No (NC-2025-014) discounts have been updated successfully - {ANN AKOTCH}
+26th Nov 2025 15:34:08PM : James James of adm no NC-2025-014  balance has been updated successfully! - {ANN AKOTCH}
+26th Nov 2025 15:32:25PM : EMELDA DHAKHO with admission number NC-2025-014 has been admitted successfully - {ANN AKOTCH}
+26th Nov 2025 15:31:28PM : James Kelvin of Reg No (NC-2025-013) discounts have been updated successfully - {ANN AKOTCH}
+26th Nov 2025 15:29:31PM : EMELDA DHAKHO with admission number NC-2025-013 has been admitted successfully - {ANN AKOTCH}
+26th Nov 2025 15:27:06PM : Course "Fashion & Design" has been added successfully! - {ANN AKOTCH}
+26th Nov 2025 15:13:29PM : Course "Fashion " has been deleted successfully! - {ANN AKOTCH}
+26th Nov 2025 15:10:00PM : Course "Fashion " has been added successfully! - {ANN AKOTCH}
+26th Nov 2025 14:52:16PM : Class "Certificate" added successfully - {ANN AKOTCH}
+26th Nov 2025 14:08:54PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 03rd Nov 2025 16:23:33PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 03rd Nov 2025 16:21:57PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 30th Oct 2025 15:05:00PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}

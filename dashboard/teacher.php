@@ -95,5 +95,56 @@
             </div>    
         </div>-->
     </div>
-
+    <hr class="w-75 mx-auto">
+    <div class="row p-1 w-100 mx-auto">
+        <div class="col-md-6 my-1" style="max-height: 45vh;">
+            <div class="container bg-white rounded">
+                <p class="d-none" id="student_population_data"></p>
+                <h5 class="text-center"><span class="hide" id="student_population_loader"><img src="images/ajax_clock_small.gif" id=""> Loading Charts...</span></h5>
+                <canvas id="studentPopulationChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 my-1" style="max-height: 45vh;">
+            <div class="container bg-white rounded">
+                <p class="d-none" id="student_attendance_data_stats"></p>
+                <h5 class="text-center"><span class="hide" id="student_attendance_data_loader"><img src="images/ajax_clock_small.gif" id=""> Loading Charts...</span></h5>
+                <canvas id="student_attendance_data_chart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 my-1 finance_graphs" style="max-height: 45vh;">
+            <div class="container bg-white rounded">
+                <p class="d-none" id="fees_collection_modeofpay"></p>
+                <h5 class="text-center"><span class="hide" id="fees_collection_modeofpay_loader"><img src="images/ajax_clock_small.gif" id=""> Loading Charts...</span></h5>
+                <canvas id="fees_collection_modeofpay_chart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 my-1 finance_graphs" style="max-height: 45vh;">
+            <div class="container bg-white rounded">
+                <p class="d-none" id="student_fees_balance_data"></p>
+                <h5 class="text-center"><span class="hide" id="fees_balance_data_loader"><img src="images/ajax_clock_small.gif" id=""> Loading Charts...</span></h5>
+                <canvas id="studentFeesBalanceData"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4 mt-2 finance_graphs" style="max-height: 45vh;">
+            <div class="container bg-white rounded">
+                <p class="d-none" id="student_fees_balance_pie"></p>
+                <h5 class="text-center"><span class="hide" id="fees_balance_data_loader_pie"><img src="images/ajax_clock_small.gif" id=""></span></h5>
+                <canvas id="studentIncomeDataPie"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4 mt-2 finance_graphs" style="max-height: 45vh;">
+            <div class="container bg-white rounded">
+                <p class="d-none" id="income_and_expense_pie"></p>
+                <h5 class="text-center"><span class="hide" id="income_and_expense_pie_loader"><img src="images/ajax_clock_small.gif" id=""></span></h5>
+                <canvas id="studentFeesBalanceDataPie"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4 mt-2" style="max-height: 45vh;">
+            <div class="container bg-white rounded">
+                <p class="d-none" id="gender_population_data_holder"></p>
+                <h5 class="text-center"><span class="hide" id="gender_population_pie_loader"><img src="images/ajax_clock_small.gif" id=""></span></h5>
+                <canvas id="gender_population_pie"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
