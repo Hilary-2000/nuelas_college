@@ -686,7 +686,7 @@ function load_dash_graphs() {
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Student Fees Balances by Course Level',
+                                text: 'Student Fees Balances by Course Level (Today)',
                                 font: {
                                     family: 'Nunito',
                                     size: 15,
@@ -759,7 +759,7 @@ function load_dash_graphs() {
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Fees Paid against Fees Balances',
+                                text: 'Fees Paid against Fees Balances (Today)',
                                 font: {
                                     family: 'Nunito',
                                     size: 15,
@@ -814,7 +814,7 @@ function load_dash_graphs() {
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Income against Expenses',
+                                text: 'Income against Expenses (Today)',
                                 font: {
                                     family: 'Nunito',
                                     size: 15,
@@ -947,7 +947,7 @@ function load_dash_graphs() {
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Fees Collection by Mode of Pay',
+                                text: 'Fees Collection by Mode of Pay (This Month)',
                                 font: {
                                     family: 'Nunito',
                                     size: 15,

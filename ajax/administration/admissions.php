@@ -142,7 +142,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $classes[$i] = $classes[$i]['classes'];
             }
             // term dates
-            $term_dates = getTermPeriod($conn2, $term);
+            $term_dates = [date("Y-m")."-01", date("Y-m", strtotime("1 month"))."-01"];
             $final_array = [];
             for($index = 0; $index < count($classes); $index++){
                 $amount_paid = 0;
@@ -167,9 +167,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
             echo json_encode($final_array);
         }elseif(isset($_GET['get_expense_income_pie'])){
-            $term = getTermV3($conn2);
-            $term_periods = getAcademicStartV1($conn2, $term);
-            $select = "SELECT SUM(amount) AS total FROM `finance` WHERE date_of_transaction >= ? AND date_of_transaction <= ?";
+            $term_periods = [date("Y-m")."-01", date("Y-m", strtotime("1 month"))."-01"];
+            $select = "SELECT SUM(amount) AS total FROM `finance` WHERE date_of_transaction >= ? AND date_of_transaction < ?";
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("ss", $term_periods[0], $term_periods[1]);
             $stmt->execute();
@@ -259,9 +258,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             // class attendance stats
             echo json_encode($class_attendance_stats);
         }elseif(isset($_GET['get_income_per_mode_of_pay'])){
-            $term = getTermV3($conn2);
-            $term_periods = getAcademicStartV1($conn2, $term);
-            $select = "SELECT SUM(amount) AS amount, mode_of_pay FROM `finance` WHERE date_of_transaction >= ? AND date_of_transaction <= ? GROUP BY mode_of_pay;";
+            $term_periods = [date("Y-m")."-01", date("Y-m", strtotime("1 month"))."-01"];
+            $select = "SELECT SUM(amount) AS amount, mode_of_pay FROM `finance` WHERE date_of_transaction >= ? AND date_of_transaction < ? GROUP BY mode_of_pay;";
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("ss", $term_periods[0], $term_periods[1]);
             $stmt->execute();
