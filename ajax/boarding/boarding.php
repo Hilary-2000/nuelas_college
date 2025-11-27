@@ -3,17 +3,20 @@
     if($_SERVER['REQUEST_METHOD'] == 'GET'){
         include("../../connections/conn2.php");
         if (isset($_GET['get_dorm_captain'])) {
+            // selected captain
+            $selected_captain = isset($_GET['selected_captain']) ? $_GET['selected_captain'] : "0";
+
             //get the teacher list in the dormitory table
             $select = "SELECT `dorm_captain` FROM `dorm_list` WHERE `deleted` = 0 AND `activated` = 1";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $trlists = "";
+                $captain_list = "";
                 while ($row = $result->fetch_assoc()) {
-                    $trlists.=$row['dorm_captain'].",";
+                    $captain_list.=$row['dorm_captain'].",";
                 }
-                $trlists = removeComma($trlists);
+                $captain_list = removeComma($captain_list);
                 include("../../connections/conn1.php");
                 //get the school teachers list
                 $select = "SELECT `fullname`, `user_id` FROM  `user_tbl` WHERE `school_code` = ? AND `deleted` = 0 AND `activated` = 1";
@@ -22,36 +25,36 @@
                 $stmt->bind_param("s",$schoolcode);
                 $stmt->execute();
                 $result = $stmt->get_result();
-                $tr_list_2 = "";
+                $teachers_list = "";
                 if ($result) {
                     while ($row = $result->fetch_assoc()) {
-                        $tr_list_2.=$row['user_id'].",";
+                        $teachers_list.=$row['user_id'].",";
                     }
-                    $tr_list_2 = removeComma($tr_list_2);
+                    $teachers_list = removeComma($teachers_list);
                 }
                 if (isset($_GET['class_name'])) {
-                    $strin_to_display = "<select name='".$_GET['class_name']."' id='".$_GET['class_name']."'><option value='' hidden>Select..</option>";
+                    $teacher_list_dropdown = "<select name='".$_GET['class_name']."' id='".$_GET['class_name']."'><option value='' hidden>Select..</option>";
                 }else {
-                    $strin_to_display = "<select name='dorm_captain' id='dorm_captain'><option value='' hidden>Select..</option>";
+                    $teacher_list_dropdown = "<select name='dorm_captain' id='dorm_captain'><option value='' hidden>Select..</option>";
                 }
-                if (strlen($trlists) > 0) {
-                    $tr_list_1 = explode(",",$trlists);
-                    $tr_lists_2 = explode(",",$tr_list_2);
-                    for ($ind=0; $ind < count($tr_lists_2); $ind++) { 
-                        $present = checkPresnt($tr_list_1,$tr_lists_2[$ind]);
-                        if ($present == 0) {
-                            $strin_to_display.="<option value='".$tr_lists_2[$ind]."'>".getTeacherName($tr_lists_2[$ind])."</option>";
+                if (strlen($captain_list) > 0) {
+                    $captain_list = explode(",",$captain_list);
+                    $teachers_list = explode(",",$teachers_list);
+                    for ($ind=0; $ind < count($teachers_list); $ind++) { 
+                        $present = checkPresnt($captain_list,$teachers_list[$ind]);
+                        if ($present == 0 || $selected_captain == $teachers_list[$ind]) {
+                            $teacher_list_dropdown.="<option ".($selected_captain == $teachers_list[$ind] ? "selected" : "")." value='".$teachers_list[$ind]."'>".getTeacherName($teachers_list[$ind])."</option>";
                         }
                     }
-                    $strin_to_display.="</select>";
-                    echo $strin_to_display;
+                    $teacher_list_dropdown.="</select>";
+                    echo $teacher_list_dropdown;
                 }else {
-                    $tr_lists_2 = explode(",",$tr_list_2);
-                    for ($ind=0; $ind < count($tr_lists_2); $ind++) { 
-                        $strin_to_display.="<option value='".$tr_lists_2[$ind]."'>".getTeacherName($tr_lists_2[$ind])."</option>";
+                    $teachers_list = explode(",",$teachers_list);
+                    for ($ind=0; $ind < count($teachers_list); $ind++) { 
+                        $teacher_list_dropdown.="<option value='".$teachers_list[$ind]."'>".getTeacherName($teachers_list[$ind])."</option>";
                     }
-                    $strin_to_display.="</select>";
-                    echo $strin_to_display;
+                    $teacher_list_dropdown.="</select>";
+                    echo $teacher_list_dropdown;
                 }
             }else {
                 echo "<p style='color:red;font-size:12px;font-weight:600;'>No teachers available to assign the dormitory</p>";
@@ -60,33 +63,37 @@
             $dorm_capacity = $_GET['dorm_capacity'];
             $dorm_name = $_GET['dorm_name'];
             $dorm_captain = $_GET['dorm_captain'];
-            $select = "INSERT INTO `dorm_list` (`dorm_name`,`dorm_capacity`,`dorm_captain`,`activated`,`deleted`) VALUES (?,?,?,?,?)";
+            $bed_capacity = $_GET['bed_capacity'];
+            $room_capacity = $_GET['room_capacity'];
+            $matress_count = $_GET['matress_count'];
+            $comment = $_GET['comment'];
+            $select = "INSERT INTO `dorm_list` (`dorm_name`,`dorm_capacity`,`dorm_captain`,`activated`,`deleted`,`bed_capacity`, `cube_count`, `matress_count`, `comment`) VALUES (?,?,?,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($select);
             $activated = 1;
             $deleted = 0;
-            $stmt->bind_param("sssss",$dorm_name,$dorm_capacity,$dorm_captain,$activated,$deleted);
+            $stmt->bind_param("sssssssss", $dorm_name, $dorm_capacity, $dorm_captain, $activated, $deleted, $bed_capacity, $room_capacity, $matress_count, $comment);
             if($stmt->execute()){
                 echo "<p style='color:green;font-size:12px;font-weight:600;'>Dormitory registered successfully!</p>";
             }else {
                 echo "<p style='color:red;font-size:12px;font-weight:600;'>An error occured during registration!</p>";
             }
         }elseif (isset($_GET['get_dormitory_list'])) {
-            $select = "SELECT `dorm_id`, `dorm_name` ,`dorm_capacity`,`dorm_captain` FROM `dorm_list` WHERE `deleted` = 0 and `activated` = 1";
+            $select = "SELECT * FROM `dorm_list` WHERE `deleted` = 0 and `activated` = 1";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $data_to_display = "<h6 style='font-size:17px;font-weight:500;text-align:center;margin: 5px 0;'><u>Dormitory List</u></h6><div class='table_holders'><table class='table'>
+                $data_to_display = "<h6 style='font-size:17px;font-weight:500;text-align:center;margin: 5px 0;'><u>Dormitory List</u></h6><div class='table_holders'><table class='table' id='house_list_table'><thead>
                 <tr>
-                    <th>No. </th>
+                    <th>No.</th>
                     <th>House Name</th>
-                    <th>House Matron</th>
+                    <th>House Captain</th>
                     <th>Capacity</th>
                     <th>Occupied</th>
                     <th>Available</th>
-                    <th>Option</th>
+                    <th>Options</th>
                     <th>Occupancy</th>
-                </tr>";
+                </tr></thead><tbody>";
                 $xs=0;
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
@@ -98,19 +105,20 @@
                     if (strlen($row['dorm_captain']) > 0) {
                         $trname = getTeacherName($row['dorm_captain']);
                     }
+                    $row['dorm_captain_name'] = $trname;
                     $data_to_display.="
                     <tr>
-                        <td>".$xs.". </td>
+                        <td><input type='hidden' value='".json_encode($row)."' id='hostel_data_".$dorm_id."'>".$xs.". </td>
                         <td id = 'dn".$dorm_id."' >".ucwords(strtolower($row['dorm_name']))."</td>
                         <td id = 'dc".$dorm_id."' >".ucwords(strtolower($trname))."</td>
                         <td id = 'cap".$dorm_id."' >".$row['dorm_capacity']."</td>
                         <td>".$occupied."</td>
                         <td>".$available."</td>
-                        <td><p class = 'dorm_edit link'  id = 'd_nm".$dorm_id."' style='font-size:12px;' ><i class='fa fa-pen'></i> Edit</p></td>
+                        <td><span class = 'dorm_edit link'  id = 'd_nm".$dorm_id."' style='font-size:12px; width: fit-content;' ><i class='fa fa-pen'></i> Edit</span> <span class = 'dorm_delete link'  id = 'dorm_delete_".$dorm_id."' style='font-size:12px; width: fit-content;' ><i class='fa fa-trash'></i> Del</span></td>
                         <td> <p id='occupied".$dorm_id."' class = 'link linked_occupancy' style='font-size:12px;'><i class='fa fa-eye'></i> View</p></td>
                     </tr>";
                 }
-                $data_to_display.="</table></div>";
+                $data_to_display.="</tbody></table></div>";
                 if ($xs>0) {
                     echo $data_to_display;
                 }else {
@@ -120,16 +128,50 @@
                         </div>";
                 }
             }
+        }elseif(isset($_GET['delete_hostel'])){
+            $delete_hostel = $_GET['delete_hostel'];
+            $hostel_id = $_GET['hostel_id'];
+            $delete = "DELETE FROM dorm_list WHERE dorm_id = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s", $hostel_id);
+            $stmt->execute();
+
+            // select the students in the dormlist
+            $select = "SELECT * FROM `boarding_list` WHERE dorm_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $hostel_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                while ($row = $result->fetch_assoc()) {
+                    $student_id = $row['student_id'];
+                    $dormids = $hostel_id;
+                    $delete = "DELETE FROM `boarding_list` WHERE `student_id` = ? AND `dorm_id` = ?";
+                    $statement_1 = $conn2->prepare($delete);
+                    $statement_1->bind_param("ss",$student_id,$dormids);
+                    if($statement_1->execute()){
+                        $update = "UPDATE `student_data` set `dormitory` = 'none', `boarding` = 'enroll' WHERE `adm_no` = ?";
+                        $statement_2 = $conn2->prepare($update);
+                        $statement_2->bind_param("s",$student_id);
+                        $statement_2->execute();
+                    }
+                }
+            }
+            echo "<p class='text-success'>Hostels have been deleted successfully!</p>";
         }elseif (isset($_GET['change_dorm_data'])) {
-            $update = "UPDATE `dorm_list` SET `dorm_name` = ?,`dorm_capacity` = ?, `dorm_captain` = ? WHERE `dorm_id` = ?";
-            $update2 = "UPDATE `dorm_list` SET `dorm_name` = ?,`dorm_capacity` = ? WHERE `dorm_id` = ?";
+            $update = "UPDATE `dorm_list` SET `dorm_name` = ?,`dorm_capacity` = ?, `dorm_captain` = ?, bed_capacity = ?, cube_count = ?, matress_count = ?, comment = ? WHERE `dorm_id` = ? ";
+            $update2 = "UPDATE `dorm_list` SET `dorm_name` = ?,`dorm_capacity` = ?, bed_capacity = ?, cube_count = ?, matress_count = ?, comment = ? WHERE `dorm_id` = ?";
             if (isset($_GET['dorm_captain'])) {
                 $stmt = $conn2->prepare($update);
                 $dorm_name = $_GET['dorm_name'];
                 $dorm_capacity = $_GET['dorm_capacity'];
                 $dorm_captain = $_GET['dorm_captain'];
                 $dorm_id = $_GET['dorm_id'];
-                $stmt->bind_param("ssss",$dorm_name,$dorm_capacity,$dorm_captain,$dorm_id);
+                $bed_capacity = $_GET['bed_capacity'];
+                $room_capacity = $_GET['room_capacity'];
+                $matress_count = $_GET['matress_count'];
+                $comment = $_GET['comment'];
+                $stmt->bind_param("ssssssss",$dorm_name,$dorm_capacity,$dorm_captain, $bed_capacity, $room_capacity, $matress_count, $comment ,$dorm_id);
                 if($stmt->execute()){
                     echo "<p style='color:green;font-size:12px;font-weight:600;'>Change done successfully!</p>";
                 }else {
@@ -140,7 +182,11 @@
                 $dorm_name = $_GET['dorm_name'];
                 $dorm_capacity = $_GET['dorm_capacity'];
                 $dorm_id = $_GET['dorm_id'];
-                $stmt->bind_param("sss",$dorm_name,$dorm_capacity,$dorm_id);
+                $bed_capacity = $_GET['bed_capacity'];
+                $room_capacity = $_GET['room_capacity'];
+                $matress_count = $_GET['matress_count'];
+                $comment = $_GET['comment'];
+                $stmt->bind_param("sssssss",$dorm_name,$dorm_capacity, $bed_capacity, $room_capacity, $matress_count, $comment, $dorm_id);
                 if($stmt->execute()){
                     echo "<p style='color:green;font-size:12px;font-weight:600;'>Change done successfully!</p>";
                 }else {
@@ -172,18 +218,20 @@
                 $stmt->execute();
                 $result = $stmt->get_result();
             }
+            $data_to_display = "<h6 style='margin-top:10px;text-align:center;font-size:17px;font-weight:500;'>Students to enroll</h6><div class='table_holders'><table class='table' id='student_list_enroll_boarding'>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Adm no</th>
+                    <th>Student Name</th>
+                    <th>Gender</th>
+                    <th>Select dormitory</th>
+                    <th>Save</th>
+                </tr>
+            </thead><tbody>";
             if ($result) {
-                $data_to_display = "<h6 style='margin-top:10px;text-align:center;font-size:17px;font-weight:500;'>Students to enroll</h6><div class='table_holders'><table class=''>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Adm no</th>
-                                            <th>Student Name</th>
-                                            <th>Gender</th>
-                                            <th>Select dormitory</th>
-                                            <th>Save</th>
-                                        </tr>";
-                                        $xs = 0;
-                                        $number = 1;
+                $xs = 0;
+                $number = 1;
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
                     $adm_no = $row['adm_no'];
@@ -194,8 +242,8 @@
                     $boarding = $row['boarding'];
                     $sel_id = "select".$adm_no;
                     $data_to_display.="<tr>
-                                        <td>".$number.". </td>
-                                        <td>".$adm_no.". </td>
+                                        <td>".$number."</td>
+                                        <td>".$adm_no."</td>
                                         <td>".ucwords(strtolower($first_name." ".$second_name))."</td>
                                         <td>".$gender."</td>
                                         <td id='outer".$adm_no."'>".getDormitory($conn2,$sel_id)."</td>
@@ -203,16 +251,10 @@
                                     </tr>";
                                     $number++;
                 }
-                $data_to_display.="</table></div>";
-                if ($xs > 0) {
-                    echo $data_to_display;
-                }else {
-                    echo "<div class='displaydata'>
-                            <img class='' src='images/error.png'>
-                            <p style='color:red;font-size:12px;font-weight:600;'>No results!</p>
-                        </div>";
-                }
+                $data_to_display.="</tbody></table></div>";
             }
+            $data_to_display.="</tbody></table></div>";
+            echo $data_to_display;
         }elseif (isset($_GET['save_boarder_infor'])) {
             $boarder_id = $_GET['boarder_id'];
             $house_id = $_GET['house_id'];
@@ -237,20 +279,20 @@
             $stmt->bind_param("s",$dorm_id);
             $stmt->execute();
             $result = $stmt->get_result();
+            $dorm_name = getDormName($dorm_id,$conn2);
+            $data_to_display = "<h6 style='text-align:center;'>".$dorm_name." Members</h6>
+                                <div class='tableHolder'>
+                                    <table class='table' id='hostel-occupancy'>
+                                        <thead><tr>
+                                            <th>No.</th>
+                                            <th>Adm no</th>
+                                            <th>Student Name</th>
+                                            <th>Gender</th>
+                                            <th>Date Enrolled</th>
+                                            <th>Change dormitory</th>
+                                        </tr></thead><tbody>";
             if ($result) {
-                $dorm_name = getDormName($dorm_id,$conn2);
-                $data_to_display = "<h6 style='text-align:center;'>".$dorm_name." Members</h6>
-                                    <div class='tableHolder'>
-                                        <table class='table'>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Adm no</th>
-                                                <th>Student Name</th>
-                                                <th>Gender</th>
-                                                <th>Date Enrolled</th>
-                                                <th>Change dormitory</th>
-                                            </tr>";
-                                            $xs = 0;
+                $xs = 0;
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
                     $student = getStudentName($row['student_id'],$conn2);
@@ -262,22 +304,15 @@
                                         <td id='mystud".$row['student_id']."'>".$student[0]."</td>
                                         <td >".$student[1]."</td>
                                         <td>".$date."</td>
-                                        <td style='text-align:center;'><span class='link change_dormitory' id='".$dorm_id."|".$row['student_id']."' style='font-size:12px;text-align:center;' ><i class='fa fa-pen'>change</i></span></td>
+                                        <td style='text-align:center;'><span class='link change_dormitory' id='".$dorm_id."|".$row['student_id']."' style='font-size:12px;text-align:center;' ><i class='fa fa-pen'></i> change</span></td>
                                     </tr>";
                 }
-                $data_to_display.="</table></div>
-                                    <div class='btns'>
-                                        <button type='button' id='back_to_dormlist'>Back</button>
-                                    </div>";
-                                    if ($xs > 0) {
-                                        echo $data_to_display;
-                                    }else {
-                                        echo "<p class='red_notice'>No student occupied ".$dorm_name."</p>
-                                        <div class='btns'>
-                                            <button type='button' id='back_to_dormlist'>Back</button>
-                                        </div>";
-                                    }
             }
+            $data_to_display.="</tbody></table></div>
+                                <div class='btns'>
+                                    <button type='button' id='back_to_dormlist'>Back</button>
+                                </div>";
+            echo $data_to_display;
         }elseif (isset($_GET['get_dorm_list'])) {
             $current_dorm = $_GET['current_dorm'];
             $select = "SELECT  `dorm_id`,`dorm_name`,`dorm_capacity` FROM `dorm_list` WHERE `dorm_id` != ?";

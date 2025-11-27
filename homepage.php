@@ -6,10 +6,10 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub","generate_tt_btn","examanagement","exam_fill_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub","generate_tt_btn","examanagement","exam_fill_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
         $allowed = ["sms_broadcast","update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
@@ -446,28 +446,29 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts d-none">
+            <div class="conts">
                 <button class="navButs">Academic<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc">
-                        <button type='button' class="sidebtns <?php echo allowed("regsub"); ?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register subject</button>
-                        <button type='button' class="sidebtns <?php echo allowed("managesub"); ?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Manage subjects</button>
-                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub"); ?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Manage teacher</button>
-                        <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn"); ?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Timetable</button>
+                        <button type='button' class="sidebtns <?php echo allowed("regsub"); ?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register Units</button>
+                        <button type='button' class="sidebtns <?php echo allowed("managesub"); ?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Unit Management</button>
+                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub"); ?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Unit Assignment</button>
+                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub"); ?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Lecture Halls</button>
+                        <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn"); ?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Generate Timetable</button>
                         <button type='button' class="sidebtns <?php echo allowed("examanagement"); ?> htbtn" id='examanagement'><span><img class="icons" src="images/addmarks.png"></span>Exam Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Students Marks Entry</button>
                     </div>
                 </div>
             </div>
-            <div class="conts d-none">
+            <div class="conts">
                 <button class="navButs htbtn">Boarding<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc">
                         <button type='button' class="sidebtns <?php echo allowed("enroll_boarding_btn"); ?> htbtn" id='enroll_boarding_btn'><span><img class="icons" src="images/enrollboarding.png"></span>Enroll boarding</button>
-                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Manage dormitory</button>
-                        <!--<button><span><img class="icons" src="images/information.png"></span>Student information</button>
-                        <button><span><img class="icons" src="images/manageinfor.png"></span>Manage information</button>
-                        <button><span><img class="icons" src="images/boardingpay.png"></span>Boarding payment</button>-->
+                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Manage hostel</button>
+                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Hostel Rooms</button>
+                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Discipline & Incidents</button>
+                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Inventory</button>
                     </div>
                 </div>
             </div>
@@ -2101,26 +2102,42 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id="dorm_registrations">
-            <div class="changesubwindow addsubject animate">
+            <div class="changesubwindow editexams animate">
                 <div class="conts">
                     <p class="funga" id="close_dorm_reg">&times</p>
-                    <h6>Register Dormitory</h6>
+                    <h6 class="text-center">Register Hostel</h6>
                 </div>
-                <form class="formation" id="reg_dorm_form">
+                <form class="add_expense" id="reg_dorm_form">
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_name">Dormitory Name: <br></label>
-                        <input class="form-control" type="text" name="dorm_name" id="dorm_name" placeholder="Enter dormitory name">
+                        <label class="form-control-label" for="dorm_name">Hostel Name:<span class="text-danger">*</span><br></label>
+                        <input class="form-control" type="text" name="dorm_name" id="dorm_name" placeholder="Hostel name">
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_capacity">Dormitory Capacity: <br></label>
-                        <input class="form-control" type="number" name="dorm_capacity" id="dorm_capacity" placeholder="Enter dormitory Capacity">
+                        <label class="form-control-label" for="dorm_capacity">Hostel Capacity:<span class="text-danger">*</span><br></label>
+                        <input class="form-control" type="number" name="dorm_capacity" id="dorm_capacity" placeholder="Hostel Capacity">
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_captain">Dormitory Captain: <br></label>
+                        <label class="form-control-label" for="dorm_bed_capacity">Hostel Bed Capacity:<br></label>
+                        <input class="form-control" type="number" name="dorm_bed_capacity" id="dorm_bed_capacity" placeholder="Bed Capacity">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="matress_count">Matress Count: <br></label>
+                        <input class="form-control" type="number" name="matress_count" id="matress_count" placeholder="Matress Count">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="dorm_room_count">Rooms/Cubicals Count: <br></label>
+                        <input class="form-control" type="number" name="dorm_room_count" id="dorm_room_count" placeholder="Rooms/Cubicals Count">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="dorm_captain">Hostel Captain: <span class="text-danger">*</span><br></label>
                         <p id="tr_list"></p>
                         <div class="contsload" id="tr_lists">
                             <img src="images/load2.gif" alt="loading..">
                         </div>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="dorm_room_count">Comment <br></label>
+                        <textarea name="hostel_comment" id="hostel_comment" placeholder="Narative about the hostel" rows="5" class="form-control"></textarea>
                     </div>
                 </form>
                 <div class="conts">
@@ -2133,23 +2150,35 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id="dorm_edits">
-            <div class="changesubwindow addsubject animate">
+            <div class="changesubwindow editexams animate">
                 <div class="conts">
                     <p class="funga" id="close_dorm_edit">&times</p>
-                    <h6>Edit Dormitory</h6>
+                    <h6 class='text-center'>Edit Hostel</h6>
                 </div>
-                <form class="formation" id="edit_dorm_form">
+                <form class="add_expense" id="edit_dorm_form">
                     <div class="conts">
                         <label class="form-control-label">House id: <span style="color:brown;" id="dormitory_id">0</span></label><br>
                         <label class="form-control-label">House Captain <span style="color:brown;" id="cap_name">Hillary Ngige</span></label>
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_name_edit">Dormitory Name: <br></label>
-                        <input class="form-control" style="color:brown;" type="text" name="dorm_name_edit" id="dorm_name_edit" placeholder="Enter dormitory name">
+                        <label class="form-control-label" for="dorm_name_edit">Hostel Name:<span class="text-danger">*</span><br></label>
+                        <input class="form-control" type="text" name="dorm_name_edit" id="dorm_name_edit" placeholder="Enter hostel name">
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_capacity_edit">Dormitory Capacity: <br></label>
-                        <input class="form-control" style="color:brown;" type="number" name="dorm_capacity_edit" id="dorm_capacity_edit" placeholder="Enter dormitory Capacity">
+                        <label class="form-control-label" for="dorm_capacity_edit">Hostel Student Capacity:<span class="text-danger">*</span><br></label>
+                        <input class="form-control" type="number" name="dorm_capacity_edit" id="dorm_capacity_edit" placeholder="Enter hostel Capacity">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="dorm_bed_capacity_edit">Hostel Bed Capacity:<br></label>
+                        <input class="form-control" type="number" name="dorm_bed_capacity_edit" id="dorm_bed_capacity_edit" placeholder="Bed Capacity">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="matress_count_edit">Matress Count: <br></label>
+                        <input class="form-control" type="number" name="matress_count_edit" id="matress_count_edit" placeholder="Matress Count">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="dorm_room_count_edit">Rooms/Cubicals Count: <br></label>
+                        <input class="form-control" type="number" name="dorm_room_count_edit" id="dorm_room_count_edit" placeholder="Rooms/Cubicals Count">
                     </div>
                     <div class="conts">
                         <label class="form-control-label" for="dorm_captain_edit">Change Captain: <br></label>
@@ -2158,6 +2187,10 @@ function checkPresnt($array, $string){
                             <img src="images/load2.gif" alt="loading..">
                         </div>
                         <button type='button' id="un_assign_captain_btn">Un-assign captain</button>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="hostel_comment_edit">Comment <br></label>
+                        <textarea name="hostel_comment_edit" id="hostel_comment_edit" placeholder="Narative about the hostel" rows="5" class="form-control"></textarea>
                     </div>
                 </form>
                 <div class="conts">
@@ -2173,26 +2206,34 @@ function checkPresnt($array, $string){
             <div class="changesubwindow addsubject animate">
                 <div class="conts">
                     <p class="funga" id="change_student_close">&times</p>
-                    <h6>Edit Dormitory</h6>
+                    <h6 class="text-center">Edit Student Hostel</h6>
                 </div>
                 <form class="formation" id="">
                     <div class="conts">
                         <label class="form-control-label">Student id: <span style="color:brown;" id="my_student_id">0</span></label>
-                        <label class="form-control-label" class='hide'>Dormitory id: <span style="color:brown;" id="my_dorm_id">0</span></label><br>
+                        <label class="form-control-label d-none">Hostel id: <span style="color:brown;" id="my_dorm_id">0</span></label><br>
                         <label class="form-control-label">Student Name: <span style="color:brown;" id="my_student_name">Hillary Ngige</span></label>
                     </div>
+                    <hr class="w-75 my-2 mx-auto">
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_list_change">Change dorm: <br></label>
+                        <label class="form-control-label" for="dorm_list_change">Change Hostel: <br></label>
                         <p id="dorms_lists"></p>
                         <div class="contsload" id="dorm_list_monitor">
                             <img src="images/load2.gif" alt="loading..">
                         </div>
-                        <div class="btns">
-                            <button type="button" class="" id='change_dormitory_btn'>Save Changes</button>
+                        <div class="container row">
+                            <div class="col-md-6">
+                                <button type="button" id="close_dorm_change_btn">Close</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="" id='change_dormitory_btn'>Update</button>
+                            </div>
                         </div>
+                        <hr class="w-75 my-2 mx-auto">
+                        <h6 class="text-center"><b>More Action:</b></h6>
                         <p id="chage_dorms_err_handlers"></p>
-                        <p>Click the <b>Un-assign</b> button below to un-assign the boarder a dormitory</p>
-                        <p>Click the <b>De-register</b> button below to de-register student as a boarder.</p>
+                        <!-- <p>Click the <b>Un-assign</b> button below to un-assign the boarder a hostel</p>
+                        <p>Click the <b>De-register</b> button below to de-register student as a boarder.</p> -->
                         <div class="btns" style='border-bottom:1px dashed black;'>
                             <button type='button' style='margin:0;' id="un_assign_dorm_btn">Un-assign</button>
                             <button type='button' style='margin:0;' id="un_assign_boarder_btn">De-register</button>
@@ -2203,7 +2244,6 @@ function checkPresnt($array, $string){
                     <p id='change_dorm_err_handler'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" id="close_dorm_change_btn">Close</button>
                 </div>
             </div>
         </div>
@@ -3780,6 +3820,24 @@ function checkPresnt($array, $string){
             <div class="buttons">
                 <button type='button' id='yes_delete_permanently'>Yes</button>
                 <button type='button' id='no_delete_permanently'>No</button>
+            </div>
+        </div>
+    </div>
+    <div class="dialogholder hide" id="delete_the_hostel_window">
+        <div class="dialogwindow animate2">
+            <h6>Delete Hostel</h6>
+            <div class="message_contents">
+                <b>Note:</b><br>
+                <p class="text-left">All students in those hostels will be removed and lefts unassigned.</p>
+            </div>
+            <hr class="w-50">
+            <div class="message" id="message">
+                <p>Are you sure you want to delete <b><span id="hostel_name_delete">unknown</span></b> permanently ?</p>
+            </div>
+            <input type="hidden" name="hostel_id_delete" id="hostel_id_delete">
+            <div class="buttons">
+                <button type='button' id='yes_delete_the_hostel'>Yes</button>
+                <button type='button' id='no_delete_the_hostel'>No</button>
             </div>
         </div>
     </div>

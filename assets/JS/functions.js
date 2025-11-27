@@ -197,7 +197,7 @@ function sendData1(method, file, datapassing, object, callback = null) {
     let xml = new XMLHttpRequest();
     xml.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            object.innerHTML = this.responseText;
+            (object != null && object != undefined) ? object.innerHTML = this.responseText : "";
             cObj("loadings").classList.add("hide");
 
             // ✅ Run the callback after updating DOM
@@ -206,7 +206,7 @@ function sendData1(method, file, datapassing, object, callback = null) {
             }
         } else if (this.status == 500) {
             cObj("loadings").classList.add("hide");
-            object.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>";
+            (object != null && object != undefined) ? object.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>" : "";
         }
     };
     xml.open(method, "ajax/" + file + datapassing, true);

@@ -21,6 +21,7 @@
                 </div>
             </div>
             <div class="conts">
+                <p id="dorm_list_messenger"></p>
                 <p id="dormitory_list">
                     <!--<table>
                         <tr>
@@ -43,26 +44,7 @@
                         </tr>
                     </table>-->
                 </p>
-                <p class = "hide" id="dorm_occupancy_details">
-                    <!--<h3 style='text-align:center;'>Mt Sinai Members</h3>
-                    <div class="tableHolder">
-                        <table>
-                            <tr>
-                                <th>Adm no</th>
-                                <th>Student Name</th>
-                                <th>Gender</th>
-                                <th>Date Enrolled</th>
-                                <th>Change dormitory</th>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Esmond Bwire</td>
-                                <td>Female</td>
-                                <td>Jun-10-2021</td>
-                                <td><p class='link' >Change</p></td>
-                            </tr>
-                        </table>
-                    </div>-->
+                <p class = "hide pt-2" id="dorm_occupancy_details">
                 </p>
             </div>
         </div>

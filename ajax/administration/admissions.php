@@ -4150,10 +4150,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 if ($row = $result->fetch_assoc()) {
                     $student_image = $row['student_image'];
                     // get the location of the file
-                    if (file_exists("../../".$student_image)) {
+                    if (file_exists("../../".$student_image) && $student_image != null && $student_image != "") {
                         unlink("../../".$student_image);
                     }else{
-                        echo "My niggah";
+                        echo "<p class='text-success'>Profile picture is not set!</p>";
+                        return;
                     }
                 }
             }
