@@ -150,6 +150,11 @@ function checkPresnt($array, $string){
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- end chartjs -->
 
+    <!-- select2 -->
+     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
     
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-243578000-1"></script>
@@ -457,6 +462,7 @@ function checkPresnt($array, $string){
                         <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn"); ?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Generate Timetable</button>
                         <button type='button' class="sidebtns <?php echo allowed("examanagement"); ?> htbtn" id='examanagement'><span><img class="icons" src="images/addmarks.png"></span>Exam Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Students Marks Entry</button>
+                        <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Academic Reports</button>
                     </div>
                 </div>
             </div>
@@ -466,7 +472,7 @@ function checkPresnt($array, $string){
                     <div class="contsc">
                         <button type='button' class="sidebtns <?php echo allowed("enroll_boarding_btn"); ?> htbtn" id='enroll_boarding_btn'><span><img class="icons" src="images/enrollboarding.png"></span>Enroll boarding</button>
                         <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Manage hostel</button>
-                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Hostel Rooms</button>
+                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Student List</button>
                         <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Discipline & Incidents</button>
                         <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Inventory</button>
                     </div>
@@ -2202,13 +2208,107 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
+        <div class="confirmpaymentwindow hide" id="add_hostel_room_window">
+            <div class="changesubwindow editexams animate">
+                <div class="conts">
+                    <p class="funga" id="close_add_hostel_room_1">&times</p>
+                    <h6 class='text-center'>Add Hostel Room</h6>
+                </div>
+                <input type="hidden" name="hostel_id_room" id="hostel_id_room">
+                <form class="add_expense" id="add_hostel_room_form">
+                    <div class="conts">
+                        <label class="form-control-label" for="room_name">Addition Method:<span class="text-danger">*</span><br></label>
+                        <select name="room_addition_method" id="room_addition_method" class="form-control-select">
+                            <option value="" hidden>Select Addition Method</option>
+                            <option value="multiple">Multiple Room Addition</option>
+                            <option value="singular">Single Room Addition</option>
+                        </select>
+                    </div>
+                    <div class="hide" id="singular_room_addition">
+                        <h6 class="text-center mt-2"><u>Single Room Addition</u></h6>
+                        <div class="conts">
+                            <label class="form-control-label" for="room_name">Room Name:<span class="text-danger">*</span><br></label>
+                            <input class="form-control" type="text" name="room_name" id="room_name" placeholder="Enter hostel name">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="room_capacity">Student Capacity:<span class="text-danger">*</span><br></label>
+                            <input class="form-control" type="number" name="room_capacity" id="room_capacity" placeholder="Enter room Capacity">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="room_comment">Comment <br></label>
+                            <textarea name="room_comment" id="room_comment" placeholder="Narative about the room" rows="5" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="hide" id="multiple_room_addition">
+                        <h6 class="text-center mt-2"><u>Multiple Room Addition</u></h6>
+                        <div class="conts">
+                            <label class="form-control-label" for="number_of_rooms">Number of rooms:<span class="text-danger">*</span><br></label>
+                            <input class="form-control" type="text" name="number_of_rooms" id="number_of_rooms" placeholder="e,g. 100">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="room_name_prefix">Room Name Prefix<br></label>
+                            <input class="form-control" type="text" name="room_name_prefix" id="room_name_prefix" placeholder="RM">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="room_number">Room Number (<small id="full_room_name"></small> )<span class="text-danger">*</span><br></label>
+                            <input class="form-control" type="number" name="room_number" id="room_number" placeholder="100">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="room_name_sufix">Room Name Sufix<br></label>
+                            <input class="form-control" type="text" name="room_name_sufix" id="room_name_sufix" placeholder="M">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="multiple_room_capacity">Average Room Capacity:<span class="text-danger">*</span><br></label>
+                            <input class="form-control" type="text" name="multiple_room_capacity" id="multiple_room_capacity" placeholder="e.g, 4">
+                        </div>
+                    </div>
+                </form>
+                <div class="conts">
+                    <p id='edit_room_err_handler'></p>
+                </div>
+                <div class="btns">
+                    <button type="button" class="" id='add_rooms_submit'>Save Changes</button>
+                    <button type="button" id="close_add_hostel_room_2">Close</button>
+                </div>
+            </div>
+        </div>
+        <div class="confirmpaymentwindow hide" id="edit_hostel_room_window">
+            <div class="changesubwindow editexams animate">
+                <div class="conts">
+                    <p class="funga" id="close_hostel_edit_1">&times</p>
+                    <h6 class='text-center'>Edit Hostel Room</h6>
+                </div>
+                <input type="hidden" name="edit_room_id" id="edit_room_id">
+                <form class="add_expense" id="edit_hostel_room_form">
+                    <div class="conts">
+                        <label class="form-control-label" for="edit_room_name">Room Name:<span class="text-danger">*</span><br></label>
+                        <input class="form-control" type="text" name="edit_room_name" id="edit_room_name" placeholder="Enter hostel name">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="edit_room_capacity">Student Capacity:<span class="text-danger">*</span><br></label>
+                        <input class="form-control" type="number" name="edit_room_capacity" id="edit_room_capacity" placeholder="Enter room Capacity">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="edit_room_comment">Comment <br></label>
+                        <textarea name="edit_room_comment" id="edit_room_comment" placeholder="Narative about the room" rows="5" class="form-control"></textarea>
+                    </div>
+                </form>
+                <div class="conts">
+                    <p id='edit_room_details_error'></p>
+                </div>
+                <div class="btns">
+                    <button type="button" class="" id='update_hostel_changes'>Save Changes</button>
+                    <button type="button" id="close_hostel_edit_2">Close</button>
+                </div>
+            </div>
+        </div>
         <div class="confirmpaymentwindow hide" id="change_student_dorm">
-            <div class="changesubwindow addsubject animate">
+            <div class="changesubwindow editexams animate">
                 <div class="conts">
                     <p class="funga" id="change_student_close">&times</p>
                     <h6 class="text-center">Edit Student Hostel</h6>
                 </div>
-                <form class="formation" id="">
+                <form class="container border border-secondary rounded p-2 mx-auto" id="">
                     <div class="conts">
                         <label class="form-control-label">Student id: <span style="color:brown;" id="my_student_id">0</span></label>
                         <label class="form-control-label d-none">Hostel id: <span style="color:brown;" id="my_dorm_id">0</span></label><br>
@@ -2218,8 +2318,12 @@ function checkPresnt($array, $string){
                     <div class="conts">
                         <label class="form-control-label" for="dorm_list_change">Change Hostel: <br></label>
                         <p id="dorms_lists"></p>
-                        <div class="contsload" id="dorm_list_monitor">
+                        <div class="form-group" id="dorm_list_monitor">
                             <img src="images/load2.gif" alt="loading..">
+                        </div>
+                        <div class="form-group">
+                            <label for="hostel_rooms_holder_update" class="form-control-label">Hostel Rooms</label>
+                            <p id="hostel_rooms"><span class="text-danger">Select hostel to display rooms!</span></p>
                         </div>
                         <div class="container row">
                             <div class="col-md-6">
@@ -3838,6 +3942,24 @@ function checkPresnt($array, $string){
             <div class="buttons">
                 <button type='button' id='yes_delete_the_hostel'>Yes</button>
                 <button type='button' id='no_delete_the_hostel'>No</button>
+            </div>
+        </div>
+    </div>
+    <div class="dialogholder hide" id="delete_the_hostel_room_window">
+        <div class="dialogwindow animate2">
+            <h6>Delete Hostel Room</h6>
+            <div class="message_contents">
+                <b>Note:</b><br>
+                <p class="text-left">All students in this rooms will be removed and left unassigned.</p>
+            </div>
+            <hr class="w-50">
+            <div class="message">
+                <p>Are you sure you want to delete <b><span id="hostel_room_name_delete">unknown</span></b> permanently ?</p>
+            </div>
+            <input type="hidden" name="hostel_room_id_delete" id="hostel_room_id_delete">
+            <div class="buttons">
+                <button type='button' id='yes_delete_the_hostel_room'>Yes</button>
+                <button type='button' id='no_delete_the_hostel_room'>No</button>
             </div>
         </div>
     </div>

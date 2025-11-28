@@ -95,6 +95,7 @@
                     <th>Occupancy</th>
                 </tr></thead><tbody>";
                 $xs=0;
+
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
                     $capacity = $row['dorm_capacity'];
@@ -115,9 +116,10 @@
                         <td>".$occupied."</td>
                         <td>".$available."</td>
                         <td><span class = 'dorm_edit link'  id = 'd_nm".$dorm_id."' style='font-size:12px; width: fit-content;' ><i class='fa fa-pen'></i> Edit</span> <span class = 'dorm_delete link'  id = 'dorm_delete_".$dorm_id."' style='font-size:12px; width: fit-content;' ><i class='fa fa-trash'></i> Del</span></td>
-                        <td> <p id='occupied".$dorm_id."' class = 'link linked_occupancy' style='font-size:12px;'><i class='fa fa-eye'></i> View</p></td>
+                        <td><span id='occupied".$dorm_id."' class = 'link linked_occupancy' style='font-size:12px;'><i class='fa fa-bed'></i> Members</span> <span id='room_mgt_".$dorm_id."' class = 'link room_mgt' style='font-size:12px;'><i class='fa fa-door-closed'></i> Rooms</span></td>
                     </tr>";
                 }
+
                 $data_to_display.="</tbody></table></div>";
                 if ($xs>0) {
                     echo $data_to_display;
@@ -127,6 +129,107 @@
                             <p style='color:red;font-size:12px;font-weight:600;'>No dormitory results!</p>
                         </div>";
                 }
+            }
+        }elseif(isset($_GET['display_rooms'])){
+            $hostel_id = $_GET['hostel_id'];
+            $select = "SELECT hostel_rooms.*, (SELECT COUNT(*) FROM boarding_list WHERE boarding_list.room_id = hostel_rooms.room_id) AS 'members' FROM `hostel_rooms` WHERE hostel_id = ?;";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $hostel_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<div class='tableme'><table id='rooms_display_table' class='table'><thead><tr>
+                                                        <th>No.</th>
+                                                        <th>Room Name</th>
+                                                        <th>Room Capacity</th>
+                                                        <th>Members Count</th>
+                                                        <th>Actions</th>
+                                                    </tr></thead><tbody>";
+            if ($result) {
+                $counter = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display .= "<tr>
+                        <td>".$counter.".<input type='hidden' value='".json_encode($row)."' id='room_data_".$row['room_id']."'></td>
+                        <td>".strtoupper(strtolower($row['room_name']))."</td>
+                        <td>".$row['room_capacity']." Members</td>
+                        <td>".$row['members']." Admitted</td>
+                        <td><span id='room_edit_".$row['room_id']."' class='link room_edit' style='font-size:12px;'><i class='fa fa-pen-fancy'></i> Edit</span> <span id='delete_room_".$row['room_id']."' class='link delete_room' style='font-size:12px;'><i class='fa fa-trash'></i> Delete</span></td>
+                    </tr>";
+                    $counter++;
+                }
+            }
+            $data_to_display .= "</tbody></table></div>";
+            echo $data_to_display;
+        }elseif(isset($_GET['update_hostel'])){
+            $update_hostel= $_GET['update_hostel'];
+            $hostel_name = $_GET['hostel_name'];
+            $hostel_capacity = $_GET['hostel_capacity'];
+            $room_comment = $_GET['room_comment'];
+            $room_id = $_GET['room_id'];
+
+            $update = "UPDATE hostel_rooms SET room_name = ?, room_capacity = ?, room_comment = ? WHERE room_id = ?";
+            $stmt = $conn2->prepare($update);
+            $stmt->bind_param("ssss", $hostel_name, $hostel_capacity, $room_comment, $room_id);
+            $stmt->execute();
+
+            echo "<p class='text-success'>Room data have been updated successfully!</p>";
+        }elseif(isset($_GET['delete_hostel_room'])){
+            $delete_hostel_room = $_GET['delete_hostel_room'];
+            $room_id = $_GET['room_id'];
+
+            // delete hostel
+            $delete = "DELETE FROM hostel_rooms WHERE room_id = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s", $room_id);
+            $stmt->execute();
+            
+            // unassign the students assigned that room
+            $select = "SELECT * FROM `boarding_list` WHERE room_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $room_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                while ($row = $result->fetch_assoc()) {
+                    $student_id = $row['student_id'];
+                    $delete = "DELETE FROM `boarding_list` WHERE `student_id` = ? AND `room_id` = ?";
+                    $statement_1 = $conn2->prepare($delete);
+                    $statement_1->bind_param("ss",$student_id,$room_id);
+                    if($statement_1->execute()){
+                        $update = "UPDATE `student_data` set `dormitory` = 'none', `boarding` = 'enroll' WHERE `adm_no` = ?";
+                        $statement_2 = $conn2->prepare($update);
+                        $statement_2->bind_param("s",$student_id);
+                        $statement_2->execute();
+                    }
+                }
+            }
+            echo "<p class='text-success'>Room has been deleted successfully!</p>";
+        }elseif(isset($_GET['add_new_room'])){
+            $add_new_room = $_GET['add_new_room'];
+            $room_prefix = $_GET['room_prefix'];
+            $room_name_number = $_GET['room_name_number'];
+            $room_sufix = $_GET['room_sufix'];
+            $multiple_room_capacity = $_GET['multiple_room_capacity'];
+            $room_name = $_GET['room_name'];
+            $room_capacity = $_GET['room_capacity'];
+            $room_comment = $_GET['room_comment'];
+            $hostel_id = $_GET['hostel_id'];
+
+            if($add_new_room == "multiple"){
+                $room_number = $_GET['room_number']+($room_name_number*1);
+                for ($index=$room_name_number; $index < ($room_number*1); $index++) { 
+                    $insert = "INSERT INTO hostel_rooms (room_name, room_capacity,hostel_id) VALUES (?,?,?)";
+                    $stmt = $conn2->prepare($insert);
+                    $full_room_name = ($room_prefix."".($index <= 9 ? "00".$index : ($index <= 99 ? "0".$index : $index))."".$room_sufix);
+                    $stmt->bind_param("sss", $full_room_name, $multiple_room_capacity, $hostel_id);
+                    $stmt->execute();
+                }
+                echo "<p class='text-success' id='hostel_room_success'>Hostel rooms have been added successfully!</p>";
+            }else{
+                $insert = "INSERT INTO hostel_rooms (room_name, room_capacity, hostel_id, room_comment) VALUES (?,?,?,?)";
+                $stmt = $conn2->prepare($insert);
+                $stmt->bind_param("ssss", $room_name, $room_capacity, $hostel_id, $room_comment);
+                $stmt->execute();
+                echo "<p class='text-success' id='hostel_room_success'>Hostel room has been added successfully!</p>";
             }
         }elseif(isset($_GET['delete_hostel'])){
             $delete_hostel = $_GET['delete_hostel'];
@@ -226,6 +329,7 @@
                     <th>Student Name</th>
                     <th>Gender</th>
                     <th>Select dormitory</th>
+                    <th>Room Number</th>
                     <th>Save</th>
                 </tr>
             </thead><tbody>";
@@ -247,6 +351,7 @@
                                         <td>".ucwords(strtolower($first_name." ".$second_name))."</td>
                                         <td>".$gender."</td>
                                         <td id='outer".$adm_no."'>".getDormitory($conn2,$sel_id)."</td>
+                                        <td id='room_dropdown_holder_".$adm_no."'><span class='text-danger'>Select hostel to display rooms!</span></td>
                                         <td><span class='save_boarder link' id='sd".$adm_no."' style='margin:0;font-size:12px;'><i class='fa fa-save'></i> Save</span></td>
                                     </tr>";
                                     $number++;
@@ -255,26 +360,45 @@
             }
             $data_to_display.="</tbody></table></div>";
             echo $data_to_display;
+        }elseif(isset($_GET['display_rooms_dropdown'])){
+            // hostel id
+            $hostel_id = $_GET['hostel_id'];
+            $dropdown_id = $_GET['dropdown_id'];
+            $select = "SELECT hostel_rooms.*, (SELECT COUNT(*) AS 'occupants' FROM boarding_list WHERE boarding_list.room_id = hostel_rooms.room_id) AS members FROM `hostel_rooms` WHERE hostel_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $hostel_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $drop_down_list = "<select class='form-control' id='".$dropdown_id."'><option hidden value=''>Select Room</option>";
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    if($row['members'] < $row['room_capacity'])
+                    $drop_down_list .= "<option value='".$row['room_id']."'>".$row['room_name']."</option>";
+                }
+            }
+            $drop_down_list .= "</select>";
+            echo $drop_down_list;
         }elseif (isset($_GET['save_boarder_infor'])) {
             $boarder_id = $_GET['boarder_id'];
             $house_id = $_GET['house_id'];
+            $room_number = $_GET['room_number'];
             $insert = "update `student_data` set `boarding` = 'enrolled' , `dormitory` = ? WHERE `adm_no` = ?";
             $stmt = $conn2->prepare($insert);
             $stmt->bind_param("ss",$house_id,$boarder_id);
             if($stmt->execute()){
-                $insert = "INSERT INTO `boarding_list` (`student_id`,`dorm_id`,`date_of_enrollment`,`deleted`,`activated`) values (?,?,?,?,?)";
+                $insert = "INSERT INTO `boarding_list` (`student_id`, `dorm_id`, `date_of_enrollment`, `room_id`, `deleted`, `activated`) values (?,?,?,?,?,?)";
                 $date = date("Y-m-d");
                 $stmt = $conn2->prepare($insert);
                 $deleted = 0;
                 $activated = 1;
-                $stmt->bind_param("sssss",$boarder_id,$house_id,$date,$deleted,$activated);
+                $stmt->bind_param("ssssss",$boarder_id, $house_id, $date, $room_number, $deleted, $activated);
                 if($stmt->execute()){
                     echo "<p style='color:green;'>Enrolled ✔</p>";
                 }
             }
         }elseif (isset($_GET['get_occupancy'])) {
             $dorm_id = $_GET['dormitory_id'];
-            $select = "SELECT `id`, `student_id`, `dorm_id`,`date_of_enrollment` FROM `boarding_list` WHERE `dorm_id` = ?";
+            $select = "SELECT boarding_list.*, (SELECT hostel_rooms.room_name FROM hostel_rooms WHERE hostel_rooms.room_id = boarding_list.room_id) AS room_name FROM `boarding_list` WHERE `dorm_id` = ?";
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("s",$dorm_id);
             $stmt->execute();
@@ -288,6 +412,7 @@
                                             <th>Adm no</th>
                                             <th>Student Name</th>
                                             <th>Gender</th>
+                                            <th>Room Name</th>
                                             <th>Date Enrolled</th>
                                             <th>Change dormitory</th>
                                         </tr></thead><tbody>";
@@ -303,6 +428,7 @@
                                         <td>".$row['student_id']."</td>
                                         <td id='mystud".$row['student_id']."'>".$student[0]."</td>
                                         <td >".$student[1]."</td>
+                                        <td >".$row['room_name']."</td>
                                         <td>".$date."</td>
                                         <td style='text-align:center;'><span class='link change_dormitory' id='".$dorm_id."|".$row['student_id']."' style='font-size:12px;text-align:center;' ><i class='fa fa-pen'></i> change</span></td>
                                     </tr>";
@@ -310,18 +436,19 @@
             }
             $data_to_display.="</tbody></table></div>
                                 <div class='btns'>
-                                    <button type='button' id='back_to_dormlist'>Back</button>
+                                    <button type='button' id='back_to_dormlist'><i class='fas fa-arrow-left'></i> Back</button>
                                 </div>";
             echo $data_to_display;
         }elseif (isset($_GET['get_dorm_list'])) {
             $current_dorm = $_GET['current_dorm'];
-            $select = "SELECT  `dorm_id`,`dorm_name`,`dorm_capacity` FROM `dorm_list` WHERE `dorm_id` != ?";
+            // $select = "SELECT  `dorm_id`,`dorm_name`,`dorm_capacity` FROM `dorm_list` WHERE `dorm_id` != ?";
+            $select = "SELECT  `dorm_id`,`dorm_name`,`dorm_capacity` FROM `dorm_list`";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("s",$current_dorm);
+            // $stmt->bind_param("s",$current_dorm);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $return_string = "<select style='min-width:150px;max-width:150px;' name='dorm_list_change' id='dorm_list_change'><option value='' hidden>Select..</option>";
+                $return_string = "<select class='form-control'  name='dorm_list_change' id='dorm_list_change'><option value='' hidden>Select..</option>";
                 $xs = 0;
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
@@ -338,9 +465,10 @@
             $student_id = $_GET['student_id'];
             $new_dorm_id = $_GET['new_dorm_id'];
             $current_dorm_id = $_GET['current_dorm_id'];
-            $select = "UPDATE `boarding_list` SET `dorm_id` = ? WHERE `dorm_id` = ? AND `student_id` = ?";
+            $room_id = $_GET['room_id'];
+            $select = "UPDATE `boarding_list` SET `dorm_id` = ?, `room_id` = ? WHERE `dorm_id` = ? AND `student_id` = ?";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("sss",$new_dorm_id,$current_dorm_id,$student_id);
+            $stmt->bind_param("ssss",$new_dorm_id, $room_id, $current_dorm_id, $student_id);
             if($stmt->execute()){
                 $update = "UPDATE `student_data` SET `dormitory` = ? WHERE `adm_no` = ?";
                 $stmt = $conn2->prepare($update);

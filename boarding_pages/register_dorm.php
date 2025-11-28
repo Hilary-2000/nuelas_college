@@ -46,6 +46,15 @@
                 </p>
                 <p class = "hide pt-2" id="dorm_occupancy_details">
                 </p>
+                <div class="container hide" id="room_lists_window">
+                    <h6 class="pt-2 text-center">Room List for "<span id="hostel_name_for_room">Unknown</span>"</h6>
+                    <button type="button" id="add_new_room"> <i class="fas fa-plus"></i> Add Room</button>
+                    <p id="error_handler_room_list"></p>
+                    <p id="room_lists_and_mgmt"></p>
+                    <div class="btns">
+                        <button type="button" id="back_to_dormlist_from_rooms"><i class="fas fa-arrow-left"></i> Back</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="bottom1">
