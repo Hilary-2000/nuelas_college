@@ -6,7 +6,7 @@
             // selected captain
             $selected_captain = isset($_GET['selected_captain']) ? $_GET['selected_captain'] : "0";
 
-            //get the teacher list in the dormitory table
+            //get the teacher list in the hostel table
             $select = "SELECT `dorm_captain` FROM `dorm_list` WHERE `deleted` = 0 AND `activated` = 1";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
@@ -57,7 +57,7 @@
                     echo $teacher_list_dropdown;
                 }
             }else {
-                echo "<p style='color:red;font-size:12px;font-weight:600;'>No teachers available to assign the dormitory</p>";
+                echo "<p style='color:red;font-size:12px;font-weight:600;'>No teachers available to assign the hostel</p>";
             }
         }elseif (isset($_GET['add_dormitory'])) {
             $dorm_capacity = $_GET['dorm_capacity'];
@@ -73,7 +73,7 @@
             $deleted = 0;
             $stmt->bind_param("sssssssss", $dorm_name, $dorm_capacity, $dorm_captain, $activated, $deleted, $bed_capacity, $room_capacity, $matress_count, $comment);
             if($stmt->execute()){
-                echo "<p style='color:green;font-size:12px;font-weight:600;'>Dormitory registered successfully!</p>";
+                echo "<p style='color:green;font-size:12px;font-weight:600;'>Hostel registered successfully!</p>";
             }else {
                 echo "<p style='color:red;font-size:12px;font-weight:600;'>An error occured during registration!</p>";
             }
@@ -83,7 +83,7 @@
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $data_to_display = "<h6 style='font-size:17px;font-weight:500;text-align:center;margin: 5px 0;'><u>Dormitory List</u></h6><div class='table_holders'><table class='table' id='house_list_table'><thead>
+                $data_to_display = "<h6 style='font-size:17px;font-weight:500;text-align:center;margin: 5px 0;'><u>Hostel List</u></h6><div class='table_holders'><table class='table' id='house_list_table'><thead>
                 <tr>
                     <th>No.</th>
                     <th>House Name</th>
@@ -126,7 +126,7 @@
                 }else {
                     echo "<div class='displaydata'>
                             <img class='' src='images/error.png'>
-                            <p style='color:red;font-size:12px;font-weight:600;'>No dormitory results!</p>
+                            <p style='color:red;font-size:12px;font-weight:600;'>No hostel results!</p>
                         </div>";
                 }
             }
@@ -203,6 +203,44 @@
                 }
             }
             echo "<p class='text-success'>Room has been deleted successfully!</p>";
+        }elseif(isset($_GET['get_boarding_students'])){
+            $select = "SELECT boarding_list.*, student_data.*, hostel_rooms.room_name, dorm_list.dorm_name FROM `boarding_list` LEFT JOIN student_data ON student_data.adm_no = boarding_list.student_id LEFT JOIN hostel_rooms ON hostel_rooms.room_id = boarding_list.room_id LEFT JOIN dorm_list ON dorm_list.dorm_id = boarding_list.dorm_id;";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<h6 class='text-center mt-2'><u>Student Boarding List</u></h6><div class='tableme'><table class='table' id='boarding_students_list'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th><th>Hostel</th><th>Room</th><th>Enroll Date</th><th>Action</th></tr></thead><tbody>";
+            if ($result) {
+                $index = 1;
+                while($row = $result->fetch_assoc()){
+                    $course_name = get_course_name($row['course_done'], $conn2);
+                    $row['course_name'] = ucwords(strtolower($course_name));
+                    $data_to_display.="
+                    <tr>
+                        <td> <input type='hidden' value='".json_encode($row)."' id='boarding_data_".$row['id']."'> ".$index.".</td>
+                        <td>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."</td>
+                        <td>".$row['adm_no']."</td>
+                        <td>".$row['dorm_name']."</td>
+                        <td>".$row['room_name']."</td>
+                        <td>".date("D dS M Y",strtotime($row['date_of_enrollment']))."</td>
+                        <td><span id='view_boarder_profile_".$row['id']."' class='link view_boarder_profile' style='font-size:12px;'><i class='fa fa-eye'></i> View</span> | <span id='change_hostel_".$row['id']."' class='link change_hostel' style='font-size:12px;'><i class='fa fa-pen-fancy'></i> Change</span></td>
+                    </tr>";
+                    $index++;
+                }
+            }
+            $data_to_display .= "</tbody></table></div>";
+            echo $data_to_display;
+        }elseif(isset($_GET['get_boarding_fees'])){
+            include("../finance/financial.php");
+            $admission_no = $_GET['admission_no'];
+            $is_boarding = isBoarding($admission_no,$conn2);
+            $boarding_fees = 0;
+            if($is_boarding){
+                $student_data = students_details($admission_no, $conn2);
+                if (count($student_data) > 0) {
+                    $boarding_fees = getBoardingFees($conn2, $student_data);
+                }
+            }
+            echo "Kes ".number_format($boarding_fees);
         }elseif(isset($_GET['add_new_room'])){
             $add_new_room = $_GET['add_new_room'];
             $room_prefix = $_GET['room_prefix'];
@@ -328,7 +366,7 @@
                     <th>Adm no</th>
                     <th>Student Name</th>
                     <th>Gender</th>
-                    <th>Select dormitory</th>
+                    <th>Select hostel</th>
                     <th>Room Number</th>
                     <th>Save</th>
                 </tr>
@@ -398,7 +436,7 @@
             }
         }elseif (isset($_GET['get_occupancy'])) {
             $dorm_id = $_GET['dormitory_id'];
-            $select = "SELECT boarding_list.*, (SELECT hostel_rooms.room_name FROM hostel_rooms WHERE hostel_rooms.room_id = boarding_list.room_id) AS room_name FROM `boarding_list` WHERE `dorm_id` = ?";
+            $select = "SELECT boarding_list.*, student_data.*, (SELECT hostel_rooms.room_name FROM hostel_rooms WHERE hostel_rooms.room_id = boarding_list.room_id) AS room_name FROM `boarding_list` LEFT JOIN student_data ON student_data.adm_no = boarding_list.student_id WHERE `dorm_id` = ?";
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("s",$dorm_id);
             $stmt->execute();
@@ -414,7 +452,7 @@
                                             <th>Gender</th>
                                             <th>Room Name</th>
                                             <th>Date Enrolled</th>
-                                            <th>Change dormitory</th>
+                                            <th>Change hostel</th>
                                         </tr></thead><tbody>";
             if ($result) {
                 $xs = 0;
@@ -424,13 +462,13 @@
                     $date = $row['date_of_enrollment'];
                     $date = date("M-d-Y",strtotime($date));
                     $data_to_display.="<tr>
-                                        <td>".($xs)."</td>
+                                        <td><input type='hidden' value='".json_encode($row)."' id='dorm_data_".$row['student_id']."'>".($xs)."</td>
                                         <td>".$row['student_id']."</td>
                                         <td id='mystud".$row['student_id']."'>".$student[0]."</td>
                                         <td >".$student[1]."</td>
                                         <td >".$row['room_name']."</td>
                                         <td>".$date."</td>
-                                        <td style='text-align:center;'><span class='link change_dormitory' id='".$dorm_id."|".$row['student_id']."' style='font-size:12px;text-align:center;' ><i class='fa fa-pen'></i> change</span></td>
+                                        <td style='text-align:center;'><span class='link change_dormitory' data-hostel-id='".$dorm_id."' id='change_dormitory_".$row['student_id']."' style='font-size:12px;text-align:center;' ><i class='fa fa-pen'></i> Change</span></td>
                                     </tr>";
                 }
             }
@@ -448,7 +486,7 @@
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $return_string = "<select class='form-control'  name='dorm_list_change' id='dorm_list_change'><option value='' hidden>Select..</option>";
+                $return_string = "<select class='form-control'  name='dorm_list_change' id='dorm_list_change'><option value='' hidden>Select Hostel..</option>";
                 $xs = 0;
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
@@ -458,7 +496,7 @@
                 if ($xs > 0) {
                     echo $return_string;
                 }else {
-                    echo "<p style='color:red;font-size:13px;font-weight:500;'>No other dormitory</p>";
+                    echo "<p style='color:red;font-size:13px;font-weight:500;'>No other hostel</p>";
                 }
             }
         }elseif (isset($_GET['change_student_dorm'])) {
@@ -630,5 +668,33 @@
             }
         }
         return "Null";
+    }
+
+    // get the course id when given the name
+    function get_course_name($course_id, $conn2){
+        // get all courses
+        $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $course_levels = [];
+        $result = $stmt->get_result();
+        if($result){
+            if($row = $result->fetch_assoc()){
+                $course_levels = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+            }
+        }
+
+        foreach ($course_levels as $key => $value) {
+            if(strtolower($course_id) == strtolower($value->id)){
+                return $value->course_name;
+            }
+        }
+        return "";
+    }
+
+    function isJson_report($string) {
+        return ((is_string($string) &&
+                (is_object(json_decode($string)) ||
+                is_array(json_decode($string))))) ? true : false;
     }
 ?>

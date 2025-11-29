@@ -10,7 +10,7 @@
             <div class="conts" style="border-bottom:1px dashed black;">
                 <div class="conts">
                     <p><strong>Information:</strong></p>
-                    <p>- At this window you are previledged to assign boarders a dormitory.</p>
+                    <p>- At this window you are previledged to assign boarders a hostel.</p>
                     <p>- Start by searching for a students who are enrolled for boarding.</p>
                 </div>
                 <div style="border-top:1px dashed black;padding:10px 0;margin-top:10px;font-size:14px; display:flex; flex-direction:column;align-items:center;" class="conts d-none">

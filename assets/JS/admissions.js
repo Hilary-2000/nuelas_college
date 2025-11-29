@@ -953,6 +953,14 @@ cObj("maanage_dorm").onclick = function () {
     removesidebar();
     cObj("refresh_dorm_list").click();
 }
+cObj("student_boarders").onclick = function () {
+    hideWindow();
+    unselectbtns();
+    addselected(this.id);
+    cObj("student_boarding_list").classList.remove("hide");
+    removesidebar();
+    cObj("display_all_students_present").click();
+}
 cObj("exam_fill_btn").onclick = function () {
     hideWindow();
     unselectbtns();
@@ -2974,7 +2982,7 @@ function tablebtnlistener() {
                         // set the listener
                         cObj("enroll_stud_boarding").addEventListener("click", clickEnroll);
                     } else {
-                        cObj("boarding_status").innerHTML = "<span style='background-color: green; color:white;' class='rounded p-1 '>Enrolled</span> || <span id='unenroll_stud_boarding' class='link' >CLick me to Un-Enroll ?</span>";
+                        cObj("boarding_status").innerHTML = "<span style='background-color: green; color:white;' class='rounded p-1 '>Enrolled</span> || <span id='unenroll_stud_boarding' class='link' >Click me to Un-Enroll?</span>";
                         cObj("unenroll_stud_boarding").addEventListener("click", clickUnEnroll);
                     }
                     cObj("attendance_this_term").innerHTML = splitdata[37];
@@ -3711,7 +3719,7 @@ function clickEnroll() {
                     cObj("boarding_status_changer").innerHTML = "";
                 }, 10000);
                 stopInterval(ids);
-                cObj("boarding_status").innerHTML = "<span style='background-color: green; color:white;' class='rounded p-1 '>Enrolled</span> || <span id='unenroll_stud_boarding' class='link' >CLick me to Un-Enroll ?</span>";
+                cObj("boarding_status").innerHTML = "<span style='background-color: green; color:white;' class='rounded p-1 '>Enrolled</span> || <span id='unenroll_stud_boarding' class='link' >Click me to Un-Enroll?</span>";
                 cObj("unenroll_stud_boarding").addEventListener("click", clickUnEnroll);
             }
         }, 100);

@@ -472,7 +472,7 @@ function checkPresnt($array, $string){
                     <div class="contsc">
                         <button type='button' class="sidebtns <?php echo allowed("enroll_boarding_btn"); ?> htbtn" id='enroll_boarding_btn'><span><img class="icons" src="images/enrollboarding.png"></span>Enroll boarding</button>
                         <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Manage hostel</button>
-                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Student List</button>
+                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='student_boarders'><span><img class="icons" src="images/dormitory.png"></span>Student List</button>
                         <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Discipline & Incidents</button>
                         <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Inventory</button>
                     </div>
@@ -567,8 +567,9 @@ function checkPresnt($array, $string){
             include("academics/exam_filling.php");
             include("academics/timetable.php");
             include("system_error_pages/inconvinience.php");
-            include("boarding_pages/register_dorm.php");
             include("boarding_pages/enroll_boarding.php");
+            include("boarding_pages/register_dorm.php");
+            include("boarding_pages/student_list.php");
             include("main_pages/system_profile.php");
             include("main_pages/personal_profile.php");
             include("main_pages/notification_page.php");
@@ -2208,6 +2209,59 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
+        <div class="confirmpaymentwindow hide" id="show_boarder_profile_modal">
+            <div class="changesubwindow editexams animate">
+                <div class="conts">
+                    <p class="funga" id="close_show_boarder_profile_modal">&times</p>
+                    <h6 class='text-center'>Boarder Profile</h6>
+                </div>
+                <form class="add_expense" id="boarder_profile_modal_form">
+                    <div class="name_n_icons mx-auto w-50 d-flex align-center">
+                        <img class="images mx-auto" src="images/dp.png" alt="userimg">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="boarder-fullname">Boarder Fullname:</label>
+                        <input type="text" name="boarder-fullname" id="boarder-fullname" class="form-control" placeholder="Fullname">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="boarder-reg-no">Student Reg No</label><br>
+                        <input type="text" name="boarder-reg-no" id="boarder-reg-no" class="form-control" placeholder="Admission No">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="boarder-hostel-residence">Hostel</label><br>
+                        <input type="text" name="boarder-hostel-residence" id="boarder-hostel-residence" class="form-control" placeholder="Hostel">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="boarder-room-number">Room</label><br>
+                        <input type="text" name="boarder-room-number" id="boarder-room-number" class="form-control" placeholder="Room No">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="boarder-reg-date">Registration Date</label><br>
+                        <input type="text" name="boarder-reg-date" id="boarder-reg-date" class="form-control" placeholder="Registration Date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="boarder-fees">Boarding Fees</label><br>
+                        <p id="boarding_fees_holder_modal" class="hide"></p>
+                        <input type="text" name="boarder-fees" id="boarder-fees" value="Loading..." class="form-control" placeholder="Boarding Fees">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="boarder-course-level">Course Level</label><br>
+                        <input type="text" name="boarder-course-level" id="boarder-course-level" class="form-control" placeholder="Room No">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label" for="boarder-course-name">Course Name</label><br>
+                        <input type="text" name="boarder-course-name" id="boarder-course-name" class="form-control" placeholder="Registration Date">
+                    </div>
+                </form>
+                <div class="conts">
+                    <p id='boarder_profile_modal_err'></p>
+                </div>
+                <div class="btns">
+                    <!-- <button type="button" class="" id='update_dormitory'>Save Changes</button> -->
+                    <button type="button" id="close_show_boarder_profile_modal_1">Close</button>
+                </div>
+            </div>
+        </div>
         <div class="confirmpaymentwindow hide" id="add_hostel_room_window">
             <div class="changesubwindow editexams animate">
                 <div class="conts">
@@ -2308,14 +2362,14 @@ function checkPresnt($array, $string){
                     <p class="funga" id="change_student_close">&times</p>
                     <h6 class="text-center">Edit Student Hostel</h6>
                 </div>
-                <form class="container border border-secondary rounded p-2 mx-auto" id="">
+                <div class="container border border-secondary rounded p-2 mx-auto" id="">
                     <div class="conts">
                         <label class="form-control-label">Student id: <span style="color:brown;" id="my_student_id">0</span></label>
                         <label class="form-control-label d-none">Hostel id: <span style="color:brown;" id="my_dorm_id">0</span></label><br>
                         <label class="form-control-label">Student Name: <span style="color:brown;" id="my_student_name">Hillary Ngige</span></label>
                     </div>
-                    <hr class="w-75 my-2 mx-auto">
                     <div class="conts">
+                        <input type="hidden" name="" value="list_1" id="after_request_action">
                         <label class="form-control-label" for="dorm_list_change">Change Hostel: <br></label>
                         <p id="dorms_lists"></p>
                         <div class="form-group" id="dorm_list_monitor">
@@ -2333,17 +2387,24 @@ function checkPresnt($array, $string){
                                 <button type="button" class="" id='change_dormitory_btn'>Update</button>
                             </div>
                         </div>
-                        <hr class="w-75 my-2 mx-auto">
-                        <h6 class="text-center"><b>More Action:</b></h6>
-                        <p id="chage_dorms_err_handlers"></p>
-                        <!-- <p>Click the <b>Un-assign</b> button below to un-assign the boarder a hostel</p>
-                        <p>Click the <b>De-register</b> button below to de-register student as a boarder.</p> -->
-                        <div class="btns" style='border-bottom:1px dashed black;'>
-                            <button type='button' style='margin:0;' id="un_assign_dorm_btn">Un-assign</button>
-                            <button type='button' style='margin:0;' id="un_assign_boarder_btn">De-register</button>
+                        <hr class="w-50 my-2 mx-auto">
+                        <span id="more_action_hostels" class="link" style="font-size:12px;"><u><i class="fa fa-hand-point-right"></i> More Action</u></span>
+                        <div class="container border border-secondary rounded p-2 hide" id="more_actions_window">
+                            <h6 class="text-center"><b>More Action</b></h6>
+                            <p id="chage_dorms_err_handlers"></p>
+                            <!-- <p>Click the <b>Un-assign</b> button below to un-assign the boarder a hostel</p>
+                            <p>Click the <b>De-register</b> button below to de-register student as a boarder.</p> -->
+                            <div class="container row mx-auto">
+                                <div class="col-md-6">
+                                    <button type='button' style='margin:0;' id="un_assign_dorm_btn">Un-assign</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type='button' style='margin:0;' id="un_assign_boarder_btn">De-register</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </form>
+                </div>
                 <div class="conts">
                     <p id='change_dorm_err_handler'></p>
                 </div>

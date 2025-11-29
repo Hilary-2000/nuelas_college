@@ -4,17 +4,17 @@
     </div>
     <div class="admWindow ">
         <div class="top1">
-            <p>Register dormitory</p>
+            <p>Register Hostel</p>
         </div>
         <div class="middle1">
             <div class="conts" style="border-bottom:1px dashed black;">
                 <div class="conts">
                     <p><strong>Information:</strong></p>
-                    <p>- At this window you are previledged to register dormitories that are present in school and view their information including students who inhibit the dorms.</p>
+                    <p>- At this window you are previledged to register hostels that are present in school and view their information including students who inhibit the dorms.</p>
                 </div>
                 <div class="conts">
                     <p>Start by doing either of the following:</p>
-                    <button type="button" id="register_exams" >Register New Dormitory</button>
+                    <button type="button" id="register_exams" >Register New Hostel</button>
                     <button type="button" id="refresh_dorm_list" >Refresh</button>
                     <!--<p><a href="tel://+254713620727">Call me ?</a></p>
                     <p><a href="mailto://hilaryme45@gmail.com">Mail me.</a></p>-->
@@ -35,7 +35,7 @@
                         </tr>
                         <tr>
                             <td>1. </td>
-                            <td>Mt Sinai Dormitory</td>
+                            <td>Mt Sinai Hostel</td>
                             <td>Mr Hilary</td>
                             <td>100</td>
                             <td>10</td>

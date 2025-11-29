@@ -318,7 +318,7 @@ function view_Occupancy() {
         var change_dormitory = document.getElementsByClassName("change_dormitory");
         for (let index = 0; index < change_dormitory.length; index++) {
             const element = change_dormitory[index];
-            element.addEventListener("click",changeDormitory);
+            element.addEventListener("click",change_hostel_student);
         }
 
         if(cObj("hostel-occupancy") != null && cObj("hostel-occupancy") != null){
@@ -326,28 +326,6 @@ function view_Occupancy() {
                 $('#hostel-occupancy').DataTable();  // Just one line!
             });
         }
-    });
-}
-function changeDormitory() {
-    var identity = this.id;
-    var dorm_id = identity.split("|")[0];
-    var student_id = identity.split("|")[1];
-    cObj("my_student_id").innerText = student_id;
-    cObj("my_dorm_id").innerText = dorm_id;
-    cObj("my_student_name").innerText = cObj("mystud"+student_id).innerText;
-    var datapass = "?get_dorm_list=true&current_dorm="+dorm_id+"&student_ids="+student_id;
-    sendData2("GET","boarding/boarding.php",datapass,cObj("dorms_lists"),cObj("dorm_list_monitor"), function () {
-        //show window
-        cObj("change_student_dorm").classList.remove("hide");
-        cObj("dorm_list_change").addEventListener("change", function () {
-            var dropdown_id = "room_change_update";
-            var datapass = "?display_rooms_dropdown=true&hostel_id="+this.value+"&dropdown_id="+dropdown_id;
-            sendData1("GET","boarding/boarding.php", datapass, cObj("hostel_rooms"), function () {
-                if (cObj(dropdown_id) != undefined) {
-                    $('#'+dropdown_id).select2();
-                }
-            });
-        });
     });
 }
 function changeTables() {
@@ -492,31 +470,19 @@ cObj("change_student_close").onclick = function () {
     cObj("hostel_rooms").innerHTML = '<span class="text-danger">Select hostel to display rooms!</span>';
 }
 cObj("change_dormitory_btn").onclick = function () {
-    cObj("hostel_rooms").innerHTML = '<span class="text-danger">Select hostel to display rooms!</span>';
     if(typeof(cObj("dorm_list_change")) != 'undefined' && cObj("dorm_list_change") != null) {
         var err = checkBlank("dorm_list_change");
         if (err == 0) {
             cObj("chage_dorms_err_handlers").innerHTML = "";
             //send data to the database
             var datapass = "?change_student_dorm=true&student_id="+cObj("my_student_id").innerText+"&new_dorm_id="+cObj("dorm_list_change").value+"&current_dorm_id="+cObj("my_dorm_id").innerText+"&room_id="+valObj("room_change_update");
-            sendData1("GET","boarding/boarding.php",datapass,cObj("chage_dorms_err_handlers"));
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout==1200) {
-                        stopInterval(ids);                        
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        cObj("chage_dorms_err_handlers").innerHTML = "";
-                        cObj("change_student_dorm").classList.add("hide");
-                        cObj("back_to_dormlist").click();
-                        cObj("refresh_dorm_list").click();
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 200);
+            sendData1("GET","boarding/boarding.php",datapass,cObj("chage_dorms_err_handlers"), function () {
+                cObj("chage_dorms_err_handlers").innerHTML = "";
+                cObj("change_student_dorm").classList.add("hide");
+                cObj(cObj("after_request_action").value).click();
+                // cObj("occupied"+cObj("my_dorm_id").innerText).click();
+                cObj("hostel_rooms").innerHTML = '<span class="text-danger">Select hostel to display rooms!</span>';
+            });
         }else{
             cObj("chage_dorms_err_handlers").innerHTML = "<p class ='errors' style='color:red;'>No house is selected for the students!</p>";
         }
@@ -571,4 +537,94 @@ cObj("un_assign_dorm_btn").onclick = function () {
             }
         }, 100);
     }, 200);
+}
+
+cObj("display_all_students_present").onclick = function () {
+    var datapass = "?get_boarding_students=true";
+    sendData1("GET", "boarding/boarding.php", datapass, cObj("student_enrolled_list"), function () {
+        
+        var view_boarder_profile = document.getElementsByClassName("view_boarder_profile");
+        for (let index = 0; index < view_boarder_profile.length; index++) {
+            const element = view_boarder_profile[index];
+            element.addEventListener("click", show_boarder_profile);
+        }
+        var change_hostel = document.getElementsByClassName("change_hostel");
+        for (let index = 0; index < change_hostel.length; index++) {
+            const element = change_hostel[index];
+            element.addEventListener("click", change_hostel_student);
+        }
+
+        if (cObj("boarding_students_list") != undefined && cObj("boarding_students_list") != null) {
+            $(document).ready(function() {
+                $('#boarding_students_list').DataTable();  // Just one line!
+            });
+        }
+    });
+}
+
+function show_boarder_profile() {
+    var boarding_data = cObj("boarding_data_"+this.id.substr(21)).value;
+    if (hasJsonStructure(boarding_data)) {
+        var json_boarding = JSON.parse(boarding_data);
+        cObj("boarder-fullname").value = json_boarding.first_name+" "+json_boarding.second_name;
+        cObj("boarder-reg-no").value = json_boarding.adm_no;
+        cObj("boarder-hostel-residence").value = json_boarding.dorm_name;
+        cObj("boarder-room-number").value = json_boarding.room_name;
+        cObj("boarder-reg-date").value = json_boarding.date_of_enrollment;
+        cObj("boarder-course-level").value = json_boarding.stud_class;
+        cObj("boarder-course-name").value = json_boarding.course_name;
+
+        // show boarder profile
+        cObj("show_boarder_profile_modal").classList.remove("hide");
+        // get the boarding fees.
+        var datapass = "?get_boarding_fees=true&admission_no="+json_boarding.adm_no;
+        sendData1("GET", "boarding/boarding.php", datapass, cObj("boarding_fees_holder_modal"), function () {
+            cObj("boarder-fees").value = cObj("boarding_fees_holder_modal").innerText;
+        });
+    }
+}
+
+cObj("close_show_boarder_profile_modal").onclick = function () {
+    cObj("show_boarder_profile_modal").classList.add("hide");
+}
+
+cObj("close_show_boarder_profile_modal_1").onclick = function () {
+    cObj("show_boarder_profile_modal").classList.add("hide");
+}
+
+function change_hostel_student() {
+    var boarding_data = "";
+    if(this.id.substr(0,16) == "change_dormitory"){
+        var boarding_data = cObj("dorm_data_"+this.id.substr(17)).value;
+        cObj("after_request_action").value = "occupied"+this.dataset.hostelId;
+    }else{
+        var boarding_data = cObj("boarding_data_"+this.id.substr(14)).value;
+        cObj("after_request_action").value = "display_all_students_present";
+    }
+    if (hasJsonStructure(boarding_data)) {
+        var json_boarding = JSON.parse(boarding_data);
+        var dorm_id = json_boarding.dorm_id;
+        var student_id = json_boarding.adm_no;
+        cObj("my_student_id").innerText = student_id;
+        cObj("my_dorm_id").innerText = dorm_id;
+        cObj("my_student_name").innerText = json_boarding.first_name+" "+json_boarding.second_name;
+        var datapass = "?get_dorm_list=true&current_dorm="+dorm_id+"&student_ids="+student_id;
+        sendData2("GET","boarding/boarding.php",datapass,cObj("dorms_lists"),cObj("dorm_list_monitor"), function () {
+            //show window
+            cObj("change_student_dorm").classList.remove("hide");
+            cObj("dorm_list_change").addEventListener("change", function () {
+                var dropdown_id = "room_change_update";
+                var datapass = "?display_rooms_dropdown=true&hostel_id="+this.value+"&dropdown_id="+dropdown_id;
+                sendData1("GET","boarding/boarding.php", datapass, cObj("hostel_rooms"), function () {
+                    if (cObj(dropdown_id) != undefined) {
+                        $('#'+dropdown_id).select2();
+                    }
+                });
+            });
+        });
+    }
+}
+
+cObj("more_action_hostels").onclick = function () {
+    cObj("more_actions_window").classList.toggle("hide");
 }

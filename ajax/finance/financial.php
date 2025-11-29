@@ -7741,7 +7741,8 @@
             if ($row = $res->fetch_assoc()) {
                 $fees_to_pay = $row['TOTALS'];
                 if (isBoarding($admno,$conn2)) {
-                    $boarding_fees = getBoardingFeesOfTerm($conn2,$classes);
+                    $student_data = students_details($admno, $conn2);
+                    $boarding_fees = getBoardingFees($conn2,$student_data);
                     $fees_to_pay = $fees_to_pay+$boarding_fees;
                 }
                 // echo isBoarding($admno,$conn2);
@@ -7781,7 +7782,8 @@
                 // echo $fees_to_pay;
 
                 if (isBoarding($admno,$conn2)) {
-                    $boarding_fees = getBoardingFees($conn2,$classes);
+                    $student_data = students_details($admno, $conn2);
+                    $boarding_fees = getBoardingFees($conn2,$student_data);
                     $fees_to_pay = $fees_to_pay+$boarding_fees;
                 }
                 // echo isBoarding($admno,$conn2);
@@ -7908,7 +7910,8 @@
             if ($row = $res->fetch_assoc()) {
                 $fees_to_pay = $row['TOTALS'];
                 if (isBoarding($admno,$conn2)) {
-                    $boarding_fees = getBoardingFees($conn2,$classes,$term);
+                    $student_data = students_details($admno, $conn2);
+                    $boarding_fees = getBoardingFees($conn2,$student_data);
                     $fees_to_pay = $fees_to_pay+$boarding_fees;
                 }
                 // echo isBoarding($admno,$conn2);
@@ -8787,27 +8790,24 @@
         }
         return false;
     }
-    function getBoardingFeesOfTerm($conn2,$class,$termed = "null"){
-        $class = "%|".$class."|%";
-        $term = getTermV2($conn2);
+    function getBoardingFees($conn2,$student_data){
         // echo $class;
-        $select = "";
-        if ($term == "TERM_1" && $termed == "null") {
-            $select = "SELECT sum(`TERM_1`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-        }elseif ($term == "TERM_2" && $termed == "null") {
-            $select = "SELECT sum(`TERM_2`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-        }elseif ($term == "TERM_3" && $termed == "null") {
-            $select = "SELECT sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-        }elseif ($termed != "null") {
-            $select = "SELECT sum(`".$termed."`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-        }
+        $select = "SELECT SUM(TERM_1) AS 'TERM_1', SUM(TERM_2) AS 'TERM_2', SUM(TERM_3) AS 'TERM_3' FROM `fees_structure` WHERE classes = ? AND course = ?";
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("s",$class);
+        $stmt->bind_param("ss",$student_data['stud_class'],$student_data['course_done']);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
             if ($row = $result->fetch_assoc()) {
-                return $row['Total'];
+                if($student_data['study_mode'] == "fulltime"){
+                    return $row['TERM_1'];
+                }
+                if($student_data['study_mode'] == "evening"){
+                    return $row['TERM_2'];
+                }
+                if($student_data['study_mode'] == "weekend"){
+                    return $row['TERM_3'];
+                }
             }
         }
         return 0;
@@ -8844,64 +8844,6 @@
             }
         }
 
-        $stmt = $conn2->prepare($select);
-        $stmt->bind_param("s",$class);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result) {
-            if ($row = $result->fetch_assoc()) {
-                return $row['Total'];
-            }
-        }
-        return 0;
-    }
-    function getBoardingFees($conn2,$class,$admitted_term = "null",$admission_no = ""){
-        $class = "%|".$class."|%";
-        $term = getTermV2($conn2);
-        if (strlen($admission_no) > 0) {
-            $student_data = students_details($admission_no,$conn2);
-            // get the date of registration is in what term
-            $date_of_reg = count($student_data) > 0 ? $student_data['D_O_A'] : date("Y-m-d");
-            $select = "SELECT * FROM `academic_calendar` WHERE `start_time` <= ? AND `end_time` >= ?";
-            $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$date_of_reg,$date_of_reg);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $admitted_term = "null";
-            if ($result) {
-                if($row = $result->fetch_assoc()){
-                    $admitted_term = $row['term'];
-                }
-            }
-        }
-        
-        if ($admitted_term == "TERM_1" || $admitted_term == "null") {
-            if($term == "TERM_1"){
-                $select = "SELECT sum(`TERM_1`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }elseif($term == "TERM_2"){
-                $select = "SELECT sum(`TERM_1`)+sum(`TERM_2`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }elseif($term == "TERM_3"){
-                $select = "SELECT sum(`TERM_1`)+sum(`TERM_2`)+sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }
-        }elseif($admitted_term == "TERM_2"){
-            if($term == "TERM_2"){
-                $select = "SELECT sum(`TERM_2`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }elseif($term == "TERM_3"){
-                $select = "SELECT sum(`TERM_2`)+sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }
-        }elseif($admitted_term == "TERM_3"){
-            if($term == "TERM_3"){
-                $select = "SELECT sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }
-        }else {
-            if($term == "TERM_1"){
-                $select = "SELECT sum(`TERM_1`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }elseif($term == "TERM_2"){
-                $select = "SELECT sum(`TERM_1`)+sum(`TERM_2`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }elseif($term == "TERM_3"){
-                $select = "SELECT sum(`TERM_1`)+sum(`TERM_2`)+sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
-            }
-        }
         $stmt = $conn2->prepare($select);
         $stmt->bind_param("s",$class);
         $stmt->execute();
