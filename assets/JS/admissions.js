@@ -961,6 +961,14 @@ cObj("student_boarders").onclick = function () {
     removesidebar();
     cObj("display_all_students_present").click();
 }
+cObj("discipline_incidents_btn").onclick = function () {
+    hideWindow();
+    unselectbtns();
+    addselected(this.id);
+    cObj("discipline_incident_mgt_window").classList.remove("hide");
+    removesidebar();
+    display_incidents();
+}
 cObj("exam_fill_btn").onclick = function () {
     hideWindow();
     unselectbtns();
@@ -1559,6 +1567,20 @@ window.onload = function () {
 
     // load dashboard
     load_dash_graphs();
+
+    $('#incident_type_dropdown').select2({
+        placeholder: "Select Incident Type",
+        width: "100%"
+    });
+
+    $('#incident_category').select2({
+        placeholder: "Select Category",
+        width: "100%"
+    });
+    $('#incident_severity_level').select2({
+        placeholder: "Select Severity Level",
+        width: "100%"
+    });
 }
 
 /*******end of it********/

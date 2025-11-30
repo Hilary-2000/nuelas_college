@@ -473,8 +473,7 @@ function checkPresnt($array, $string){
                         <button type='button' class="sidebtns <?php echo allowed("enroll_boarding_btn"); ?> htbtn" id='enroll_boarding_btn'><span><img class="icons" src="images/enrollboarding.png"></span>Enroll boarding</button>
                         <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Manage hostel</button>
                         <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='student_boarders'><span><img class="icons" src="images/dormitory.png"></span>Student List</button>
-                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Discipline & Incidents</button>
-                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Inventory</button>
+                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='discipline_incidents_btn'><span><img class="icons" src="images/dormitory.png"></span>Discipline & Incidents</button>
                     </div>
                 </div>
             </div>
@@ -570,6 +569,7 @@ function checkPresnt($array, $string){
             include("boarding_pages/enroll_boarding.php");
             include("boarding_pages/register_dorm.php");
             include("boarding_pages/student_list.php");
+            include("boarding_pages/discipline_incident.php");
             include("main_pages/system_profile.php");
             include("main_pages/personal_profile.php");
             include("main_pages/notification_page.php");
@@ -2153,6 +2153,156 @@ function checkPresnt($array, $string){
                 <div class="btns">
                     <button type="button" class="" id='add_dormitory'>Add</button>
                     <button type="button" id="close_dorm_reg_btn">Close</button>
+                </div>
+            </div>
+        </div>
+        <div class="confirmpaymentwindow hide" id="record_new_incident_modal">
+            <div class="changesubwindow editexams animate">
+                <div class="conts">
+                    <p class="funga" id="close_new_incident_modal_1">&times</p>
+                    <h6 class="text-center">Record New Incident</h6>
+                </div>
+                <form class="add_expense" id="new_incident_form">
+                    <div class="conts">
+                        <label class="form-control-label" for="incident_type_dropdown">Incident Type:<span class="text-danger">*</span><br></label>
+                        <select id="incident_type_dropdown" class="form-control">
+                            <!-- Behavioral Misconduct -->
+                            <optgroup label="Behavioral Misconduct">
+                                <option value="Misconduct">Misconduct</option>
+                                <option value="Bullying">Bullying</option>
+                                <option value="Fighting">Fighting / Physical Altercation</option>
+                                <option value="Verbal Abuse">Verbal Abuse / Insults</option>
+                                <option value="Disobedience">Disobedience / Defiance</option>
+                                <option value="Noise Making">Noise Making</option>
+                                <option value="Dress Code Violation">Dress Code Violation</option>
+                                <option value="Insubordination">Insubordination to Staff</option>
+                                <option value="Possession of Prohibited Items">Possession of Prohibited Items</option>
+                            </optgroup>
+
+                            <!-- Academic Misconduct -->
+                            <optgroup label="Academic Misconduct">
+                                <option value="Cheating">Cheating / Exam Malpractice</option>
+                                <option value="Plagiarism">Plagiarism</option>
+                                <option value="Exam Irregularity">Exam Irregularity</option>
+                            </optgroup>
+
+                            <!-- Attendance Issues -->
+                            <optgroup label="Attendance Issues">
+                                <option value="Lateness">Lateness</option>
+                                <option value="Truancy">Unauthorized Absence (Truancy)</option>
+                                <option value="Class Skipping">Class Skipping</option>
+                            </optgroup>
+
+                            <!-- Property Related -->
+                            <optgroup label="Property Related">
+                                <option value="Vandalism">Vandalism</option>
+                                <option value="Theft">Theft</option>
+                                <option value="Property Damage">Property Damage</option>
+                            </optgroup>
+
+                            <!-- Health -->
+                            <optgroup label="Health">
+                                <option value="Injury">Injury (Sports/Accident)</option>
+                                <option value="Sickness Episode">Sickness Episode</option>
+                                <option value="Allergic Reaction">Allergic Reaction</option>
+                                <option value="Medical Emergency">Medical Emergency</option>
+                            </optgroup>
+
+                            <!-- Safety & Security -->
+                            <optgroup label="Safety & Security">
+                                <option value="Lost Property">Lost Property</option>
+                                <option value="Security Breach">Security Breach</option>
+                                <option value="Fire Alarm">Fire Alarm Activation</option>
+                                <option value="Equipment Malfunction">Equipment Malfunction</option>
+                            </optgroup>
+
+                            <!-- Boarding Incidents -->
+                            <optgroup label="Boarding">
+                                <option value="Room Conflict">Room Conflict</option>
+                                <option value="Night Noise">Night Noise</option>
+                                <option value="Dormitory Damage">Dormitory Damage</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="incident_category">Incident Category:<span class="text-danger">*</span><br></label>
+                        <select id="incident_category" class="form-control">
+                            <option>Select Incedent Category</option> <!-- for placeholder -->
+                            <option value="Behavioral Misconduct">Behavioral Misconduct</option>
+                            <option value="Academic Misconduct">Academic Misconduct</option>
+                            <option value="Attendance Issues">Attendance Issues</option>
+                            <option value="Property Related">Property Related</option>
+                            <option value="Health">Health</option>
+                            <option value="Safety & Security">Safety & Security</option>
+                            <option value="Boarding">Boarding</option>
+                        </select>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="student_incident_involve">Student(s) Involved: <span class="text-danger">*</span><img class="hide" id="students_involved_loader" src="images/load2.gif" alt="loading.."> (Select multiple if neccesary)<br></label>
+                        <p id="student_incident_list"></p>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="incident_reported_by">Reported By<img class="hide" id="incident_reported_by_loader" src="images/load2.gif" alt="loading.."> (Select multiple if necessary)<br></label>
+                        <p id="staff_incident_list"></p>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="incident_location">Incident Location:<br></label>
+                        <input class="form-control" type="number" name="incident_location" id="incident_location" placeholder="Where it happened..">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="incident_description">Incident Description <br></label>
+                        <textarea name="incident_description" id="incident_description" placeholder="Full detail of what happened" rows="5" class="form-control"></textarea>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="date_incident_reported">Date Reported: <br></label>
+                        <input class="form-control" type="datetime" name="date_incident_reported" id="date_incident_reported" placeholder="Matress Count">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="incident_action_taken">Action Taken: <br></label>
+                        <input class="form-control" type="number" name="incident_action_taken" id="incident_action_taken" placeholder="first aid, counseling, punishment">
+                    </div>
+                    <div class="conts">
+                        <label for="incident_severity_level" class="form-control-label">Incident Severity Level</label>
+                        <select id="incident_severity_level" class="form-control">
+                            <option>Incident Severity Level</option> <!-- placeholder -->
+                            <option value="Low">Low</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="conts">
+                        <label for="incident_parent_notified" class="form-control-label">Parent Notified</label>
+                        <select id="incident_parent_notified" class="form-control">
+                            <option>Select Status</option> <!-- placeholder -->
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="conts hide">
+                        <label class="form-control-label" for="parent_notification_date">Notification Reported: <br></label>
+                        <input class="form-control" type="datetime" name="parent_notification_date" id="parent_notification_date" placeholder="Matress Count">
+                    </div>
+                    <div class="conts">
+                        <label for="incident_status" class="form-control-label">Incident Status</label>
+                        <select id="incident_status" class="form-control">
+                            <option>Incident Status</option> <!-- placeholder -->
+                            <option value="Pending">Pending</option>
+                            <option value="Under Investigation">Under Investigation</option>
+                            <option value="Action Taken">Action Taken</option>
+                            <option value="Escalated">Escalated</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Closed">Closed</option>
+                            <option value="False Report">False Report</option>
+                        </select>
+                    </div>
+                </form>
+                <div class="conts">
+                    <p id='incident_err_display'></p>
+                </div>
+                <div class="btns">
+                    <button type="button" class="" id='add_incident'>Add</button>
+                    <button type="button" id="close_new_incident_modal_2">Close</button>
                 </div>
             </div>
         </div>

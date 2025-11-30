@@ -499,6 +499,28 @@
                     echo "<p style='color:red;font-size:13px;font-weight:500;'>No other hostel</p>";
                 }
             }
+        }elseif(isset($_GET['display_incidents'])){
+            $select = "SELECT discipline_incidents.*, student_data.*, ladybird_smis.user_tbl.* FROM `discipline_incidents` LEFT JOIN student_data ON student_data.adm_no = discipline_incidents.student_id LEFT JOIN ladybird_smis.user_tbl ON ladybird_smis.user_tbl.user_id = discipline_incidents.reported_by ORDER BY incident_id DESC;";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<table class='table' id='incident_discipline_table'><thead><tr><th>No</th><th>Student Name</th><th>Incident</th><th>Reported By</th><th>Reported Date</th><th>Action</th></tr></thead><tbody>";
+            if ($result) {
+                $counter = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display.="
+                    <tr>
+                        <th>".$counter.". </th>
+                        <th>".$row['first_name']." ".$row['second_name']."</th>
+                        <th>".$row['incident_type']."</th>
+                        <th>".$row['fullname']."</th>
+                        <th>".date("D dS M Y", strtotime($row['date_reported']))."</th>
+                        <th>Action</th>
+                    </tr>";
+                }
+            }
+            $data_to_display.="</tbody></table>";
+            echo $data_to_display;
         }elseif (isset($_GET['change_student_dorm'])) {
             $student_id = $_GET['student_id'];
             $new_dorm_id = $_GET['new_dorm_id'];

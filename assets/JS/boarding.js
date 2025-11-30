@@ -628,3 +628,26 @@ function change_hostel_student() {
 cObj("more_action_hostels").onclick = function () {
     cObj("more_actions_window").classList.toggle("hide");
 }
+
+cObj("discipline_tab").onclick = display_incidents;
+
+function display_incidents() {
+    var datapass = "?display_incidents=true";
+    sendData1("GET","boarding/boarding.php", datapass, cObj("incident_table_holder"), function () {
+        $(document).ready(function() {
+            $('#incident_discipline_table').DataTable();  // Just one line!
+        });
+    });
+}
+
+cObj("report_new_incidents").onclick = function () {
+    cObj("record_new_incident_modal").classList.remove("hide");
+}
+
+cObj("close_new_incident_modal_1").onclick = function () {
+    cObj("record_new_incident_modal").classList.add("hide");
+}
+
+cObj("close_new_incident_modal_2").onclick = function () {
+    cObj("record_new_incident_modal").classList.add("hide");
+}
