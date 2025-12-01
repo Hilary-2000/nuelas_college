@@ -172,6 +172,13 @@
             $stmt->execute();
 
             echo "<p class='text-success'>Room data have been updated successfully!</p>";
+        }elseif(isset($_GET['delete_discipline_incident'])){
+            $incident_id = $_GET['incident_id'];
+            $delete = "DELETE FROM discipline_incidents WHERE incident_id = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s", $incident_id);
+            $stmt->execute();
+            echo "<p class='text-success'>Incident has been successfully deleted!!</p>";
         }elseif(isset($_GET['delete_hostel_room'])){
             $delete_hostel_room = $_GET['delete_hostel_room'];
             $room_id = $_GET['room_id'];
@@ -500,27 +507,154 @@
                 }
             }
         }elseif(isset($_GET['display_incidents'])){
-            $select = "SELECT discipline_incidents.*, student_data.*, ladybird_smis.user_tbl.* FROM `discipline_incidents` LEFT JOIN student_data ON student_data.adm_no = discipline_incidents.student_id LEFT JOIN ladybird_smis.user_tbl ON ladybird_smis.user_tbl.user_id = discipline_incidents.reported_by ORDER BY incident_id DESC;";
+            $select = "SELECT discipline_incidents.*, student_data.first_name,student_data.second_name,student_data.adm_no, ladybird_smis.user_tbl.fullname FROM `discipline_incidents` LEFT JOIN student_data ON student_data.adm_no = discipline_incidents.student_id LEFT JOIN ladybird_smis.user_tbl ON ladybird_smis.user_tbl.user_id = discipline_incidents.reported_by ORDER BY incident_id DESC;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            $data_to_display = "<table class='table' id='incident_discipline_table'><thead><tr><th>No</th><th>Student Name</th><th>Incident</th><th>Reported By</th><th>Reported Date</th><th>Action</th></tr></thead><tbody>";
+            $data_to_display = "<table class='table' id='incident_discipline_table'><thead><tr><th>No</th><th>Student Name</th><th>Incident Type</th><th>Incident Location</th><th>Action Taken</th><th>Status</th><th>Reported Date</th><th>Action</th></tr></thead><tbody>";
             if ($result) {
                 $counter = 1;
                 while ($row = $result->fetch_assoc()) {
+                    $row['date_reported'] = date("Y-m-d", strtotime($row['date_reported']));
                     $data_to_display.="
                     <tr>
-                        <th>".$counter.". </th>
-                        <th>".$row['first_name']." ".$row['second_name']."</th>
-                        <th>".$row['incident_type']."</th>
-                        <th>".$row['fullname']."</th>
-                        <th>".date("D dS M Y", strtotime($row['date_reported']))."</th>
-                        <th>Action</th>
+                        <td> <input id='discipline_incident_data_".$row['incident_id']."' value='".json_encode($row)."' type='hidden'> ".$counter.". </td>
+                        <td>".ucwords(strtolower($row['first_name']." ".$row['second_name']))." {".$row['adm_no']."}</td>
+                        <td data-bs-toggle='tooltip' data-bs-placement='top' title='".$row['description']."' >".$row['incident_type']."</td>
+                        <td>".$row['location']."</td>
+                        <td>".$row['action_taken']."</td>
+                        <td>".ucwords(strtolower($row['status']))."</td>
+                        <td>".date("D dS M Y", strtotime($row['date_reported']))."</td>
+                        <td>
+                            <span id='edit_discipline_incident_".$row['incident_id']."' class='link edit_discipline_incident' style='font-size:12px;'><i class='fa fa-pen-fancy'></i> Edit</span> |
+                            <span id='delete_discipline_incident_".$row['incident_id']."' class='link delete_discipline_incident' style='font-size:12px;'><i class='fa fa-trash'></i> Del</span>
+                        </td>
                     </tr>";
+                    // counter
+                    $counter++;
                 }
             }
             $data_to_display.="</tbody></table>";
             echo $data_to_display;
+        }elseif(isset($_GET['display_warning'])){
+            $select = "SELECT discipline_warning.*, ladybird_smis.user_tbl.fullname, student_data.first_name,student_data.second_name,student_data.adm_no FROM `discipline_warning` LEFT JOIN student_data ON student_data.adm_no = discipline_warning.student_id LEFT JOIN ladybird_smis.user_tbl ON ladybird_smis.user_tbl.user_id = discipline_warning.issued_by LEFT JOIN discipline_incidents ON discipline_incidents.incident_id = discipline_warning.incident_id;";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<table class='table' id='warning_tables'><thead><tr><th>No</th><th>Student Name</th><th>Warning Type</th><th>Date Issued</th><th>Issued By</th><th>Status</th><th>Action</th></thead><tbody>";
+            if($result){
+                $counter = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $row['date_issued'] = date("Y-m-d", strtotime($row['date_issued']));
+                    $data_to_display .= "
+                    <tr>
+                        <td> <input value='".json_encode($row)."' id='warning_data_".$row['warning_id']."' type='hidden'>".$counter.". </td>
+                        <td>".ucwords(strtolower($row['first_name']." ".$row['second_name']))." {".$row['adm_no']."}</td>
+                        <td>".$row['warning_type']."</td>
+                        <td>".date("D dS M Y", strtotime($row['date_issued']))."</td>
+                        <td>".ucwords(strtolower($row['fullname']))."</td>
+                        <td>".$row['status']."</td>
+                        <td><span id='edit_warning_record_".$row['warning_id']."' class='link edit_warning_record' style='font-size:12px;'><i class='fa fa-pen-fancy'></i> Edit</span></td>
+                    </tr>";
+                    $counter++;
+                }
+            }
+            $data_to_display .= "</tbody></table>";
+            echo $data_to_display;
+        }elseif(isset($_GET['get_boarding_students_dropdown'])){
+            $select = "SELECT boarding_list.*, student_data.*, hostel_rooms.room_name, dorm_list.dorm_name FROM `boarding_list` LEFT JOIN student_data ON student_data.adm_no = boarding_list.student_id LEFT JOIN hostel_rooms ON hostel_rooms.room_id = boarding_list.room_id LEFT JOIN dorm_list ON dorm_list.dorm_id = boarding_list.dorm_id;";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $object_id = isset($_GET['object_id']) ? $_GET['object_id'] : "student_incident_involve";
+            $data_to_display = "<select class='form-control' id='$object_id'><option hidden>Select student</option>";
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display .= "<option value='".$row['adm_no']."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))." - ".$row['adm_no']."</option>";
+                }
+            }
+            $data_to_display .= "</select>";
+            echo $data_to_display;
+        }elseif(isset($_GET['get_student_incident_list'])){
+            $get_student_incident_list = $_GET['get_student_incident_list'];
+            $student_id = $_GET['student_id'];
+            $select = "SELECT discipline_incidents.*, student_data.first_name,student_data.second_name,student_data.adm_no FROM `discipline_incidents` LEFT JOIN student_data ON student_data.adm_no = discipline_incidents.student_id WHERE student_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $student_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<select class='form-control' id='student_incident_dropdown_list'><option value='' >Select Incident</option>";
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display.="<option value='".$row['incident_id']."' >".$row['incident_type']." - (".date("dS M Y", strtotime($row['date_reported'])).")</option>";
+                }
+            }
+            $data_to_display.="</select>";
+            echo $data_to_display;
+        }elseif(isset($_GET['add_warning'])){
+            $add_warning = $_GET['add_warning'];
+            $warning_type = $_GET['warning_type'];
+            $student_id = $_GET['student_id'];
+            $student_incident = $_GET['student_incident'];
+            $warning_description = $_GET['warning_description'];
+            $date_reported = date("Y-m-d", strtotime($_GET['date_reported']));
+            $action_taken = $_GET['action_taken'];
+            $severity_level = $_GET['severity_level'];
+            $warning_status = $_GET['warning_status'];
+            $now = date("Y-m-d");
+
+
+            $insert = "INSERT INTO discipline_warning (`student_id`, `incident_id`, `warning_type`, `severity_level`, `reason`, `action_taken`, `issued_by`, `status`, `date_issued`, `created_at`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            $stmt = $conn2->prepare($insert);
+            $stmt->bind_param("ssssssssss", $student_id, $student_incident, $warning_type, $severity_level, $warning_description, $action_taken, $_SESSION['userids'], $warning_status, $date_reported, $now);
+            $stmt->execute();
+
+            // return message
+            echo "<p class='text-success'>Warning added successfully!</p>";
+        }elseif(isset($_GET['add_incident'])){
+            $add_incident = $_GET['add_incident'];
+            $incident_type = $_GET['incident_type'];
+            $incident_category = $_GET['incident_category'];
+            $incident_involve = $_GET['incident_involve'];
+            $incident_location = $_GET['incident_location'];
+            $incident_description = $_GET['incident_description'];
+            $date_reported = $_GET['date_reported'];
+            $action_taken = $_GET['action_taken'];
+            $severity_level = $_GET['severity_level'];
+            $parent_notified = $_GET['parent_notified'];
+            $incident_status = $_GET['incident_status'];
+            $parent_notification_date = $_GET['parent_notification_date'];
+            $now = date("YmdHis");
+            $date_reported = date("Ymd", strtotime($date_reported)).date("His");
+
+            $insert = "INSERT INTO discipline_incidents (`student_id`,`incident_type`,`category`,`description`,`location`,`reported_by`,`date_reported`,`action_taken`,`security_level`,`parent_notified`,`notification_date`,`status`,`created_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            $stmt=$conn2->prepare($insert);
+            $stmt->bind_param("sssssssssssss",$incident_involve, $incident_type, $incident_category, $incident_description, $incident_location, $_SESSION['userids'], $date_reported, $action_taken, $severity_level, $parent_notified, $parent_notification_date, $incident_status, $now);
+            $stmt->execute();
+
+            echo "<p class='text-success'>Incident added successfully!</p>";
+        }elseif(isset($_GET['edit_incident'])){
+            $edit_incident = $_GET['edit_incident'];
+            $incident_id = $_GET['incident_id'];
+            $incident_type = $_GET['incident_type'];
+            $incident_category = $_GET['incident_category'];
+            $incident_involve = $_GET['incident_involve'];
+            $incident_location = $_GET['incident_location'];
+            $incident_description = $_GET['incident_description'];
+            $date_reported = $_GET['date_reported'];
+            $action_taken = $_GET['action_taken'];
+            $severity_level = $_GET['severity_level'];
+            $parent_notified = $_GET['parent_notified'];
+            $incident_status = $_GET['incident_status'];
+            $parent_notification_date = $_GET['parent_notification_date'];
+
+            $update = "UPDATE discipline_incidents SET `student_id` = ?, `incident_type` = ?, `category` = ?, `description` = ?, `location` = ?, `date_reported` = ?, `action_taken` = ?, `security_level` = ?, `parent_notified` = ?, `notification_date` = ?, `status` = ? WHERE `incident_id` = ?";
+            $stmt = $conn2->prepare($update);
+            $stmt->bind_param("ssssssssssss", $incident_involve, $incident_type, $incident_category, $incident_description, $incident_location, $date_reported, $action_taken, $severity_level, $parent_notified, $parent_notification_date, $incident_status, $incident_id);
+            $stmt->execute();
+            
+            // incident updated successfully!
+            echo "<p class='text-success'>Incident updated successfully!</p>";
         }elseif (isset($_GET['change_student_dorm'])) {
             $student_id = $_GET['student_id'];
             $new_dorm_id = $_GET['new_dorm_id'];

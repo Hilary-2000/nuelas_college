@@ -1581,6 +1581,21 @@ window.onload = function () {
         placeholder: "Select Severity Level",
         width: "100%"
     });
+    $('#incident_parent_notified').select2({
+        width: "100%"
+    });
+    $('#incident_status').select2({
+        width: "100%"
+    });
+    $('#warning_type').select2({
+        width: "100%"
+    });
+    $('#warning_severity_level').select2({
+        width: "100%"
+    });
+    $('#warning_status').select2({
+        width: "100%"
+    });
 }
 
 /*******end of it********/

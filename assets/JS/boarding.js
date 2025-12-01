@@ -637,17 +637,296 @@ function display_incidents() {
         $(document).ready(function() {
             $('#incident_discipline_table').DataTable();  // Just one line!
         });
+
+        var edit_discipline_incident = document.getElementsByClassName("edit_discipline_incident");
+        for (let index = 0; index < edit_discipline_incident.length; index++) {
+            const element = edit_discipline_incident[index];
+            element.addEventListener("click", edit_incident);
+        }
+
+        var delete_discipline_incident = document.getElementsByClassName("delete_discipline_incident");
+        for (let index = 0; index < delete_discipline_incident.length; index++) {
+            const element = delete_discipline_incident[index];
+            element.addEventListener("click", delete_discipline_incident_func);
+        }
+        // set tool tip
+        initiateTooltip();
     });
 }
 
-cObj("report_new_incidents").onclick = function () {
+// edit incident
+function edit_incident() {
+    cObj("incident_modal_title").innerHTML = "Edit Incident";
+    cObj("add_incident").innerHTML = "<i class='fas fa-pen-fancy'></i> Update";
     cObj("record_new_incident_modal").classList.remove("hide");
+    cObj("incident_action_type").value = "edit";
+
+    var discipline_incident_data = valObj("discipline_incident_data_"+this.id.substr(25));
+    if (hasJsonStructure(discipline_incident_data)) {
+        var discipline_data = JSON.parse(discipline_incident_data);
+        $('#incident_type_dropdown').val(discipline_data.incident_type).trigger('change');
+        $('#incident_category').val(discipline_data.category).trigger('change');
+        $('#incident_severity_level').val(discipline_data.security_level).trigger('change');
+        $('#incident_parent_notified').val(discipline_data.parent_notified).trigger('change');
+        $('#incident_status').val(discipline_data.status).trigger('change');
+        cObj("incident_location").value = discipline_data.location;
+        cObj("incident_description").value = discipline_data.description;
+        cObj("date_incident_reported").value = discipline_data.date_reported;
+        cObj("parent_notification_date").value = discipline_data.notification_date;
+        cObj("incident_action_taken").value = discipline_data.action_taken;
+        cObj("edit_incident_id").value = discipline_data.incident_id;
+        if(discipline_data.parent_notified == "Yes"){
+            cObj("notification_reported_window").classList.remove("hide");
+        }else{
+            cObj("notification_reported_window").classList.add("hide");
+        }
+
+        var datapass = "?get_boarding_students_dropdown=true";
+        sendData2("GET", "boarding/boarding.php", datapass, cObj("student_incident_list"), cObj("students_involved_loader"), function () {
+            if (cObj("student_incident_involve") != undefined) {
+                $('#'+"student_incident_involve").select2({
+                    width: "100%"
+                });
+                $('#student_incident_involve').val(discipline_data.adm_no).trigger('change');
+            }
+        });
+    }
+}
+
+// report new incident
+cObj("report_new_incidents").onclick = function () {
+    cObj("incident_modal_title").innerHTML = "Record New Incident";
+    cObj("add_incident").innerHTML = "<i class='fas fa-plus'></i> Add";
+    cObj("record_new_incident_modal").classList.remove("hide");
+    cObj("incident_action_type").value = "add";
+    var datapass = "?get_boarding_students_dropdown=true";
+    sendData2("GET", "boarding/boarding.php", datapass, cObj("student_incident_list"), cObj("students_involved_loader"), function () {
+        if (cObj("student_incident_involve") != undefined) {
+            $('#'+"student_incident_involve").select2({
+                width: "100%"
+            });
+        }
+    });
 }
 
 cObj("close_new_incident_modal_1").onclick = function () {
     cObj("record_new_incident_modal").classList.add("hide");
+    cObj("new_incident_form").reset();
+    $('#incident_type_dropdown').val("").trigger('change');
+    $('#incident_category').val("").trigger('change');
+    $('#incident_severity_level').val("").trigger('change');
+    $('#incident_parent_notified').val("").trigger('change');
+    $('#incident_status').val("").trigger('change');
+    cObj("edit_incident_id").value = "0";
 }
 
 cObj("close_new_incident_modal_2").onclick = function () {
     cObj("record_new_incident_modal").classList.add("hide");
+    cObj("new_incident_form").reset();
+    $('#incident_type_dropdown').val("").trigger('change');
+    $('#incident_category').val("").trigger('change');
+    $('#incident_severity_level').val("").trigger('change');
+    $('#incident_parent_notified').val("").trigger('change');
+    $('#incident_status').val("").trigger('change');
+    cObj("edit_incident_id").value = "0";
+}
+
+cObj("incident_parent_notified").onchange = function () {
+    if (this.value == "Yes") {
+        cObj("notification_reported_window").classList.remove("hide");
+    }else{
+        cObj("notification_reported_window").classList.add("hide");
+    }
+}
+
+cObj("add_incident").onclick = function () {
+    var err = checkBlank("incident_type_dropdown");
+    err += checkBlank("incident_category");
+    err += checkBlank("student_incident_involve");
+    err += checkBlank("incident_location");
+    err += checkBlank("incident_description");
+    err += checkBlank("date_incident_reported");
+    err += checkBlank("incident_action_taken");
+    err += checkBlank("incident_severity_level");
+    err += checkBlank("incident_parent_notified");
+    if (valObj("incident_parent_notified") == "Yes") {
+        err += checkBlank("parent_notification_date");
+    }
+    err += checkBlank("incident_status");
+    console.log(err);
+    if (err == 0) {
+        if (cObj("incident_action_type").value == "add") {
+            var datapass = "?add_incident=true&incident_type="+valObj("incident_type_dropdown")+"&incident_category="+valObj("incident_category")+"&incident_involve="+valObj("student_incident_involve")+"&incident_location="+valObj("incident_location")+"&parent_notification_date="+valObj("parent_notification_date")
+            +"&incident_description="+valObj("incident_description")+"&date_reported="+valObj("date_incident_reported")+"&action_taken="+valObj("incident_action_taken")+"&severity_level="+valObj("incident_severity_level")+"&parent_notified="+valObj("incident_parent_notified")+"&incident_status="+valObj("incident_status");
+            sendData2("GET","boarding/boarding.php",datapass, cObj("incident_err_display"), cObj("record_new_incident_loader"), function () {
+                cObj("new_incident_form").reset();
+                cObj("close_new_incident_modal_2").click();
+                display_incidents();
+                setTimeout(() => {
+                    cObj("incident_err_display").innerHTML = "";
+                }, 2000);
+            });
+        }else{
+            var datapass = "?edit_incident=true&incident_id="+valObj("edit_incident_id")+"&incident_type="+valObj("incident_type_dropdown")+"&incident_category="+valObj("incident_category")+"&incident_involve="+valObj("student_incident_involve")+"&incident_location="+valObj("incident_location")+"&parent_notification_date="+valObj("parent_notification_date")
+            +"&incident_description="+valObj("incident_description")+"&date_reported="+valObj("date_incident_reported")+"&action_taken="+valObj("incident_action_taken")+"&severity_level="+valObj("incident_severity_level")+"&parent_notified="+valObj("incident_parent_notified")+"&incident_status="+valObj("incident_status");
+            sendData2("GET","boarding/boarding.php",datapass, cObj("incident_err_display"), cObj("record_new_incident_loader"), function () {
+                cObj("new_incident_form").reset();
+                cObj("close_new_incident_modal_2").click();
+                display_incidents();
+                setTimeout(() => {
+                    cObj("incident_err_display").innerHTML = "";
+                }, 2000);
+            });
+        }
+    }
+}
+
+function delete_discipline_incident_func() {
+    cObj("delete_discipline_incident_modal").classList.remove("hide");
+    var discipline_incident_data = valObj("discipline_incident_data_"+this.id.substr(27));
+    if (hasJsonStructure(discipline_incident_data)) {
+        var discipline_data = JSON.parse(discipline_incident_data);
+        cObj("delete_discipline_incident_id").value = discipline_data.incident_id;
+    }
+}
+
+cObj("no_delete_discipline_incident").onclick = function () {
+    cObj("delete_discipline_incident_modal").classList.add("hide");
+    cObj("delete_discipline_incident_id").value = "0";
+}
+
+cObj("yes_delete_discipline_incident").onclick = function () {
+    var datapass = "?delete_discipline_incident=true&incident_id="+valObj("delete_discipline_incident_id");
+    sendData2("GET","boarding/boarding.php", datapass, cObj("incident_error_holder"), cObj("loadings"), function () {
+        display_incidents();
+        cObj("no_delete_discipline_incident").click();
+    });
+}
+
+cObj("warning_tab").onclick = display_warning;
+
+function display_warning() {
+    var datapass  = "?display_warning=true";
+    sendData2("GET", "boarding/boarding.php", datapass, cObj("warning_table_holder"), cObj("loadings"), function () {
+        if (cObj("warning_tables") != undefined) {
+            $(document).ready(function() {
+                $('#warning_tables').DataTable();  // Just one line!
+            });
+        }
+
+        var edit_warning_record = document.getElementsByClassName("edit_warning_record");
+        for (let index = 0; index < edit_warning_record.length; index++) {
+            const element = edit_warning_record[index];
+            element.addEventListener("click", edit_warning_record_func);
+        }
+    });
+}
+
+function edit_warning_record_func() {
+    var warning_data = cObj("warning_data_"+this.id.substr(20)).value;
+    if (hasJsonStructure(warning_data)) {
+        var warn_data = JSON.parse(warning_data);
+        console.log(warn_data);
+        cObj("warning_description").value = warn_data.reason;
+        cObj("date_warning_reported").value = warn_data.date_issued;
+        cObj("warning_action_taken").value = warn_data.action_taken;
+        $('#warning_type').val(warn_data.warning_type).trigger('change');
+        $('#warning_severity_level').val(warn_data.severity_level).trigger('change');
+        $('#warning_status').val(warn_data.status).trigger('change');
+        cObj("record_new_warning_modal").classList.remove("hide");
+
+        // get the student list
+        var datapass = "?get_boarding_students_dropdown=true&object_id=students_warning_dropwdown_list";
+        sendData2("GET", "boarding/boarding.php", datapass, cObj("student_warning_list"), cObj("students_involved_loader"), function () {
+            if (cObj("students_warning_dropwdown_list") != undefined) {
+                $('#'+"students_warning_dropwdown_list").select2({
+                    width: "100%"
+                });
+                cObj("students_warning_dropwdown_list").onchange = student_incidents_list;
+                $('#students_warning_dropwdown_list').val(warn_data.adm_no).trigger('change');
+
+                // student id
+                var datapass = "?get_student_incident_list=true&student_id="+warn_data.adm_no;
+                sendData2("GET","boarding/boarding.php", datapass, cObj("incident_involved_list"), cObj("incident_involved_list_loader"), function () {
+                    if (cObj("student_incident_dropdown_list") != undefined) {
+                        $('#'+"student_incident_dropdown_list").select2({
+                            width: "100%"
+                        });
+                        $('#student_incident_dropdown_list').val(warn_data.incident_id).trigger('change');
+                    }
+                });
+            }
+        });
+    }
+}
+
+cObj("record_new_warning").onclick = function () {
+    cObj("record_new_warning_modal").classList.remove("hide");
+    var datapass = "?get_boarding_students_dropdown=true&object_id=students_warning_dropwdown_list";
+    sendData2("GET", "boarding/boarding.php", datapass, cObj("student_warning_list"), cObj("students_involved_loader"), function () {
+        if (cObj("students_warning_dropwdown_list") != undefined) {
+            $('#'+"students_warning_dropwdown_list").select2({
+                width: "100%"
+            });
+            cObj("students_warning_dropwdown_list").onchange = student_incidents_list;
+        }
+    });
+}
+
+function student_incidents_list() {
+    var datapass = "?get_student_incident_list=true&student_id="+this.value;
+    sendData2("GET","boarding/boarding.php", datapass, cObj("incident_involved_list"), cObj("incident_involved_list_loader"), function () {
+        if (cObj("student_incident_dropdown_list") != undefined) {
+            $('#'+"student_incident_dropdown_list").select2({
+                width: "100%"
+            });
+        }
+    });
+}
+
+cObj("close_new_warning_modal_1").onclick = function () {
+    cObj("record_new_warning_modal").classList.add("hide");
+    $('#warning_severity_level').val("").trigger('change');
+    $('#warning_status').val("").trigger('change');
+    $('#warning_type').val("").trigger('change');
+    cObj("warning_description").value = "";
+    cObj("date_warning_reported").value = "";
+    cObj("warning_action_taken").value = "";
+    if (cObj("student_incident_dropdown_list") != undefined) {
+        $('#student_incident_dropdown_list').val("").trigger('change');
+    }
+}
+
+cObj("close_new_warning_modal_2").onclick = function () {
+    cObj("record_new_warning_modal").classList.add("hide");
+    $('#warning_severity_level').val("").trigger('change');
+    $('#warning_status').val("").trigger('change');
+    $('#warning_type').val("").trigger('change');
+    cObj("warning_description").value = "";
+    cObj("date_warning_reported").value = "";
+    cObj("warning_action_taken").value = "";
+    if (cObj("student_incident_dropdown_list") != undefined) {
+        $('#student_incident_dropdown_list').val("").trigger('change');
+    }
+}
+
+cObj("add_warning").onclick = function () {
+    var err = checkBlank("warning_type");
+    err += checkBlank("students_warning_dropwdown_list");
+    err += checkBlank("student_incident_dropdown_list");
+    err += checkBlank("warning_description");
+    err += checkBlank("date_warning_reported");
+    err += checkBlank("warning_action_taken");
+    err += checkBlank("warning_severity_level");
+
+    if (err == 0) {
+        var datapass = "?add_warning=true&warning_type="+valObj("warning_type")+"&student_id="+valObj("students_warning_dropwdown_list")+"&student_incident="+valObj("student_incident_dropdown_list")+"&warning_description="+valObj("warning_description")+"&date_reported="+valObj("date_warning_reported")+"&action_taken="+valObj("warning_action_taken")+"&severity_level="+valObj("warning_severity_level")+"&warning_status="+valObj("warning_status");
+        sendData2("GET","boarding/boarding.php",datapass, cObj("warning_error_display"), cObj("record_new_warning_loader"), function () {
+            // display_warning
+            display_warning();
+            cObj("close_new_warning_modal_2").click();
+            cObj("new_warning_form").reset();
+
+        });
+    }
 }

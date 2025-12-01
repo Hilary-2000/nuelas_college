@@ -2156,16 +2156,19 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
-        <div class="confirmpaymentwindow hide" id="record_new_incident_modal">
+        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="record_new_incident_modal">
             <div class="changesubwindow editexams animate">
                 <div class="conts">
                     <p class="funga" id="close_new_incident_modal_1">&times</p>
-                    <h6 class="text-center">Record New Incident</h6>
+                    <h6 class="text-center"><span id="incident_modal_title">Record New Incident</span> <span class="hide" id="record_new_incident_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span></h6>
                 </div>
                 <form class="add_expense" id="new_incident_form">
                     <div class="conts">
+                        <input type="hidden" name="edit_incident_id" value="0" id="edit_incident_id">
+                        <input type="hidden" name="incident_action_type" value="0" id="incident_action_type">
                         <label class="form-control-label" for="incident_type_dropdown">Incident Type:<span class="text-danger">*</span><br></label>
-                        <select id="incident_type_dropdown" class="form-control">
+                        <select id="incident_type_dropdown" class="form-control ml-1">
+                            <option>Select Incident Type</option>
                             <!-- Behavioral Misconduct -->
                             <optgroup label="Behavioral Misconduct">
                                 <option value="Misconduct">Misconduct</option>
@@ -2226,8 +2229,8 @@ function checkPresnt($array, $string){
                     </div>
                     <div class="conts">
                         <label class="form-control-label" for="incident_category">Incident Category:<span class="text-danger">*</span><br></label>
-                        <select id="incident_category" class="form-control">
-                            <option>Select Incedent Category</option> <!-- for placeholder -->
+                        <select id="incident_category" class="form-control ml-1">
+                            <option>Select Incident Category</option> <!-- for placeholder -->
                             <option value="Behavioral Misconduct">Behavioral Misconduct</option>
                             <option value="Academic Misconduct">Academic Misconduct</option>
                             <option value="Attendance Issues">Attendance Issues</option>
@@ -2238,16 +2241,12 @@ function checkPresnt($array, $string){
                         </select>
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="student_incident_involve">Student(s) Involved: <span class="text-danger">*</span><img class="hide" id="students_involved_loader" src="images/load2.gif" alt="loading.."> (Select multiple if neccesary)<br></label>
-                        <p id="student_incident_list"></p>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="incident_reported_by">Reported By<img class="hide" id="incident_reported_by_loader" src="images/load2.gif" alt="loading.."> (Select multiple if necessary)<br></label>
-                        <p id="staff_incident_list"></p>
+                        <label class="form-control-label" for="student_incident_involve">Student(s) Involved: <span class="text-danger">*</span><span class="hide" id="students_involved_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span><br></label>
+                        <p class="ml-1" id="student_incident_list"></p>
                     </div>
                     <div class="conts">
                         <label class="form-control-label" for="incident_location">Incident Location:<br></label>
-                        <input class="form-control" type="number" name="incident_location" id="incident_location" placeholder="Where it happened..">
+                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="text" name="incident_location" id="incident_location" placeholder="Where it happened..">
                     </div>
                     <div class="conts">
                         <label class="form-control-label" for="incident_description">Incident Description <br></label>
@@ -2255,15 +2254,15 @@ function checkPresnt($array, $string){
                     </div>
                     <div class="conts">
                         <label class="form-control-label" for="date_incident_reported">Date Reported: <br></label>
-                        <input class="form-control" type="datetime" name="date_incident_reported" id="date_incident_reported" placeholder="Matress Count">
+                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="date" name="date_incident_reported" id="date_incident_reported" placeholder="Date Reported">
                     </div>
                     <div class="conts">
                         <label class="form-control-label" for="incident_action_taken">Action Taken: <br></label>
-                        <input class="form-control" type="number" name="incident_action_taken" id="incident_action_taken" placeholder="first aid, counseling, punishment">
+                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="text" name="incident_action_taken" id="incident_action_taken" placeholder="first aid, counseling, punishment">
                     </div>
                     <div class="conts">
                         <label for="incident_severity_level" class="form-control-label">Incident Severity Level</label>
-                        <select id="incident_severity_level" class="form-control">
+                        <select id="incident_severity_level" class="form-control w-100">
                             <option>Incident Severity Level</option> <!-- placeholder -->
                             <option value="Low">Low</option>
                             <option value="Moderate">Moderate</option>
@@ -2273,20 +2272,20 @@ function checkPresnt($array, $string){
                     </div>
                     <div class="conts">
                         <label for="incident_parent_notified" class="form-control-label">Parent Notified</label>
-                        <select id="incident_parent_notified" class="form-control">
-                            <option>Select Status</option> <!-- placeholder -->
+                        <select id="incident_parent_notified" class="form-control text-left w-100">
+                            <option value="">Select Status</option> <!-- placeholder -->
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
                         </select>
                     </div>
-                    <div class="conts hide">
-                        <label class="form-control-label" for="parent_notification_date">Notification Reported: <br></label>
-                        <input class="form-control" type="datetime" name="parent_notification_date" id="parent_notification_date" placeholder="Matress Count">
+                    <div class="conts hide" id="notification_reported_window">
+                        <label class="form-control-label" for="parent_notification_date">Parent Notified on: <br></label>
+                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="date" name="parent_notification_date" id="parent_notification_date" placeholder="Notification reported">
                     </div>
                     <div class="conts">
                         <label for="incident_status" class="form-control-label">Incident Status</label>
-                        <select id="incident_status" class="form-control">
-                            <option>Incident Status</option> <!-- placeholder -->
+                        <select id="incident_status" class="form-control text-left w-100">
+                            <option value="">Incident Status</option> <!-- placeholder -->
                             <option value="Pending">Pending</option>
                             <option value="Under Investigation">Under Investigation</option>
                             <option value="Action Taken">Action Taken</option>
@@ -2301,8 +2300,76 @@ function checkPresnt($array, $string){
                     <p id='incident_err_display'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" class="" id='add_incident'>Add</button>
+                    <button type="button" class="" id='add_incident'><i class="fas fa-plus"></i> Add</button>
                     <button type="button" id="close_new_incident_modal_2">Close</button>
+                </div>
+            </div>
+        </div>
+        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="record_new_warning_modal">
+            <div class="changesubwindow editexams animate">
+                <div class="conts">
+                    <p class="funga" id="close_new_warning_modal_1">&times</p>
+                    <h6 class="text-center"><span id="warning_modal_title">Record New Warning</span> <span class="hide" id="record_new_warning_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span></h6>
+                </div>
+                <form class="add_expense" id="new_warning_form">
+                    <div class="conts">
+                        <input type="hidden" name="edit_warning_id" value="0" id="edit_warning_id">
+                        <input type="hidden" name="warning_action_type" value="0" id="warning_action_type">
+                        <label class="form-control-label" for="warning_type">Warning Type:<span class="text-danger">*</span><br></label>
+                        <select id="warning_type" class="form-control ml-1">
+                            <option value="">Select Warning Type</option> 
+                            <option value="verbal">Verbal Warning</option>
+                            <option value="written">Written Warning</option>
+                            <option value="suspension">Suspension</option>
+                            <option value="final">Final Warning</option>
+                        </select>
+                    </div>
+                    <div class="conts my-2">
+                        <label class="form-control-label" for="student_warning_involve">Student(s) Involved: <span class="text-danger">*</span><span class="hide" id="students_involved_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span><br></label>
+                        <p class="ml-1" id="student_warning_list"><span class="text-success border border-success my-1 p-1 rounded">Student list will appear here!</span></p>
+                    </div>
+                    <div class="conts my-2">
+                        <label class="form-control-label" for="student_incident_involved">Incident Involved: <span class="text-danger">*</span><span class="hide" id="incident_involved_list_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span><br></label>
+                        <p class="ml-1" id="incident_involved_list"><span class="text-success border border-success my-1 p-1 rounded">Student incident list will be displayed here!</span></p>
+                    </div>
+                    <div class="conts my-2">
+                        <label class="form-control-label" for="warning_description">Warning Reason <br></label>
+                        <textarea name="warning_description" id="warning_description" placeholder="Reason why the warning was issued!" rows="5" class="form-control"></textarea>
+                    </div>
+                    <div class="conts my-2">
+                        <label class="form-control-label" for="date_warning_reported">Date Warned: <br></label>
+                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="date" name="date_warning_reported" id="date_warning_reported" placeholder="Date Reported">
+                    </div>
+                    <div class="conts my-2">
+                        <label class="form-control-label" for="warning_action_taken">Action Taken: <br></label>
+                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="text" name="warning_action_taken" id="warning_action_taken" placeholder="first aid, counseling, punishment">
+                    </div>
+                    <div class="conts my-2">
+                        <label for="warning_severity_level" class="form-control-label">Incident Severity Level</label>
+                        <select id="warning_severity_level" class="form-control w-100">
+                            <option value="">Incident Severity Level</option> <!-- placeholder -->
+                            <option value="Low">Low</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="conts-my-2">
+                        <label for="warning_status" class="form-control-label">Warning Status</label>
+                        <select id="warning_status" class="form-control">
+                            <option value="">Warning Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Cleared">Cleared</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </form>
+                <div class="conts my-2">
+                    <p id='warning_error_display'></p>
+                </div>
+                <div class="btns">
+                    <button type="button" class="" id='add_warning'><i class="fas fa-plus"></i> Add</button>
+                    <button type="button" id="close_new_warning_modal_2">Close</button>
                 </div>
             </div>
         </div>
@@ -4135,6 +4202,19 @@ function checkPresnt($array, $string){
             <div class="buttons">
                 <button type='button' id='yes_delete_permanently'>Yes</button>
                 <button type='button' id='no_delete_permanently'>No</button>
+            </div>
+        </div>
+    </div>
+    <div class="dialogholder hide" id="delete_discipline_incident_modal">
+        <div class="dialogwindow animate2">
+            <h6>Confirm Delete</h6>
+            <div class="message">
+                <p>Are you sure you want to delete this record permanently?</p>
+            </div>
+            <input type="hidden" name="delete_discipline_incident_id" id="delete_discipline_incident_id">
+            <div class="buttons">
+                <button type='button' id='yes_delete_discipline_incident'>Yes</button>
+                <button type='button' id='no_delete_discipline_incident'>No</button>
             </div>
         </div>
     </div>
