@@ -1,16 +1,16 @@
 <div class="contents animate hide" id="managesubjects">
     <div class="titled">
-        <h2>Academics</h2>
+        <h2>Manage Course Units</h2>
     </div>
     <div class="admWindow ">
         <div class="top1">
-            <p>Manage subjects</p>
+            <p>Manage Course Units</p>
         </div>
         <div class="middle1">
             <div class="conts">
                 <p><strong>Information</strong></p>
-                <p>- Update and delete subject information at this window</p>
-                <p>- Changes done at the subject will cause major effects to how the system works including teachers access, exams and system timetable</p>
+                <p>- Update and delete Course Units information at this window</p>
+                <p>- Changes done at the Course Units will cause major effects to how the system works including teachers access, exams and system timetable</p>
                 <p>- When changes are done a new timetable needs to be generated!</p>
             </div>
             <div class="conts hide">
@@ -20,8 +20,8 @@
                 <label class="form-control-label" for="subjects_option">Start by either <br></label>
                 <select class="form-control" name="subjects_option" id="subjects_option">
                     <option value="" hidden>Select an option</option>
-                    <option value="search_subjects">Searching the subject</option>
-                    <option value="display_subjects">Display all subject</option>
+                    <option value="search_subjects">Searching the Units</option>
+                    <option value="display_subjects">Display all Units</option>
                 </select>
                 <div class="boddy form-group">
                     <div class="conts hide" id='seachsub'>
@@ -35,11 +35,11 @@
                         </div>
                         
                         <div class="conts hide" id="byname">
-                            <label  class="form-control-label" for="subnamed">Enter subject name: <br></label>
-                            <input  class="form-control" type="text" name="subnamed" id="subnamed" placeholder="Enter subject name">
+                            <label  class="form-control-label" for="subnamed">Enter Unit name: <br></label>
+                            <input  class="form-control" type="text" name="subnamed" id="subnamed" placeholder="Enter Unit name">
                         </div>
                         <div class="conts hide" id="classtaught">
-                            <label  class="form-control-label" for="classtaughts">Select class:<br></label>
+                            <label class="form-control-label" for="classtaughts">Select Course Level:<br></label>
                             <p id="subjClass"><img src="images/load2.gif" alt="loading"></p>
                         </div>
                         <div class="btns">

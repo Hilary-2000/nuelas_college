@@ -148,7 +148,7 @@
     border: 1px solid var(--maincolor2);
     border-radius: 10px;
     outline :none;
-    text-align: center;
+    text-align: left;
 }
 .conts #err, .conts #errors{
     background-color: white;
