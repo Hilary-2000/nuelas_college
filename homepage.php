@@ -2166,6 +2166,7 @@ function checkPresnt($array, $string){
                     <div class="conts">
                         <input type="hidden" name="edit_incident_id" value="0" id="edit_incident_id">
                         <input type="hidden" name="incident_action_type" value="0" id="incident_action_type">
+                        <input type="hidden" name="add_from_warning" value="" id="add_from_warning">
                         <label class="form-control-label" for="incident_type_dropdown">Incident Type:<span class="text-danger">*</span><br></label>
                         <select id="incident_type_dropdown" class="form-control ml-1">
                             <option>Select Incident Type</option>
@@ -2325,7 +2326,7 @@ function checkPresnt($array, $string){
                         </select>
                     </div>
                     <div class="conts my-2">
-                        <label class="form-control-label" for="student_warning_involve">Student(s) Involved: <span class="text-danger">*</span><span class="hide" id="students_involved_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span><br></label>
+                        <label class="form-control-label" for="student_warning_involve">Student(s) Involved: <span class="text-danger">*</span><span class="hide" id="students_warning_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span><br></label>
                         <p class="ml-1" id="student_warning_list"><span class="text-success border border-success my-1 p-1 rounded">Student list will appear here!</span></p>
                     </div>
                     <div class="conts my-2">
@@ -4202,6 +4203,19 @@ function checkPresnt($array, $string){
             <div class="buttons">
                 <button type='button' id='yes_delete_permanently'>Yes</button>
                 <button type='button' id='no_delete_permanently'>No</button>
+            </div>
+        </div>
+    </div>
+    <div class="dialogholder hide" id="delete_warning_modal">
+        <div class="dialogwindow animate2">
+            <h6>Confirm Delete</h6>
+            <div class="message">
+                <p>Are you sure you want to delete this record permanently?</p>
+            </div>
+            <input type="hidden" name="delete_warning_id" id="delete_warning_id">
+            <div class="buttons">
+                <button type='button' id='yes_delete_warning'>Yes</button>
+                <button type='button' id='no_delete_warning'>No</button>
             </div>
         </div>
     </div>

@@ -554,15 +554,63 @@
                         <td>".date("D dS M Y", strtotime($row['date_issued']))."</td>
                         <td>".ucwords(strtolower($row['fullname']))."</td>
                         <td>".$row['status']."</td>
-                        <td><span id='edit_warning_record_".$row['warning_id']."' class='link edit_warning_record' style='font-size:12px;'><i class='fa fa-pen-fancy'></i> Edit</span></td>
+                        <td>
+                            <span id='edit_warning_record_".$row['warning_id']."' class='link edit_warning_record' style='font-size:12px;'><i class='fa fa-pen-fancy'></i> Edit</span> | 
+                            <span id='delete_warning_record_".$row['warning_id']."' class='link delete_warning_record' style='font-size:12px;'><i class='fa fa-trash'></i> Del</span>
+                        </td>
                     </tr>";
                     $counter++;
                 }
             }
             $data_to_display .= "</tbody></table>";
             echo $data_to_display;
+        }elseif(isset($_GET['delete_warning'])){
+            $delete_warning = $_GET['delete_warning'];
+            $warning_id = $_GET['warning_id'];
+            $delete = "DELETE FROM discipline_warning WHERE warning_id = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s", $warning_id);
+            $stmt->execute();
+            echo "<p class='text-success'>Data has been deleted successfully!</p>";
+        }elseif(isset($_GET['edit_warning'])){
+            $warning_type = $_GET['warning_type'];
+            $student_id = $_GET['student_id'];
+            $student_incident = $_GET['student_incident'];
+            $warning_description = $_GET['warning_description'];
+            $date_reported = date("Y-m-d", strtotime($_GET['date_reported']));
+            $action_taken = $_GET['action_taken'];
+            $severity_level = $_GET['severity_level'];
+            $warning_status = $_GET['warning_status'];
+            $warning_id = $_GET['warning_id'];
+            $now = date("Y-m-d");
+
+            // update
+            $update = "UPDATE discipline_warning SET `student_id` = ?, `incident_id` = ?, `warning_type` = ?,`severity_level` = ?,`reason` = ?,`action_taken` = ?, `status` = ?,`date_issued` = ? WHERE `warning_id` = ?";
+            $stmt = $conn2->prepare($update);
+            $stmt->bind_param("sssssssss",$student_id, $student_incident,$warning_type,$severity_level,$warning_description, $action_taken, $warning_status, $date_reported, $warning_id);
+            $stmt->execute();
+
+            echo "<p class='text-success'>Data has been updated successfully!</p>";
         }elseif(isset($_GET['get_boarding_students_dropdown'])){
-            $select = "SELECT boarding_list.*, student_data.*, hostel_rooms.room_name, dorm_list.dorm_name FROM `boarding_list` LEFT JOIN student_data ON student_data.adm_no = boarding_list.student_id LEFT JOIN hostel_rooms ON hostel_rooms.room_id = boarding_list.room_id LEFT JOIN dorm_list ON dorm_list.dorm_id = boarding_list.dorm_id;";
+            // get the course list 
+            $course_select = "SELECT * FROM `settings` WHERE sett = 'class';";
+            $stmt = $conn2->prepare($course_select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $class_list = [];
+            if ($result) {
+                if($row = $result->fetch_assoc()){
+                    $class_list = json_decode($row['valued'], true);
+                }
+            }
+            $str_class_list = "";
+            if(count($class_list) > 0){
+                foreach ($class_list as $value) {
+                    $str_class_list .= "'".$value['classes']."',";
+                }
+                $str_class_list = substr($str_class_list,0,strlen($str_class_list)-1);
+            }
+            $select = "SELECT student_data.adm_no, student_data.first_name, student_data.second_name FROM `student_data` WHERE stud_class IN ($str_class_list) ORDER BY student_data.ids DESC LIMIT 1000;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -584,10 +632,16 @@
             $stmt->execute();
             $result = $stmt->get_result();
             $data_to_display = "<select class='form-control' id='student_incident_dropdown_list'><option value='' >Select Incident</option>";
+            $counter = 0;
             if ($result) {
                 while ($row = $result->fetch_assoc()) {
                     $data_to_display.="<option value='".$row['incident_id']."' >".$row['incident_type']." - (".date("dS M Y", strtotime($row['date_reported'])).")</option>";
+                    $counter++;
                 }
+            }
+            if ($counter == 0) {
+                echo "<p class='my-1 p-1 text-danger border border-danger rounded'>No incident recorded for this student, Add an incident from the dropdown below to proceed</p>";
+                $data_to_display.="<option value='add_new_incident' >Add New Incident!</option>";
             }
             $data_to_display.="</select>";
             echo $data_to_display;

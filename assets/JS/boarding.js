@@ -718,6 +718,7 @@ cObj("close_new_incident_modal_1").onclick = function () {
     $('#incident_parent_notified').val("").trigger('change');
     $('#incident_status').val("").trigger('change');
     cObj("edit_incident_id").value = "0";
+    cObj("add_from_warning").value = "";
 }
 
 cObj("close_new_incident_modal_2").onclick = function () {
@@ -729,6 +730,7 @@ cObj("close_new_incident_modal_2").onclick = function () {
     $('#incident_parent_notified').val("").trigger('change');
     $('#incident_status').val("").trigger('change');
     cObj("edit_incident_id").value = "0";
+    cObj("add_from_warning").value = "";
 }
 
 cObj("incident_parent_notified").onchange = function () {
@@ -759,6 +761,11 @@ cObj("add_incident").onclick = function () {
             var datapass = "?add_incident=true&incident_type="+valObj("incident_type_dropdown")+"&incident_category="+valObj("incident_category")+"&incident_involve="+valObj("student_incident_involve")+"&incident_location="+valObj("incident_location")+"&parent_notification_date="+valObj("parent_notification_date")
             +"&incident_description="+valObj("incident_description")+"&date_reported="+valObj("date_incident_reported")+"&action_taken="+valObj("incident_action_taken")+"&severity_level="+valObj("incident_severity_level")+"&parent_notified="+valObj("incident_parent_notified")+"&incident_status="+valObj("incident_status");
             sendData2("GET","boarding/boarding.php",datapass, cObj("incident_err_display"), cObj("record_new_incident_loader"), function () {
+                if(cObj("add_from_warning").value == "add_from_warning"){
+                    cObj("record_new_warning").click();
+                    cObj("add_from_warning").value = "";
+                }
+
                 cObj("new_incident_form").reset();
                 cObj("close_new_incident_modal_2").click();
                 display_incidents();
@@ -800,6 +807,9 @@ cObj("yes_delete_discipline_incident").onclick = function () {
     sendData2("GET","boarding/boarding.php", datapass, cObj("incident_error_holder"), cObj("loadings"), function () {
         display_incidents();
         cObj("no_delete_discipline_incident").click();
+        setTimeout(() => {
+            cObj("incident_error_holder").innerHTML = "";
+        }, 2000);
     });
 }
 
@@ -819,11 +829,44 @@ function display_warning() {
             const element = edit_warning_record[index];
             element.addEventListener("click", edit_warning_record_func);
         }
+
+        var delete_warning_record = document.getElementsByClassName("delete_warning_record");
+        for (let index = 0; index < delete_warning_record.length; index++) {
+            const element = delete_warning_record[index];
+            element.addEventListener("click", delete_warning_record_func);
+        }
     });
+}
+
+function delete_warning_record_func() {
+    var warning_data = cObj("warning_data_"+this.id.substr(22)).value;
+    if (hasJsonStructure(warning_data)){
+        var warn_data = JSON.parse(warning_data);
+        cObj("delete_warning_id").value = warn_data.warning_id;
+        cObj("delete_warning_modal").classList.remove("hide")
+    }
+}
+
+cObj("yes_delete_warning").onclick = function () {
+    var datapass = "?delete_warning=true&warning_id="+valObj("delete_warning_id");
+    sendData1("GET", "boarding/boarding.php", datapass, cObj("warning_error_holder"), function () {
+        cObj("no_delete_warning").click();
+        display_warning();
+        setTimeout(() => {
+            cObj("warning_error_holder").innerHTML = "";
+        }, 2000);
+    });
+}
+
+cObj("no_delete_warning").onclick = function () {
+    cObj("delete_warning_modal").classList.add("hide")
 }
 
 function edit_warning_record_func() {
     var warning_data = cObj("warning_data_"+this.id.substr(20)).value;
+    cObj("warning_modal_title").innerText = "Edit Warning";
+    cObj("add_warning").innerHTML = "<i class='fas fa-pen-fancy'></i> Edit";
+    cObj("warning_action_type").value = "edit";
     if (hasJsonStructure(warning_data)) {
         var warn_data = JSON.parse(warning_data);
         console.log(warn_data);
@@ -834,10 +877,11 @@ function edit_warning_record_func() {
         $('#warning_severity_level').val(warn_data.severity_level).trigger('change');
         $('#warning_status').val(warn_data.status).trigger('change');
         cObj("record_new_warning_modal").classList.remove("hide");
+        cObj("edit_warning_id").value = warn_data.warning_id;
 
         // get the student list
         var datapass = "?get_boarding_students_dropdown=true&object_id=students_warning_dropwdown_list";
-        sendData2("GET", "boarding/boarding.php", datapass, cObj("student_warning_list"), cObj("students_involved_loader"), function () {
+        sendData2("GET", "boarding/boarding.php", datapass, cObj("student_warning_list"), cObj("students_warning_loader"), function () {
             if (cObj("students_warning_dropwdown_list") != undefined) {
                 $('#'+"students_warning_dropwdown_list").select2({
                     width: "100%"
@@ -861,6 +905,10 @@ function edit_warning_record_func() {
 }
 
 cObj("record_new_warning").onclick = function () {
+    cObj("warning_modal_title").innerText = "Record New Warning";
+    cObj("add_warning").innerHTML = "<i class='fas fa-plus'></i> Add";
+    cObj("warning_action_type").value = "add";
+    cObj("edit_warning_id").value = "0";
     cObj("record_new_warning_modal").classList.remove("hide");
     var datapass = "?get_boarding_students_dropdown=true&object_id=students_warning_dropwdown_list";
     sendData2("GET", "boarding/boarding.php", datapass, cObj("student_warning_list"), cObj("students_involved_loader"), function () {
@@ -876,6 +924,13 @@ cObj("record_new_warning").onclick = function () {
 function student_incidents_list() {
     var datapass = "?get_student_incident_list=true&student_id="+this.value;
     sendData2("GET","boarding/boarding.php", datapass, cObj("incident_involved_list"), cObj("incident_involved_list_loader"), function () {
+        cObj("student_incident_dropdown_list").onchange = function () {
+            if (this.value == "add_new_incident") {
+                cObj("report_new_incidents").click();
+                cObj("close_new_warning_modal_2").click();
+                cObj("add_from_warning").value = "add_from_warning";
+            }
+        }
         if (cObj("student_incident_dropdown_list") != undefined) {
             $('#'+"student_incident_dropdown_list").select2({
                 width: "100%"
@@ -918,15 +973,32 @@ cObj("add_warning").onclick = function () {
     err += checkBlank("date_warning_reported");
     err += checkBlank("warning_action_taken");
     err += checkBlank("warning_severity_level");
-
     if (err == 0) {
-        var datapass = "?add_warning=true&warning_type="+valObj("warning_type")+"&student_id="+valObj("students_warning_dropwdown_list")+"&student_incident="+valObj("student_incident_dropdown_list")+"&warning_description="+valObj("warning_description")+"&date_reported="+valObj("date_warning_reported")+"&action_taken="+valObj("warning_action_taken")+"&severity_level="+valObj("warning_severity_level")+"&warning_status="+valObj("warning_status");
-        sendData2("GET","boarding/boarding.php",datapass, cObj("warning_error_display"), cObj("record_new_warning_loader"), function () {
-            // display_warning
-            display_warning();
-            cObj("close_new_warning_modal_2").click();
-            cObj("new_warning_form").reset();
+        if (cObj("warning_action_type").value == "add") {
+            var datapass = "?add_warning=true&warning_type="+valObj("warning_type")+"&student_id="+valObj("students_warning_dropwdown_list")+"&student_incident="+valObj("student_incident_dropdown_list")+"&warning_description="+valObj("warning_description")+"&date_reported="+valObj("date_warning_reported")+"&action_taken="+valObj("warning_action_taken")+"&severity_level="+valObj("warning_severity_level")+"&warning_status="+valObj("warning_status");
+            sendData2("GET","boarding/boarding.php",datapass, cObj("warning_error_display"), cObj("record_new_warning_loader"), function () {
+                // display_warning
+                display_warning();
+                cObj("close_new_warning_modal_2").click();
+                cObj("new_warning_form").reset();
 
-        });
+                setTimeout(() => {
+                    cObj("warning_error_display").innerText = "";
+                }, 2000);
+
+            });
+        }else{
+            var datapass = "?edit_warning=true&warning_id="+valObj("edit_warning_id")+"&warning_type="+valObj("warning_type")+"&student_id="+valObj("students_warning_dropwdown_list")+"&student_incident="+valObj("student_incident_dropdown_list")+"&warning_description="+valObj("warning_description")+"&date_reported="+valObj("date_warning_reported")+"&action_taken="+valObj("warning_action_taken")+"&severity_level="+valObj("warning_severity_level")+"&warning_status="+valObj("warning_status");
+            sendData2("GET","boarding/boarding.php",datapass, cObj("warning_error_display"), cObj("record_new_warning_loader"), function () {
+                // display_warning
+                display_warning();
+                cObj("close_new_warning_modal_2").click();
+                cObj("new_warning_form").reset();
+
+                setTimeout(() => {
+                    cObj("warning_error_display").innerText = "";
+                }, 2000);
+            });
+        }
     }
 }

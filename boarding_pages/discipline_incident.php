@@ -48,6 +48,7 @@
                 <div class="tab-pane fade" id="warning_window" role="tabpanel" aria-labelledby="warning_tab">
                     <h5 class="title text-center mt-2">Student Warning Management</h5>
                     <button class="btn btn-sm btn-primary" id="record_new_warning" type="button"><i class="fa fa-plus"></i> Issue Warning</button>
+                    <span id="warning_error_holder"></span>
                     <div class="tableme my-2" id="warning_table_holder">
                         
                     </div>
