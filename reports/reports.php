@@ -4289,7 +4289,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         // LAST ACADEMIC YEAR BALANCE
                         $last_acad_yr = lastACADyrBal($student_data[$index]['adm_no'], $conn2);
                         $acad_balance = ($student_data[$index]['balance_carry_forward']);
-                        $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_class_fin, "null", $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
+                        $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_data[$index]) * 1) : "Not-enrolled";
                         $transport = isTransport($conn2, $student_data[$index]['adm_no']) ? (transportBalanceSinceAdmission($conn2, $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                         $data = array($number, $Fullname, $student_data[$index]['adm_no'], $classes, $gender, $fees_paid, $balance, $acad_balance);
                         array_push($stud_data, $data);
@@ -4456,7 +4456,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 // LAST ACADEMIC YEAR BALANCE
                                 $last_acad_yr = lastACADyrBal($student_data[$index]['adm_no'], $conn2);
                                 $acad_balance = ($last_acad_yr);
-                                $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_class_fin) * 1) : "Not-enrolled";
+                                $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_data[$index]) * 1) : "Not-enrolled";
                                 $transport = isTransport($conn2, $student_data[$index]['adm_no']) ? (transportBalanceSinceAdmission($conn2, $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                                 $data = array($number, $Fullname, $student_data[$index]['adm_no'], $classes, $gender, $fees_paid, $balance, $acad_balance);
                                 array_push($stud_data, $data);
@@ -6038,7 +6038,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         // LAST ACADEMIC YEAR BALANCE
                         $last_acad_yr = lastACADyrBal($student_data[$index]['adm_no'], $conn2);
                         $acad_balance = ($last_acad_yr);
-                        $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_class_fin, "null", $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
+                        $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_data[$index]) * 1) : "Not-enrolled";
                         $transport = isTransport($conn2, $student_data[$index]['adm_no']) ? (transportBalanceSinceAdmission($conn2, $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                         $data = array($number, $Fullname, $student_data[$index]['adm_no'], $classes, $gender, $fees_paid, $balance, $border, $transport, $acad_balance);
                         array_push($stud_data, $data);
@@ -6162,7 +6162,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 // LAST ACADEMIC YEAR BALANCE
                                 $last_acad_yr = lastACADyrBal($student_data[$index]['adm_no'], $conn2);
                                 $acad_balance = ($last_acad_yr);
-                                $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_class_fin) * 1) : "Not-enrolled";
+                                $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_data[$index]) * 1) : "Not-enrolled";
                                 $transport = isTransport($conn2, $student_data[$index]['adm_no']) ? (transportBalanceSinceAdmission($conn2, $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                                 $data = array($number, $Fullname, $student_data[$index]['adm_no'], $classes, $gender, $fees_paid, $balance, $border, $transport, $acad_balance);
                                 array_push($stud_data, $data);

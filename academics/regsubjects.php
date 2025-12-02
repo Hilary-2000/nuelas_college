@@ -4,21 +4,21 @@
     </div>
     <div class="admWindow ">
         <div class="top1">
-            <p>Register a subject</p>
+            <p>Register a Course Units</p>
         </div>
         <div class="middle1">
             <div class="tops" style='padding: 10px 0;'>
                 <div class="conts">
                     <p><strong>Note:</strong></p>
-                    <p>- At this window you will be able to register a subject.</p>
+                    <p>- At this window you will be able to register a Course Units.</p>
                     <p>- Fill all the fields required correctly.</p>
-                    <p>- A subject name can be used twice but the sibject id cant be used twice.</p>
-                    <p>- When registering a subject its recomended that the classes the subject is taught should be checked under the same subject name unlike inserting the subject name more than once and assigning a class on each registration.</p>
+                    <p>- A Course Units name can be used twice but the Course Unit id cant be used twice.</p>
+                    <p>- When registering a Course Units its recomended that the classes the Course Units is taught should be checked under the same Course Units name unlike inserting the Course Units name more than once and assigning a class on each registration.</p>
                 </div>
             </div>
             <div class="body1">
                 <div class="conts" style='padding:10px 0;'>
-                    <h5 style="text-align:center;">Register Subjects</h5>
+                    <h5 style="text-align:center;">Register Course Unit</h5>
                 </div>
                 <div class="body3">
                     <form class="left" id="formpay">
@@ -29,7 +29,7 @@
                         </div>
                         <div class="conts">
                             <label class="form-control-label" for="subject_display_name"><b>Enter Subject Display Name: </b> eg 'Kiswahili'<br></label>
-                            <input  class="form-control" type="text" name="subject display name" id="subject_display_name" placeholder = 'Subject Display Name'>
+                            <input  class="form-control" type="text" name="Course Units display name" id="subject_display_name" placeholder = 'Subject Display Name'>
                         </div>
                         <div class="conts">
                             <label  class="form-control-label" for="sundids"><b>Enter Subject timetable refferee: </b><small>Eg. 'KSW' for 'Kiswahili'</small> <br></label>

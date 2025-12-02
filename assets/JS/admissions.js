@@ -3278,26 +3278,10 @@ function display_course_list_table(course_history, json_data) {
 
 cObj("reset_student_voteheads").onclick = function () {
     var datapass = "?reset_votehead_settings=true&adm_no="+valObj("adminnos");
-    sendData2("GET","administration/admissions.php", datapass, cObj("error_handler_evh"), cObj("loader_evh"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("loader_evh").classList.contains("hide")) {
-                    // setTimeout(() => {
-                    //     cObj("error_handler_evh").innerHTML = "";
-                    // }, 2000);
-                    // cObj("close_student_fees_evh").click();
-                    cObj("edit_votehead_status").click();
-                    cObj("view"+valObj("adminnos")).click();
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 200);
+    sendData2("GET","administration/admissions.php", datapass, cObj("error_handler_evh"), cObj("loader_evh"), function () {
+        cObj("edit_votehead_status").click();
+        cObj("view"+valObj("adminnos")).click();
+    });
 }
 
 cObj("edit_votehead_status").onclick = function () {
@@ -3307,36 +3291,24 @@ cObj("edit_votehead_status").onclick = function () {
         cObj("course_level_value_holder").value = course;
         cObj("edit_student_votehead").classList.remove("hide");
         var datapass = "?get_student_voteheads=true&student_id="+valObj("adminnos");
-        sendData2("GET", "finance/financial.php", datapass, cObj("all_voteheads"), cObj("loader_evh"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("loader_evh").classList.contains("hide")) {
-                    var edit_course_fees = document.getElementsByClassName("edit_course_fees");
-                    for (let index = 0; index < edit_course_fees.length; index++) {
-                        const element = edit_course_fees[index];
-                        element.addEventListener("change", edit_course_fees_func);
+        sendData2("GET", "finance/financial.php", datapass, cObj("all_voteheads"), cObj("loader_evh"), function () {
+            var edit_course_fees = document.getElementsByClassName("edit_course_fees");
+            for (let index = 0; index < edit_course_fees.length; index++) {
+                const element = edit_course_fees[index];
+                element.addEventListener("change", edit_course_fees_func);
 
-                        // set eventlisteners for the row
-                        var className = element.id;
-                        var edit_module_fees = document.getElementsByClassName(className);
-                        for (let index_2 = 0; index_2 < edit_module_fees.length; index_2++) {
-                            const module = edit_module_fees[index_2];
-                            module.addEventListener("change", checkModules);
-                        }
-                    }
-
-                    // set votehead checkbox
-                    SetVoteheadCheckbox();
-                    stopInterval(ids);
+                // set eventlisteners for the row
+                var className = element.id;
+                var edit_module_fees = document.getElementsByClassName(className);
+                for (let index_2 = 0; index_2 < edit_module_fees.length; index_2++) {
+                    const module = edit_module_fees[index_2];
+                    module.addEventListener("change", checkModules);
                 }
-            }, 100);
-        }, 200);
+            }
+
+            // set votehead checkbox
+            SetVoteheadCheckbox();
+        });
     }else{
         cObj("boarding_status_changer").innerHTML = "<p class='text-danger'>An error has occured, reload your page and try again!</p>";
     }

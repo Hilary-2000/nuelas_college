@@ -143,6 +143,7 @@
             $result =  $stmt->get_result();
             if($result){
                 if($row = $result->fetch_assoc()){
+                    $is_boarding = isBoarding($student_id, $conn2);
                     $select = "SELECT * FROM fees_structure WHERE classes = ? AND course = ?";
                     $stmt_2 = $conn2->prepare($select);
                     $stmt_2->bind_param("ss", $row['stud_class'], $row['course_done']);
@@ -182,7 +183,7 @@
                     $data_to_display.= "<tr><td>1. <input type='checkbox' class='edit_course_fees' id='edit_course_fees_0' checked></td><td>Course Fees</td><td><span class='badge bg-primary'>Regular</span></td>";
                     $row['study_mode'] = strtolower($row['study_mode']);
                     foreach($active_course['module_terms'] as $key => $module){
-                        $check_module = checkVotehead($active_course['module_terms'], "0", $module['id'], "regular");
+                        $check_module = checkVotehead($active_course['module_terms'], "0", $module['id'], "regular", $is_boarding);
                         $course_fees = $row['study_mode'] == "weekend" ? ($module['weekend_cost'] ?? 0) : ($row['study_mode'] == "evening" ? ($module['evening_cost'] ?? 0) : ($row['study_mode'] == "fulltime" ? ($module['fulltime_cost'] ?? 0) : ($module['termly_cost'] ?? 0)));
                         $data_to_display.="<td><input type='checkbox' class='edit_course_fees_0' id='edit_module_course_fees_0_".($key+1)."' ".$check_module."> Kes ".number_format($course_fees)."</td>";
                     }
@@ -193,7 +194,7 @@
                         $data_to_display.= "<tr><td>".($key+2).". <input type='checkbox' value='".$votehead['ids']."' class='edit_course_fees' id='edit_course_fees_".$votehead['ids']."' checked></td><td>".$votehead['expenses']."</td><td><span class='badge bg-primary'>".ucwords(strtolower($votehead['roles']))."</span></td>";
                         $row['study_mode'] = strtolower($row['study_mode']);
                         foreach($active_course['module_terms'] as $module){
-                            $check_module = checkVotehead($active_course['module_terms'], $votehead['ids'], $module['id'], $votehead['roles']);
+                            $check_module = checkVotehead($active_course['module_terms'], $votehead['ids'], $module['id'], $votehead['roles'], $is_boarding);
                             $course_fees = $row['study_mode'] == "weekend" ? $votehead['TERM_3'] : ($row['study_mode'] == "evening" ? $votehead['TERM_2'] : ($row['study_mode'] == "fulltime" ? $votehead['TERM_1'] : $votehead['TERM_1']));
                             $data_to_display.="<td><input type='checkbox' class='edit_course_fees_".$votehead['ids']."' id='edit_module_course_fees_".$votehead['ids']."_".$module['id']."' ".$check_module."> Kes ".number_format($course_fees)."</td>";
                         }
@@ -256,19 +257,10 @@
             $admnos = $_GET['findadmno'];
             $admnopresent = checkadmno($admnos);
             if ($admnopresent==1) {
-                $last_paying = getLastTimePaying($conn2,$admnos);
                 $names = getName($admnos);
                 $term = getTermV2($conn2);
                 $classes = explode("^",$names)[1];
-                $added_fees = checkFeesChange($term,$conn2,$classes,$last_paying);
-                $transport_change = changeTransport($conn2,$admnos);
                 $fees_change = "";
-                if (strlen($added_fees) > 0) {
-                    $fees_change = "<hr><span class='text-primary'>We have noticed fees structure has been changed below are the changes:".$added_fees."</span><br>";
-                }
-                if (strlen($transport_change) > 0) {
-                    $fees_change.=$transport_change."<br>";
-                }
                 $name = explode("^",$names)[0];
                 $date = date("Y-m-d");
                 $times = date("H:i:s");
@@ -6063,7 +6055,7 @@
         }
     }
 
-    function checkVotehead($modules, $votehead_id, $module_id, $votehead_type = "provisional"){
+    function checkVotehead($modules, $votehead_id, $module_id, $votehead_type = "provisional", $is_boarding = false){
         $issetup = false;
         foreach ($modules as $key => $module) {
             if(isset($module['voteheads']) && $module['id'] == $module_id){
@@ -6075,7 +6067,7 @@
                 }
             }
         }
-        if (!$issetup && strtolower($votehead_type) == "regular") {
+        if ((!$issetup && strtolower($votehead_type) == "regular") || (!$issetup && strtolower($votehead_type) == "boarding" && $is_boarding)) {
             return "checked";
         }
         return "";
@@ -7000,7 +6992,7 @@
                     $trans_date = date("dS M Y H:i:s A",strtotime($row['date_of_transaction']."".$row['time_of_transaction']));
                     $trans_date_sort = date("YmdHis",strtotime($row['date_of_transaction']."".$row['time_of_transaction']));
                     $student_name = getName1($row['stud_admin']);
-                    $transaction_data.="{\"stud_admin\":\"".$row['stud_admin']."\",\"amount\":\"".comma($row['amount'])."\",\"date_of_transaction\":\"".$trans_date."\",\"student_name\":\"".ucwords(strtolower($student_name))."\",\"mode_of_pay\":\"".$row['mode_of_pay']."\",\"payment_for\":\"".ucwords(strtolower($row['payment_for']))."\",\"amount_sort\":".$row['amount'].",\"trans_date_sort\":".$trans_date_sort.",\"support_document\":".$row['support_document']."},";
+                    $transaction_data.="{\"stud_admin\":\"".$row['stud_admin']."\",\"amount\":\"".comma($row['amount'])."\",\"date_of_transaction\":\"".$trans_date."\",\"student_name\":\"".ucwords(strtolower($student_name))."\",\"mode_of_pay\":\"".$row['mode_of_pay']."\",\"payment_for\":\"".ucwords(strtolower($row['payment_for']))."\",\"amount_sort\":".$row['amount'].",\"trans_date_sort\":".$trans_date_sort.",\"support_document\":".($row['support_document'] ?? "")."},";
                 }
             }
             $transaction_data = substr($transaction_data,0,-1)."]";
@@ -7816,6 +7808,7 @@
     function getFeesAsFromTermAdmited($current_term,$conn2,$classes,$admno, $include_bcf = true){
         // get the student term they are in
         $student_data = students_details($admno,$conn2);
+        $is_boarding = isBoarding($admno, $conn2);
         
         // GET THE COURSE FEES
         $course_fees = 0;
@@ -7865,8 +7858,9 @@
             $course_enrolled = $student_data['course_done'];
     
             // get the term they are in
+            $is_boarding_filter = $is_boarding ? " (`roles` = 'regular' OR `roles` = 'boarding')" : " `roles` = 'regular'";
             $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
-            $select =  count($other_vh) > 0 && $issetup ? "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE ids IN (".join(',', $other_vh).")" : "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_enrolled."' AND `activated` = 1  and `roles` = 'regular';";
+            $select =  count($other_vh) > 0 && $issetup ? "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE ids IN (".join(',', $other_vh).")" : "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_enrolled."' AND `activated` = 1 AND $is_boarding_filter;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $res = $stmt->get_result();

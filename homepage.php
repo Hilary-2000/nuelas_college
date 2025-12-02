@@ -3121,8 +3121,8 @@ function checkPresnt($array, $string){
                             <select class="form-control" name="boarders_regular" id="boarders_regular">
                                 <option value="" hidden>Select..</option>
                                 <option value="regular">Regular</option>
-                                <!-- <option value="boarding">Boarder</option> -->
                                 <option value="provisional">Provisional</option>
+                                <option value="boarding">Boarding</option>
                             </select>
                         </div>
                         <div class="conts">
@@ -3670,8 +3670,8 @@ function checkPresnt($array, $string){
                             <select class="form-control" name="boarders1_regular1" id="boarders1_regular1">
                                 <option value="" hidden>Select..</option>
                                 <option value="regular" id="regular12">Regular</option>
-                                <!-- <option value="boarding" id="boarding12">Boarder</option> -->
                                 <option value="provisional" id="provisional12">Provisional</option>
+                                <option value="boarding" id="boarding12">Boarding</option>
                             </select>
                         </div>
                         <input type="hidden" name="" id="course_id_edit">
