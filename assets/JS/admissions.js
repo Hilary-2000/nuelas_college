@@ -928,6 +928,7 @@ cObj("regsub").onclick = function () {
     addselected(this.id);
     cObj("regsubjects").classList.remove("hide");
     removesidebar();
+    display_course_level();
 }
 cObj("managesub").onclick = function () {
     hideWindow();
@@ -1292,9 +1293,6 @@ window.onload = function () {
     //get the payment details here
     var datapass2 = "?payfordetails=true";
     sendData("GET", "finance/financial.php", datapass2, cObj("payments"));
-
-    var datapass3 = "?showsubjects=true";
-    sendData("GET", "academic/academic.php", datapass3, cObj("subjectlist"));
     var datapass3 = "?showsubjected=true";
     sendData("GET", "academic/academic.php", datapass3, cObj("classeslist"));
     datapass3 = "?showsubject=true";

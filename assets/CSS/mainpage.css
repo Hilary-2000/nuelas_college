@@ -1546,10 +1546,10 @@ table tr:last-of-type{
 }
 .classlist{
     position: relative;
-    width: 200px;
+    /* width: 200px; */
     box-shadow: 1px 1px 10px rgb(139, 139, 139) inset;
     padding: 5px;
-    margin-left: 10px;
+    /* margin-left: 10px; */
     height:100px;
     overflow:auto;
 }

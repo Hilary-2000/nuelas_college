@@ -1,43 +1,37 @@
 cObj("registersub").onclick = function () {
     var err=0;
-    err += checkBlank("subname");
-    err += checkBlank("submarks");
-    err += checkBlank("sundids");
+    err += checkBlank("unit_unique_name");
+    err += checkBlank("subject_max_marks");
+    err += checkBlank("unit_code");
     err += checkBlank("subject_display_name");
+
+
+    // check error
     if (err==0) {
-        cObj("errregsub").innerHTML = "<p style='color:red;'></p>";
-        var classes = document.getElementsByClassName("subjectclass");
-        var select = 0;
-        var classed = new Array();
-        for (let index = 0; index < classes.length; index++) {
-            const element = classes[index];
-            if (element.checked == true) {
-                select+=1;
-                classed.push(element.id);
-            }
+        // course selected!
+        var hold_course_selected = hasJsonStructure(valObj("hold_course_selected")) ? JSON.parse(valObj("hold_course_selected")) : [];
+        if (hold_course_selected.length == 0) {
+            cObj("errregsub").innerHTML = "<p class='text-danger border border-danger p-1 my-2'>Select atleast one course from the list!</p>";
+            return;
+        }else{
+            cObj("errregsub").innerHTML = "";
         }
-        if (select>0) {
+        cObj("errregsub").innerHTML = "";
+        var hold_course_selected = hasJsonStructure(valObj("hold_course_selected")) ? JSON.parse(valObj("hold_course_selected")) : [];
+        if (hold_course_selected.length > 0) {
             var set_my_grades_list = cObj("set_my_grades_list").innerText;
-            var datastring = "?addsubject=true&subjectname="+valObj("subname")+"&subjectmax="+valObj("submarks")+"&claslist="+classed+"&subids="+valObj("sundids")+"&grades_lists="+set_my_grades_list+"&subject_display_name="+valObj("subject_display_name");
-            sendData1("GET","academic/academic.php",datastring,cObj("errregsub"));
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout==1200) {
-                        stopInterval(ids);                        
-                    }
-                    if (cObj("loadings").classList.contains("hide")){
-                        cObj("formpay").reset();
-                        cObj("display_tables_list").innerHTML = "";
-                        setTimeout(() => {
-                            cObj("errregsub").innerHTML = "";
-                        }, 3000);
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 200);
+            var datastring = "addsubject=true&unit_name="+valObj("unit_unique_name")+"&subject_max_marks="+valObj("subject_max_marks")+"&course_list="+JSON.stringify(hold_course_selected)+"&unit_code="+valObj("unit_code")+"&grades_lists="+set_my_grades_list+"&subject_display_name="+valObj("subject_display_name");
+            sendDataPost("POST","ajax/academic/academic.php",datastring,cObj("errregsub"), cObj("loadings"), function () {
+                if (cObj("error_adding_unit") == undefined) {
+                    cObj("formpay").reset();
+                    cObj("display_tables_list").innerHTML = "";
+                    setTimeout(() => {
+                        cObj("errregsub").innerHTML = "";
+                    }, 3000);
+                    cObj("hold_course_selected").value = "[]";
+                    cObj("course_selected_count").innerHTML = "<small>Selected Course : 0</small>";
+                }
+            });
         }else{
             cObj("errregsub").innerHTML = "<p style='color:red;'>Select the classes the subject is to be taught!</p>";
         }
@@ -45,12 +39,20 @@ cObj("registersub").onclick = function () {
         cObj("errregsub").innerHTML = "<p style='color:red;'>Please fill all the fields that have a red border!</p>";
     }
 }
-cObj("subname").onblur = function () {
+cObj("unit_unique_name").onblur = function () {
     var data = "?findname=true&name="+this.value;
     if (this.value.length>0) {
         sendData("GET","academic/academic.php",data,cObj("subnameerr"));
     }else{
         cObj("subnameerr").innerHTML = "<p></p>";
+    }
+}
+cObj("unit_code").onblur = function () {
+    var data = "?findname=true&name="+this.value+"&unit_code=true";
+    if (this.value.length>0) {
+        sendData("GET","academic/academic.php",data,cObj("unit_code_error"));
+    }else{
+        cObj("unit_code_error").innerHTML = "<p></p>";
     }
 }
 cObj("serchby").onchange = function () {
@@ -121,7 +123,7 @@ cObj("finder").onclick = function () {
 }
 
 cObj("cancelsubs").onclick = function () {
-    cObj("information").classList.remove("hide");
+    cObj("resulthold").classList.remove("hide");
     cObj("subjectdets").classList.add("hide");
     if (valObj("subjects_option") == "search_subjects") {
         cObj("finder").click();
@@ -135,137 +137,75 @@ function setTableListenersub(id) {
 function finders() {
     var subjectid = this.id.substr(5);
     var datapass = "?subjectids="+subjectid;
-    sendData1("GET","academic/academic.php",datapass,cObj("subinform"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout==1200) {
-                stopInterval(ids);                        
+    sendData1("GET","academic/academic.php",datapass,cObj("subinform"), function () {
+        var dats =  cObj("subinform").innerText;
+        if (hasJsonStructure(dats)) {
+            var unit_data = JSON.parse(dats);
+            cObj("unit_id_edit").innerText = unit_data.subject_id;
+            setDatalen("subject_name_edit",unit_data.subject_name);
+            setDatalen("unit_code_edit",unit_data.timetable_id);
+            setDatalen("subject_max_marks_edit",unit_data.max_marks);
+            cObj("subjects_grades_hidden").innerText = unit_data.grading;
+            if (unit_data.grading.length > 0) {
+                create_grade_list(unit_data.grading,"my_grade_lists_subject");
+            }else{
+                cObj("my_grade_lists_subject").innerHTML = "<p class='text-success'>Grades for this subjects are not set!</p>";
             }
-            if (cObj("loadings").classList.contains("hide")) {
-                var dats =  cObj("subinform").innerText;
-                if (dats!="null") {
-                    var data = dats.split("&");
-                    if (data.length>0) {
-                        cObj("subids").innerText = data[0];
-                        setDatalen("subnam",data[1]);
-                        setDatalen("subidss",data[5]);
-                        setDatalen("submarksd",data[2]);
-                        var classes = data[3].split(",");
-                        var checks = document.getElementsByClassName("checkclas");
-                        for (let index = 0; index < checks.length; index++) {
-                            const alem = checks[index];
-                            alem.checked = false;
-                        }
-                        var counts="";
-                        if (classes.length>0) {
-                            for (let index = 0; index < classes.length; index++) {
-                                const element = classes[index];
-                                if (checks.length>0) {
-                                    for (let index = 0; index < checks.length; index++) {
-                                        const elem = checks[index];
-                                        if (elem.id == "check"+element) {
-                                            elem.checked = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        // get data accordingly
-                        var user_data = data[6];
-                        cObj("subjects_grades_hidden").innerText = user_data;
-                        if (user_data.length > 0) {
-                            create_grade_list(user_data,"my_grade_lists_subject");
-                        }else{
-                            cObj("my_grade_lists_subject").innerHTML = "<p class='text-success'>Grades for this subjects are not set!</p>";
-                        }
-                        // set the display name
-                        cObj("sub_display_name").value = data[7];
-                    }
-                    cObj("subjectdets").classList.remove("hide");
-                    cObj("information").classList.add("hide");
-                }
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 200);
+            // set the display name
+            cObj("sub_display_name_edit").value = unit_data.display_name;
+
+            cObj("subjectdets").classList.remove("hide");
+            cObj("resulthold").classList.add("hide");
+            var classes_taught = JSON.parse(unit_data.classes_taught);
+            display_course_level_edit(classes_taught[0].course_level);
+            cObj("hold_course_selected_edit").value = unit_data.classes_taught;
+            cObj("selected_course_counter").innerHTML = "Selected Course : "+classes_taught.length;
+        }
+    });
 }
 // set grades
 cObj("updatesubs").onclick = function () {
     var err = 0;
-    err+=checkBlank("subnam");
-    err+=checkBlank("subidss");
-    err+=checkBlank("submarksd");
-    err+=checkBlank("sub_display_name");
-    var classel = document.getElementsByClassName("checkclas");
-    var counts=0;
-    for (let index = 0; index < classel.length; index++) {
-        const elem = classel[index];
-        if (elem.checked == true) {
-            counts++;
-            break;
-        }
-    }
-    if (counts==0) {
-        err++;
-    }
+    err+=checkBlank("subject_name_edit");
+    err+=checkBlank("unit_code_edit");
+    err+=checkBlank("subject_max_marks_edit");
+    err+=checkBlank("sub_display_name_edit");
     if (err==0) {
-        cObj("errhandlers").innerHTML = "<p style='color:red;'></p>";
-        var classelected ="";
-        var c = 0;
-        for (let index = 0; index < classel.length; index++) {
-            const ele = classel[index];
-            if (ele.checked == true) {
-                c++;
-                if (c==1) {
-                    classelected+=ele.value;                    
-                }else{
-                    classelected+=","+ele.value;
-                }
-            }
+        // course selected!
+        var hold_course_selected = hasJsonStructure(valObj("hold_course_selected_edit")) ? JSON.parse(valObj("hold_course_selected_edit")) : [];
+        if (hold_course_selected.length == 0) {
+            cObj("errhandlers").innerHTML = "<p class='text-danger border border-danger p-1 my-2'>Select atleast one course from the list!</p>";
+            return;
+        }else{
+            cObj("errhandlers").innerHTML = "";
         }
+        cObj("errhandlers").innerHTML = "";
         var subject_grade = cObj("subjects_grades_hidden").innerText;
-        var datapass = "?updatesubjects=true&subname="+valObj("subnam")+"&subttid="+valObj("subidss")+"&submaxmarks="+valObj("submarksd")+"&classtaught="+classelected+"&subjeid="+cObj("subids").innerText+"&subject_grade="+subject_grade+"&sub_display_name="+valObj("sub_display_name");
-        sendData1("GET","academic/academic.php",datapass,cObj("errhandlers"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout==1200) {
-                    stopInterval(ids);                        
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    var infor = cObj("errhandlers").innerText.substr(0,7);
-                    if (infor=="Subject") {
-                        // cObj("subjectdets").reset();
-                        // cObj("finder").click();
-                        setTimeout(() => {
-                            cObj("errhandlers").innerHTML = "";
-                        }, 5000);
-                    }
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 200);
-        
+        var datapass = "updatesubjects=true&unit_name="+valObj("subject_name_edit")+"&unit_code="+valObj("unit_code_edit")+"&unit_max_marks="+valObj("subject_max_marks_edit")+"&course_list="+cObj("hold_course_selected_edit").value+"&unit_id="+cObj("unit_id_edit").innerText+"&unit_grades="+subject_grade+"&unit_display_name="+valObj("sub_display_name_edit");
+        sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("errhandlers"), cObj("loadings"), function () {
+            var infor = cObj("errhandlers").innerText.substring(0,7);
+            if (infor=="Subject") {
+                setTimeout(() => {
+                    cObj("errhandlers").innerHTML = "";
+                }, 5000);
+            }
+        });
     }else{
         cObj("errhandlers").innerHTML = "<p style='color:red;'>Fill all the field to proceed</p>";
     }
 }
 cObj("edit_grading_subject").onclick = function () {
-    var err = checkBlank("subnam");
-    err+=checkBlank("subidss");
-    err+=checkBlank("submarksd");
+    var err = checkBlank("subject_name_edit");
+    err+=checkBlank("unit_code_edit");
+    err+=checkBlank("subject_max_marks_edit");
+    err+=checkBlank("sub_display_name_edit");
     if (err == 0) {
         cObj("edit_grades_win").classList.remove("hide");
         cObj("errhandlers").innerHTML = "";
 
         // set name and the maximum grade
-        cObj("edit_grades_subject_name").innerText = cObj("subnam").value;
-        cObj("edit_maximum_marks").value = cObj("submarksd").value;
+        cObj("edit_grades_subject_name").innerText = cObj("subject_name_edit").value;
+        cObj("edit_maximum_marks").value = cObj("subject_max_marks_edit").value;
     }else{
         cObj("errhandlers").innerHTML = "<p class='text-danger'>Please fill all fields with red border before filling the grades</p>";
     }
@@ -289,28 +229,22 @@ function displayAllSubjects () {
         cObj("seachsub").classList.add("hide");
         cObj("subjectdets").classList.add("hide");
         var datapas = "?findsubjects=true";
-        sendData1("GET","academic/academic.php",datapas,cObj("resulthold"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout==1200) {
-                    stopInterval(ids);                        
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    stopInterval(ids);
-                    var collectbtn = document.getElementsByClassName('viewsubj');
-                    for (let index = 0; index < collectbtn.length; index++) {
-                        const element = collectbtn[index];
-                        setTableListenersub(element.id);
-                    }
-                    if(typeof(cObj("pleasewait3")) != 'undefined' && cObj("pleasewait3") != null){
-                        cObj("pleasewait3").classList.add("hide");
-                    }
-                }
-            }, 100);
-        }, 200);
+        sendData1("GET","academic/academic.php",datapas,cObj("resulthold"), function () {
+            // view subject list
+            var collectbtn = document.getElementsByClassName('viewsubj');
+            for (let index = 0; index < collectbtn.length; index++) {
+                const element = collectbtn[index];
+                setTableListenersub(element.id);
+            }
+            if(typeof(cObj("pleasewait3")) != 'undefined' && cObj("pleasewait3") != null){
+                cObj("pleasewait3").classList.add("hide");
+            }
+
+            // set the datatable
+            $(document).ready(function() {
+                $('#unit_list_table').DataTable();  // Just one line!
+            });
+        });
     }
 }
 cObj("opt12").onchange = function () {
@@ -363,7 +297,6 @@ cObj("findersd").onclick = function () {
                 }
             }, 100);
         }, 200);
-
     }else{
         cObj("managesubsteacherr").innerHTML = "<p style='color:red;'>Please fill all the field with red borders.</p>";
     }
@@ -570,7 +503,7 @@ function changeCheck() {
         cObj("selectclass1").classList.remove("hide");
         cObj("selectsub1").classList.add("hide");
         cObj("saves1").classList.remove("hide");
-        var datapass = "?getsubjectsclass=true&subids="+subjectid;
+        var datapass = "?getsubjectsclass=true&unit_id_edit="+subjectid;
         sendData2("GET","academic/academic.php",datapass,cObj("classlist_1"),cObj("loadings23"));
     }
 }
@@ -2281,11 +2214,11 @@ cObj("delsubno").onclick = function () {
     cObj("delsubconfirmwin").classList.add("hide");
 }
 cObj("delete-subject").onclick = function () {
-    cObj("mssg_name").innerHTML = "Are you sure you want to delete <b>"+cObj("subnam").value+"</b> ?";
+    cObj("mssg_name").innerHTML = "Are you sure you want to delete <b>"+cObj("subject_name_edit").value+"</b> ?";
     cObj("delsubconfirmwin").classList.remove("hide");
 }
 cObj("delsubyes").onclick = function () {
-    var datapass = "?deletesubject=true&subjectid="+cObj("subids").innerText;
+    var datapass = "?deletesubject=true&subjectid="+cObj("unit_id_edit").innerText;
     sendData1("GET","academic/academic.php",datapass,cObj("errhandlers"));
     cObj("delsubconfirmwin").classList.add("hide");
     setTimeout(() => {
@@ -4242,31 +4175,38 @@ cObj("set_grades_btn").onclick = function () {
             }else{
                 cObj("error_handler_graders").innerHTML = "";
                 var data = cObj("my_grades_lists").innerText;
-                if (data.length > 0) {
+                if (hasJsonStructure(data)) {
+                    var grade_data = JSON.parse(data);
                     var ids = 0;
-                    var min = 0;
-                    var informa = JSON.parse(data);
-                    for (let index = 0; index < informa.length; index++) {
-                        const element = informa[index];
-                        if (informa.length == index+1) {
-                            ids+=1;
-                            min = element.min;
-                        }
+                    for (let index = 0; index < grade_data.length; index++) {
+                        const element = grade_data[index];
+                        ids = ids > element.grade_id ? ids : element.grade_id;
                     }
-                    data = data.substr(0,(data.length-1));
-                    data += ',{"grade_name": "'+valObj("grade_score")+'","max":"'+valObj("maximum_marks")+'","min":"'+valObj("minimum_marks")+'","grade_id":"'+ids+'"}]';
-                    cObj("my_grades_lists").innerText = data;
+
+                    // increase ids
+                    ids+=1;
+                    grade_data.push({
+                        grade_name: valObj("grade_score"),
+                        max: valObj("maximum_marks"),
+                        min: valObj("minimum_marks"),
+                        grade_id: ids
+                    });
+                    cObj("my_grades_lists").innerText = JSON.stringify(grade_data);
                     cObj("maximum_marks").value = (valObj("minimum_marks")*1) > 0 ? ((valObj("minimum_marks")*1)-1) : 0;
                     cObj("minimum_marks").value = "";
                     cObj("grade_score").value = "";
-                    create_grade_list(data)
+                    create_grade_list(cObj("my_grades_lists").innerText);
                 }else{
-                    data = '[{"grade_name": "'+valObj("grade_score")+'","max":"'+valObj("maximum_marks")+'","min":"'+valObj("minimum_marks")+'","grade_id":"1"}]';
-                    cObj("my_grades_lists").innerText = data;
+                    cObj("my_grades_lists").innerText = JSON.stringify([{
+                        grade_name: valObj("grade_score"),
+                        max: valObj("maximum_marks"),
+                        min: valObj("minimum_marks"),
+                        grade_id: 1
+                    }]);
                     cObj("maximum_marks").value = (valObj("minimum_marks")*1) > 0 ? ((valObj("minimum_marks")*1)-1) : 0;
                     cObj("minimum_marks").value = "";
                     cObj("grade_score").value = "";
-                    create_grade_list(data)
+                    create_grade_list(cObj("my_grades_lists").innerText);
                 }
             }
         }else{
@@ -4278,20 +4218,21 @@ cObj("set_grades_btn").onclick = function () {
 }
 cObj("add_grades_in_cancels").onclick = function () {
     cObj("add_grades_win").classList.add("hide");
+    cObj("my_grades_lists").innerText = "";
     cObj("grades_listers").innerHTML = "<p>Kindly add the grades for the respective subject <br> Grades will appear here.</p>";
 }
 cObj("set_grades_display_btn").onclick = function () {
     // get the subject name
-    var errors = checkBlank("subname");
-    errors+=checkBlank("sundids");
-    errors+=checkBlank("submarks");
+    var errors = checkBlank("unit_unique_name");
+    errors+=checkBlank("unit_code");
+    errors+=checkBlank("subject_max_marks");
     // console.log(errors);
     if (errors == 0) {
         // no errors present
         cObj("errregsub").innerHTML = "";
         cObj("add_grades_win").classList.remove("hide");
-        cObj("subject_grades_names").innerText = cObj("subname").value;
-        cObj("maximum_marks").value = cObj("submarks").value;
+        cObj("subject_grades_names").innerText = cObj("unit_unique_name").value;
+        cObj("maximum_marks").value = cObj("subject_max_marks").value;
     }else{
         cObj("errregsub").innerHTML = "<p class='text-danger'>Please fill all the fields covered with red boarder</p>";
     }
@@ -4319,8 +4260,11 @@ cObj("add_grades_in").onclick = function () {
     cObj("minimum_marks").value = "";
     cObj("grade_score").value = "";
     cObj("maximum_marks").value = 0;
+
     // display the grade table below
     create_grade_list(cObj("set_my_grades_list").innerText,"display_tables_list");
+    cObj("my_grades_lists").innerText = "[]";
+    cObj("grades_listers").innerHTML = '<p>Kindly add the grades for the respective subject <br> Grades will appear here.</p>';
 }
 
 cObj("edit_grades_btn").onclick = function () {
@@ -4780,4 +4724,337 @@ cObj("select_exams_actions").onchange = function () {
         cObj("email_data_holder").classList.add("hide");
     }
     cObj("generate_report_btns").classList.add("hide");
+}
+
+function display_course_level() {
+    var datapass = "?getclass=true&select_class_id=select_course_level_unit";
+    sendData1("GET", "administration/admissions.php", datapass, cObj("select_course_level_list_holder"), function () {
+        if (cObj("select_course_level_unit") != undefined) {
+            $("#select_course_level_unit").select2({
+                width: "100%"
+            });
+
+            cObj("select_course_level_unit").onchange = display_course_list;
+        }
+    });
+}
+
+function display_course_level_edit(dropdown_value) {
+    var datapass = "?getclass=true&select_class_id=select_course_level_unit_edit";
+    sendData1("GET", "administration/admissions.php", datapass, cObj("select_course_level_list_holder_edit"), function () {
+        if (cObj("select_course_level_unit_edit") != undefined) {
+            $("#select_course_level_unit_edit").select2({
+                width: "100%"
+            });
+            $('#select_course_level_unit_edit').val(dropdown_value).trigger('change');
+            cObj("select_course_level_unit_edit").onchange = display_course_list_edit;
+            // display_course_level_edit
+            display_course_list_edit();
+        }
+    });
+}
+
+function display_course_list() {
+    var datapass = "?display_course_list=true&course_level="+this.value;
+    sendData2("GET", "academic/academic.php", datapass, cObj("course_list_unit_holder"), cObj("course_list_loader"), function () {
+        if (cObj("select_all_courses") != null) {
+            var subjectclass = document.getElementsByClassName("subjectclass");
+            var hold_course_selected = hasJsonStructure(valObj("hold_course_selected")) ? JSON.parse(valObj("hold_course_selected")) : [];
+            var checked_count = 0;
+
+            // ADD LISTENERS TO CHECKBOXES
+            for (let index = 0; index < subjectclass.length; index++) {
+                const element = subjectclass[index];
+                element.addEventListener("change", function () {
+                    var course_data_held = hasJsonStructure(valObj("hold_course_selected")) ? JSON.parse(valObj("hold_course_selected")) : [];
+                    if (element.checked) {
+                        // add the element in the list of it doesn`t exist
+                        var is_present = false;
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level == cObj("select_course_level_unit").value && elem.course_id == element.value) {
+                                is_present = true;
+                            }
+                        }
+                        // if not present
+                        if (!is_present) {
+                            course_data_held.push({
+                                course_level: cObj("select_course_level_unit").value,
+                                course_id:element.value
+                            });
+                        }
+
+                        // json value
+                        cObj("hold_course_selected").value = JSON.stringify(course_data_held);
+                    }else{
+                        // add the rest of the element except the one that is unchecked
+                        var new_course_data = [];
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_id != element.value) {
+                                new_course_data.push(elem);
+                            }
+                        }
+                        course_data_held = new_course_data;
+
+                        // json value
+                        cObj("hold_course_selected").value = JSON.stringify(course_data_held);
+                    }
+                    cObj("course_selected_count").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
+
+                    var checkboxes = document.getElementsByClassName("subjectclass");
+                    var check_count = 0;
+                    for (let index = 0; index < checkboxes.length; index++) {
+                        const element = checkboxes[index];
+                        if (element.checked) {
+                            check_count++;
+                        }
+                    }
+                    if (check_count > 0) {
+                        if (check_count == checkboxes.length) {
+                            cObj("select_all_courses").indeterminate = false;
+                            cObj("select_all_courses").checked = true;
+                        }else{
+                            cObj("select_all_courses").checked = false;
+                            cObj("select_all_courses").indeterminate = true;
+                        }
+                    }else{
+                        cObj("select_all_courses").checked = false;
+                        cObj("select_all_courses").indeterminate = false;
+                    }
+                });
+
+                // check if element was selected before
+                for (let ind = 0; ind < hold_course_selected.length; ind++) {
+                    const elems = hold_course_selected[ind];
+                    if (element.value == elems.course_id && elems.course_level == valObj("select_course_level_unit")) {
+                        element.checked = true;
+                    }
+                }// add checked count
+                checked_count += element.checked ? 1 : 0;
+            }
+
+            // SET THE SELECT ALL CHECKBOXES
+            if (checked_count > 0) {
+                if (checked_count == subjectclass.length) {
+                    cObj("select_all_courses").indeterminate = false;
+                    cObj("select_all_courses").checked = true;
+                }else{
+                    cObj("select_all_courses").checked = false;
+                    cObj("select_all_courses").indeterminate = true;
+                }
+            }else{
+                cObj("select_all_courses").checked = false;
+                cObj("select_all_courses").indeterminate = false;
+            }
+            
+            // SET THE SELECT ALL CHECKBOXES EVENT LISTENER
+            cObj("select_all_courses").addEventListener("change", function () {
+                var subjectclass = document.getElementsByClassName("subjectclass");
+                for (let index = 0; index < subjectclass.length; index++) {
+                    const element = subjectclass[index];
+                    element.checked = this.checked;
+                    var course_data_held = hasJsonStructure(valObj("hold_course_selected")) ? JSON.parse(valObj("hold_course_selected")) : [];
+                    if (this.checked) {
+                        // add the element in the list of it doesn`t exist
+                        var is_present = false;
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level == cObj("select_course_level_unit").value && elem.course_id == element.value) {
+                                is_present = true;
+                            }
+                        }
+                        // if not present
+                        if (!is_present) {
+                            course_data_held.push({
+                                course_level: cObj("select_course_level_unit").value,
+                                course_id:element.value
+                            });
+                        }
+                        cObj("hold_course_selected").value = JSON.stringify(course_data_held);
+                    }else{
+                        // add the rest of the element except the one that is unchecked
+                        var new_course_data = [];
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level != cObj("select_course_level_unit").value && elem.course_id != element.value) {
+                                new_course_data.push(elem);
+                            }
+                        }
+                        course_data_held = new_course_data;
+
+                        // json value
+                        cObj("hold_course_selected").value = JSON.stringify(course_data_held);
+                    }
+                    // course level length
+                    cObj("course_selected_count").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
+                }
+            });
+
+            // SET THE SEARCHBOX EVENT LISTENER
+            cObj("search_course_checkbox").addEventListener("keyup", function () {
+                var search_courses_unit = document.getElementsByClassName("search_courses_unit");
+                for (let index = 0; index < search_courses_unit.length; index++) {
+                    const element = search_courses_unit[index];
+                    if (!element.innerText.toLowerCase().toString().includes(this.value.toLowerCase().toString())) {
+                        cObj("checkbox_holder_"+element.id.substring(20)).classList.add("hide");
+                    }else{
+                        cObj("checkbox_holder_"+element.id.substring(20)).classList.remove("hide");
+                    }
+                }
+            });
+        }
+    });
+}
+function display_course_list_edit() {
+    var datapass = "?display_course_list_edit=true&course_level="+cObj("select_course_level_unit_edit").value;
+    sendData2("GET", "academic/academic.php", datapass, cObj("course_list_unit_holder_edit"), cObj("course_list_loader_edit"), function () {
+        if (cObj("select_all_courses_edit") != null) {
+            var subjectclass = document.getElementsByClassName("subjectclass_edit");
+            var hold_course_selected = hasJsonStructure(valObj("hold_course_selected_edit")) ? JSON.parse(valObj("hold_course_selected_edit")) : [];
+            var checked_count = 0;
+
+            // ADD LISTENERS TO CHECKBOXES
+            for (let index = 0; index < subjectclass.length; index++) {
+                const element = subjectclass[index];
+                element.addEventListener("change", function () {
+                    var course_data_held = hasJsonStructure(valObj("hold_course_selected_edit")) ? JSON.parse(valObj("hold_course_selected_edit")) : [];
+                    if (element.checked) {
+                        // add the element in the list of it doesn`t exist
+                        var is_present = false;
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level == cObj("select_course_level_unit_edit").value && elem.course_id == element.value) {
+                                is_present = true;
+                            }
+                        }
+                        // if not present
+                        if (!is_present) {
+                            course_data_held.push({
+                                course_level: cObj("select_course_level_unit_edit").value,
+                                course_id:element.value
+                            });
+                        }
+
+                        // json value
+                        cObj("hold_course_selected_edit").value = JSON.stringify(course_data_held);
+                    }else{
+                        // add the rest of the element except the one that is unchecked
+                        var new_course_data = [];
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_id != element.value) {
+                                new_course_data.push(elem);
+                            }
+                        }
+                        course_data_held = new_course_data;
+
+                        // json value
+                        cObj("hold_course_selected_edit").value = JSON.stringify(course_data_held);
+                    }
+                    cObj("selected_course_counter").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
+
+                    var checkboxes = document.getElementsByClassName("subjectclass_edit");
+                    var check_count = 0;
+                    for (let index = 0; index < checkboxes.length; index++) {
+                        const element = checkboxes[index];
+                        if (element.checked) {
+                            check_count++;
+                        }
+                    }
+                    if (check_count > 0) {
+                        if (check_count == checkboxes.length) {
+                            cObj("select_all_courses_edit").indeterminate = false;
+                            cObj("select_all_courses_edit").checked = true;
+                        }else{
+                            cObj("select_all_courses_edit").checked = false;
+                            cObj("select_all_courses_edit").indeterminate = true;
+                        }
+                    }else{
+                        cObj("select_all_courses_edit").checked = false;
+                        cObj("select_all_courses_edit").indeterminate = false;
+                    }
+                });
+
+                // check if element was selected before
+                for (let ind = 0; ind < hold_course_selected.length; ind++) {
+                    const elems = hold_course_selected[ind];
+                    if (element.value == elems.course_id && elems.course_level == valObj("select_course_level_unit_edit")) {
+                        element.checked = true;
+                    }
+                }// add checked count
+                checked_count += element.checked ? 1 : 0;
+            }
+
+            // SET THE SELECT ALL CHECKBOXES
+            if (checked_count > 0) {
+                if (checked_count == subjectclass.length) {
+                    cObj("select_all_courses_edit").indeterminate = false;
+                    cObj("select_all_courses_edit").checked = true;
+                }else{
+                    cObj("select_all_courses_edit").checked = false;
+                    cObj("select_all_courses_edit").indeterminate = true;
+                }
+            }else{
+                cObj("select_all_courses_edit").checked = false;
+                cObj("select_all_courses_edit").indeterminate = false;
+            }
+            
+            // SET THE SELECT ALL CHECKBOXES EVENT LISTENER
+            cObj("select_all_courses_edit").addEventListener("change", function () {
+                var subjectclass = document.getElementsByClassName("subjectclass_edit");
+                for (let index = 0; index < subjectclass.length; index++) {
+                    const element = subjectclass[index];
+                    element.checked = this.checked;
+                    var course_data_held = hasJsonStructure(valObj("hold_course_selected_edit")) ? JSON.parse(valObj("hold_course_selected_edit")) : [];
+                    if (this.checked) {
+                        // add the element in the list of it doesn`t exist
+                        var is_present = false;
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level == cObj("select_course_level_unit_edit").value && elem.course_id == element.value) {
+                                is_present = true;
+                            }
+                        }
+                        // if not present
+                        if (!is_present) {
+                            course_data_held.push({
+                                course_level: cObj("select_course_level_unit_edit").value,
+                                course_id:element.value
+                            });
+                        }
+                        cObj("hold_course_selected_edit").value = JSON.stringify(course_data_held);
+                    }else{
+                        // add the rest of the element except the one that is unchecked
+                        var new_course_data = [];
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level != cObj("select_course_level_unit_edit").value && elem.course_id != element.value) {
+                                new_course_data.push(elem);
+                            }
+                        }
+                        course_data_held = new_course_data;
+
+                        // json value
+                        cObj("hold_course_selected_edit").value = JSON.stringify(course_data_held);
+                    }
+                    // course level length
+                    cObj("selected_course_counter").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
+                }
+            });
+
+            // SET THE SEARCHBOX EVENT LISTENER
+            cObj("search_course_checkbox_edit").addEventListener("keyup", function () {
+                var search_courses_unit = document.getElementsByClassName("search_courses_edit_unit");
+                for (let index = 0; index < search_courses_unit.length; index++) {
+                    const element = search_courses_unit[index];
+                    if (!element.innerText.toLowerCase().toString().includes(this.value.toLowerCase().toString())) {
+                        cObj("checkbox_holder_edit_"+element.id.substring(25)).classList.add("hide");
+                    }else{
+                        cObj("checkbox_holder_edit_"+element.id.substring(25)).classList.remove("hide");
+                    }
+                }
+            });
+        }
+    });
 }

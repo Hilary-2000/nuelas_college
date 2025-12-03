@@ -2571,7 +2571,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
             $stmt = $conn2->prepare($select);
             $select_class_id = $_GET['select_class_id'];
-            $value_prefix = $_GET['value_prefix'];
+            $value_prefix = isset($_GET['value_prefix']) ? $_GET['value_prefix'] : "";
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {

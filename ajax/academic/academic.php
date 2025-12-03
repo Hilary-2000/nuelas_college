@@ -5,49 +5,125 @@
     // var_dump($_FILES);
     if ($_SERVER['REQUEST_METHOD'] == "GET") {
         include("../../connections/conn2.php");
-        if (isset($_GET['showsubjects'])) {
+        if (isset($_GET['display_course_list'])) {
+            $course_level = $_GET['course_level'];
+
+            // get the course levels
             $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            $class_explode = [];
+            $course_level_list = [];
             if ($result) {
                 if ($row = $result->fetch_assoc()) {
-                    // retrieve class lists from the database
-                    $class = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
-                    $all_classes = [];
-                    for ($index=0; $index < count($class); $index++) { 
-                        array_push($all_classes,$class[$index]->classes);
-                    }
-                    $class_explode = $all_classes;
+                    $course_level_list = isJson_report($row['valued']) ? json_decode($row['valued'], true) : [];
                 }
             }
-            
-            $data = "<div class ='classlist form-control' style='height:100px;overflow:auto;' name='selectsubs' id='selectsubs'>";
-            $xs = 0;
-            if (count($class_explode) > 0){
-                $arr = $class_explode;
-                for ($i=0; $i < count($arr); $i++) {
-                    $xs++;
-                    $datas = "Class ".$arr[$i];
-                    if (strlen($arr[$i])>1) {
-                        $datas = $arr[$i];
+            $course_level_id = null;
+            foreach ($course_level_list as $key => $course_level_data) {
+                if (strtolower($course_level) == strtolower($course_level_data['classes'])) {
+                    $course_level_id = $course_level_data['id'];
+                    break;
+                }
+            }
+
+            $course_list = [];
+            if ($course_level_id != null) {
+                // course list
+                $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+                $stmt = $conn2->prepare($select);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                $course_data_list = [];
+                if ($res) {
+                    if($row = $res->fetch_assoc()) {
+                        $course_data_list = isJson_report($row['valued']) ? json_decode($row['valued'], true) : [];
                     }
-                    $data.="<div class = 'checkboxholder' style='margin:10px 0;padding:0px 0px;'>";
-                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:12px;' for='".$arr[$i]."'>".$datas."</label>";
-                    $data.="<input class='subjectclass' type='checkbox' name='".$arr[$i]."' id='".$arr[$i]."'>";
+                }
+
+                // loop and get the course data list
+                for ($index=0; $index < count($course_data_list); $index++) { 
+                    if ($course_data_list[$index]['course_level'] == $course_level_id) {
+                        array_push($course_list, $course_data_list[$index]);
+                    }
+                }
+            }
+            if (count($course_list) > 0){
+                $data = "<div class='row mb-2'><div class='col-md-6'><input type='text' id='search_course_checkbox' placeholder='Search Course...' class='form-control'></div><div class='col-md-6'><label for='select_all_courses' class='form-control-label text-bold'><b>Select All</b> <input type='checkbox' id='select_all_courses'></label></div></div><div class ='classlist form-control' style='height:200px;overflow:auto;' name='selectsubs' id='selectsubs'>";
+                $arr = $course_list;
+                for ($i=0; $i < count($arr); $i++) {
+                    $data.="<div class = 'checkboxholder w-100' style='margin:10px 0;padding:0px 0px;' id='checkbox_holder_".$arr[$i]['id']."'>";
+                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_unit' id='search_courses_unit_".$arr[$i]['id']."' for='course_name_".$arr[$i]['id']."'>".($i+1).". ".$arr[$i]['course_name']."</label>";
+                    $data.="<input class='subjectclass' type='checkbox' name='course_name_".$arr[$i]['id']."' value='".$arr[$i]['id']."' id='course_name_".$arr[$i]['id']."'>";
                     $data.="</div>";
                 }
-            }
-            $data.="</div>";
-            if ($xs > 0) {
+                $data.="</div>";
                 echo $data;
             }else {
                 echo "<p class='red_notice'>No classes are available<br>Contact your administrator to rectify that!</p>";
             }
             $stmt->close();
             $conn2->close();
-        }else if (isset($_GET['showsubjected'])) {
+        }elseif (isset($_GET['display_course_list_edit'])) {
+            $course_level = $_GET['course_level'];
+
+            // get the course levels
+            $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $course_level_list = [];
+            if ($result) {
+                if ($row = $result->fetch_assoc()) {
+                    $course_level_list = isJson_report($row['valued']) ? json_decode($row['valued'], true) : [];
+                }
+            }
+            $course_level_id = null;
+            foreach ($course_level_list as $key => $course_level_data) {
+                if (strtolower($course_level) == strtolower($course_level_data['classes'])) {
+                    $course_level_id = $course_level_data['id'];
+                    break;
+                }
+            }
+
+            $course_list = [];
+            if ($course_level_id != null) {
+                // course list
+                $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+                $stmt = $conn2->prepare($select);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                $course_data_list = [];
+                if ($res) {
+                    if($row = $res->fetch_assoc()) {
+                        $course_data_list = isJson_report($row['valued']) ? json_decode($row['valued'], true) : [];
+                    }
+                }
+
+                // loop and get the course data list
+                for ($index=0; $index < count($course_data_list); $index++) { 
+                    if ($course_data_list[$index]['course_level'] == $course_level_id) {
+                        array_push($course_list, $course_data_list[$index]);
+                    }
+                }
+            }
+            if (count($course_list) > 0){
+                $data = "<div class='row mb-2'><div class='col-md-6'><input type='text' id='search_course_checkbox_edit' placeholder='Search Course...' class='form-control'></div><div class='col-md-6'><label for='select_all_courses' class='form-control-label text-bold'><b>Select All</b> <input type='checkbox' id='select_all_courses_edit'></label></div></div><div class ='classlist form-control' style='height:200px;overflow:auto;' name='selectsubs_edit' id='selectsubs_edit'>";
+                $arr = $course_list;
+                for ($i=0; $i < count($arr); $i++) {
+                    $data.="<div class = 'checkboxholder w-100' style='margin:10px 0;padding:0px 0px;' id='checkbox_holder_edit_".$arr[$i]['id']."'>";
+                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_edit_unit' id='search_courses_edit_unit_".$arr[$i]['id']."' for='course_name_edit_".$arr[$i]['id']."'>".($i+1).". ".$arr[$i]['course_name']."</label>";
+                    $data.="<input class='subjectclass_edit' type='checkbox' name='course_name_edit_".$arr[$i]['id']."' value='".$arr[$i]['id']."' id='course_name_edit_".$arr[$i]['id']."'>";
+                    $data.="</div>";
+                }
+                $data.="</div>";
+                echo $data;
+            }else {
+                echo "<p class='red_notice'>No classes are available<br>Contact your administrator to rectify that!</p>";
+            }
+            $stmt->close();
+            $conn2->close();
+        }elseif (isset($_GET['showsubjected'])) {
             $select = "SELECT `valued` FROM `settings` WHERE `sett` = 'class'";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
@@ -140,33 +216,15 @@
             $stmt->close();
             $conn2->close();
             
-        } elseif (isset($_GET['addsubject'])) {
-            $subjectname = $_GET['subjectname'];
-            $present = isPresent($subjectname,$conn2);
-            if ($present != true) {
-                $subjmax = $_GET['subjectmax'];
-                $classes = $_GET['claslist'];
-                $sundids = $_GET['subids'];
-                $grades_lists = $_GET['grades_lists'];
-                $subject_display_name = $_GET['subject_display_name'];
-                $subactive = 1;
-                $insert = "insert INTO `table_subject` (`subject_name`,`max_marks`,`classes_taught`,`sub_activated`,`timetable_id`,`grading`,`display_name`) VALUES (?,?,?,?,?,?,?)";
-                $stmt = $conn2->prepare($insert);
-                $stmt->bind_param("sssssss",$subjectname,$subjmax,$classes,$subactive,$sundids,$grades_lists,$subject_display_name);
-                if($stmt->execute()){
-                    echo "<p style='color:green;'>Subject inserted successfully!</p>";
-                }else {
-                    echo "<p style='color:red;'>Error occured during insertion!</p>";
-                }
-            }else {
-                echo "<p style='color:red;'>The subject name is already used!<br>Try using another name.</p>";
-            }
-        }elseif (isset($_GET['findname'])) {
-            $select = "SELECT * FROM `table_subject` WHERE `subject_name` = ?";
+        } elseif (isset($_GET['findname'])) {
             $name = $_GET['name'];
-            $present = isPresent($name,$conn2);
+            $present = isset($_GET['unit_code']) ? isPresent("", $name, $conn2) : isPresent($name, "", $conn2);
             if ($present == true) {
-                echo "<p style='color:red;'>Subject name is present!</p>";
+                if(isset($_GET['unit_code'])){
+                    echo "<p style='color:red;'>Unit code  is present!</p>";
+                }else{
+                    echo "<p style='color:red;'>Unit name is present!</p>";
+                }
             }else {
                 echo "<p></p>";
             }
@@ -224,7 +282,7 @@
             $data = "";
             if ($result) {
                 if ($row = $result->fetch_assoc()) {
-                    $data.=$row['subject_id']."&".$row['subject_name']."&".$row['max_marks']."&".$row['classes_taught']."&".$row['sub_activated']."&".$row['timetable_id']."&".$row['grading']."&".$row['display_name'];
+                    $data = json_encode($row);
                 }
             }
             if (strlen($data)>0) {
@@ -232,79 +290,13 @@
             }else {
                 echo "null";
             }
-        }
-        elseif (isset($_GET['updatesubjects'])) {
-            $subname = $_GET['subname'];
-            $ttid = $_GET['subttid'];
-            $maxmark = $_GET['submaxmarks'];
-            $classtaught = $_GET['classtaught'];
-            $subid = $_GET['subjeid'];
-            $subject_grade = $_GET['subject_grade'];
-            $sub_display_name = $_GET['sub_display_name'];
-            $update = "UPDATE `table_subject` SET `subject_name` = ?,`timetable_id` = ?,`max_marks` = ?, `classes_taught` = ?, `grading` = ?,`display_name` = ? WHERE `subject_id` =?";
-            $stmt= $conn2->prepare($update);
-            $stmt->bind_param("sssssss",$subname,$ttid,$maxmark,$classtaught,$subject_grade,$sub_display_name,$subid);
-            if($stmt->execute()){
-                //remove the missing classes that are present on the teacher id column
-                $select = "SELECT `teachers_id` FROM `table_subject` WHERE subject_id = ?";
-                $stmt = $conn2->prepare($select);
-                $stmt->bind_param("i",$subid);
-                $stmt->execute();
-                $res = $stmt->get_result();
-                $teachid = "";
-                if ($res) {
-                    if ($row = $res->fetch_assoc()) {
-                        $teachid = $row['teachers_id'];
-                    }
-                }
-                if (strlen($teachid)>0) {
-                    $datasplit = explode(",",$classtaught);
-                    $trsplit = explode("|",$teachid);
-                    for ($d=0; $d < count($trsplit); $d++) { 
-                        $clasd = explode( ":", substr($trsplit[$d],1,(strlen($trsplit[$d]) - 2)));
-                        $present = 0;
-                        for ($i=0; $i < count($datasplit); $i++) { 
-                            $newclasslist = $datasplit[$i];
-                            if ($clasd[1] == $newclasslist) {
-                                $present = 1;
-                            }
-                        }
-                        if ($present == 0) {
-                            unset($trsplit[$d]);
-                        }
-                    }
-                    $trsplit = array_values($trsplit);
-                    $trids = "";
-                    for ($tts=0; $tts < count($trsplit); $tts++) { 
-                        if ($tts+1 == count($trsplit)) {
-                            $trids.=$trsplit[$tts];
-                        }else{
-                            $trids.=$trsplit[$tts]."|";
-                        }
-                    }
-                    //update the classes with the teacher ids
-                    $update = "UPDATE `table_subject` set `teachers_id` = ? WHERE `subject_id` = ?";
-                    $stmt = $conn2->prepare($update);
-                    $stmt->bind_param("ss",$trids,$subid);
-                    if($stmt->execute()){
-                        echo "<p style='color:green;'>Subject information updated successfully!</p>";
-                    }else{
-                        echo "<p style='color:red;'>Ann error occured!<br>Try again later!</p>";
-                    }
-                }elseif ($res) {
-                    echo "<p style='color:green;'>Subject information updated successfully!</p>";
-                }
-            }else {
-                echo "<p style='color:red;'>An error occured during updating</p>";
-            }
-
         }elseif (isset($_GET['findsubjects'])) {
             $select = "SELECT * FROM `table_subject`";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $tableinformation = "<div class='information' id ='information'><h6 style='text-align:center;font-size:17px;font-weight:500;'><u>Subjects table</u></h6><p id='pleasewait3' style='color:green;text-align:center;'>Preparing please wait before viewing!</p><div class='tableme'><table class='table'><tr><th>No</th><th>Subject name</th><th>Display Name</th><th>TT Id</th><th>Maximum marks</th><th>Classes taught</th><th>Options</th></tr>";
+                $tableinformation = "<div class='information' id ='information'><h6 style='text-align:center;font-size:17px;font-weight:500;'><u>Course Units</u></h6><p id='pleasewait3' style='color:green;text-align:center;'>Preparing please wait before viewing!</p><div class='tableme'><table class='table' id='unit_list_table'><thead><tr><th>No</th><th>Unit name</th><th>Display Name</th><th>TT Id</th><th>Maximum marks</th><th>Courses Linked</th><th>Options</th></tr></thead><tbody>";
                 $xs =0;
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
@@ -312,9 +304,9 @@
                     if (strlen(trim($ttsd))<1) {
                         $ttsd = "N/A";
                     }
-                    $tableinformation.="<tr><td>".$xs."</td><td>".ucwords(strtolower($row['subject_name']))."</td><td>".(strlen(trim($row['display_name'])) > 0 ? trim($row['display_name']):"<span class='text-danger'>Not Set</span>")."</td><td>".ucwords(strtolower($ttsd))."</td><td>".$row['max_marks']."</td><td>".ucwords(strtolower($row['classes_taught']))."</td><td><span style='font-size:12px;;margin:0 auto;' class ='viewsubj link' value='".$row['subject_id']."' id='class".$row['subject_id']."'><i class='fa fa-pen'></i> Edit</span></td></tr>";
+                    $tableinformation.="<tr><td>".$xs."</td><td>".$row['subject_name']."</td><td>".(strlen(trim($row['display_name'])) > 0 ? trim($row['display_name']):"<span class='text-danger'>Not Set</span>")."</td><td>".$ttsd."</td><td>".$row['max_marks']."</td><td>".(isJson_report($row['classes_taught']) ? count(json_decode($row['classes_taught']))." Courses" : "No Courses Set")."</td><td><span style='font-size:12px;;margin:0 auto;' class ='viewsubj link' value='".$row['subject_id']."' id='class".$row['subject_id']."'><i class='fa fa-pen'></i> Edit</span></td></tr>";
                 }
-                $tableinformation.="</table></div></div>";
+                $tableinformation.="</tbody></table></div></div>";
                 if ($xs>0) {
                     echo $tableinformation;   
                 }else {
@@ -3271,8 +3263,9 @@
             }
         }
     }elseif ($_SERVER['REQUEST_METHOD'] == "POST") {
+        include("../../connections/conn1.php");
+        include("../../connections/conn2.php");
         if (isset($_POST['new_tt_data'])) {
-            include("../../connections/conn1.php");
             $new_tt_data = $_POST['new_tt_data'];
             if (strlen($new_tt_data) > 0) {
                 $new_tt_data = json_decode($new_tt_data);
@@ -3373,8 +3366,6 @@
                 echo "<p class='text-danger'>We cannot save the timetable at the moment because of lack of enough information accompanied with it.</p>";
             }
         }elseif (isset($_POST['add_another_user'])) {
-            include("../../connections/conn1.php");
-            include("../../connections/conn2.php");
             $select = "SELECT * FROM `settings` WHERE `sett` = 'user_roles'";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
@@ -3426,8 +3417,6 @@
             $log_text = "Role \"".ucwords(strtolower($role_name))."\" has been added successfully!";
             log_academic($log_text);
         }elseif (isset($_POST['edit_another_user'])) {
-            include("../../connections/conn1.php");
-            include("../../connections/conn2.php");
             $role_name = $_POST['role_name'];
             $role_values = $_POST['role_values'];
             $update = "UPDATE `settings` set `valued` = ? WHERE `sett` = 'user_roles'";
@@ -3453,8 +3442,6 @@
                 echo "<p class='text-danger'>An error has occured during update</p>";
             }
         }elseif (isset($_POST['delete_roles'])) {
-            include("../../connections/conn1.php");
-            include("../../connections/conn2.php");
             $delete_roles = $_POST['delete_roles'];
             $schcodes = $_SESSION['schcode'];
             $select = "SELECT * FROM `user_tbl` WHERE `auth` = ? AND `school_code` = ?";
@@ -3482,6 +3469,92 @@
             }else{
                 echo "<p class='text-danger'>Cannot delete role because one or more users in your school is assigned the role!</p>";
             }
+        }elseif (isset($_POST['addsubject'])) {
+            $unit_name = $_POST['unit_name'];
+            $unit_code = $_POST['unit_code'];
+            $present = isPresent($unit_name, $unit_code,$conn2);
+            if (!$present) {
+                $subject_max_marks = $_POST['subject_max_marks'];
+                $course_list = $_POST['course_list'];
+                $grades_lists = $_POST['grades_lists'];
+                $subject_display_name = $_POST['subject_display_name'];
+                $subactive = 1;
+                $insert = "insert INTO `table_subject` (`subject_name`,`max_marks`,`classes_taught`,`sub_activated`,`timetable_id`,`grading`,`display_name`) VALUES (?,?,?,?,?,?,?)";
+                $stmt = $conn2->prepare($insert);
+                $stmt->bind_param("sssssss",$unit_name,$subject_max_marks,$course_list,$subactive,$unit_code,$grades_lists,$subject_display_name);
+                if($stmt->execute()){
+                    echo "<p style='color:green;'>Unit added successfully!</p>";
+                }else {
+                    echo "<p style='color:red;' id='error_adding_unit'>Error occured during processing<br> Try again!</p>";
+                }
+            }else {
+                echo "<p style='color:red;' id='error_adding_unit'>The subject name or the unit code is should be unique!</p>";
+            }
+        }elseif (isset($_POST['updatesubjects'])) {
+            $unit_name = $_POST['unit_name'];
+            $unit_code = $_POST['unit_code'];
+            $unit_max_marks = $_POST['unit_max_marks'];
+            $course_list = $_POST['course_list'];
+            $unit_id = $_POST['unit_id'];
+            $unit_grades = $_POST['unit_grades'];
+            $unit_display_name = $_POST['unit_display_name'];
+            $update = "UPDATE table_subject SET subject_name = ?, display_name = ?, timetable_id = ?, max_marks = ?, classes_taught = ?, grading = ? WHERE subject_id = ?";
+            $stmt= $conn2->prepare($update);
+            $stmt->bind_param("sssssss",$unit_name,$unit_display_name,$unit_code,$unit_max_marks,$course_list,$unit_grades,$unit_id);
+            if($stmt->execute()){
+                //remove the missing classes that are present on the teacher id column
+                $select = "SELECT `teachers_id` FROM `table_subject` WHERE subject_id = ?";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("i",$subid);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                $teachid = "";
+                if ($res) {
+                    if ($row = $res->fetch_assoc()) {
+                        $teachid = $row['teachers_id'];
+                    }
+                }
+                if (strlen($teachid)>0) {
+                    $datasplit = explode(",",$classtaught);
+                    $trsplit = explode("|",$teachid);
+                    for ($d=0; $d < count($trsplit); $d++) { 
+                        $clasd = explode( ":", substr($trsplit[$d],1,(strlen($trsplit[$d]) - 2)));
+                        $present = 0;
+                        for ($i=0; $i < count($datasplit); $i++) { 
+                            $newclasslist = $datasplit[$i];
+                            if ($clasd[1] == $newclasslist) {
+                                $present = 1;
+                            }
+                        }
+                        if ($present == 0) {
+                            unset($trsplit[$d]);
+                        }
+                    }
+                    $trsplit = array_values($trsplit);
+                    $trids = "";
+                    for ($tts=0; $tts < count($trsplit); $tts++) { 
+                        if ($tts+1 == count($trsplit)) {
+                            $trids.=$trsplit[$tts];
+                        }else{
+                            $trids.=$trsplit[$tts]."|";
+                        }
+                    }
+                    //update the classes with the teacher ids
+                    $update = "UPDATE `table_subject` set `teachers_id` = ? WHERE `subject_id` = ?";
+                    $stmt = $conn2->prepare($update);
+                    $stmt->bind_param("ss",$trids,$subid);
+                    if($stmt->execute()){
+                        echo "<p style='color:green;'>Subject information updated successfully!</p>";
+                    }else{
+                        echo "<p style='color:red;'>Ann error occured!<br>Try again later!</p>";
+                    }
+                }elseif ($res) {
+                    echo "<p style='color:green;'>Subject information updated successfully!</p>";
+                }
+            }else {
+                echo "<p style='color:red;'>An error occured during updating</p>";
+            }
+
         }
     }
 
@@ -3842,10 +3915,10 @@
         
     }
 
-    function isPresent($subjectname, $conn2){
-        $select = "SELECT * FROM `table_subject` WHERE `subject_name` = ?";
+    function isPresent($subjectname, $unit_code, $conn2){
+        $select = "SELECT * FROM `table_subject` WHERE `subject_name` = ? OR `timetable_id` = ?";
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("s",$subjectname);
+        $stmt->bind_param("ss",$subjectname, $unit_code);
         $stmt->execute();
         $stmt->store_result();
         $rnums = $stmt->num_rows;

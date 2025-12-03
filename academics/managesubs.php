@@ -17,13 +17,13 @@
                 <p id='subinform'></p>
             </div>
             <div class="body4">
-                <label class="form-control-label" for="subjects_option">Start by either <br></label>
-                <select class="form-control" name="subjects_option" id="subjects_option">
+                <label class="form-control-label d-none" for="subjects_option">Start by either <br></label>
+                <select class="form-control d-none" name="subjects_option" id="subjects_option">
                     <option value="" hidden>Select an option</option>
                     <option value="search_subjects">Searching the Units</option>
                     <option value="display_subjects">Display all Units</option>
                 </select>
-                <div class="boddy form-group">
+                <div class="boddy form-group d-none">
                     <div class="conts hide" id='seachsub'>
                         <div class="conts">
                             <label  class="form-control-label"  for="serchby">Search by: <br></label>
@@ -60,27 +60,32 @@
                             <p  class="funga" id="delete-subject" ><i class="fa fa-trash-alt"></i></p>
                         </div>
                         <div class="conts">
-                            <label for=""><b>Subject id</b>: <span id='subids'></span> <br></label>
+                            <label for=""><b>Subject id</b>: <span id='unit_id_edit'></span> <br></label>
                         </div>
                         <div class="conts">
-                            <label  class="form-control-label"  for="subnam"><b>Subject name: </b><br></label>
-                            <input class="form-control"  type="text" name="subnam" id="subnam" placeholder = 'Subject name'>
+                            <label  class="form-control-label"  for="subject_name_edit"><b>Subject name: </b><br></label>
+                            <input class="form-control w-100"  type="text" name="subject_name_edit" id="subject_name_edit" placeholder = 'Subject name'>
                         </div>
                         <div class="conts">
-                            <label  class="form-control-label"  for="sub_display_name"><b>Subject Display Name: </b><br></label>
-                            <input class="form-control"  type="text" name="sub_display_name" id="sub_display_name" placeholder = 'Subject name'>
+                            <label  class="form-control-label"  for="sub_display_name_edit"><b>Subject Display Name: </b><br></label>
+                            <input class="form-control w-100"  type="text" name="sub_display_name_edit" id="sub_display_name_edit" placeholder = 'Subject name'>
                         </div>
                         <div class="conts">
-                            <label class="form-control-label" for="subidss"><b>Enter Subject timetable refferee: </b><small>Eg. 'KSW' for 'Kiswahili' this name will appear on the timetable</small> <br></label>
-                            <input  class="form-control" type="text" name="subidss" id="subidss" placeholder = 'Subject IDs'>
+                            <label class="form-control-label" for="unit_code_edit"><b>Enter Subject timetable refferee: </b><small>Eg. 'KSW' for 'Kiswahili' this name will appear on the timetable</small> <br></label>
+                            <input  class="form-control w-100" type="text" name="unit_code_edit" id="unit_code_edit" placeholder = 'Subject IDs'>
                         </div>
                         <div class="conts">
-                            <label class="form-control-label" for="submarksd"><b>Subject Maximum marks: </b><br></label>
-                            <input class="form-control" type="number" name="submarksd" id="submarksd" placeholder = 'Subject maximum marks'>
+                            <label class="form-control-label" for="subject_max_marks_edit"><b>Subject Maximum marks: </b><br></label>
+                            <input class="form-control w-100" type="number" name="subject_max_marks_edit" id="subject_max_marks_edit" placeholder = 'Subject maximum marks'>
                         </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="selcub"><b>Select Classes taught: </b><br></label>
-                            <p id='classeslist'><img src="images/load2.gif" alt="loading"></p>
+                        <div class="conts my-3">
+                            <input type="hidden" id="hold_course_selected_edit" value="[]">
+                            <label class="form-control-label" for="select_course_level_unit_edit"><b>Select Course Level: </b><br></label>
+                            <div id="select_course_level_list_holder_edit"></div>
+                        </div>
+                        <div class="conts my-3" style='margin:10px 0 0 0'>
+                            <label class="form-control-label" for="selectsubs_edit"><b>Select Course: <small id="selected_course_counter">Selected Course : 1</small> <span class="hide" id="course_list_loader_edit"><img src="images/load2.gif" alt="loading"></span></b><br></label>
+                            <p id='course_list_unit_holder_edit'><span class="border border-success my-2 rounded text-success p-1">Course lists will appear here!</span></p>                            
                         </div>
                         <hr>
                         <div class="conts">
@@ -88,9 +93,8 @@
                             <label for="grading_lists" class="form-control-label"><b>Grading Lists</b><span id="edit_grading_subject" class="block_btn mx-2" style="padding:2px;border-radius: 3px;"><small>Edit Grades</small></span></label>
                             <p id="my_grade_lists_subject"></p>
                         </div>
-                        <div class="btns" >
+                        <div class="btns">
                             <button type='button' id='updatesubs'>Update</button>
-                            <!-- <button type='button' id='deletesubs' >Delete</button> -->
                             <button type='button' id='cancelsubs'><i class="fa fa-undo-alt"></i> Back</button>
                         </div>
                         <div class="conts">

@@ -23,31 +23,31 @@
                 <div class="body3">
                     <form class="left" id="formpay">
                         <div class="conts my-3">
-                            <label class="form-control-label" for="subname"><b>Enter Unit Name: </b><small>Eg. 'Communication Skills Diploma'</small> <span class="text-danger">(Unique only)</span> <br></label>
+                            <label class="form-control-label" for="unit_unique_name"><b>Enter Unit Name: </b><small>Eg. 'Communication Skills Diploma'</small> <span class="text-danger">(Unique only)</span> <br></label>
                             <p id='subnameerr'></p>
-                            <input class="form-control w-100" style="margin-left: 0px !important;" type="text" name="subname" id="subname" placeholder = 'eg. Communication Skills Diploma'>
+                            <input class="form-control w-100" style="margin-left: 0px !important;" type="text" name="unit_unique_name" id="unit_unique_name" placeholder = 'eg. Communication Skills Diploma'>
                         </div>
                         <div class="conts my-3">
                             <label class="form-control-label" for="subject_display_name"><b>Enter Unit Display Name: </b> eg 'Communication Skills'<br></label>
                             <input  class="form-control w-100" style="margin-left: 0px !important;" type="text" name="Course Units display name" id="subject_display_name" placeholder = 'eg. Communication Skills'>
                         </div>
                         <div class="conts my-3">
-                            <label  class="form-control-label" for="sundids"><b>Enter Unit Timetable Name: </b><small>Eg. 'COM001' for 'Communication Skills'</small> <br></label>
-                            <input class="form-control w-100" style="margin-left: 0px !important;"  type="text" name="sundids" id="sundids" placeholder = 'e.g, COM001'>
+                            <label  class="form-control-label" for="unit_code"><b>Enter Unit Code: </b><small>Eg. 'COM001' for 'Communication Skills'</small> <br></label>
+                            <p id='unit_code_error'></p>
+                            <input class="form-control w-100" style="margin-left: 0px !important;"  type="text" name="unit_code" id="unit_code" placeholder = 'e.g, COM001'>
                         </div>
                         <div class="conts my-3">
-                            <label class="form-control-label" for="submarks"><b>Enter Unit Maximum Marks: </b><br></label>
-                            <input  class="form-control w-100" style="margin-left: 0px !important;" type="number" max=100 min=0 name="submarks" id="submarks" placeholder = 'Unit Marks'>
+                            <label class="form-control-label" for="subject_max_marks"><b>Enter Unit Maximum Marks: </b><br></label>
+                            <input  class="form-control w-100" style="margin-left: 0px !important;" type="number" max=100 min=0 name="subject_max_marks" id="subject_max_marks" placeholder = 'Unit Marks'>
                         </div>
                         <div class="conts my-3">
-                            <label class="form-control-label" for="select_course_level"><b>Select Course Level: </b><br></label>
-                            <select name="select_course_level w-100" style="margin-left: 0px !important;" id="select_course_level" class="form-control">
-                                <option value="">Select Course Level</option>
-                            </select>
+                            <label class="form-control-label" for="select_course_level_unit"><b>Select Course Level: </b><br></label>
+                            <div id="select_course_level_list_holder"></div>
                         </div>
                         <div class="conts my-3" style='margin:10px 0 0 0'>
-                            <label class="form-control-label" for="selectsubs"><b>Select Course: </b><br></label>
-                            <p id='subjectlist'><img src="images/load2.gif" alt="loading"></p>                            
+                            <input type="hidden" id="hold_course_selected" value="[]">
+                            <label class="form-control-label" for="selectsubs"><b>Select Course: <span id="course_selected_count"></span> <span class="hide" id="course_list_loader"><img src="images/load2.gif" alt="loading"></span></b><br></label>
+                            <p id='course_list_unit_holder'><span class="border border-success my-2 rounded text-success p-1">Course lists will appear here!</span></p>                            
                         </div>
                         <div class="cont my-3">
                             <label for="set_grades" class="form-control-label"><b>Set Grades</b></label><br>

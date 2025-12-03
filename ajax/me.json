@@ -1,27 +1,54 @@
 [
     {
-        "adm_no": "NC-2025-001",
-        "time": "14:47:03",
-        "date": "2025-10-08"
+        "id": "1",
+        "course_name": "FASHION AND DESIGN",
+        "course_levels": "[]",
+        "department": "FS-001",
+        "course_level": "9",
+        "no_of_terms": "6",
+        "fulltime_fees": "9500",
+        "weekend_fees": "5000",
+        "evening_fees": "7500",
+        "term_duration": "6",
+        "duration_intervals": "months"
     },
     {
-        "adm_no": "NC-2025-007",
-        "time": "14:47:03",
-        "date": "2025-10-08"
+        "id": 2,
+        "course_name": "FRUIT MAKER",
+        "course_levels": "[]",
+        "department": "DAT-001",
+        "course_level": "9",
+        "no_of_terms": "6",
+        "fulltime_fees": "5000",
+        "evening_fees": "4000",
+        "weekend_fees": "3000",
+        "term_duration": "1",
+        "duration_intervals": "months"
     },
     {
-        "adm_no": "NC-2025-008",
-        "time": "14:47:03",
-        "date": "2025-10-08"
+        "id": 3,
+        "course_name": "FASHION AND DESIGN II",
+        "course_levels": "[]",
+        "department": "DAT-001",
+        "course_level": "9",
+        "no_of_terms": "6",
+        "fulltime_fees": "5000",
+        "evening_fees": "0",
+        "weekend_fees": "0",
+        "term_duration": "1",
+        "duration_intervals": "months"
     },
     {
-        "adm_no": "NC-2025-009",
-        "time": "14:47:03",
-        "date": "2025-10-08"
-    },
-    {
-        "adm_no": "NC-2025-014",
-        "time": "14:47:03",
-        "date": "2025-10-08"
+        "id": 4,
+        "course_name": "Fashion & Design",
+        "course_levels": "[]",
+        "department": "DAT-001",
+        "course_level": "10",
+        "no_of_terms": "6",
+        "fulltime_fees": "7500",
+        "evening_fees": "6500",
+        "weekend_fees": "5500",
+        "term_duration": "1",
+        "duration_intervals": "months"
     }
 ]
