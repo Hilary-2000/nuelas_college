@@ -4,16 +4,17 @@
     </div>
     <div class="admWindow ">
         <div class="top1">
-            <p>Manage teacher and subjects</p>
+            <p>Assign Teacher Units</p>
         </div>
         <div class="middle1">
             <div class="conts">
                 <p><strong>Information</strong></p>
-                <p>- At this window you are previledged to alter the subject each teacher teaches.</p>
-                <p>- When altering the subject taught by the respective teacher, previledges the teacher has over the subject can be removed or assigned to them. </p>
+                <p>- At this window you will be able to assign the lecturers the units they teach.</p>
+                <p>- Once a unit has been assigned they will be able to manage the unit scores for each exam.</p>
+                <p>- Additionally, they will also be scheduled appropriately on the timetable based on the units you assign to them.</p>
             </div>
             <div class="body4">
-                <div class="row">
+                <div class="row d-none">
                     <div class="col-md-9">
                         <label for="option_ed form-control-label">Start of by either of the following option : <br></label>
                         <select name="option_ed" class="form-control" id="option_ed">
@@ -55,22 +56,32 @@
                 <div class="boddy1">
                     <div class="boddy3 hide" id='editsubinfor'>
                         <div class="conts">
-                            <h6 style='text-align:center;'>Edit Teacher subjects</h6>
+                            <h6 style='text-align:center;'>Assign Teacher Units</h6>
                         </div>
                         <p class='hide' id='tids'></p>
-                        <div class="conts">
-                            <label for="teachname" class="form-control-label" >Teacher name: <br></label>
+                        <p id="error_holder_unit_assignment"></p>
+                        <div class="conts my-2">
+                            <input type="hidden" name="" id="teacher_id_unit_assignment">
+                            <label for="teachname" class="form-control-label" ><b>Teacher name:</b> <br></label>
                             <input type="text"  class="form-control"  name="teachname" id="teachname" readonly placeholder = "Teacher name">
                         </div>
-                        <div class="conts">
-                            <label  class="form-control-label" for="">Subjects Taught: <br></label>
+                        <div class="conts my-2">
+                            <label class="form-control-label" for="academic_super_admin"><b>Academic Super Admin: <span class="hide"  id='academic_super_admin_spinner'><i class="fa fa-spinner fa-spin"></i></span> </b></label>
+                            <select class="form-control" name="academic_super_admin" id="academic_super_admin">
+                                <option value="" hidden>Select..</option>
+                                <option value="1">Activated</option>
+                                <option value="0">Deactivated</option>
+                            </select>
+                        </div>
+                        <div class="conts my-2">
+                            <label  class="form-control-label" for=""><b>Units Taught:</b> <br></label>
                             <div class="conts" id = 'outputsubs'>
-                                <p style='font-size:20px;margin-left:10px;color:rgb(165, 42, 42);'>No subjects loaded yet</p>
+                                <p style='font-size:20px;margin-left:10px;color:rgb(165, 42, 42);'>No units loaded yet</p>
                             </div>
                         </div>
-                        <div class="conts">
+                        <div class="conts w-100">
                             <button type='button' id ='backtosubs' >Back</button>
-                            <button type='button' id='addsubsbutn' >Add subject</button>
+                            <button type='button' id='addsubsbutn' >Assign More Units</button>
                         </div>
                     </div>
                 </div>

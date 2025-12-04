@@ -1488,18 +1488,27 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id="addteachsubject">
-            <div class="changesubwindow add_subjects animate">
+            <div class="changesubwindow editexams animate">
                 <div class="conts">
                     <p class="funga" id="funga1">&times</p>
                     <h6>Add subject</h6>
                 </div>
                 <div class="conts" id='selectsub1'>
                     <div class="conts">
-                        <label class="form-control-label">Teacher id: <span id="trid12">1</span> <br></label>
+                        <label class="form-control-label d-none">Teacher id: <span id="trid12">1</span> <br></label>
                         <label class="form-control-label">Select a subject below:</label>
                     </div>
                     <div class="conts">
-                        <p>Subject list:</p>
+                        <label for="course_level_unit_assignment" class="form-control-label">Course Level</label>
+                        <div id="course_level_unit_assignment_holder"><span class="border border-success p-1 rounded text-success">Couse Level will appear here!</span></div>
+                    </div>
+                    <div class="conts">
+                        <span class="hide" id="course_list_holder_unit_assignment">[]</span>
+                        <label for="course_list_unit_assignment" class="form-control-label">Course List <small id="show_selected_units"></small></label>
+                        <div id="course_list_unit_assignment_holder"><span class="border border-success p-1 rounded text-success">Select course level and course list will appear here!</span></div>
+                    </div>
+                    <div class="conts">
+                        <p>Unit list:</p>
                         <p id='subslist'></p>
                         <!--<div class ='classlist2' style='height:100px;overflow:auto;' name='selectsubs' id='selectsubs'>
                             <div class = 'checkboxholder' style='margin:10px 0;padding:0px 0px;'>
@@ -1537,11 +1546,11 @@ function checkPresnt($array, $string){
                         <p style='color:green;font-size:14px;'>Remember to save. <br> If you go back no data will be saved</p>
                     </div>
                 </div>
-                <div class="conts">
+                <div class="conts mt-2">
                     <p id='geterrors12'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" class="hide" id='saves1'>Save</button>
+                    <button type="button" id='saves1'>Save</button>
                     <button type="button" id="close2">Close</button>
                 </div>
             </div>
@@ -2025,6 +2034,18 @@ function checkPresnt($array, $string){
                         <button type="button" class="" id="save_marks_change">Save</button>
                         <button type="button" id="close_change_marks2">Close</button>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!--confirm delete-->
+        <div class="confirmpaymentwindow hide" id='confirm_delete_assignment'>
+            <div class="confirmpayment animate">
+                <h6>Confirm Removal</h6>
+                <p>Are you sure you want to remove this unit from the list?</p>
+                <input type="hidden" name="" id="assignment_id_holder">
+                <div class="btns">
+                    <button type='button' id='confirm_yes_remove_assignment'>Yes</button>
+                    <button type='button' id='confirm_no_remove_assignment'>No</button>
                 </div>
             </div>
         </div>

@@ -291,12 +291,21 @@
                 echo "null";
             }
         }elseif (isset($_GET['findsubjects'])) {
-            $select = "SELECT * FROM `table_subject`";
+            $course_level = isset($_GET['course_level']);
+            $course_id = isset($_GET['course_id']);
+            $where_clause = "";
+            if (isset($_GET['course_level']) && !empty($_GET['course_level'])) {
+                $where_clause = "WHERE classes_taught LIKE '%{\"course_level\":\"".$_GET['course_level']."\",%'";
+                if (isset($_GET['course_id']) && !empty($_GET['course_id'])) {
+                    $where_clause = "WHERE classes_taught LIKE '%{\"course_level\":\"".$_GET['course_level']."\",\"course_id\":\"".$_GET['course_id']."\"}%'";
+                }
+            }
+            $select = "SELECT * FROM `table_subject` $where_clause";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $tableinformation = "<div class='information' id ='information'><h6 style='text-align:center;font-size:17px;font-weight:500;'><u>Course Units</u></h6><p id='pleasewait3' style='color:green;text-align:center;'>Preparing please wait before viewing!</p><div class='tableme'><table class='table' id='unit_list_table'><thead><tr><th>No</th><th>Unit name</th><th>Display Name</th><th>TT Id</th><th>Maximum marks</th><th>Courses Linked</th><th>Options</th></tr></thead><tbody>";
+                $tableinformation = "<div class='information' id ='information'><h6 style='text-align:center;font-size:17px;font-weight:500;'><u>Course Units</u></h6><p id='pleasewait3' style='color:green;text-align:center;'>Preparing please wait before viewing!</p><div class='tableme'><table class='table' id='unit_list_table'><thead><tr><th>No</th><th>Unit name</th><th>Display Name</th><th>Unit Code</th><th>Maximum marks</th><th>Courses Linked</th><th>Options</th></tr></thead><tbody>";
                 $xs =0;
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
@@ -307,11 +316,7 @@
                     $tableinformation.="<tr><td>".$xs."</td><td>".$row['subject_name']."</td><td>".(strlen(trim($row['display_name'])) > 0 ? trim($row['display_name']):"<span class='text-danger'>Not Set</span>")."</td><td>".$ttsd."</td><td>".$row['max_marks']."</td><td>".(isJson_report($row['classes_taught']) ? count(json_decode($row['classes_taught']))." Courses" : "No Courses Set")."</td><td><span style='font-size:12px;;margin:0 auto;' class ='viewsubj link' value='".$row['subject_id']."' id='class".$row['subject_id']."'><i class='fa fa-pen'></i> Edit</span></td></tr>";
                 }
                 $tableinformation.="</tbody></table></div></div>";
-                if ($xs>0) {
-                    echo $tableinformation;   
-                }else {
-                    echo "<p style='color:red;margin-top:10px;text-align:center;font-size:12px;font-weight:600;'>No results!</p>";
-                }
+                echo $tableinformation;
             }
         }elseif (isset($_GET['seachby'])) {
             $searchby = $_GET['seachby'];
@@ -342,14 +347,14 @@
             if ($results) {
                 //create a table
                 $xs = 0;
-                $tableinformation="<h6 class='text-center'><b>Teachers And Subjects</b></h6><div class='tableme' ><table class='table'><tr><th>No</th><th>Fullnames</th><th>Subject Taught</th><th>Option</th></tr>";
+                $tableinformation="<h6 class='text-center'><b>Unit Assignment Table</b></h6><div class='tableme' ><table class='table' id='unit_teacher_table'><thead><tr><th>No</th><th>Fullnames</th><th>Units Taught</th><th>Option</th></tr></thead><tbody>";
                 while ($row = $results->fetch_assoc()) {
                     $xs++;
                     $trid = trim($row['user_id']);
                     $subjectlist = getSubjectsTaught($trid,$conn2);
-                    $tableinformation.="<tr><td>".$xs."</td><td>".ucwords(strtolower($row['fullname']))."</td><td>".$subjectlist."</td><td>"."<span class='setSubclass link' id='sub".$row['user_id']."' ><i class ='fa fa-pen'></i> Edit </span>"."</td></tr>";
+                    $tableinformation.="<tr><td>".$xs."</td><td id='tr_fullname_".$row['user_id']."'>".ucwords(strtolower($row['fullname']))."</td><td>".$subjectlist." Units</td><td>"."<span class='setSubclass link' id='sub".$row['user_id']."' ><i class='fas fa-chalkboard-teacher'></i> Assign</span>"."</td></tr>";
                 }
-                $tableinformation.="</table></div>";
+                $tableinformation.="</tbody></table></div>";
                 if ($xs>0) {
                     echo $tableinformation;
                 }else {
@@ -359,51 +364,58 @@
             $stmt->close();
             $conn->close();
         }elseif (isset($_GET['getbyid'])) {
-            $idnumber = substr($_GET['getbyid'],3);
-            $select = "SELECT `subject_id`,`subject_name`,`timetable_id`,`classes_taught`,`teachers_id` FROM `table_subject` WHERE `teachers_id` like ?";
-            $parse = "%(".$idnumber.":%";
-            $stmt= $conn2->prepare($select);
-            $stmt->bind_param("s",$parse);
+            $select = "SELECT valued FROM `settings` WHERE sett = 'courses'";
+            $stmt = $conn2->prepare($select);
             $stmt->execute();
-            $results = $stmt->get_result();
-            $starttext = "<p class='hide' id ='namenid'>".getNameWithId($idnumber)."</p>";
-            if($results){
-                $xd =0;
-                $classTableinfor = "<div class='tableme'><table class='table'><tr><th>Subject name</th><th>Classes Taught</th><th>Options</th></tr>";
-                while ($row=$results->fetch_assoc()) {
-                    $xd++;
-                    $madaro = "none";
-                    $classtaught = $row['teachers_id']; //returns a string in form of (trid:classtaught)|(trid:classtaught)
-                    if (strlen(trim($classtaught))>0) {
-                        $classes = explode("|",$classtaught);//split (trid:classtaught)|(trid:classtaught) into (trid:classtaught) strings
-                        $madaro = "";
-                        if (count($classes)>0) {
-                            $xsd = 0;
-                            for ($i=0; $i < count($classes); $i++) { 
-                                //check if the class is similar to what the teacher is teaching
-                                $wholeStr = explode(":",$classes[$i]);//splits this (trid:classtaught) into this (trid and this classtaught)
-                                $tris = substr($wholeStr[0],1);
-                                if ($tris == $idnumber) {
-                                    $xsd++;
-                                    $daro = substr($wholeStr[1],0,(strlen($wholeStr[1])-1));
-                                    if ($xsd==1) {
-                                        $madaro.=$daro;   
-                                    }else {
-                                        $madaro.=",".$daro;
-                                    }
-                                }
-                            }   
-                        }
-                    }
-                    $classTableinfor.="<tr><td>".$row['subject_name']."</td><td id ='classlist".$row['subject_id']."'>".$madaro."</td><td>"."<span class ='subsbtns link' id='cld".$row['subject_id']."' value='".$row['subject_id']."' ><i class='fa fa-pen'></i> Edit</span>"."</td></tr>";
-                }
-                $classTableinfor.="</table></div>";
-                if ($xd>0) {
-                    echo  $starttext."".$classTableinfor;
-                }else {
-                    echo $starttext."<p style='color:red;'>No subjects added yet</p>";
+            $result = $stmt->get_result();
+            $course_list = [];
+            if($result){
+                if ($row = $result->fetch_assoc()) {
+                    $course_list = isJson_report($row['valued']) ? json_decode($row['valued'], true) : [];
                 }
             }
+            $teacher_id = $_GET['teacher_id'];
+            $select = "SELECT teacher_unit_assignment.*, table_subject.* FROM teacher_unit_assignment LEFT JOIN table_subject ON table_subject.subject_id = teacher_unit_assignment.unit_id WHERE teacher_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s",$teacher_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<div class='tableme'><table class='table' id='staff_course_list'><thead><tr><th>No.</th><th>Unit</th><th>Level</th><th>Course</th><th>Action</th></tr></thead><tbody>";
+            if($result){
+                $index = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $course_name = "N/A";
+                    foreach ($course_list as $key => $course) {
+                        if ($course['id'] == $row['course_id']) {
+                            $course_name = ucwords(strtolower($course['course_name']));
+                            break;
+                        }
+                    }
+                    $data_to_display .= "<tr><td>".$index.".</td><td>".$row['subject_name']."</td><td>".$row['course_level_id']."</td><td>".$course_name."</td><td><span class='remove_course_unit link' id='remove_course_unit_".$row['assignment_id']."'><i class='fas fa-trash'></i> Del</span></td></tr>";
+                    $index++;
+                }
+            }
+            $teacher_details = getTeacherDetails($teacher_id);
+            $academic_su = $teacher_details != null ? $teacher_details['academic_super_user'] : "0";
+            if($teacher_details != null){
+                if($teacher_details['auth'] == "1" || $teacher_details['auth'] == "3"){
+                    $academic_su = "1";
+                }
+            }
+            $data_to_display.="</tbody></table></div>";
+            echo $data_to_display."<input type='hidden' id='teacher_academic_super_user_status' value='".$academic_su."'>";
+            return;
+        }elseif(isset($_GET['remove_assignment'])){
+            $remove_assignment = $_GET['remove_assignment'];
+            $assignment_id = $_GET['assignment_id'];
+            
+            // delete the assignment
+            $delete = "DELETE FROM teacher_unit_assignment WHERE assignment_id = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s", $assignment_id);
+            $stmt->execute();
+            
+            echo "<p class='text-success border border-success rounded p-1 my-2'>Unit removed from the teacher list!</p>";
         }elseif (isset($_GET['askClasses'])) {
             $subid = $_GET['subid'];
             $select = "SELECT `classes_taught`,`subject_name` FROM `table_subject` WHERE `subject_id` = ?";
@@ -542,91 +554,44 @@
                 }
             }
         }elseif (isset($_GET['getsubjects'])) {
-            $teacherid = $_GET['teacherid'];
-            //check the subjects the teacher is teaching
-            $vars = "%(".$teacherid.":%";
-            $select = "SELECT `subject_id` FROM `table_subject` WHERE `teachers_id` LIKE ?";
+            // course list
+            $course_level = $_GET['course_level'];
+            $course_id = $_GET['course_id'];
+
+            $select = "SELECT table_subject.*, (SELECT COUNT(*) AS 'total' FROM teacher_unit_assignment WHERE teacher_unit_assignment.unit_id = table_subject.subject_id AND teacher_unit_assignment.course_id = '".$course_id."' AND teacher_unit_assignment.course_level_id = '".$course_level."') AS 'is_used' FROM `table_subject` WHERE classes_taught LIKE '%{\"course_level\":\"".$course_level."\",\"course_id\":\"".$course_id."\"}%'";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("s",$vars);
             $stmt->execute();
-            $res = $stmt->get_result();
-            $data="";
-            //get the class and store it as array;
-            if ($res) {
-                while ($row = $res->fetch_assoc()) {
-                    $data.=$row['subject_id'].",";
-                }
-                if (strlen($data) > 0) {//if the data got from the database is atleast 1 letter long
-                    $data = substr($data,0,strlen($data)-1);
-                    //split the subjects id into array
-                    $subjectsid = explode(",",$data);
-                    //get the subjects list again so that it can be populated
-                    $select = "SELECT `subject_id`, `classes_taught`,`subject_name` FROM `table_subject` WHERE `sub_activated` = 1";
-                    $stmt = $conn2->prepare($select);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    if ($result) {
-                        $dcvx = 1;
-                        $echodata = "<div class ='classlist2' style='height:100px;overflow:auto;' name='selectsubs1' id='selectsubs1'>";
-                        $xs = 0;
-                        while ($row = $result->fetch_assoc()) {
-                            $subid = $row['subject_id'];
-                            $subjectname = $row['subject_name'];
-                            //check the if the subject is taught by the teacher
-                            $ispresent = 0;
-                            for ($dcv=0; $dcv < count($subjectsid); $dcv++) { 
-                                if (strlen($subjectsid[$dcv])>0) {
-                                    if ($subjectsid[$dcv] == $subid) {
-                                        $ispresent = 1;
-                                    }
-                                }else {
-                                    continue;
-                                }
-                            }
-                            //add the data string 
-                            if ($ispresent == 0) {//if the subject is present dont add it to the list
-                                $echodata .="<div class = 'checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                                <label style='margin-right:5px;cursor:pointer;font-size:12px;' for='subc".$subid."'>".$dcvx.".  ".$subjectname."</label>
-                                <input class='checksubjects hide' type='checkbox' value='".$subjectname."|".$subid."'  id='subc".$subid."'></div>";
-                                $xs++;
-                                $dcvx++;
-                            }
-                        }
-                        $echodata .= "</div>";
-                        if ($xs>0) {
-                            echo $echodata;
-                        }else {
-                            echo "<p style='color:green;font-size:12px;'>The teacher teaches all subjects</p>";
-                        }
-                    }
-                }else {
-                    //get the subjects list again so that it can be populated
-                    $select = "SELECT `subject_id`, `classes_taught`,`subject_name` FROM `table_subject` WHERE `sub_activated` = 1";
-                    $stmt = $conn2->prepare($select);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    if ($result) {
-                        $dcvx = 1;
-                        $echodata = "<div class ='classlist2' style='height:100px;overflow:auto;' name='selectsubs1' id='selectsubs1'>";
-                        $xs = 0;
-                        while ($row = $result->fetch_assoc()) {
-                            $subid = $row['subject_id'];
-                            $subjectname = $row['subject_name'];
-                            $echodata .="<div class = 'checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                                    <label style='margin-right:5px;cursor:pointer;font-size:12px;'  for='subc".$subid."'>".$dcvx.".  ".$subjectname."</label>
-                                    <input class='checksubjects hide' type='checkbox' value='".$subjectname."|".$subid."'  id='subc".$subid."'></div>";
-                            $xs++; 
-                            $dcvx++;                           
-                        }
-                        $echodata .= "</div>";
-                        if ($xs>0) {
-                            echo $echodata;
-                        }else {
-                            echo "<p style='color:green;font-size:12px;'>No subjects to populate</p>";
-                        }
-                    }
+            $result = $stmt->get_result();
+            $data = "<div class='row mb-2'><div class='col-md-6'><input type='text' id='search_courses_unit_assignment' placeholder='Search Unit...' class='form-control w-100'></div><div class='col-md-6'><label for='select_all_courses_unit_assign' class='form-control-label text-bold'><b>Select All</b> <input type='checkbox' id='select_all_courses_unit_assign'></label></div></div><div class ='classlist form-control' style='height:200px;overflow:auto;' name='selectsubs_unit_assignment' id='selectsubs_unit_assignment'>";
+            if ($result) {
+                $index = 0;
+                while ($row = $result->fetch_assoc()) {
+                    $data.="<div class = 'checkboxholder checkbox_holder_unit_assign w-100' style='margin:10px 0;padding:0px 0px;' id='checkbox_holder_unit_assign_".$row['subject_id']."'>";
+                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_unit_assign ' id='search_courses_unit_assign_".$row['subject_id']."' for='course_name_unit_assign_".$row['subject_id']."'>".($index+1).". ".$row['subject_name']." ".($row['is_used'] > 0 ? "<span class='text-success'>✔</span>" : "")."</label>";
+                    $data.="<input class='subjectclass_unit_assign' type='checkbox' name='course_name_unit_assign_".$row['subject_id']."' value='".$row['subject_id']."' id='course_name_unit_assign_".$row['subject_id']."'>";
+                    $data.="</div>";
+                    $index+=1;
                 }
             }
+            $data.="</div>";
+            echo $data;
+        }elseif(isset($_GET['get_my_unit_list'])){
+            $staff_id = $_GET['staff_id'];
+            $select = "SELECT * FROM `teacher_unit_assignment` WHERE teacher_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $staff_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $assignment_list = [];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $row['course_level'] = $row['course_level_id'];
+                    array_push($assignment_list, $row);
+                }
+            }
+
+            // display assignment list
+            echo json_encode($assignment_list);
         }elseif (isset($_GET['getsubjectsclass'])) {
             $subid = $_GET['subids'];
             $select = "SELECT `classes_taught`,`subject_name` FROM `table_subject` WHERE `subject_id` = ?";
@@ -3555,6 +3520,38 @@
                 echo "<p style='color:red;'>An error occured during updating</p>";
             }
 
+        }elseif (isset($_POST['assign_tr_units'])) {
+            $units_selected = $_POST['units_selected'];
+            $staff_id = $_POST['staff_id'];
+            
+            if (isJson_report($units_selected)) {
+                $units_selected = json_decode($units_selected, true);
+                for ($index=0; $index < count($units_selected); $index++) { 
+                    $select = "SELECT * FROM `teacher_unit_assignment` WHERE course_id = ? AND course_level_id = ? AND unit_id = ?";
+                    $stmt = $conn2->prepare($select);
+                    $stmt->bind_param("sss", $units_selected[$index]['course_id'], $units_selected[$index]['course_level'], $units_selected[$index]['unit_id']);
+                    $stmt->execute();
+                    $stmt->store_result();
+                    $rnums = $stmt->num_rows;
+                    if ($rnums > 0) {
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                        $update = "UPDATE teacher_unit_assignment SET teacher_id = ? WHERE assignment_id = ?";
+                        $statement = $conn2->prepare($update);
+                        $statement->bind_param("ss", $staff_id, $row['assignment_id']);
+                        $statement->execute();
+                    }else{
+                        $insert = "INSERT INTO teacher_unit_assignment (teacher_id, course_level_id, course_id, unit_id) VALUES (?,?,?,?)";
+                        $stmt = $conn2->prepare($insert);
+                        $stmt->bind_param("ssss", $staff_id, $units_selected[$index]['course_level'], $units_selected[$index]['course_id'], $units_selected[$index]['unit_id']);
+                        $stmt->execute();
+                    }
+                }
+                echo "<p class='text-success border border-success p-1 my-1'>Unit assignment done successfully!</p>";
+            }else{
+                echo "<p class='text-danger border border-danger p-1 my-1'>An error has occured!</p>";
+            }
         }
     }
 
@@ -3885,34 +3882,19 @@
         }
         return 0;
     }
-    function getSubjectsTaught($id,$conn){
-        $select = "SELECT `subject_id`,`subject_name`,`timetable_id` FROM `table_subject` WHERE `teachers_id` like ?";
-        $parse = "%(".$id.":%";
-        $stmt = $conn->prepare($select);
-        $stmt->bind_param("s",$parse);
+    function getSubjectsTaught($id,$conn2){
+        $select = "SELECT COUNT(*) AS 'total' FROM `teacher_unit_assignment` WHERE teacher_id = ?";
+        $stmt = $conn2->prepare($select);
+        $stmt->bind_param("s",$id);
         $stmt->execute();
-        $stmt->store_result();
-        $rnums = $stmt->num_rows;
-        if ($rnums>0) {
-            $subjects="";
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result) {
-                $xs=0;
-                while ($row=$result->fetch_assoc()) {
-                    $xs++;
-                    if ($xs==1) {
-                    $subjects.=$row['timetable_id'];
-                    }else {
-                        $subjects.=", ".$row['timetable_id'];
-                    }
-                }
+        $count = 0;
+        $result = $stmt->get_result();
+        if($result){
+            if ($row = $result->fetch_assoc()) {
+                $count = $row['total'];
             }
-            return $subjects;
-        }else {
-            return  "none";
         }
-        
+        return $count;
     }
 
     function isPresent($subjectname, $unit_code, $conn2){
@@ -4081,5 +4063,20 @@
             array_push($classes_sitting,$one_class);
         }
         return $classes_sitting;
+    }
+    function getTeacherDetails($tr_id){
+        include("../../connections/conn1.php");
+        $schoolcode = $_SESSION['schoolcode'];
+        $select = "SELECT * FROM `user_tbl` WHERE `school_code` = ? AND `user_id` = ?";
+        $stmt = $conn->prepare($select);
+        $stmt->bind_param("ss",$schoolcode,$tr_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result) {
+            if ($row = $result->fetch_assoc()) {
+                return $row;
+            }
+        }
+        return null;
     }
 ?>

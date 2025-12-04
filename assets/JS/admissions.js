@@ -937,6 +937,7 @@ cObj("managesub").onclick = function () {
     cObj("managesubjects").classList.remove("hide");
     removesidebar();
     displayAllSubjects();
+    getCourseLevelListUnit();
 }
 
 cObj("managetrnsub").onclick = function () {
@@ -945,6 +946,7 @@ cObj("managetrnsub").onclick = function () {
     addselected(this.id);
     cObj("managesubanteach").classList.remove("hide");
     removesidebar();
+    allTeachers();  
 }
 cObj("maanage_dorm").onclick = function () {
     hideWindow();

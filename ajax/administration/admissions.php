@@ -5187,7 +5187,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             // get the fees structure for class
             $get_course_list = $_GET['get_course_list_fees_struct'];
             $course_level = $_GET['course_level'];
-            $object_id = "search_fees_course_list";
+            $object_id = isset($_GET['object_id']) ? $_GET['object_id'] : "search_fees_course_list";
 
             // get fees structure
             // get the course levels

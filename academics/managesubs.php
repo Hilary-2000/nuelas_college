@@ -33,7 +33,6 @@
                                 <option value="byclass">By class taught:</option>
                             </select>
                         </div>
-                        
                         <div class="conts hide" id="byname">
                             <label  class="form-control-label" for="subnamed">Enter Unit name: <br></label>
                             <input  class="form-control" type="text" name="subnamed" id="subnamed" placeholder="Enter Unit name">
@@ -50,33 +49,46 @@
                         </div>
                     </div>
                 </div>
+                <div class="container border border-secondary my-2 row p-1 rounded">
+                    <div class="col-md-4">
+                        <label for="course_level_unit_filter" class="form-control-label"><b>Course Level</b></label>
+                        <div id="course_level_unit_filter_holder"><span class="p-1 border border-success rounded my-1 text-success">Course Level List will appear here</span></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="course_list_unit_filter" class="form-control-label"><b>Course List</b></label>
+                        <div id="course_list_unit_filter_holder"><span class="p-1 border border-success rounded my-1 text-success">Course List will appear here</span></div>
+                    </div>
+                    <div class="col-md-4">
+                        <button id="search_unit_btn"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                </div>
                 <div class="boddy1">
                     <p id="resulthold"></p>
                     <form class="boddy3 hide" id ='subjectdets'>
                         <div class="conts">
-                            <h3 style='text-align:center;' >Subject Details</h3>
+                            <h3 style='text-align:center;' >Unit Details</h3>
                         </div>
                         <div class="delete-sub">
                             <p  class="funga" id="delete-subject" ><i class="fa fa-trash-alt"></i></p>
                         </div>
-                        <div class="conts">
-                            <label for=""><b>Subject id</b>: <span id='unit_id_edit'></span> <br></label>
+                        <div class="conts d-none">
+                            <label for=""><b>Unit id</b>: <span id='unit_id_edit'></span> <br></label>
                         </div>
-                        <div class="conts">
-                            <label  class="form-control-label"  for="subject_name_edit"><b>Subject name: </b><br></label>
-                            <input class="form-control w-100"  type="text" name="subject_name_edit" id="subject_name_edit" placeholder = 'Subject name'>
+                        <div class="conts my-3">
+                            <label  class="form-control-label"  for="subject_name_edit"><b>Unit name: Eg. 'Communication Skills Diploma'</b><br></label>
+                            <input class="form-control w-100"  type="text" name="subject_name_edit" id="subject_name_edit" placeholder = 'Unit name'>
                         </div>
-                        <div class="conts">
-                            <label  class="form-control-label"  for="sub_display_name_edit"><b>Subject Display Name: </b><br></label>
-                            <input class="form-control w-100"  type="text" name="sub_display_name_edit" id="sub_display_name_edit" placeholder = 'Subject name'>
+                        <div class="conts my-3">
+                            <label  class="form-control-label"  for="sub_display_name_edit"><b>Unit Display Name: eg 'Communication Skills' </b><br></label>
+                            <input class="form-control w-100"  type="text" name="sub_display_name_edit" id="sub_display_name_edit" placeholder = 'Unit Display Name'>
                         </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="unit_code_edit"><b>Enter Subject timetable refferee: </b><small>Eg. 'KSW' for 'Kiswahili' this name will appear on the timetable</small> <br></label>
-                            <input  class="form-control w-100" type="text" name="unit_code_edit" id="unit_code_edit" placeholder = 'Subject IDs'>
+                        <div class="conts my-3">
+                            <label class="form-control-label" for="unit_code_edit"><b>Enter Unit Code: </b><small>Eg. 'COM001' for 'Communication Skills'</small> <br></label>
+                            <input  class="form-control w-100" type="text" name="unit_code_edit" id="unit_code_edit" placeholder = 'Unit IDs'>
                         </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="subject_max_marks_edit"><b>Subject Maximum marks: </b><br></label>
-                            <input class="form-control w-100" type="number" name="subject_max_marks_edit" id="subject_max_marks_edit" placeholder = 'Subject maximum marks'>
+                        <div class="conts my-3">
+                            <label class="form-control-label" for="subject_max_marks_edit"><b>Unit Maximum marks: </b><br></label>
+                            <input class="form-control w-100" type="number" name="subject_max_marks_edit" id="subject_max_marks_edit" placeholder = 'Unit maximum marks'>
                         </div>
                         <div class="conts my-3">
                             <input type="hidden" id="hold_course_selected_edit" value="[]">
@@ -88,7 +100,7 @@
                             <p id='course_list_unit_holder_edit'><span class="border border-success my-2 rounded text-success p-1">Course lists will appear here!</span></p>                            
                         </div>
                         <hr>
-                        <div class="conts">
+                        <div class="conts my-3">
                             <p class="hide" id="subjects_grades_hidden"></p>
                             <label for="grading_lists" class="form-control-label"><b>Grading Lists</b><span id="edit_grading_subject" class="block_btn mx-2" style="padding:2px;border-radius: 3px;"><small>Edit Grades</small></span></label>
                             <p id="my_grade_lists_subject"></p>
