@@ -6,10 +6,10 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub","generate_tt_btn","examanagement","exam_fill_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub","generate_tt_btn","examanagement","exam_fill_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
         $allowed = ["sms_broadcast","update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
@@ -458,7 +458,7 @@ function checkPresnt($array, $string){
                         <button type='button' class="sidebtns <?php echo allowed("regsub"); ?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register Units</button>
                         <button type='button' class="sidebtns <?php echo allowed("managesub"); ?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Unit Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("managetrnsub"); ?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Unit Assignment</button>
-                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub"); ?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Lecture Halls</button>
+                        <button type='button' class="sidebtns <?php echo allowed("lecture_halls_btn"); ?> htbtn" id='lecture_halls_btn'><span><img class="icons" src="images/manageteach.png"></span>Lecture Halls</button>
                         <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn"); ?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Generate Timetable</button>
                         <button type='button' class="sidebtns <?php echo allowed("examanagement"); ?> htbtn" id='examanagement'><span><img class="icons" src="images/addmarks.png"></span>Exam Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Students Marks Entry</button>
@@ -565,6 +565,7 @@ function checkPresnt($array, $string){
             include("academics/exam_management.php");
             include("academics/exam_filling.php");
             include("academics/timetable.php");
+            include("academics/lecture_hall.php");
             include("system_error_pages/inconvinience.php");
             include("boarding_pages/enroll_boarding.php");
             include("boarding_pages/register_dorm.php");
@@ -2174,6 +2175,45 @@ function checkPresnt($array, $string){
                 <div class="btns">
                     <button type="button" class="" id='add_dormitory'>Add</button>
                     <button type="button" id="close_dorm_reg_btn">Close</button>
+                </div>
+            </div>
+        </div>
+        <div class="confirmpaymentwindow hide" id="new_lecture_hall_window">
+            <div class="changesubwindow editexams animate">
+                <div class="conts">
+                    <p class="funga" id="close_new_lecture_hall">&times</p>
+                    <h6 class="text-center" id='new_lecture_hall_title'>Register New Lecture Hall</h6>
+                </div>
+                <form class="add_expense" id="new_lecture_hall_form">
+                    <div class="conts">
+                        <input type="hidden" name="" id="lecture_hall_id" value="0">
+                        <input type="hidden" name="" id="lecture_hall_action_type" value="add">
+                        <label class="form-control-label" for="lecture_hall_name">Lecture Hall Name:<span class="text-danger">*</span><br></label>
+                        <input class="form-control" type="text" name="lecture_hall_name" id="lecture_hall_name" placeholder="Hostel name">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="lecture_hall_capacity">Capacity:<span class="text-danger">*</span><br></label>
+                        <input class="form-control" type="number" name="lecture_hall_capacity" id="lecture_hall_capacity" placeholder="e.g, 10">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="lecture_hall_availability">Availability:<br></label>
+                        <select name="lecture_hall_availability" id="lecture_hall_availability" class="form-control">
+                            <option value="" hidden >Select Availability</option>
+                            <option value="1">Available</option>
+                            <option value="0">Un-Available</option>
+                        </select>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="hall_description">Description <br></label>
+                        <textarea name="hall_description" id="hall_description" placeholder="Narative about the lecture hall" rows="5" class="form-control"></textarea>
+                    </div>
+                </form>
+                <div class="conts">
+                    <p id='new_lecture_hall_err_handler'></p>
+                </div>
+                <div class="btns">
+                    <button type="button" class="" id='add_new_lecture_hall'><i class="fas fa-plus"></i> Add</button>
+                    <button type="button" id="close_new_lecture_hall_2">Close</button>
                 </div>
             </div>
         </div>
@@ -4250,6 +4290,19 @@ function checkPresnt($array, $string){
             <div class="buttons">
                 <button type='button' id='yes_delete_discipline_incident'>Yes</button>
                 <button type='button' id='no_delete_discipline_incident'>No</button>
+            </div>
+        </div>
+    </div>
+    <div class="dialogholder hide" id="delete_lecture_hall">
+        <div class="dialogwindow animate2">
+            <h6>Delete Lecture Hall</h6>
+            <div class="message" id="message">
+                <p>Are you sure you want to delete this lecture hall permanently ?</p>
+            </div>
+            <input type="hidden" name="lecture_hall_id" id="lecture_hall_id">
+            <div class="buttons">
+                <button type='button' id='yes_delete_lecture_hall'>Yes</button>
+                <button type='button' id='no_delete_lecture_hall'>No</button>
             </div>
         </div>
     </div>

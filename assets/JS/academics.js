@@ -5261,3 +5261,116 @@ function display_course_unit_list() {
     });
     var datapass = "?display_course_units=true";
 }
+
+function display_lecture_halls() {
+    var datapass = "?display_lecture_halls=true";
+    sendData1("GET", "academic/academic.php", datapass, cObj("lecture_hall_list_holder"), function () {
+        $('#lecture_hall_table_list').DataTable();
+        var edit_lecture_hall = document.getElementsByClassName("edit_lecture_hall");
+        for (let index = 0; index < edit_lecture_hall.length; index++) {
+            const element = edit_lecture_hall[index];
+            element.addEventListener("click", function () {
+                var hall_data = cObj("lecture_hall_data_"+this.id.substring(18)).value;
+                if (hasJsonStructure(hall_data)) {
+                    cObj("new_lecture_hall_title").innerHTML = "Edit Lecture Hall";
+                    cObj("add_new_lecture_hall").innerHTML = "<i class='fas fa-upload'></i> Update";
+                    hall_data = JSON.parse(hall_data);
+                    cObj("lecture_hall_id").value = hall_data.lecture_hall_id;
+                    cObj("lecture_hall_action_type").value = "edit";
+                    cObj("lecture_hall_name").value = hall_data.hall_name;
+                    cObj("lecture_hall_capacity").value = hall_data.capacity;
+                    cObj("hall_description").value = hall_data.description;
+                    for (let index = 0; index < cObj("lecture_hall_availability").children.length; index++) {
+                        const element = cObj("lecture_hall_availability").children[index];
+                        if (element.value == hall_data.availability) {
+                            element.selected = true;
+                        }
+                    }
+                    cObj("new_lecture_hall_err_handler").innerHTML = "";
+                    cObj("new_lecture_hall_window").classList.remove("hide");
+                }else{
+                    cObj("new_lecture_hall_err_handler").innerHTML = "<p class='text-danger border border-danger p-1 my-2'>An error has occured!</p>";
+                }
+            });
+        }
+
+        var delete_lecture_hall = document.getElementsByClassName("delete_lecture_hall");
+        for (let index = 0; index < delete_lecture_hall.length; index++) {
+            const element = delete_lecture_hall[index];
+            element.addEventListener("click", function () {
+                cObj("lecture_hall_id").value = element.id.substring(20);
+                cObj("delete_lecture_hall").classList.remove("hide");
+            })
+        }
+    })
+}
+
+cObj("yes_delete_lecture_hall").onclick = function () {
+    var datapass = "?delete_lecture_hall=true&hall_id="+valObj("lecture_hall_id");
+    sendData1("GET", "academic/academic.php", datapass, cObj("lecture_hall_error_handler"), function () {
+        display_lecture_halls();
+        cObj("no_delete_lecture_hall").click();
+        setTimeout(() => {
+            cObj("lecture_hall_error_handler").innerHTML = "";
+        }, 2000);
+    });
+}
+
+cObj("no_delete_lecture_hall").onclick = function () {
+    cObj("delete_lecture_hall").classList.add("hide");
+}
+
+// add lecture hall
+cObj("add_lecture_hall").onclick = function () {
+    cObj("new_lecture_hall_window").classList.remove("hide");
+    cObj("lecture_hall_action_type").value = "add";
+    cObj("new_lecture_hall_title").innerHTML = "Register New Lecture Hall";
+    cObj("add_new_lecture_hall").innerHTML = "<i class='fas fa-plus'></i> Add";
+}
+// add lecture hall
+cObj("close_new_lecture_hall_2").onclick = function () {
+    cObj("new_lecture_hall_window").classList.add("hide");
+    cObj("new_lecture_hall_form").reset();
+}
+// add lecture hall
+cObj("close_new_lecture_hall").onclick = function () {
+    cObj("new_lecture_hall_window").classList.add("hide");
+    cObj("new_lecture_hall_form").reset();
+}
+
+cObj("add_new_lecture_hall").onclick = function () {
+    var err = checkBlank("lecture_hall_name");
+    err += checkBlank("lecture_hall_capacity");
+    err += checkBlank("lecture_hall_availability");
+    if (cObj("lecture_hall_action_type").value == "add") {
+        // err += checkBlank("hall_description");
+        if (err == 0) {
+            cObj("new_lecture_hall_err_handler").innerHTML = "";
+            var datapass = "?new_lecture_hall=true&lecture_hall_name="+valObj("lecture_hall_name")+"&hall_capacity="+valObj("lecture_hall_capacity")+"&hall_availability="+valObj("lecture_hall_availability")+"&hall_description="+valObj("hall_description");
+            sendData1("GET", "academic/academic.php", datapass, cObj("new_lecture_hall_err_handler"), function () {
+                setTimeout(() => {
+                    cObj("new_lecture_hall_err_handler").innerHTML = "";
+                }, 2000);
+                cObj("close_new_lecture_hall_2").click();
+                display_lecture_halls();
+            })
+        }else{
+            cObj("new_lecture_hall_err_handler").innerHTML = "<p class='text-danger'>Fill all fields with a red border!</p>";
+        }
+    }else{
+        // err += checkBlank("hall_description");
+        if (err == 0) {
+            cObj("new_lecture_hall_err_handler").innerHTML = "";
+            var datapass = "?update_lecture_hall=true&lecture_hall_name="+valObj("lecture_hall_name")+"&hall_capacity="+valObj("lecture_hall_capacity")+"&hall_availability="+valObj("lecture_hall_availability")+"&hall_description="+valObj("hall_description")+"&hall_id="+valObj("lecture_hall_id");
+            sendData1("GET", "academic/academic.php", datapass, cObj("new_lecture_hall_err_handler"), function () {
+                setTimeout(() => {
+                    cObj("new_lecture_hall_err_handler").innerHTML = "";
+                }, 2000);
+                cObj("close_new_lecture_hall_2").click();
+                display_lecture_halls();
+            })
+        }else{
+            cObj("new_lecture_hall_err_handler").innerHTML = "<p class='text-danger'>Fill all fields with a red border!</p>";
+        }
+    }
+}

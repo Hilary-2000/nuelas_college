@@ -80,8 +80,8 @@
                             </div>
                         </div>
                         <div class="conts w-100">
-                            <button type='button' id ='backtosubs' >Back</button>
-                            <button type='button' id='addsubsbutn' >Assign More Units</button>
+                            <button type='button' id ='backtosubs' ><i class="fas fa-arrow-left"></i> Back</button>
+                            <button type='button' id='addsubsbutn' ><i class="fas fa-plus"></i> Assign More Units</button>
                         </div>
                     </div>
                 </div>

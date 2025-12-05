@@ -391,7 +391,7 @@
                             break;
                         }
                     }
-                    $data_to_display .= "<tr><td>".$index.".</td><td>".$row['subject_name']."</td><td>".$row['course_level_id']."</td><td>".$course_name."</td><td><span class='remove_course_unit link' id='remove_course_unit_".$row['assignment_id']."'><i class='fas fa-trash'></i> Del</span></td></tr>";
+                    $data_to_display .= "<tr><td>".$index.".</td><td>".$row['subject_name']."</td><td>".$row['course_level_id']."</td><td>".$course_name."</td><td><span class='remove_course_unit link' id='remove_course_unit_".$row['assignment_id']."'><i class='fas fa-trash'></i> Remove</span></td></tr>";
                     $index++;
                 }
             }
@@ -405,6 +405,56 @@
             $data_to_display.="</tbody></table></div>";
             echo $data_to_display."<input type='hidden' id='teacher_academic_super_user_status' value='".$academic_su."'>";
             return;
+        }elseif(isset($_GET['display_lecture_halls'])){
+            $select = "SELECT * FROM lecture_halls";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<div class='tableme'><table class='table' id='lecture_hall_table_list'><thead><tr><th>No.</th><th>Hall Name</th><th>Capacity</th><th>Availability</th><th>Action</th></tr></thead><tbody>";
+            if ($result) {
+                $index = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display .= "<tr><td><input type='hidden' id='lecture_hall_data_".$row['lecture_hall_id']."' value='".json_encode($row)."'>".$index.".</td><td>".$row['hall_name']."</td><td>".$row['capacity']."</td><td>".($row['availability'] == 1 ? "<span class='text-success'>Available ✔</span>" : "<span class='text-danger'>Un-Available</span>")."</td><td><span class='edit_lecture_hall link' id='edit_lecture_hall_".$row['lecture_hall_id']."'><i class='fas fa-pen-fancy'></i> Edit</span> | <span class='delete_lecture_hall link' id='delete_lecture_hall_".$row['lecture_hall_id']."'><i class='fas fa-trash'></i> Del</span></td></tr>";
+                    $index++;
+                }
+            }
+            $data_to_display.="</tbody></table></div>";
+            echo $data_to_display;
+        }elseif(isset($_GET['new_lecture_hall'])){
+            // get data
+            $new_lecture_hall = $_GET['new_lecture_hall'];
+            $lecture_hall_name = $_GET['lecture_hall_name'];
+            $hall_capacity = $_GET['hall_capacity'];
+            $hall_availability = $_GET['hall_availability'];
+            $hall_description = $_GET['hall_description'];
+
+            // insert data
+            $insert = "INSERT INTO lecture_halls (`hall_name`, `capacity`, `availability`, `description`) VALUES (?,?,?,?)";
+            $stmt = $conn2->prepare($insert);
+            $stmt->bind_param("ssss", $lecture_hall_name, $hall_capacity, $hall_availability, $hall_description);
+            $stmt->execute();
+            
+            echo "<p class='text-danger border border-danger p-1 my-2'>Lecture hall has been added successfully!</p>";
+        }elseif(isset($_GET['delete_lecture_hall'])){
+            $delete = "DELETE FROM lecture_halls WHERE lecture_hall_id = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s", $_GET['hall_id']);
+            $stmt->execute();
+            
+            echo "<p class='text-danger'>Hall has been deleted successfully!</p>";
+        }elseif(isset($_GET['update_lecture_hall'])){
+            $lecture_hall_name = $_GET['lecture_hall_name'];
+            $hall_capacity = $_GET['hall_capacity'];
+            $hall_availability = $_GET['hall_availability'];
+            $hall_description = $_GET['hall_description'];
+            $hall_id = $_GET['hall_id'];
+            
+            $update = "UPDATE lecture_halls SET `hall_name` = ?, `capacity` = ?, `availability` = ?, `description` = ? WHERE `lecture_hall_id` = ?";
+            $stmt = $conn2->prepare($update);
+            $stmt->bind_param("sssss", $lecture_hall_name, $hall_capacity, $hall_availability, $hall_description, $hall_id);
+            $stmt->execute();
+
+            echo "<p class='text-success p-2 border border-success my-2'>Lecture hall data has been updated successfully!</p>";
         }elseif(isset($_GET['remove_assignment'])){
             $remove_assignment = $_GET['remove_assignment'];
             $assignment_id = $_GET['assignment_id'];

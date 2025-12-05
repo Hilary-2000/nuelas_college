@@ -948,6 +948,14 @@ cObj("managetrnsub").onclick = function () {
     removesidebar();
     allTeachers();  
 }
+cObj("lecture_halls_btn").onclick = function () {
+    hideWindow();
+    unselectbtns();
+    addselected(this.id);
+    cObj("lecture_hall_window").classList.remove("hide");
+    removesidebar();
+    display_lecture_halls();
+}
 cObj("maanage_dorm").onclick = function () {
     hideWindow();
     unselectbtns();
@@ -1939,26 +1947,14 @@ function viewstaffavailablebtn() {
     cObj("informationwindow").classList.add("hide");
     var datastring = "?getavalablestaff=true";
     //showPleasewait();
-    sendData1("GET", "administration/admissions.php", datastring, cObj("stafferrors"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                var collectbtn = document.getElementsByClassName('viewtr');
-                for (let index = 0; index < collectbtn.length; index++) {
-                    const element = collectbtn[index];
-                    setListenertblstaff(element.id);
-                }
-                //removePleasewait();
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 200);
+    sendData1("GET", "administration/admissions.php", datastring, cObj("stafferrors"), function () {
+        var collectbtn = document.getElementsByClassName('viewtr');
+        for (let index = 0; index < collectbtn.length; index++) {
+            const element = collectbtn[index];
+            setListenertblstaff(element.id);
+        }
+        $('#all_staff_table').DataTable();
+    });
 }
 function setListenertblstaff(id) {
     cObj(id).addEventListener('click', clicks);
@@ -9850,6 +9846,8 @@ function formatDate(dateString) {
     const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
     const hour12 = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
     const period = date.getHours() >= 12 ? "PM" : "AM";
+    const year = date.getFullYear();
+    const minute = date.getMinutes();
 
     // Format the date string
     const formattedDate = `${weekday} ${dayWithSuffix} ${monthName} ${year} @ ${hour12}:${minute.toString().padStart(2, "0")} ${period}`;
