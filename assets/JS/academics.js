@@ -4,8 +4,7 @@ cObj("registersub").onclick = function () {
     err += checkBlank("subject_max_marks");
     err += checkBlank("unit_code");
     err += checkBlank("subject_display_name");
-
-
+    err += checkBlank("unit_year_of_study");
     // check error
     if (err==0) {
         // course selected!
@@ -20,7 +19,7 @@ cObj("registersub").onclick = function () {
         var hold_course_selected = hasJsonStructure(valObj("hold_course_selected")) ? JSON.parse(valObj("hold_course_selected")) : [];
         if (hold_course_selected.length > 0) {
             var set_my_grades_list = cObj("set_my_grades_list").innerText;
-            var datastring = "addsubject=true&unit_name="+valObj("unit_unique_name")+"&subject_max_marks="+valObj("subject_max_marks")+"&course_list="+JSON.stringify(hold_course_selected)+"&unit_code="+valObj("unit_code")+"&grades_lists="+set_my_grades_list+"&subject_display_name="+valObj("subject_display_name");
+            var datastring = "addsubject=true&unit_name="+valObj("unit_unique_name")+"&subject_max_marks="+valObj("subject_max_marks")+"&course_list="+JSON.stringify(hold_course_selected)+"&unit_code="+valObj("unit_code")+"&grades_lists="+set_my_grades_list+"&subject_display_name="+valObj("subject_display_name")+"&year_of_study="+valObj("unit_year_of_study");
             sendDataPost("POST","ajax/academic/academic.php",datastring,cObj("errregsub"), cObj("loadings"), function () {
                 if (cObj("error_adding_unit") == undefined) {
                     cObj("formpay").reset();
@@ -146,6 +145,7 @@ function finders() {
             setDatalen("unit_code_edit",unit_data.timetable_id);
             setDatalen("subject_max_marks_edit",unit_data.max_marks);
             cObj("subjects_grades_hidden").innerText = unit_data.grading;
+            $('#unit_year_of_study_edit').val(unit_data.year_of_study).trigger('change');
             if (unit_data.grading.length > 0) {
                 create_grade_list(unit_data.grading,"my_grade_lists_subject");
             }else{
@@ -181,7 +181,7 @@ cObj("updatesubs").onclick = function () {
         }
         cObj("errhandlers").innerHTML = "";
         var subject_grade = cObj("subjects_grades_hidden").innerText;
-        var datapass = "updatesubjects=true&unit_name="+valObj("subject_name_edit")+"&unit_code="+valObj("unit_code_edit")+"&unit_max_marks="+valObj("subject_max_marks_edit")+"&course_list="+cObj("hold_course_selected_edit").value+"&unit_id="+cObj("unit_id_edit").innerText+"&unit_grades="+subject_grade+"&unit_display_name="+valObj("sub_display_name_edit");
+        var datapass = "updatesubjects=true&unit_name="+valObj("subject_name_edit")+"&unit_code="+valObj("unit_code_edit")+"&unit_max_marks="+valObj("subject_max_marks_edit")+"&course_list="+cObj("hold_course_selected_edit").value+"&unit_id="+cObj("unit_id_edit").innerText+"&unit_grades="+subject_grade+"&unit_display_name="+valObj("sub_display_name_edit")+"&year_of_study="+valObj("unit_year_of_study_edit");
         sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("errhandlers"), cObj("loadings"), function () {
             var infor = cObj("errhandlers").innerText.substring(0,7);
             if (infor=="Subject") {

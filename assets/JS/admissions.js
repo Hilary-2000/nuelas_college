@@ -1604,6 +1604,14 @@ window.onload = function () {
     $('#warning_status').select2({
         width: "100%"
     });
+
+    $('#unit_year_of_study').select2({
+        width: '100%'
+    });
+
+    $('#unit_year_of_study_edit').select2({
+        width: '100%'
+    });
 }
 
 /*******end of it********/

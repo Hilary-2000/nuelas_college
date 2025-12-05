@@ -305,7 +305,7 @@
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
-                $tableinformation = "<div class='information' id ='information'><h6 style='text-align:center;font-size:17px;font-weight:500;'><u>Course Units</u></h6><p id='pleasewait3' style='color:green;text-align:center;'>Preparing please wait before viewing!</p><div class='tableme'><table class='table' id='unit_list_table'><thead><tr><th>No</th><th>Unit name</th><th>Display Name</th><th>Unit Code</th><th>Maximum marks</th><th>Courses Linked</th><th>Options</th></tr></thead><tbody>";
+                $tableinformation = "<div class='information' id ='information'><h6 style='text-align:center;font-size:17px;font-weight:500;'><u>Course Units</u></h6><p id='pleasewait3' style='color:green;text-align:center;'>Preparing please wait before viewing!</p><div class='tableme'><table class='table' id='unit_list_table'><thead><tr><th>No</th><th>Unit name</th><th>Display Name</th><th>Unit Code</th><th>Year of Study</th><th>Maximum marks</th><th>Courses Linked</th><th>Options</th></tr></thead><tbody>";
                 $xs =0;
                 while ($row = $result->fetch_assoc()) {
                     $xs++;
@@ -313,7 +313,7 @@
                     if (strlen(trim($ttsd))<1) {
                         $ttsd = "N/A";
                     }
-                    $tableinformation.="<tr><td>".$xs."</td><td>".$row['subject_name']."</td><td>".(strlen(trim($row['display_name'])) > 0 ? trim($row['display_name']):"<span class='text-danger'>Not Set</span>")."</td><td>".$ttsd."</td><td>".$row['max_marks']."</td><td>".(isJson_report($row['classes_taught']) ? count(json_decode($row['classes_taught']))." Courses" : "No Courses Set")."</td><td><span style='font-size:12px;;margin:0 auto;' class ='viewsubj link' value='".$row['subject_id']."' id='class".$row['subject_id']."'><i class='fa fa-pen'></i> Edit</span></td></tr>";
+                    $tableinformation.="<tr><td>".$xs."</td><td>".$row['subject_name']."</td><td>".(strlen(trim($row['display_name'])) > 0 ? trim($row['display_name']):"<span class='text-danger'>Not Set</span>")."</td><td>".$ttsd."</td><td>Year ".$row['year_of_study']."</td><td>".$row['max_marks']."</td><td>".(isJson_report($row['classes_taught']) ? count(json_decode($row['classes_taught']))." Courses" : "No Courses Set")."</td><td><span style='font-size:12px;;margin:0 auto;' class ='viewsubj link' value='".$row['subject_id']."' id='class".$row['subject_id']."'><i class='fa fa-pen'></i> Edit</span></td></tr>";
                 }
                 $tableinformation.="</tbody></table></div></div>";
                 echo $tableinformation;
@@ -3493,10 +3493,11 @@
                 $course_list = $_POST['course_list'];
                 $grades_lists = $_POST['grades_lists'];
                 $subject_display_name = $_POST['subject_display_name'];
+                $year_of_study = $_POST['year_of_study'];
                 $subactive = 1;
-                $insert = "insert INTO `table_subject` (`subject_name`,`max_marks`,`classes_taught`,`sub_activated`,`timetable_id`,`grading`,`display_name`) VALUES (?,?,?,?,?,?,?)";
+                $insert = "insert INTO `table_subject` (`subject_name`,`max_marks`,`classes_taught`,`sub_activated`,`timetable_id`,`grading`,`display_name`,`year_of_study`) VALUES (?,?,?,?,?,?,?,?)";
                 $stmt = $conn2->prepare($insert);
-                $stmt->bind_param("sssssss",$unit_name,$subject_max_marks,$course_list,$subactive,$unit_code,$grades_lists,$subject_display_name);
+                $stmt->bind_param("ssssssss",$unit_name,$subject_max_marks,$course_list,$subactive,$unit_code,$grades_lists,$subject_display_name, $year_of_study);
                 if($stmt->execute()){
                     echo "<p style='color:green;'>Unit added successfully!</p>";
                 }else {
@@ -3508,14 +3509,15 @@
         }elseif (isset($_POST['updatesubjects'])) {
             $unit_name = $_POST['unit_name'];
             $unit_code = $_POST['unit_code'];
+            $year_of_study = $_POST['year_of_study'];
             $unit_max_marks = $_POST['unit_max_marks'];
             $course_list = $_POST['course_list'];
             $unit_id = $_POST['unit_id'];
             $unit_grades = $_POST['unit_grades'];
             $unit_display_name = $_POST['unit_display_name'];
-            $update = "UPDATE table_subject SET subject_name = ?, display_name = ?, timetable_id = ?, max_marks = ?, classes_taught = ?, grading = ? WHERE subject_id = ?";
+            $update = "UPDATE table_subject SET subject_name = ?, display_name = ?, timetable_id = ?, max_marks = ?, classes_taught = ?, grading = ?, year_of_study = ? WHERE subject_id = ?";
             $stmt= $conn2->prepare($update);
-            $stmt->bind_param("sssssss",$unit_name,$unit_display_name,$unit_code,$unit_max_marks,$course_list,$unit_grades,$unit_id);
+            $stmt->bind_param("ssssssss", $unit_name, $unit_display_name, $unit_code, $unit_max_marks, $course_list, $unit_grades, $year_of_study, $unit_id);
             if($stmt->execute()){
                 //remove the missing classes that are present on the teacher id column
                 $select = "SELECT `teachers_id` FROM `table_subject` WHERE subject_id = ?";

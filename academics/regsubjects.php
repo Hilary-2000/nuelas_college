@@ -41,6 +41,20 @@
                             <input  class="form-control w-100" style="margin-left: 0px !important;" type="number" max=100 min=0 name="subject_max_marks" id="subject_max_marks" placeholder = 'Unit Marks'>
                         </div>
                         <div class="conts my-3">
+                            <label class="form-control-label" for="unit_year_of_study"><b>Year Of Study: </b><br></label>
+                            <select name="unit_year_of_study" id="unit_year_of_study" class="form-control">
+                                <option value="" hidden>Select Year of Study</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                                <option value="5">Year 5</option>
+                                <option value="6">Year 6</option>
+                                <option value="7">Year 7</option>
+                                <option value="8">Year 8</option>
+                            </select>
+                        </div>
+                        <div class="conts my-3">
                             <label class="form-control-label" for="select_course_level_unit"><b>Select Course Level: </b><br></label>
                             <div id="select_course_level_list_holder"></div>
                         </div>
