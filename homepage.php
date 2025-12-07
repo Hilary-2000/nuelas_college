@@ -6,10 +6,10 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
         $allowed = ["sms_broadcast","update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
@@ -458,11 +458,12 @@ function checkPresnt($array, $string){
                         <button type='button' class="sidebtns <?php echo allowed("regsub"); ?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register Units</button>
                         <button type='button' class="sidebtns <?php echo allowed("managesub"); ?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Unit Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("managetrnsub"); ?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Unit Assignment</button>
+                        <button type='button' class="sidebtns <?php echo allowed("course_unit_assignment"); ?> htbtn" id='course_unit_assignment'><span><img class="icons" src="images/managemarks.png"></span>Course-Unit Assignment</button>
                         <button type='button' class="sidebtns <?php echo allowed("lecture_halls_btn"); ?> htbtn" id='lecture_halls_btn'><span><img class="icons" src="images/manageteach.png"></span>Lecture Halls</button>
                         <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn"); ?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Generate Timetable</button>
                         <button type='button' class="sidebtns <?php echo allowed("examanagement"); ?> htbtn" id='examanagement'><span><img class="icons" src="images/addmarks.png"></span>Exam Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Students Marks Entry</button>
-                        <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Academic Reports</button>
+                        <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/analysis.png"></span>Academic Reports</button>
                     </div>
                 </div>
             </div>
@@ -566,6 +567,7 @@ function checkPresnt($array, $string){
             include("academics/exam_filling.php");
             include("academics/timetable.php");
             include("academics/lecture_hall.php");
+            include("academics/course_unit_assignment.php");
             include("system_error_pages/inconvinience.php");
             include("boarding_pages/enroll_boarding.php");
             include("boarding_pages/register_dorm.php");
@@ -1492,7 +1494,7 @@ function checkPresnt($array, $string){
             <div class="changesubwindow editexams animate">
                 <div class="conts">
                     <p class="funga" id="funga1">&times</p>
-                    <h6>Add subject</h6>
+                    <h6>Assign Course Units</h6>
                 </div>
                 <div class="conts" id='selectsub1'>
                     <div class="conts">
@@ -1553,6 +1555,29 @@ function checkPresnt($array, $string){
                 <div class="btns">
                     <button type="button" id='saves1'>Save</button>
                     <button type="button" id="close2">Close</button>
+                </div>
+            </div>
+        </div>
+        <div class="confirmpaymentwindow hide" id="add_module_units">
+            <div class="changesubwindow editexams animate">
+                <div class="conts">
+                    <p class="funga" id="close_module_unit_selector_1">&times</p>
+                    <h6 class="text-center">Set Course Units</h6>
+                </div>
+                <div class="conts">
+                    <div class="conts">
+                        <p>Select Units to be added in <b id="module_number_holder">Module 1</b></p>
+                        <small id="selected_module_units"></small>
+                        <p id='course_unit_list'></p>
+                    </div>
+                </div>
+                <div class="conts mt-2">
+                    <p class="hide" id="module_unit_list_holder"></p>
+                    <p id='module_selector_error_list'></p>
+                </div>
+                <div class="btns">
+                    <button type="button" id='save_module_selector'>Save</button>
+                    <button type="button" id="close_module_unit_selector">Close</button>
                 </div>
             </div>
         </div>
@@ -2047,6 +2072,18 @@ function checkPresnt($array, $string){
                 <div class="btns">
                     <button type='button' id='confirm_yes_remove_assignment'>Yes</button>
                     <button type='button' id='confirm_no_remove_assignment'>No</button>
+                </div>
+            </div>
+        </div>
+        <!--confirm delete-->
+        <div class="confirmpaymentwindow hide" id='confirm_delete_assignment_module'>
+            <div class="confirmpayment animate">
+                <h6>Remove Unit</h6>
+                <p>Are you sure you want to remove this unit from this module?</p>
+                <input type="hidden" name="" id="assignment_id_holder_unit">
+                <div class="btns">
+                    <button type='button' id='confirm_yes_assignment_id_holder_unit'>Yes</button>
+                    <button type='button' id='confirm_no_assignment_id_holder_unit'>No</button>
                 </div>
             </div>
         </div>

@@ -1327,7 +1327,6 @@ function setGrades() {
             var exams_grades = cObj("exams_grades").innerText;
             if (exams_grades.length > 0) {
                 var grades = JSON.parse(exams_grades);
-                // console.log(grades);
                 var scored_grade = "N/A";
                 for (let index = 0; index < grades.length; index++) {
                     const element = grades[index];
@@ -1416,7 +1415,6 @@ function viewClassListener() {
             err++;
         }
         var manual_grades = document.getElementsByClassName("manual_grades");
-        // console.log(manual_grades);
         var marks_marks = cObj("max-marks-hold").innerText*1;
         if (manual_grades.length > 0) {
             if (cObj("input_2"+idds).value > marks_marks) {
@@ -1827,7 +1825,6 @@ cObj("844_mode1").onkeyup = function () {
                     }
                 }
             }
-            // console.log(scored_grade);
             cObj("grade_scored").innerHTML = scored_grade;
         }
     }else if (grading_method == "IGCSE") {
@@ -2219,32 +2216,6 @@ cObj("delsubyes").onclick = function () {
         }, 100);
     }, 200);
 }
-
-// cObj("click_messages").onclick = function () {
-//     //connect to server port 7070
-//     alert(cObj("message-me").value);
-//     if ("WebSocket" in window){
-//         const ws = new WebSocket("ws://127.0.0.1:7070");
-//         ws.addEventListener("open",function () {
-//             console.log("I am connected!");
-//         });
-//         ws.addEventListener("error", function () {
-//             console.log("We have an error!");
-//         });
-//         ws.addEventListener("message", function () {
-//             ws.send("My name is hillary");
-//             console.log("We have an error!");
-//         });
-//         ws.addEventListener("close", function () {
-//             ws.send("Connection interupted");
-//             console.log("We have an error!");
-//         });
-//         console.log(ws.readyState);
-//         // ws.close();
-//     }else{
-//         console.log("Windows is not suported")
-//     }
-// }
 cObj("create_tt_in").onclick = function () {
     if (!cObj("create_timetabled").classList.contains("hide")) {
         // var datapass = "?get_class_informations=true";
@@ -3082,7 +3053,6 @@ function delete_brakes() {
                 json_data.breaks.push(element);
             }
         }
-        console.log(json_data);
         cObj("breaks_lists").value = JSON.stringify(json_data);
         set_break_table();
     }
@@ -3254,7 +3224,6 @@ function delete_rooms() {
             }
         }
         cObj("rooms_set").innerText = JSON.stringify(rooms);
-        console.log(room_jina);
         delete_class(room_jina);
     }
     rooms_table();
@@ -3281,7 +3250,6 @@ function valueChange() {
             }
         }
         if (counter == 0) {
-            // console.log("We are secure "+counter);
             var class_selected = cObj("my_class_list").value;
             var class_list = [];
             var timetable_blocks = cObj("timetable_blocks").innerText;
@@ -3296,7 +3264,6 @@ function valueChange() {
                             for (let index3 = 0; index3 < lessons.length; index3++) {
                                 if (!checkPresent(class_list,lessons[index3].trim().split(" ")[0])) {
                                     if (lessons[index3].trim().split(" ")[0].length > 0) {
-                                        // console.log(lessons[index3].trim().split("|"));
                                         if(lessons[index3].trim().split("|").length <= 1){
                                             class_list.push(lessons[index3].trim().split(" ")[0]);
                                         }
@@ -3481,12 +3448,10 @@ function clickRemove_Combo() {
 
         for (let index = 0; index < combinations.length; index++) {
             const element = combinations[index];
-            // console.log("Element len "+element.combo.length);
             if (element.combo.length == 0) {
                 remover = index;
             }
         }
-        // console.log(remover);
         json_data.combinations = remove_array2(combinations,remover);
         cObj("combination_json").innerText = JSON.stringify(json_data);
     }
@@ -3577,7 +3542,6 @@ function delete_all() {
 function displayTable(){
     // change the block timetable on the top of the table id: timetable_blocks
     var timetable_blocks = cObj("timetable_blocks").innerText;
-    // console.log(timetable_blocks);
     if (timetable_blocks.length > 0 && hasJsonStructure(timetable_blocks)) {
         timetable_blocks = timetable_blocks.replace(/null/g,"\"\"");
         timetable_blocks = JSON.parse(timetable_blocks);
@@ -3627,12 +3591,7 @@ function displayTable(){
                 }
             }
         }
-        // end of possible classes
-        // console.log(posible_lessons);
-        // proceed and reset the whole timetable
         var data_to_display = "";
-        // display the days of the week
-        // console.log(timetable_blocks.length);
         for (let index = 0; index < timetable_blocks.length; index++) {
             // go through the days of the week
             data_to_display+="<p><b>Day: </b> "+timetable_blocks[index].Day+"</p><div class='table_holders'><table class='table'><tr><th>Class Name</th>";
@@ -3659,7 +3618,6 @@ function displayTable(){
                     }
                     
                 }
-                // console.log(used_rooms);
                 
                 data_to_display+="<tr><td>"+classes[index2].classname+"</td>";
                 var lessons = classes[index2].lessons;
@@ -3679,11 +3637,8 @@ function displayTable(){
                         const elf = class_list[ef];
                         my_rooms.push(used_rooms[elf][index3]);
                     }
-                    // console.log(my_rooms);
-                    // break;
                     var selected_room = current_lesson.split("=").length > 1 ? current_lesson.split("=")[1].trim():"";
                     var select_rooms = "";
-                    // console.log(selected_room);
                     var rooms_set = cObj("rooms_set").innerText;
                     if (rooms_set.length > 0) {
                         rooms_set = JSON.parse(rooms_set);
@@ -3804,13 +3759,6 @@ function setPosibleSubjects2() {
                     var element2 = classes[index2];
                     if (element2.classname == values[2]) {
                         var lessons = element2.lessons;
-                        // console.log(timetable_blocks[index].classes[index2].lessons[values[0]]);
-                        // change the lessons in that window
-                        // timetable_blocks[index].classes[index2].lessons[values[0]] = values[3];
-
-                        // lessons[values[0]] = values[2];
-                        // console.log(timetable_blocks[index].classes[index2].lessons[values[0]]);
-
                         var mew_lesson = lessons[values[0]].split("=")[0].trim()+" = "+values[3];
                         lessons[values[0]] = mew_lesson;
                     }
@@ -3841,19 +3789,14 @@ function setPosibleSubjects() {
                     var element2 = classes[index2];
                     if (element2.classname == values[2]) {
                         var lessons = element2.lessons;
-                        // console.log(timetable_blocks[index].classes[index2].lessons[values[0]]);
-                        // change the lessons in that window
-                        // timetable_blocks[index].classes[index2].lessons[values[0]] = values[3];
                         var subject_value = "";
                         for (let index3 = 3; index3 < values.length; index3++) {
                             const element3 = values[index3];
                             subject_value +=element3+"|";
                         }
-                        subject_value = subject_value.substr(0,subject_value.length-1);
+                        subject_value = subject_value.substring(0,subject_value.length-1);
                         var second_value = (all_value.length > 1) ? all_value[1].trim().length > 0 ? all_value[1]:"":"";
                         lessons[values[0]] = second_value.trim().length > 0? subject_value+" = "+second_value:subject_value;
-                        // lessons[values[0]] = values[2];
-                        // console.log(timetable_blocks[index].classes[index2].lessons[values[0]]);
                     }
                 }
             }
@@ -3910,7 +3853,6 @@ function process_combinations() {
                 }
             }
         }
-        // console.log(posible_lessons);
         // possible lessons will be used to set the subjects for the teacher
         // proceed and reset the whole timetable
         var new_block_tt = {blocktimetable:[]};
@@ -3969,9 +3911,7 @@ function process_combinations() {
             }
             new_block_tt.blocktimetable.push(day_lessons);
         }
-        // console.log(timetable_blocks);
         new_block_tt = new_block_tt.blocktimetable;
-        // console.log(new_block_tt);
         // loop through the timetable block and look for places to replace the new subjects combinations
         for (let index = 0; index < timetable_blocks.length; index++) {
             var classes = timetable_blocks[index].classes;
@@ -4047,7 +3987,6 @@ function process_combinations() {
             }
         }
         cObj("timetable_blocks").innerText = JSON.stringify(timetable_blocks);
-        // console.log(timetable_blocks);
         displayTable();
     }
 }
@@ -4064,7 +4003,6 @@ cObj("return_timetable_lists2").onclick = function () {
 function checkPresntContain(array, string) {
     for (let index = 0; index < array.length; index++) {
         const element = array[index];
-        // console.log(string+" include this = "+element+" => "+element.includes(string));
         if (element.length > 0) {
             if (string.includes(element)) {
                 return true;
@@ -4076,7 +4014,6 @@ function checkPresntContain(array, string) {
 function checkPresentIncludes(array, string) {
     for (let index = 0; index < array.length; index++) {
         const element = array[index];
-        // console.log(string+" include this = "+element+" => "+element.includes(string));
         if (element.length > 0) {
             if (element.includes(string)) {
                 return true;
@@ -4205,7 +4142,6 @@ cObj("set_grades_display_btn").onclick = function () {
     var errors = checkBlank("unit_unique_name");
     errors+=checkBlank("unit_code");
     errors+=checkBlank("subject_max_marks");
-    // console.log(errors);
     if (errors == 0) {
         // no errors present
         cObj("errregsub").innerHTML = "";
@@ -4605,7 +4541,6 @@ function checkedBoxes() {
 // cObj("back_exams_btn").addEventListener("click",goPrevExams);
 
 cObj("generate_exams_reports").onclick = function () {
-    console.log(currentSlideexams);
     cObj("viewexam").classList.add("hide");
     if (currentSlideexams == 0) {
         cObj("generate_exams_reports_window").classList.toggle("hide");
@@ -5150,7 +5085,6 @@ function display_course_unit_list() {
                         // json value
                         cObj("course_list_holder_unit_assignment").innerText = JSON.stringify(course_data_held);
                     }
-                    console.log(course_data_held);
                     cObj("show_selected_units").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
 
                     var checkboxes = document.getElementsByClassName("subjectclass_unit_assign");
@@ -5259,7 +5193,6 @@ function display_course_unit_list() {
             });
         }
     });
-    var datapass = "?display_course_units=true";
 }
 
 function display_lecture_halls() {
@@ -5373,4 +5306,295 @@ cObj("add_new_lecture_hall").onclick = function () {
             cObj("new_lecture_hall_err_handler").innerHTML = "<p class='text-danger'>Fill all fields with a red border!</p>";
         }
     }
+}
+
+function getAllCourses() {
+    var datapass = "?get_all_course_unit_assignment_list=true";
+    sendData1("GET", "academic/academic.php", datapass, cObj("course_list_holder_unit_assignment"), function () {
+        if (cObj("course_list_assignment_table") != undefined) {
+            $("#course_list_assignment_table").DataTable();
+        }
+        var course_unit_assignment_btn = document.getElementsByClassName("course_unit_assignment_btn");
+        for (let index = 0; index < course_unit_assignment_btn.length; index++) {
+            const element = course_unit_assignment_btn[index];
+            element.addEventListener("click", function () {
+                cObj("setup_course_unit_assignment").classList.remove("hide");
+                cObj("course_list_holder_unit_assignment").classList.add("hide");
+                cObj("course_unit_assignment_data").value = valObj("course_list_data_"+this.id.substring(27));
+                var unit_assignment_data = hasJsonStructure(valObj("course_unit_assignment_data")) ? JSON.parse(valObj("course_unit_assignment_data")) : null;
+                var no_of_terms = unit_assignment_data != null  ? unit_assignment_data.no_of_terms*1 : 0;
+                cObj("course_unit_assignment_id").value = this.id.substring(27);
+                var datapass = "?get_course_assignment_list=true&course_id="+this.id.substring(27)+"&course_length="+no_of_terms;
+                sendData1("GET", "academic/academic.php", datapass, cObj("course_module_list_assignment"), function () {
+                    display_table_unit_course_assignment();
+                })
+            })
+        }
+    });
+}
+
+cObj("back_to_course_list_holder").onclick = function () {
+    cObj("setup_course_unit_assignment").classList.add("hide");
+    cObj("course_list_holder_unit_assignment").classList.remove("hide");
+    display_table_unit_course_assignment();
+}
+
+function display_table_unit_course_assignment() {
+    var unit_assignment_data = valObj("course_unit_assignment_data");
+    if (hasJsonStructure(unit_assignment_data)) {
+        unit_assignment_data = JSON.parse(unit_assignment_data);
+        var module_assignment = cObj("course_module_list_assignment").innerText;
+        var module_assignment_data = hasJsonStructure(module_assignment) ? JSON.parse(module_assignment) : [];
+        var data_to_display = "<hr><table class='table'><tr><th>Course</th><th>Module</th><th colspan='2'>Units</th><th>Action</th></tr>";
+        var modules = (unit_assignment_data.no_of_terms*1) + (module_assignment_data.length > 0 ? module_assignment_data.length : 1);
+        var module_count = unit_assignment_data.no_of_terms*1;
+        var this_module_units = [];
+        for (let index = 0; index < module_count; index++) {
+            for (let ind = 0; ind < module_assignment_data.length; ind++) {
+                const elem = module_assignment_data[ind];
+                if (elem.module_number == (index+1)) {
+                    this_module_units.push(elem);
+                }
+            }
+
+            if (index == 0) {
+                data_to_display += "<tr><td rowspan='"+modules+"' style='vertical-align: middle;'><input type='hidden' id='module_data_"+index+"' value='"+JSON.stringify(this_module_units)+"'>"+unit_assignment_data.course_name+"</td><td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'>Module "+(index+1)+"</td> "+(this_module_units.length > 0 ? "<td>"+(this_module_units[0].display_name != null ? this_module_units[0].display_name : this_module_units[0].subject_name)+"</td><td><span class='remove_unit_module link' id='remove_module_unit_"+this_module_units[0].assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td>" : "<td colspan='2'><p class='text-success p-1 my-2 border border-success rounded'>No units present at the moment!</p></td>") + "<td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><span class='edit_module_units link' id='edit_course_units_"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
+            }else{
+                data_to_display += "<tr><td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><input type='hidden' id='module_data_"+index+"' value='"+JSON.stringify(this_module_units)+"'>Module "+(index+1)+"</td>" + (this_module_units.length > 0 ? "<td>"+(this_module_units[0].display_name != null ? this_module_units[0].display_name : this_module_units[0].subject_name)+"</td><td><span class='remove_unit_module link' id='remove_module_unit_"+this_module_units[0].assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td>" : "<td colspan='2'><p class='text-success p-1 my-2 border border-success rounded'>No units present at the moment!</p></td>") + "<td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><span class='edit_module_units link' id='edit_module_units_"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
+            }
+            for (let ind = 1; ind < this_module_units.length; ind++) {
+                const element = this_module_units[ind];
+                data_to_display+="<tr><td>" + (element.display_name != null ? element.display_name : element.subject_name)+ "</td><td><span class='remove_unit_module link' id='remove_unit_module_"+element.assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td></tr>";
+            }
+            this_module_units = [];
+        }
+        data_to_display+= "</table>";
+
+        // data to display
+        cObj("course_unit_assignment_setup").innerHTML = data_to_display;
+        var edit_module_units = document.getElementsByClassName("edit_module_units");
+        for (let index = 0; index < edit_module_units.length; index++) {
+            const element = edit_module_units[index];
+            element.addEventListener("click", edit_module_units_func);
+        }
+
+        var remove_unit_module = document.getElementsByClassName("remove_unit_module");
+        for (let index = 0; index < remove_unit_module.length; index++) {
+            const element = remove_unit_module[index];
+            element.addEventListener("click", remove_module_units_func);
+        }
+    }else{
+        // data to display
+        cObj("course_unit_assignment_setup").innerHTML = "<p class='text-danger text-center p-1 border border-danger rounded'>No course list to display!</p>";
+    }
+}
+
+function edit_module_units_func() {
+    cObj("add_module_units").classList.remove("hide");
+    cObj("module_number_holder").innerHTML = "Module "+((this.id.substring(18)*1)+1);
+    var unit_assignment_data = hasJsonStructure(valObj("course_unit_assignment_data")) ? JSON.parse(valObj("course_unit_assignment_data")) : null;
+    var course_level = unit_assignment_data != null ? unit_assignment_data.course_level : "0";
+    var course_id = unit_assignment_data != null ? unit_assignment_data.id : "0";
+    var datapass = "?get_course_units=true&course_level="+course_level+"&course_id="+course_id;
+    var module_number = (this.id.substring(18)*1 + 1);
+    cObj("module_unit_list_holder").innerText = cObj("module_data_"+this.id.substring(18)).value;
+    sendData1("GET","academic/academic.php",datapass,cObj("course_unit_list"), function (){
+        if (cObj("select_all_courses_module_unit_assign") != null) {
+            var subjectclass = document.getElementsByClassName("subjectclass_module_unit_assign");
+            var hold_course_selected = hasJsonStructure(cObj("module_unit_list_holder").innerText) ? JSON.parse(cObj("module_unit_list_holder").innerText) : [];
+            var checked_count = 0;
+
+            // ADD LISTENERS TO CHECKBOXES
+            for (let index = 0; index < subjectclass.length; index++) {
+                const element = subjectclass[index];
+                element.addEventListener("change", function () {
+                    var course_data_held = hasJsonStructure(cObj("module_unit_list_holder").innerText) ? JSON.parse(cObj("module_unit_list_holder").innerText) : [];
+                    if (element.checked) {
+                        // add the element in the list of it doesn`t exist
+                        var is_present = false;
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.module_number == module_number && elem.course_id == course_id && elem.unit_id == element.value) {
+                                is_present = true;
+                            }
+                        }
+                        // if not present
+                        if (!is_present) {
+                            course_data_held.push({
+                                course_id:course_id,
+                                unit_id:element.value,
+                                module_number:module_number
+                            });
+                        }
+
+                        // json value
+                        cObj("module_unit_list_holder").innerText = JSON.stringify(course_data_held);
+                    }else{
+                        // add the rest of the element except the one that is unchecked
+                        var new_course_data = [];
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.module_number == module_number && elem.course_id == course_id && elem.unit_id == element.value) {
+                                continue;
+                            }
+                            new_course_data.push(elem);
+                        }
+                        course_data_held = new_course_data;
+
+                        // json value
+                        cObj("module_unit_list_holder").innerText = JSON.stringify(course_data_held);
+                    }
+                    cObj("selected_module_units").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
+
+                    var checkboxes = document.getElementsByClassName("subjectclass_module_unit_assign");
+                    var check_count = 0;
+                    for (let index = 0; index < checkboxes.length; index++) {
+                        const element = checkboxes[index];
+                        if (element.checked) {
+                            check_count++;
+                        }
+                    }
+                    if (check_count > 0) {
+                        if (check_count == checkboxes.length) {
+                            cObj("select_all_courses_module_unit_assign").indeterminate = false;
+                            cObj("select_all_courses_module_unit_assign").checked = true;
+                        }else{
+                            cObj("select_all_courses_module_unit_assign").checked = false;
+                            cObj("select_all_courses_module_unit_assign").indeterminate = true;
+                        }
+                    }else{
+                        cObj("select_all_courses_module_unit_assign").checked = false;
+                        cObj("select_all_courses_module_unit_assign").indeterminate = false;
+                    }
+                });
+
+                // check if element was selected before
+                for (let ind = 0; ind < hold_course_selected.length; ind++) {
+                    const elems = hold_course_selected[ind];
+                    if (elems.module_number == module_number && elems.course_id == course_id && elems.unit_id == element.value) {
+                        element.checked = true;
+                    }
+                }
+
+                // add checked count
+                checked_count += element.checked ? 1 : 0;
+            }
+
+            // SET THE SELECT ALL CHECKBOXES
+            if (checked_count > 0) {
+                if (checked_count == subjectclass.length) {
+                    cObj("select_all_courses_module_unit_assign").indeterminate = false;
+                    cObj("select_all_courses_module_unit_assign").checked = true;
+                }else{
+                    cObj("select_all_courses_module_unit_assign").checked = false;
+                    cObj("select_all_courses_module_unit_assign").indeterminate = true;
+                }
+            }else{
+                cObj("select_all_courses_module_unit_assign").checked = false;
+                cObj("select_all_courses_module_unit_assign").indeterminate = false;
+            }
+            
+            // SET THE SELECT ALL CHECKBOXES EVENT LISTENER
+            cObj("select_all_courses_module_unit_assign").addEventListener("change", function () {
+                var subjectclass = document.getElementsByClassName("subjectclass_module_unit_assign");
+                for (let index = 0; index < subjectclass.length; index++) {
+                    const element = subjectclass[index];
+                    element.checked = this.checked;
+                    var course_data_held = hasJsonStructure(cObj("module_unit_list_holder").innerText) ? JSON.parse(cObj("module_unit_list_holder").innerText) : [];
+                    if (this.checked) {
+                        // add the element in the list of it doesn`t exist
+                        var is_present = false;
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.module_number == module_number && elem.course_id == course_id && elem.unit_id == element.value) {
+                                is_present = true;
+                            }
+                        }
+                        // if not present
+                        if (!is_present) {
+                            course_data_held.push({
+                                course_id:course_id,
+                                unit_id:element.value,
+                                module_number:module_number
+                            });
+                        }
+                        cObj("module_unit_list_holder").innerText = JSON.stringify(course_data_held);
+                    }else{
+                        // add the rest of the element except the one that is unchecked
+                        var new_course_data = [];
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.module_number == module_number && elem.course_id == course_id && elem.unit_id == element.value) {
+                                continue;
+                            }
+                            new_course_data.push(elem);
+                        }
+                        course_data_held = new_course_data;
+
+                        // json value
+                        cObj("module_unit_list_holder").innerText = JSON.stringify(course_data_held);
+                    }
+                    // course level length
+                    cObj("selected_module_units").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
+                }
+            });
+
+            // SET THE SEARCHBOX EVENT LISTENER
+            cObj("search_courses_module_unit_assignment").addEventListener("keyup", function () {
+                var search_courses_unit = document.getElementsByClassName("search_courses_module_unit_assign");
+                for (let index = 0; index < search_courses_unit.length; index++) {
+                    const element = search_courses_unit[index];
+                    if (!element.innerText.toLowerCase().toString().includes(this.value.toLowerCase().toString())) {
+                        cObj("checkbox_holder_module_unit_assign_"+element.id.substring(34)).classList.add("hide");
+                    }else{
+                        cObj("checkbox_holder_module_unit_assign_"+element.id.substring(34)).classList.remove("hide");
+                    }
+                }
+            });
+        }
+    });
+}
+
+cObj("close_module_unit_selector_1").onclick = function () {
+    cObj("add_module_units").classList.add("hide");
+    cObj("module_unit_list_holder").innerText = "[]";
+    cObj("selected_module_units").innerHTML = "";
+}
+
+cObj("close_module_unit_selector").onclick = function () {
+    cObj("add_module_units").classList.add("hide");
+    cObj("module_unit_list_holder").innerText = "[]";
+    cObj("selected_module_units").innerHTML = "";
+}
+
+cObj("save_module_selector").onclick = function () {
+    var datapass = "add_new_module_units=true&module_units="+cObj("module_unit_list_holder").innerText;
+    sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("module_selector_error_list"), cObj("loadings"), function () {
+        cObj("close_module_unit_selector").click();
+        cObj("course_unit_assignment_btn_"+cObj("course_unit_assignment_id").value).click();
+        setTimeout(() => {
+            cObj("module_selector_error_list").innerHTML = ""
+        }, 2000);
+    });
+}
+
+function remove_module_units_func() {
+    cObj("confirm_delete_assignment_module").classList.remove("hide");
+    cObj("assignment_id_holder_unit").value = this.id.substring(19);
+}
+
+cObj("confirm_no_assignment_id_holder_unit").onclick = function () {
+    cObj("confirm_delete_assignment_module").classList.add("hide");
+    cObj("assignment_id_holder_unit").value = "";
+}
+
+cObj("confirm_yes_assignment_id_holder_unit").onclick = function () {
+    var datapass = "?remove_assignment_id=true&assignment_id="+valObj("assignment_id_holder_unit");
+    sendData1("GET", "academic/academic.php", datapass, cObj("course_module_lists_error_handler"), function () {
+        setTimeout(() => {
+            cObj("course_module_lists_error_handler").innerHTML = "";
+        }, 3000);
+        cObj("confirm_no_assignment_id_holder_unit").click();
+        cObj("course_unit_assignment_btn_"+cObj("course_unit_assignment_id").value).click();
+    })
 }

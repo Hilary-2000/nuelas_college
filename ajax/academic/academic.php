@@ -318,6 +318,48 @@
                 $tableinformation.="</tbody></table></div></div>";
                 echo $tableinformation;
             }
+        }elseif(isset($_GET['get_all_course_unit_assignment_list'])){
+            $select = "SELECT * FROM settings WHERE sett = 'courses';";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<h6 class='text-center'><u><b>Course List</b></u></h6><div class='tableme'><table class='table' id='course_list_assignment_table'><thead><tr><th>No.</th><th>Course Name</th><th>Unit Assigned</th><th>Module Number</th><th>Action</th></tr></thead><tbody>";
+            if($result){
+                if ($row = $result->fetch_assoc()) {
+                    $course_data = isJson_report($row['valued']) ? json_decode($row['valued'], true) : [];
+                    for ($index=0; $index < count($course_data); $index++) {
+                        $course_count = "SELECT COUNT(*) AS 'unit_count' FROM `course_unit_assignment` WHERE course_id = ?";
+                        $statement = $conn2->prepare($course_count);
+                        $statement->bind_param("s",$course_data[$index]['id']);
+                        $statement->execute();
+                        $result = $statement->get_result();
+                        $course_count = 0;
+                        if ($result) {
+                            if ($row = $result->fetch_assoc()) {
+                                $course_count = $row['unit_count'];
+                            }
+                        }
+                        $data_to_display .= "<tr><td> <input type='hidden' value='".json_encode($course_data[$index])."' id='course_list_data_".$course_data[$index]['id']."'>".($index+1).".</td><td>".$course_data[$index]['course_name']."</td><td>".$course_count." Courses</td><td>".$course_data[$index]['no_of_terms']." Modules</td><td><span class='course_unit_assignment_btn link' id='course_unit_assignment_btn_".$course_data[$index]['id']."'><i class='fas fa-pen-fancy'></i> Set-Up</span></td></tr>";
+                    }
+                }
+            }
+            $data_to_display.= "</tbody></table></div>";
+            echo $data_to_display;
+        }elseif(isset($_GET['get_course_assignment_list'])){
+            $course_length = $_GET['course_length'];
+            $select = "SELECT course_unit_assignment.*, table_subject.* FROM `course_unit_assignment` LEFT JOIN table_subject ON table_subject.subject_id = course_unit_assignment.unit_id WHERE course_id = ? AND module_number <= ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss", $_GET['course_id'], $course_length);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $course_list = [];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($course_list, $row);
+                }
+            }
+            // course_list
+            echo json_encode($course_list);
         }elseif (isset($_GET['seachby'])) {
             $searchby = $_GET['seachby'];
             $select = "SELECT `fullname`,`gender`,`user_id` FROM `user_tbl` WHERE ";
@@ -380,7 +422,7 @@
             $stmt->bind_param("s",$teacher_id);
             $stmt->execute();
             $result = $stmt->get_result();
-            $data_to_display = "<div class='tableme'><table class='table' id='staff_course_list'><thead><tr><th>No.</th><th>Unit</th><th>Level</th><th>Course</th><th>Action</th></tr></thead><tbody>";
+            $data_to_display = "<div class='tableme'><table class='table' id='staff_course_list'><thead><tr><th>No.</th><th>Unit</th><th>Code</th><th>Course</th><th>Action</th></tr></thead><tbody>";
             if($result){
                 $index = 1;
                 while ($row = $result->fetch_assoc()) {
@@ -391,7 +433,7 @@
                             break;
                         }
                     }
-                    $data_to_display .= "<tr><td>".$index.".</td><td>".$row['subject_name']."</td><td>".$row['course_level_id']."</td><td>".$course_name."</td><td><span class='remove_course_unit link' id='remove_course_unit_".$row['assignment_id']."'><i class='fas fa-trash'></i> Remove</span></td></tr>";
+                    $data_to_display .= "<tr><td>".$index.".</td><td>".$row['subject_name']."</td><td>".$row['timetable_id']."</td><td>".$course_name."</td><td><span class='remove_course_unit link' id='remove_course_unit_".$row['assignment_id']."'><i class='fas fa-trash'></i> Remove</span></td></tr>";
                     $index++;
                 }
             }
@@ -405,6 +447,14 @@
             $data_to_display.="</tbody></table></div>";
             echo $data_to_display."<input type='hidden' id='teacher_academic_super_user_status' value='".$academic_su."'>";
             return;
+        }elseif(isset($_GET['remove_assignment_id'])){
+            $assignment_id = $_GET['assignment_id'];
+            $delete = "DELETE FROM course_unit_assignment WHERE assignment_id = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s", $assignment_id);
+            $stmt->execute();
+            
+            echo "<p class='text-success border border-success rounded p-2 my-2'>Unit removed successfully!</p>";
         }elseif(isset($_GET['display_lecture_halls'])){
             $select = "SELECT * FROM lecture_halls";
             $stmt = $conn2->prepare($select);
@@ -619,6 +669,45 @@
                     $data.="<div class = 'checkboxholder checkbox_holder_unit_assign w-100' style='margin:10px 0;padding:0px 0px;' id='checkbox_holder_unit_assign_".$row['subject_id']."'>";
                     $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_unit_assign ' id='search_courses_unit_assign_".$row['subject_id']."' for='course_name_unit_assign_".$row['subject_id']."'>".($index+1).". ".$row['subject_name']." ".($row['is_used'] > 0 ? "<span class='text-success'>✔</span>" : "")."</label>";
                     $data.="<input class='subjectclass_unit_assign' type='checkbox' name='course_name_unit_assign_".$row['subject_id']."' value='".$row['subject_id']."' id='course_name_unit_assign_".$row['subject_id']."'>";
+                    $data.="</div>";
+                    $index+=1;
+                }
+            }
+            $data.="</div>";
+            echo $data;
+        }elseif (isset($_GET['get_course_units'])) {
+            // course list
+            $course_level = $_GET['course_level'];
+            $select = "SELECT * FROM `settings` WHERE sett = 'class';";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result) {
+                if ($row = $result->fetch_assoc()) {
+                    if (isJson_report($row['valued'])) {
+                        $courses = json_decode($row['valued'], true);
+                        for ($index = 0; $index < count($courses); $index++) { 
+                            if ($courses[$index]['id'] == $course_level) {
+                                $course_level = $courses[$index]['classes'];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            $course_id = $_GET['course_id'];
+
+            $select = "SELECT table_subject.*, (SELECT COUNT(*) AS 'total' FROM course_unit_assignment WHERE unit_id = table_subject.subject_id AND course_id = '".$course_id."') AS 'is_used', (SELECT module_number FROM course_unit_assignment WHERE unit_id = table_subject.subject_id AND course_id = '".$course_id."' LIMIT 1) AS 'module_number' FROM `table_subject` WHERE classes_taught LIKE '%{\"course_level\":\"".$course_level."\",\"course_id\":\"".$course_id."\"}%'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data = "<div class='row mb-2'><div class='col-md-6'><input type='text' id='search_courses_module_unit_assignment' placeholder='Search Unit...' class='form-control w-100'></div><div class='col-md-6'><label for='select_all_courses_module_unit_assign' class='form-control-label text-bold'><b>Select All</b> <input type='checkbox' id='select_all_courses_module_unit_assign'></label></div></div><div class ='classlist form-control' style='height:200px;overflow:auto;' name='selectsubs_module_unit_assignment' id='selectsubs_module_unit_assignment'>";
+            if ($result) {
+                $index = 0;
+                while ($row = $result->fetch_assoc()) {
+                    $data.="<div class='checkboxholder checkbox_holder_module_unit_assign w-100' style='margin:10px 0;padding:0px 0px;' id='checkbox_holder_module_unit_assign_".$row['subject_id']."'>";
+                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_module_unit_assign ' id='search_courses_module_unit_assign_".$row['subject_id']."' for='course_name_module_unit_assign_".$row['subject_id']."'>".($index+1).". ".$row['subject_name']." ".($row['is_used'] > 0 ? "<small class='text-success'>(Module ".$row['module_number'].")</small>" : "")."</label>";
+                    $data.="<input class='subjectclass_module_unit_assign' type='checkbox' name='course_name_module_unit_assign_".$row['subject_id']."' value='".$row['subject_id']."' id='course_name_module_unit_assign_".$row['subject_id']."'>";
                     $data.="</div>";
                     $index+=1;
                 }
@@ -3603,6 +3692,39 @@
                 echo "<p class='text-success border border-success p-1 my-1'>Unit assignment done successfully!</p>";
             }else{
                 echo "<p class='text-danger border border-danger p-1 my-1'>An error has occured!</p>";
+            }
+        }elseif(isset($_POST['add_new_module_units'])){
+            $add_new_module_units = $_POST['add_new_module_units'];
+            $module_units = $_POST['module_units'];
+
+            if (isJson_report($module_units)) {
+                $module_units = json_decode($module_units, true);
+                for ($index=0; $index < count($module_units); $index++) {
+                    $select = "SELECT * FROM course_unit_assignment WHERE course_id = ? AND unit_id = ?";
+                    $stmt = $conn2->prepare($select);
+                    $stmt->bind_param("ss", $module_units[$index]['course_id'], $module_units[$index]['unit_id']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $found = false;
+                    if ($result) {
+                        if ($row = $result->fetch_assoc()) {
+                            $found = true;
+                            $update = "UPDATE course_unit_assignment SET module_number = ? WHERE assignment_id = ?";
+                            $statement = $conn2->prepare($update);
+                            $statement->bind_param("ss", $module_units[$index]['module_number'], $row['assignment_id']);
+                            $statement->execute();
+                        }
+                    }
+                    if (!$found) {
+                        $insert = "INSERT INTO course_unit_assignment (course_id, unit_id, module_number) VALUES (?,?,?)";
+                        $stmt = $conn2->prepare($insert);
+                        $stmt->bind_param("sss", $module_units[$index]['course_id'], $module_units[$index]['unit_id'], $module_units[$index]['module_number']);
+                        $stmt->execute();
+                    }
+                }
+                echo "<p class='text-success border border-success p-1 my-2'>Module units have been set successfully!</p>";
+            }else{
+                echo "<p class='text-danger border border-danger p-1 my-2'>An error has occured!</p>";
             }
         }
     }

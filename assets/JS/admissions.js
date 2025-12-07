@@ -946,7 +946,15 @@ cObj("managetrnsub").onclick = function () {
     addselected(this.id);
     cObj("managesubanteach").classList.remove("hide");
     removesidebar();
-    allTeachers();  
+    allTeachers();
+}
+cObj("course_unit_assignment").onclick = function () {
+    hideWindow();
+    unselectbtns();
+    addselected(this.id);
+    cObj("course_unit_assignment_window").classList.remove("hide");
+    removesidebar();
+    getAllCourses();
 }
 cObj("lecture_halls_btn").onclick = function () {
     hideWindow();
@@ -1303,8 +1311,8 @@ window.onload = function () {
     //get the payment details here
     var datapass2 = "?payfordetails=true";
     sendData("GET", "finance/financial.php", datapass2, cObj("payments"));
-    var datapass3 = "?showsubjected=true";
-    sendData("GET", "academic/academic.php", datapass3, cObj("classeslist"));
+    // var datapass3 = "?showsubjected=true";
+    // sendData("GET", "academic/academic.php", datapass3, cObj("classeslist"));
     datapass3 = "?showsubject=true";
     sendData("GET", "academic/academic.php", datapass3, cObj("subjClass"));
     //show school logo
