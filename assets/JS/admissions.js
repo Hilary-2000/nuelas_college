@@ -1097,41 +1097,7 @@ cObj("examanagement").onclick = function () {
     addselected(this.id);
     cObj("exammanagement").classList.remove("hide");
     removesidebar();
-    var datapass = "?getExamination=onetermexams";
-    sendData1("GET", "academic/academic.php", datapass, cObj("holdExaminfor"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                var viewExams = document.getElementsByClassName("viewExams");
-                for (let dc = 0; dc < viewExams.length; dc++) {
-                    const element = viewExams[dc];
-                    setExamListener(element.id);
-                }
-                var prints_exams = document.getElementsByClassName("prints_exams");
-                for (let ind = 0; ind < prints_exams.length; ind++) {
-                    const element = prints_exams[ind];
-                    element.addEventListener("click", printExamsFunc);
-                }
-                var view_exam_result = document.getElementsByClassName("view_exam_result");
-                for (let index = 0; index < view_exam_result.length; index++) {
-                    const element = view_exam_result[index];
-                    element.addEventListener("click", getExamsInfor);
-                }
-                var delete_exams_ = document.getElementsByClassName("delete_exams_");
-                for (let index = 0; index < delete_exams_.length; index++) {
-                    const element = delete_exams_[index];
-                    element.addEventListener("click", delete_exams);
-                }
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 200);
+    getExams();
 }
 /******end of active window****** */
 
@@ -1150,7 +1116,7 @@ cObj("confirm_del_exams_yes").onclick = function () {
     var err = checkBlank("exams_ids_delete");
     if (err == 0) {
         var exams_id = valObj("exams_ids_delete");
-        var datapass = "?delete_exams=true&exams_id=" + exams_id;
+        var datapass = "?delete_exams=true&exams_id="+exams_id;
         sendData2("GET", "academic/academic.php", datapass, cObj("exams_data_windows"), cObj("delete_exams_loaders"));
         setTimeout(() => {
             var timeout = 0;

@@ -546,31 +546,6 @@ cObj("saves1").onclick = function () {
     }
 }
 
-var on_off = 0;
-cObj("viewexams").onclick = function () {
-    if (on_off == 0) {
-        cObj("viewexam").classList.remove("hide");
-        on_off = 1;
-        if (currentSlideexams == 0) {
-            cObj("generate_exams_reports_window").classList.add("hide");
-        }else{
-            cObj("finish_generating_reports").click();
-            cObj("generate_exams_reports_window").classList.toggle("hide");
-            // hide all slides
-            for (let index = 0; index < all_slides.length; index++) {
-                const element = all_slides[index];
-                element.classList.add("hide");
-            }
-            // display the next slide
-            all_slides[0].classList.remove("hide");
-            cObj("generate_exams_reports_window").classList.add("hide");
-            currentSlideexams = 0;
-        }
-    }else{
-        cObj("viewexam").classList.add("hide");
-        on_off = 0;
-    }
-}
 cObj("option1").onchange = function () {
     if (this.value == "bystatus") {
         cObj("statuses").classList.remove("hide");
@@ -597,8 +572,6 @@ cObj("option1").onchange = function () {
 
 cObj("nextexams").onclick = function () {
     if (cObj("examform2").classList.contains("hide")) {
-
-
         //CHECK FOR ERRORS
         var err = 0;
         err+=checkBlank("examstartdate");
@@ -663,97 +636,41 @@ cObj("nextexams").onclick = function () {
 }
 
 cObj("saveexams").onclick = function () {
-    //check errors for the complete window
-    var err = 0;
-    if (valObj("curriculum") == "cbc") {
-        err+=checkBlank("targetmscbc");
-    }else if (valObj("curriculum") == "844") {
-        err+=checkBlank("targetms");
+    var err = checkBlank("examjina");
+    err+=checkBlank("course_level_exam_registration");
+    if (cObj("course_list_holder_exam_registration").innerText.length <= 0) {
+        err++;
     }
+    var all_course_list = hasJsonStructure(cObj("course_list_holder_exam_registration").innerHTML) ? JSON.parse(cObj("course_list_holder_exam_registration").innerHTML) : [];
+    if (all_course_list.length <= 0) {
+        err++;
+    }
+    err+=checkBlank("examstartdate");
+    err+=checkBlank("examenddate");
+
     if (err == 0) {
-        //check if any class is selected
-        var classavail = 0;
-        var classesl = document.getElementsByClassName("subjectcls");
-        for (let dd = 0; dd < classesl.length; dd++) {
-            const element = classesl[dd];
-            if (element.checked == true) {
-                classavail++;
-            }
-        }
-        if (classavail > 0) {
-            cObj("errhandlers1203").innerHTML = "<p style='color:red;font-size:14px;'></p>";
-            //GET SUBJECTS SELECTED
-            var subjects = document.getElementsByClassName("mysubjects");
-            var mysubjectlist = "(";
-            for (let ind = 0; ind < subjects.length; ind++) {
-                const element = subjects[ind];
-                if (element.checked == true) {
-                    mysubjectlist+=element.value.split("|")[1]+",";
-                }
-            }
-            mysubjectlist = mysubjectlist.substr(0,mysubjectlist.length-1);
-            mysubjectlist+=")";
-            //GET CLASSLIST
-            var myclasslist = document.getElementsByClassName("subjectcls");
-            var classl = "(";
-            for (let inf = 0; inf < myclasslist.length; inf++) {
-                const elem = myclasslist[inf];
-                if (elem.checked == true) {
-                    classl+=elem.id.substr(5)+",";
-                }
-            }
-            classl = classl.substr(0, classl.length-1);
-            classl+=")";
-
-            //get the data from the form
-            var examname = cObj("examjina").value;
-            var examstartdate = cObj("examstartdate").value;
-            var examenddate = cObj("examenddate").value;
-            var curriculum = cObj("curriculum").value;
-            var targetms ="";        
-            if (curriculum == "cbc") {
-                targetms = valObj("targetmscbc");
-            }else if (curriculum == "844") {
-                targetms = valObj("targetms");
-            }else{
-                targetms = valObj("targetms");
-            }
-            var datapass = "?registerExams=true&examname="+examname+"&examstartdate="+examstartdate+"&examenddate="+examenddate+"&subjects="+mysubjectlist+"&classes="+classl+"&curriculum="+curriculum+"&targetms="+targetms;
-            sendData1("GET","academic/academic.php",datapass,cObj("errhandlers1203"));
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout==1200) {
-                        stopInterval(ids);                        
-                    }
-                    if (cObj("loadings").classList.contains("hide")) {
-                        cObj("formsexams1").reset();
-                        cObj("errhandlers1203").innerText = "";
-
-                        //remove any animation classes and return the first window
-                        cObj("examform1").classList.remove("hide");
-                        cObj("examform2").classList.add("hide");
-                        cObj("examform2").classList.remove("animate8");
-                        cObj("examform2").classList.remove("animate6");
-                        cObj("examform2").classList.remove("animate7");
-                        cObj("examform1").classList.remove("animate8");
-                        cObj("examform1").classList.remove("animate6");
-                        cObj("examform1").classList.remove("animate7");
-                        cObj("savebuttons").classList.add("hide");
-                        cObj("regexams").classList.add("hide");
-
-                        cObj("examanagement").click();
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 200);
+        if (cObj("exam_modal_action").value == "add") {
+            cObj("error_handler_exams").innerHTML = "";
+            var datapass = "register_exams=true&exam_name="+valObj("examjina")+"&course_chosen="+encodeURIComponent(JSON.stringify(all_course_list))+"&exam_start_date="+valObj("examstartdate")+"&exam_end_date="+valObj("examenddate");
+            sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("error_handler_exams"), cObj("loadings"), function () {
+                cObj("cancelexams").click();
+                setTimeout(() => {
+                    cObj("error_handler_exams").innerHTML = "";
+                }, 2000);
+            });
         }else{
-            alert("Select atleast one class to save!");
+            cObj("error_handler_exams").innerHTML = "";
+            var datapass = "update_exam_details=true&exam_id="+cObj("exam_id_edit").value+"&exam_name="+valObj("examjina")+"&course_chosen="+encodeURIComponent(JSON.stringify(all_course_list))+"&exam_start_date="+valObj("examstartdate")+"&exam_end_date="+valObj("examenddate");
+            sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("error_handler_exams"), cObj("loadings"), function () {
+                cObj("cancelexams").click();
+                setTimeout(() => {
+                    cObj("error_handler_exams").innerHTML = "";
+                }, 2000);
+            });
         }
+        getExams();
     }else{
-        cObj("errhandlers1203").innerHTML = "<p style='color:red;font-size:14px;margin-top:10px;'>Check all fields that are marked with red border!</p>";
+        cObj("error_handler_exams").innerHTML = "<p class='text-danger'>Fill all fields with a red border to proceed!</p>";
     }
 }
 cObj("previousexams").onclick = function () {
@@ -776,37 +693,206 @@ cObj("previousexams").onclick = function () {
 }
 
 cObj("cancelexams").onclick = function () {
-    //remove any animation classes and return the first window
-        cObj("examform1").classList.remove("hide");
-        cObj("examform2").classList.add("hide");
-        cObj("examform2").classList.remove("animate8");
-        cObj("examform2").classList.remove("animate6");
-        cObj("examform2").classList.remove("animate7");
-        cObj("examform1").classList.remove("animate8");
-        cObj("examform1").classList.remove("animate6");
-        cObj("examform1").classList.remove("animate7");
-        cObj("savebuttons").classList.add("hide");
-        cObj("regexams").classList.add("hide");
+    cObj("regexams").classList.add("hide");
+    cObj("course_level_list_holder_exam_reg").innerHTML = '<span class="border border-success p-1 rounded text-success">Course level list will appear here!</span>';
+    cObj("course_list_holder_exam_reg").innerHTML = '<span class="border border-success p-1 rounded text-success">Course list will appear here!</span>';
+    cObj("subjectslists").innerHTML = '<span class="border border-success p-1 rounded text-success">Course units list will appear here!</span>';
+    cObj("course_list_holder_exam_registration").innerText = "[]";
+    cObj("selected_units_exams_reg").innerHTML = "";
+    cObj("new_exams_form").reset();
 }
 cObj("fungash").onclick = function () {
-    //remove any animation classes and return the first window
-        cObj("examform1").classList.remove("hide");
-        cObj("examform2").classList.add("hide");
-        cObj("examform2").classList.remove("animate8");
-        cObj("examform2").classList.remove("animate6");
-        cObj("examform2").classList.remove("animate7");
-        cObj("examform1").classList.remove("animate8");
-        cObj("examform1").classList.remove("animate6");
-        cObj("examform1").classList.remove("animate7");
-        cObj("savebuttons").classList.add("hide");
-        cObj("regexams").classList.add("hide");
+    cObj("cancelexams").click();
 }
 
 cObj("registerexamsbtn").onclick = function () {
     cObj("regexams").classList.remove("hide");
-    var datapass = "?retrievsubjectlist=true";
-    sendData2("GET","academic/academic.php",datapass,cObj("subjectslists"),cObj("loadings213"));
+    cObj("saveexams").innerHTML = "<i class='fas fa-save'></i> Save";
+    cObj("exam_modal_action").value = "add";
+    var datapass = "?getclass=true&select_class_id=course_level_exam_registration";
+    sendData1("GET", "administration/admissions.php", datapass, cObj("course_level_list_holder_exam_reg"), function () {
+        if (cObj("course_level_exam_registration") != undefined) {
+            $("#course_level_exam_registration").select2({
+                width: "100%"
+            });
+
+            cObj("course_level_exam_registration").onchange = display_course_list_exam;
+        }
+    });
+    cObj("exam_registration_title").innerText = "Register exams";
 }
+
+function display_course_list_exam() {
+    // get the course lists
+    var datapass = "?get_course_list=true&course_level="+this.value+"&object_id=course_exam_registration";
+    sendData2("GET","administration/admissions.php",datapass,cObj("course_list_holder_exam_reg"),cObj("loadings"), function () {
+        if (cObj("course_exam_registration") != undefined) {
+            $("#course_exam_registration").select2({
+                width: "100%"
+            });
+            cObj("course_exam_registration").onchange = display_course_unit_list_exam_registration;
+        }
+    });
+}
+function display_course_unit_list_exam_registration() {
+    var datapass = "?get_course_units_exams=true&course_level="+valObj("course_level_exam_registration")+"&course_id="+valObj("course_exam_registration");
+    sendData1("GET","academic/academic.php",datapass,cObj("subjectslists"), function () {
+        // return "";
+        if (cObj("select_all_courses_exam_reg") != null) {
+            var subjectclass = document.getElementsByClassName("subjectclass_exam_reg");
+            var hold_course_selected = hasJsonStructure(cObj("course_list_holder_exam_registration").innerText) ? JSON.parse(cObj("course_list_holder_exam_registration").innerText) : [];
+            var checked_count = 0;
+
+            // ADD LISTENERS TO CHECKBOXES
+            for (let index = 0; index < subjectclass.length; index++) {
+                const element = subjectclass[index];
+                element.addEventListener("change", function () {
+                    var course_data_held = hasJsonStructure(cObj("course_list_holder_exam_registration").innerText) ? JSON.parse(cObj("course_list_holder_exam_registration").innerText) : [];
+                    if (element.checked) {
+                        // add the element in the list of it doesn`t exist
+                        var is_present = false;
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level == cObj("course_level_exam_registration").value && elem.course_id == cObj("course_exam_registration").value && elem.unit_id == element.value) {
+                                is_present = true;
+                            }
+                        }
+                        // if not present
+                        if (!is_present) {
+                            course_data_held.push({
+                                course_level: cObj("course_level_exam_registration").value,
+                                course_id:cObj("course_exam_registration").value,
+                                unit_id:element.value
+                            });
+                        }
+
+                        // json value
+                        cObj("course_list_holder_exam_registration").innerText = JSON.stringify(course_data_held);
+                    }else{
+                        // add the rest of the element except the one that is unchecked
+                        var new_course_data = [];
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level == cObj("course_level_exam_registration").value && elem.course_id == cObj("course_exam_registration").value && elem.unit_id == element.value) {
+                                continue;
+                            }
+                            new_course_data.push(elem);
+                        }
+                        course_data_held = new_course_data;
+
+                        // json value
+                        cObj("course_list_holder_exam_registration").innerText = JSON.stringify(course_data_held);
+                    }
+                    cObj("selected_units_exams_reg").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
+
+                    var checkboxes = document.getElementsByClassName("subjectclass_exam_reg");
+                    var check_count = 0;
+                    for (let index = 0; index < checkboxes.length; index++) {
+                        const element = checkboxes[index];
+                        if (element.checked) {
+                            check_count++;
+                        }
+                    }
+                    if (check_count > 0) {
+                        if (check_count == checkboxes.length) {
+                            cObj("select_all_courses_exam_reg").indeterminate = false;
+                            cObj("select_all_courses_exam_reg").checked = true;
+                        }else{
+                            cObj("select_all_courses_exam_reg").checked = false;
+                            cObj("select_all_courses_exam_reg").indeterminate = true;
+                        }
+                    }else{
+                        cObj("select_all_courses_exam_reg").checked = false;
+                        cObj("select_all_courses_exam_reg").indeterminate = false;
+                    }
+                });
+
+                // check if element was selected before
+                for (let ind = 0; ind < hold_course_selected.length; ind++) {
+                    const elems = hold_course_selected[ind];
+                    if (elems.course_id == cObj("course_exam_registration").value && elems.unit_id == element.value && elems.course_level == valObj("course_level_exam_registration")) {
+                        element.checked = true;
+                    }
+                }
+                // add checked count
+                checked_count += element.checked ? 1 : 0;
+            }
+
+            // SET THE SELECT ALL CHECKBOXES
+            if (checked_count > 0) {
+                if (checked_count == subjectclass.length) {
+                    cObj("select_all_courses_exam_reg").indeterminate = false;
+                    cObj("select_all_courses_exam_reg").checked = true;
+                }else{
+                    cObj("select_all_courses_exam_reg").checked = false;
+                    cObj("select_all_courses_exam_reg").indeterminate = true;
+                }
+            }else{
+                cObj("select_all_courses_exam_reg").checked = false;
+                cObj("select_all_courses_exam_reg").indeterminate = false;
+            }
+            
+            // SET THE SELECT ALL CHECKBOXES EVENT LISTENER
+            cObj("select_all_courses_exam_reg").addEventListener("change", function () {
+                var subjectclass = document.getElementsByClassName("subjectclass_exam_reg");
+                for (let index = 0; index < subjectclass.length; index++) {
+                    const element = subjectclass[index];
+                    element.checked = this.checked;
+                    var course_data_held = hasJsonStructure(cObj("course_list_holder_exam_registration").innerText) ? JSON.parse(cObj("course_list_holder_exam_registration").innerText) : [];
+                    if (this.checked) {
+                        // add the element in the list of it doesn`t exist
+                        var is_present = false;
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level == cObj("course_level_exam_registration").value && elem.course_id == cObj("course_exam_registration").value && elem.unit_id == element.value) {
+                                is_present = true;
+                            }
+                        }
+                        // if not present
+                        if (!is_present) {
+                            course_data_held.push({
+                                course_level: cObj("course_level_exam_registration").value,
+                                course_id:cObj("course_exam_registration").value,
+                                unit_id:element.value
+                            });
+                        }
+                        cObj("course_list_holder_exam_registration").innerText = JSON.stringify(course_data_held);
+                    }else{
+                        // add the rest of the element except the one that is unchecked
+                        var new_course_data = [];
+                        for (let index = 0; index < course_data_held.length; index++) {
+                            const elem = course_data_held[index];
+                            if (elem.course_level == cObj("course_level_exam_registration").value && elem.course_id == cObj("course_exam_registration").value && elem.unit_id == element.value) {
+                                continue;
+                            }
+                            new_course_data.push(elem);
+                        }
+                        course_data_held = new_course_data;
+
+                        // json value
+                        cObj("course_list_holder_exam_registration").innerText = JSON.stringify(course_data_held);
+                    }
+                    // course level length
+                    cObj("selected_units_exams_reg").innerHTML = "<small>Selected Course : "+course_data_held.length+"</small>";
+                }
+            });
+
+            // SET THE SEARCHBOX EVENT LISTENER
+            cObj("search_courses_unit_exam_reg").addEventListener("keyup", function () {
+                var search_courses_unit = document.getElementsByClassName("search_courses_exam_reg");
+                for (let index = 0; index < search_courses_unit.length; index++) {
+                    const element = search_courses_unit[index];
+                    if (!element.innerText.toLowerCase().toString().includes(this.value.toLowerCase().toString())) {
+                        cObj("checkbox_holder_exam_reg_"+element.id.substring(24)).classList.add("hide");
+                    }else{
+                        cObj("checkbox_holder_exam_reg_"+element.id.substring(24)).classList.remove("hide");
+                    }
+                }
+            });
+        }
+    });
+}
+
 //VIEW AVAILABLE EXAMS AND EDITING
 cObj("displaysubjects").onclick = function () {
     //check if any option is selected
@@ -818,14 +904,14 @@ cObj("displaysubjects").onclick = function () {
         var option = cObj("option1").value;
         if (option == "allactive") {
             var datapass = "?getExamination="+option;
-            sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"));
+            sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"), exam_table_listener);
         }else if (option == "byname") {
             var er = 0;
             er+=checkBlank("usenames2");
             if (er == 0) {
                 cObj("err123d").innerHTML = "";
                 var datapass = "?getExamination="+option+"&subjectnames="+cObj("usenames2").value;
-                sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"));
+                sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"), exam_table_listener);
             }else{
                 cObj("err123d").innerHTML = "<p style='color:red;font-size:13px;text-align:left;'>Enter the subject name and try again!</p>";
             }
@@ -843,7 +929,7 @@ cObj("displaysubjects").onclick = function () {
                     enddate = sday;
                 }
                 var datapass = "?getExamination="+option+"&sdate="+startdate+"&enddate="+enddate;
-                sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"));
+                sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"), exam_table_listener);
             }else{
                 cObj("err123d").innerHTML = "<p style='color:red;font-size:13px;text-align:left;'>Fill both dates and try again!</p>";
             }
@@ -853,48 +939,41 @@ cObj("displaysubjects").onclick = function () {
             if (er == 0) {
                 var status = cObj("status1").value;
                 var datapass = "?getExamination="+option+"&status="+status;
-                sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"));
+                sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"), exam_table_listener);
             }else{
                 cObj("err123d").innerHTML = "<p style='color:red;font-size:13px;text-align:left;'>Select an option and try again!</p>";
             }
         }
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout==1200) {
-                    stopInterval(ids);                        
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    var viewExams = document.getElementsByClassName("viewExams");
-                    for (let dc = 0; dc < viewExams.length; dc++) {
-                        const element = viewExams[dc];
-                        setExamListener(element.id);
-                    }
-                    var prints_exams = document.getElementsByClassName("prints_exams");
-                    for (let ind = 0; ind < prints_exams.length; ind++) {
-                        const element = prints_exams[ind];
-                        element.addEventListener("click",printExamsFunc);
-                    }
-                    var view_exam_result = document.getElementsByClassName("view_exam_result");
-                    for (let index = 0; index < view_exam_result.length; index++) {
-                        const element = view_exam_result[index];
-                        element.addEventListener("click",getExamsInfor);
-                    }
-                    var delete_exams_ = document.getElementsByClassName("delete_exams_");
-                    for (let index = 0; index < delete_exams_.length; index++) {
-                        const element = delete_exams_[index];
-                        element.addEventListener("click",delete_exams);
-                    }
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 200);
-
     }else{
         cObj("err123d").innerHTML = "<p style='color:red;font-size:14px;'>Select an option to display the exams!</p>";
     }
+}
+
+function exam_table_listener() {
+    // exams_table_data
+    var viewExams = document.getElementsByClassName("viewExams");
+    for (let dc = 0; dc < viewExams.length; dc++) {
+        const element = viewExams[dc];
+        element.addEventListener("click", viewExamslistener);
+    }
+    var prints_exams = document.getElementsByClassName("prints_exams");
+    for (let ind = 0; ind < prints_exams.length; ind++) {
+        const element = prints_exams[ind];
+        element.addEventListener("click",printExamsFunc);
+    }
+    var view_exam_result = document.getElementsByClassName("view_exam_result");
+    for (let index = 0; index < view_exam_result.length; index++) {
+        const element = view_exam_result[index];
+        element.addEventListener("click",getExamsInfor);
+    }
+    var delete_exams_ = document.getElementsByClassName("delete_exams_");
+    for (let index = 0; index < delete_exams_.length; index++) {
+        const element = delete_exams_[index];
+        element.addEventListener("click",delete_exams);
+    }
+
+    // exams_table_data
+    $('#exams_table_data').DataTable();
 }
 
 cObj("display_exams_for_classes").onclick = function () {
@@ -913,10 +992,6 @@ cObj("display_exams_for_classes").onclick = function () {
         cObj("results_output").innerHTML = "<p class='text-danger'>Class sitting for this exams has not been uploaded yet</p>";
     }
 }
-
-function setExamListener(id){
-    cObj(id).addEventListener("click",viewExamslistener);
-}
 function printExamsFunc() {
     var ids = this.id.substring(12);
     cObj("exsms_name").innerText = cObj("exams_names_edit"+ids).innerText;
@@ -927,63 +1002,39 @@ function printExamsFunc() {
 }
 function viewExamslistener() {
     var examid = this.id.substr(8);
-    cObj("examidsd").innerText = examid;
-    //get the exam details
-    var datapass = "?get_Exam_Information="+examid;
-    sendData1("GET","academic/academic.php",datapass,cObj("exams_infor"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout==1200) {
-                stopInterval(ids);                        
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                var exams_infor = cObj("exams_infor").innerText;
-                if (exams_infor != "Null") {
-                    var split = exams_infor.split(",");
-                    cObj("examjina1").value = split[0];
-                    cObj("examenddate1").value = split[2];
-                    if(split[1] == "844"){
-                        cObj("844m1").classList.remove("hide");
-                        cObj("cbcm1").classList.add("hide");
-                        cObj("targetms1").value = split[3];
-                        cObj("84412").selected = true;
-                    }else if (split[1] == "cbc") {
-                        cObj("cbc12").selected = true;
-                        cObj("844m1").classList.add("hide");
-                        cObj("cbcm1").classList.remove("hide");
-                        var opts = document.getElementsByClassName("my_option");
-                        for (let undo = 0; undo < opts.length; undo++) {
-                            const element = opts[undo];
-                            if (element.value == split[3]) {
-                                element.selected = true;
-                                break;
-                            }
-                        }
-                    }else if (split[1] == "IGCSE"){
-                        cObj("844m1").classList.remove("hide");
-                        cObj("cbcm1").classList.add("hide");
-                        cObj("targetms1").value = split[3];
-                        cObj("IGCSE12").selected = true;
-                    }else if (split[1] == "iPrimary"){
-                        cObj("844m1").classList.remove("hide");
-                        cObj("cbcm1").classList.add("hide");
-                        cObj("targetms1").value = split[3];
-                        cObj("iPrimary12").selected = true;
-                    }
-                }
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 200);
-    //get the subject information
-    reloadClassAndSubjects(examid);
-    //display the exams window
-    cObj("editexams").classList.remove("hide");
-    //get the examination details
+    var exam_data = cObj("exam_data_holder_"+examid).value;
+    var course_id = "";
+    var course_level = "";
+    if (hasJsonStructure(exam_data)) {
+        exam_data = JSON.parse(exam_data);
+        cObj("examstartdate").value = exam_data.start_date;
+        cObj("examenddate").value = exam_data.end_date;
+        cObj("examjina").value = exam_data.exams_name;
+        course_id = exam_data.course_id;
+        course_level = exam_data.course_level;
+    }
+    cObj("regexams").classList.remove("hide");
+    cObj("saveexams").innerHTML = "<i class='fas fa-upload'></i> Update";
+    cObj("exam_modal_action").value = "edit";
+    var datapass = "?getclass=true&select_class_id=course_level_exam_registration";
+    sendData1("GET", "administration/admissions.php", datapass, cObj("course_level_list_holder_exam_reg"), function () {
+        if (cObj("course_level_exam_registration") != undefined) {
+            $("#course_level_exam_registration").select2({
+                width: "100%"
+            });
 
+            cObj("course_level_exam_registration").onchange = display_course_list_exam;
+            $('#course_level_exam_registration').val(course_level).trigger('change');
+        }
+    });
+    cObj("exam_registration_title").innerText = "Edit exams";
+    // get the exam units
+    cObj("exam_id_edit").value = examid;
+    var datapass = "?get_exam_unit_list=true&exam_id="+examid;
+    sendData1("GET","academic/academic.php",datapass,cObj("course_list_holder_exam_registration"), function () {
+        var course_list = hasJsonStructure(cObj("course_list_holder_exam_registration").innerText) ? JSON.parse(cObj("course_list_holder_exam_registration").innerText) : [];
+        cObj("selected_units_exams_reg").innerHTML = "<small>Selected Course : "+course_list.length+"</small>";
+    });
 }
 function setDeleteSubject(id){
     cObj(id).addEventListener("click",deleteSubject);
@@ -1509,6 +1560,10 @@ cObj("saveexams1").onclick = function () {
     }else{
         cObj("error_1201").innerHTML = "<p style='color:red;font-size:13px;'>Fill all the fields marked with red borders!</p>";
     }
+}
+function getExams() {
+    var datapass = "?getExamination=onetermexams";
+    sendData1("GET", "academic/academic.php", datapass, cObj("holdExaminfor"), exam_table_listener);
 }
 cObj("curriculum1").onchange = function () {
     if (this.value.length > 0) {
@@ -4537,28 +4592,6 @@ function checkedBoxes() {
     }
 }
 
-// cObj("next_exams_btn").addEventListener("click",goNextExams);
-// cObj("back_exams_btn").addEventListener("click",goPrevExams);
-
-cObj("generate_exams_reports").onclick = function () {
-    cObj("viewexam").classList.add("hide");
-    if (currentSlideexams == 0) {
-        cObj("generate_exams_reports_window").classList.toggle("hide");
-    }else{
-        cObj("finish_generating_reports").click();
-        cObj("generate_exams_reports_window").classList.toggle("hide");
-        // hide all slides
-        for (let index = 0; index < all_slides.length; index++) {
-            const element = all_slides[index];
-            element.classList.add("hide");
-        }
-        // display the next slide
-        all_slides[0].classList.remove("hide");
-        cObj("generate_exams_reports_window").classList.toggle("hide");
-        currentSlideexams = 0;
-    }
-}
-
 cObj("execute_exams_report_cards").onclick = function () {
     // get all the data collected and print or email
     // check if its printing or mailing
@@ -4820,6 +4853,7 @@ function display_course_list() {
         }
     });
 }
+
 function display_course_list_edit() {
     var datapass = "?display_course_list_edit=true&course_level="+cObj("select_course_level_unit_edit").value;
     sendData2("GET", "academic/academic.php", datapass, cObj("course_list_unit_holder_edit"), cObj("course_list_loader_edit"), function () {
@@ -5037,7 +5071,6 @@ function display_course_list_unit_assignment() {
 }
 
 function display_course_unit_list() {
-    var teacherid = cObj("useridentity").innerText;
     var datapass = "?getsubjects=true&course_level="+valObj("course_level_unit_assignment")+"&course_id="+valObj("course_list_unit_assignment");
     sendData1("GET","academic/academic.php",datapass,cObj("subslist"), function () {
         if (cObj("select_all_courses_unit_assign") != null) {

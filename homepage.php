@@ -1585,47 +1585,37 @@ function checkPresnt($array, $string){
             <div class="changesubwindow editexams animate">
                 <div class="conts">
                     <p class="funga" id="fungash">&times</p>
-                    <h5 class="text-center"><b>Register exams</b></h5>
+                    <h6 class="text-center"><b id='exam_registration_title'>Register exams</b></h6>
                 </div>
-                <form class="formsexams" id='formsexams1'>
-                    <div class="exam_form" id="examform1">
-                        <div class="conts">
-                            <label class="form-control-label" for="examjina">Exam name: <br></label>
-                            <input class="form-control" type="text" name="examjina" id="examjina" placeholder="Exam name">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="">Select subjects to be done: <br></label>
-                            <!--Test subject list
-                            <div class ='classlist' style='height:100px;overflow:auto;' name='selectsubs' id='selectsubs'>
-                                <div class = 'checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                                    <label class="form-control-label" style='margin-right:5px;cursor:pointer;font-size:14px;' for='abc'>Mathematics</label>
-                                    <input class="form-control" class='subjectcls' type='checkbox' name='abc' id='abc'>
-                                </div>
-                            </div>-->
-                            <p id="subjectslists">
-                            <div class="contsload" id="loadings213">
-                                <img src="images/load2.gif" alt="loading..">
-                            </div>
-                            </p>
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="examstartdate">Start date: <br></label>
-                            <input class="form-control" type="date" name="examstartdate" id="examstartdate">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="examenddate">End Date: <br></label>
-                            <input class="form-control" type="date" name="examenddate" id="examenddate">
-                        </div>
-                        <div class="curricullum">
-                            <label class="form-control-label" for="curriculum">Select curricullum: <br></label>
-                            <select class="form-control" title="Choosing the type of curriculum will help the system know the grading method" name="curriculum" id="curriculum">
-                                <option value="" hidden>Select curricullum..</option>
-                                <option value="cbc">C.B.C</option>
-                                <option value="844">8-4-4</option>
-                                <option value="IGCSE">IGCSE</option>
-                                <option value="iPrimary">iPrimary</option>
-                            </select>
-                        </div>
+                <form class="add_expense" id='new_exams_form'>
+                    <div class="conts">
+                        <input type="hidden" name="exam_modal_action" value="add" id="exam_modal_action">
+                        <input type="hidden" value="0" id="exam_id_edit">
+                        <label class="form-control-label" for="examjina">Exam name: <br></label>
+                        <input class="form-control w-100" type="text" name="examjina" id="examjina" placeholder="Exam name">
+                    </div>
+                    <div class="conts">
+                        <label for="course_level_exam_registration" class="form-control-select">Select Course Level</label>
+                        <div id="course_level_list_holder_exam_reg"><span class="border border-success p-1 rounded text-success">Course level list will appear here!</span></div>
+                    </div>
+                    <div class="conts">
+                        <div id="course_list_holder_exam_registration" class="hide">[]</div>
+                        <label for="course_exam_registration" class="form-control-select">Select Course <span id="selected_units_exams_reg"></span></label>
+                        <div id="course_list_holder_exam_reg"><span class="border border-success p-1 rounded text-success">Course list will appear here!</span></div>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="">Select subjects to be done: <br></label>
+                        <p id="subjectslists">
+                            <span class="border border-success p-1 rounded text-success">Course units list will appear here!</span>
+                        </p>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="examstartdate">Start date: <br></label>
+                        <input class="form-control w-100" type="date" name="examstartdate" id="examstartdate">
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label" for="examenddate">End Date: <br></label>
+                        <input class="form-control w-100" type="date" name="examenddate" id="examenddate">
                     </div>
                     <div class="exam_form hide" id="examform2">
                         <div class="conts" style="text-align:center;">
@@ -1663,11 +1653,11 @@ function checkPresnt($array, $string){
                     </div>
                 </form>
                 <p id='errhandlers1203'></p>
-                <div class="nextprevious">
+                <div class="nextprevious hide">
                     <p id="previousexams"> Previous </p>
                     <p id="nextexams"> Next </p>
                 </div>
-                <div class="conts hide" id="savebuttons">
+                <div class="conts" id="savebuttons">
                     <div class="btns">
                         <button type="button" class="" id='saveexams'>Save</button>
                         <button type="button" id="cancelexams">Close</button>
@@ -4540,8 +4530,8 @@ function checkPresnt($array, $string){
                 <label for="what_to_print" class="form-control-label"><b>Select what to print:</b></label>
                 <select required name="what_to_print" id="what_to_print" class="form-control">
                     <option value="" hidden>Select option</option>
-                    <option value="exams_filling_slip">Exams Recording Slip</option>
-                    <option value="exams_marks">Students Exams Marks</option>
+                    <option value="exams_filling_slip">Examinees</option>
+                    <option value="exams_marks">Examinees with Marks</option>
                     <option value="student_report_card">Students Results Slip</option>
                 </select>
                 

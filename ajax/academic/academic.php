@@ -1,4 +1,7 @@
 <?php
+
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
+
     session_start();
     date_default_timezone_set('Africa/Nairobi');
     
@@ -675,6 +678,28 @@
             }
             $data.="</div>";
             echo $data;
+        }elseif (isset($_GET['get_course_units_exams'])) {
+            // course list
+            $course_level = $_GET['course_level'];
+            $course_id = $_GET['course_id'];
+
+            $select = "SELECT table_subject.* FROM `table_subject` WHERE classes_taught LIKE '%{\"course_level\":\"".$course_level."\",\"course_id\":\"".$course_id."\"}%'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data = "<div class='row mb-2'><div class='col-md-6'><input type='text' id='search_courses_unit_exam_reg' placeholder='Search Unit...' class='form-control w-100'></div><div class='col-md-6'><label for='select_all_courses_exam_reg' class='form-control-label text-bold'><b>Select All</b> <input type='checkbox' id='select_all_courses_exam_reg'></label></div></div><div class ='classlist form-control' style='height:200px;overflow:auto;' name='selectsubs_exam_reg' id='selectsubs_exam_reg'>";
+            if ($result) {
+                $index = 0;
+                while ($row = $result->fetch_assoc()) {
+                    $data.="<div class = 'checkboxholder checkbox_holder_unit_assign w-100' style='margin:10px 0;padding:0px 0px;' id='checkbox_holder_exam_reg_".$row['subject_id']."'>";
+                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_exam_reg ' id='search_courses_exam_reg_".$row['subject_id']."' for='course_name_exam_reg_".$row['subject_id']."'>".($index+1).". ".$row['subject_name']." {".$row['timetable_id']."} </label>";
+                    $data.="<input class='subjectclass_exam_reg' type='checkbox' name='course_name_exam_reg_".$row['subject_id']."' value='".$row['subject_id']."' id='course_name_exam_reg_".$row['subject_id']."'>";
+                    $data.="</div>";
+                    $index+=1;
+                }
+            }
+            $data.="</div>";
+            echo $data;
         }elseif (isset($_GET['get_course_units'])) {
             // course list
             $course_level = $_GET['course_level'];
@@ -949,26 +974,26 @@
         }elseif (isset($_GET['getExamination'])) {
             $stmt = false;
             if ($_GET['getExamination'] == "allactive") {
-                $select = "SELECT `exams_id`,`exams_name`,`start_date`,`end_date` FROM `exams_tbl` WHERE `end_date` >= ? AND `deleted` = 0";
+                $select = "SELECT * FROM `exams_tbl` WHERE `end_date` >= ? AND `deleted` = 0";
                 $stmt = $conn2->prepare($select);
                 $date = date("Y-m-d");
                 $stmt->bind_param("s",$date);
                 $stmt->execute();
             }elseif ($_GET['getExamination'] == "byname") {
-                $select = "SELECT `exams_id`,`exams_name`,`start_date`,`end_date` FROM `exams_tbl` WHERE `exams_name` LIKE ? AND deleted = 0";
+                $select = "SELECT * FROM `exams_tbl` WHERE `exams_name` LIKE ? AND deleted = 0";
                 $name = "%".$_GET['subjectnames']."%";
                 $stmt = $conn2->prepare($select);
                 $stmt->bind_param("s",$name);
                 $stmt->execute();
             }elseif ($_GET['getExamination'] == "byperiod") {
-                $select = "SELECT `exams_id`,`exams_name`,`start_date`,`end_date` FROM `exams_tbl` WHERE `start_date` BETWEEN ? AND ? OR `end_date` BETWEEN ? AND ?";
+                $select = "SELECT * FROM `exams_tbl` WHERE `start_date` BETWEEN ? AND ? OR `end_date` BETWEEN ? AND ?";
                 $sdate = $_GET['sdate'];
                 $edate = $_GET['enddate'];
                 $stmt = $conn2->prepare($select);
                 $stmt->bind_param("ssss",$sdate,$edate,$sdate,$edate);
                 $stmt->execute();
             }elseif ($_GET['getExamination'] == "bystatus") {
-                $select = "SELECT `exams_id`,`exams_name`,`start_date`,`end_date` FROM `exams_tbl` ";
+                $select = "SELECT * FROM `exams_tbl` ";
                 $datetoday = date("Y-m-d");
                 if ($_GET['status'] == "completed") {
                     $select.=" WHERE `end_date` < ? AND `deleted` = 0 ";
@@ -979,40 +1004,23 @@
                 $stmt->bind_param("s",$datetoday);
                 $stmt->execute();
             }elseif ($_GET['getExamination'] == "onetermexams") {
-                //get term we are
-                $datetoday = date("Y-m-d");
-                $select = "SELECT `start_time`,`end_time` FROM `academic_calendar` WHERE `start_time` <= ? AND `end_time` >= ?";
+                //get the exams between that period
+                $select = "SELECT exams_tbl.*, (SELECT course_id FROM `exam_unit` WHERE exam_unit.exam_id = exams_tbl.exams_id LIMIT 1) AS 'course_id', (SELECT course_level FROM `exam_unit` WHERE exam_unit.exam_id = exams_tbl.exams_id LIMIT 1) AS 'course_level' FROM `exams_tbl` ORDER BY exams_id DESC LIMIT 500";
                 $stmt = $conn2->prepare($select);
-                $stmt->bind_param("ss",$datetoday,$datetoday);
                 $stmt->execute();
-                $res = $stmt->get_result();
-                $starttime = "";
-                $endtime = "";
-                if ($res) {
-                    if ($row = $res->fetch_assoc()) {
-                        $starttime = $row['start_time'];
-                        $endtime = $row['end_time'];
-                    }
-                    //get the exams between that period
-                    $select = "SELECT `exams_id`,`exams_name`,`start_date`,`end_date` FROM `exams_tbl` WHERE (`start_date` >= ? AND `start_date` <= ?) OR `end_date` > ? ";
-                    $stmt = $conn2->prepare($select);
-                    $stmt->bind_param("sss",$starttime,$endtime,$starttime);
-                    $stmt->execute();
-                    echo "<p style='text-align:center;'></p>";
-                }
             }
             if ($stmt) {
                 $results = $stmt->get_result();
                 if ($results) {
-                    $datatoecho = "<h5 class='text-center mt-2'><b>Examination Table</b> <img class='hide' id='delete_exams_loaders' src='images/ajax_clock_small.gif'></h5><div class='table_holders'><table class='table'>
+                    $datatoecho = "<h5 class='text-center mt-2'><b>Examination Table</b> <img class='hide' id='delete_exams_loaders' src='images/ajax_clock_small.gif'></h5><div class='table_holders'><table class='table' id='exams_table_data'><thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Exam name</th>
                                         <th>Status</th>
                                         <th>Start date</th>
                                         <th>End date</th>
-                                        <th>Option</th>
-                                    </tr>";
+                                        <th>Action</th>
+                                    </tr></thead><tbody>";
                                     $xs = 0;
                     while ($row = $results->fetch_assoc()) {
                         $enddate =  $row['end_date'];
@@ -1031,29 +1039,39 @@
                         }
                         $startingday = $row['start_date'];
                         $endingday = $row['end_date'];
+
+                        $row['start_date'] = date("Y-m-d", strtotime($row['start_date']));
+                        $row['end_date'] = date("Y-m-d", strtotime($row['end_date']));
                         $datatoecho.="<tr>
                                         <td>".$xs."</td>
-                                        <td id='exams_names_edit".$row['exams_id']."' >".$row['exams_name']."</td>
+                                        <td id='exams_names_edit".$row['exams_id']."' > <input type='hidden' id='exam_data_holder_".$row['exams_id']."' value='".json_encode($row)."'>".$row['exams_name']."</td>
                                         <td>".$active."</td>
                                         <td>".date("D dS M, Y",strtotime($startingday))."</td>
                                         <td>".date("D dS M, Y",strtotime($endingday))."</td>
-                                        <td><span type='button' style='font-size:12px;' class='viewExams link mx-1' id='examview".$row['exams_id']."' ><i class ='fa fa-pen-fancy'></i> Edit</span>  <span type='button' style='font-size:12px;' id='prints_exams".$row['exams_id']."' class='link prints_exams mx-1'><i class ='fa fa-print'></i> Print</span> <span type='button' style='font-size:12px;' id='view_exam_result".$row['exams_id']."' class='link view_exam_result mx-1'><i class ='fa fa-eye'></i> View</span><span type='button' style='font-size:12px;' id='delete_exams_".$row['exams_id']."' class='link delete_exams_ mx-1'><i class ='fa fa-trash'></i> Delete</span></td>
+                                        <td><span type='button' style='font-size:12px;' class='viewExams link mx-1' id='examview".$row['exams_id']."' ><i class ='fa fa-pen-fancy'></i> Edit</span> <span type='button' style='font-size:12px;' id='exam_cats_".$row['exams_id']."' class='link exam_cats mx-1'><i class ='fa fa-file'></i> C.A.T</span> <span type='button' style='font-size:12px;' id='prints_exams".$row['exams_id']."' class='link prints_exams mx-1'><i class ='fa fa-print'></i> Print</span> <span type='button' style='font-size:12px;' id='view_exam_result".$row['exams_id']."' class='link view_exam_result mx-1'><i class ='fa fa-eye'></i> View</span><span type='button' style='font-size:12px;' id='delete_exams_".$row['exams_id']."' class='link delete_exams_ mx-1'><i class ='fa fa-trash'></i> Del</span></td>
                                     </tr>";
                     }
-                    $datatoecho.="</table></div>";
-                    if ($xs > 0) {
-                        echo $datatoecho;
-                    }else {
-                        echo "<div class='displaydata'>
-                                <img class='' src='images/error.png'>
-                                <p class='' >No records found! </p>
-                            </div>";
-                        //echo "<p style='color:red;font-size:12px;text-align:center;'>No results to dsplay!</p>";
-                    }
+                    $datatoecho.="</tbody></table></div>";
+                    echo $datatoecho;
                 }
             }else {
                 echo "Nothing";
             }
+        }elseif(isset($_GET['get_exam_unit_list'])){
+            $exam_id = $_GET['exam_id'];
+            $select = "SELECT * FROM exam_unit WHERE exam_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $exam_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $exam_units = [];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($exam_units, $row);
+                }
+            }
+            // exam_units
+            echo json_encode($exam_units);
         }elseif (isset($_GET['getexams_classes'])) {
             $exam_id = $_GET['getexams_classes'];
             $select = "SELECT * FROM `exams_tbl` WHERE `exams_id` = '".$exam_id."'";
@@ -3351,6 +3369,18 @@
                 echo "<p class='text-danger'>You cannot customize the timetable at the moment because its file path is invalid!</p>";
             }
         }elseif (isset($_GET['delete_exams'])) {
+            // delete all students and all units
+            $delete_student = "DELETE FROM examinees WHERE exam_id = ?";
+            $stmt = $conn2->prepare($delete_student);
+            $stmt->bind_param("s", $_GET['exams_id']);
+            $stmt->execute();
+
+            // delete units
+            $delete_units = "DELETE FROM exam_unit WHERE exam_id = ?";
+            $stmt = $conn2->prepare($delete_units);
+            $stmt->bind_param("s", $_GET['exams_id']);
+            $stmt->execute();
+
             // delete the exams record then delete the exams record history
             $delete = "DELETE FROM `exams_tbl` WHERE `exams_id` = '".$_GET['exams_id']."'";
             $stmt = $conn2->prepare($delete);
@@ -3726,6 +3756,135 @@
             }else{
                 echo "<p class='text-danger border border-danger p-1 my-2'>An error has occured!</p>";
             }
+        }elseif (isset($_POST['register_exams'])){
+            $exam_name = $_POST['exam_name'];
+            $course_chosen = $_POST['course_chosen'];
+            $exam_start_date = $_POST['exam_start_date'];
+            $exam_end_date = $_POST['exam_end_date'];
+            
+            $insert = "INSERT INTO exams_tbl (`exams_name`, `start_date`, `end_date`) VALUES (?,?,?)";
+            $stmt = $conn2->prepare($insert);
+            $exam_start_date = date("YmdHis", strtotime($exam_start_date));
+            $exam_end_date = date("YmdHis", strtotime($exam_end_date));
+            $stmt->bind_param("sss", $exam_name, $exam_start_date, $exam_end_date);
+            $stmt->execute();
+            $exam_id = $conn2->insert_id;
+
+            // insert units
+            $courses = [];
+            $courses_chosen = isJson_report($course_chosen) ? json_decode($course_chosen, true) : [];
+            for ($index=0; $index < count($courses_chosen); $index++) {
+                $insert_units = "INSERT INTO exam_unit (unit_id, course_id, course_level, exam_id) VALUES (?,?,?,?)";
+                $statement = $conn2->prepare($insert_units);
+                $statement->bind_param("ssss", $courses_chosen[$index]['unit_id'], $courses_chosen[$index]['course_id'], $courses_chosen[$index]['course_level'], $exam_id);
+                $statement->execute();
+
+                // add course and course level as an array to retrieve examinees
+                $present = false;
+                for ($ind=0; $ind < count($courses); $ind++) { 
+                    if ($courses[$ind]['course_level'] == $courses_chosen[$index]['course_level'] && $courses[$ind]['course_id'] == $courses_chosen[$index]['course_id']) {
+                        $present = true;
+                        break;
+                    }
+                }
+
+                if (!$present) {
+                    array_push($courses, array(
+                        "course_level" => $courses_chosen[$index]['course_level'],
+                        "course_id" => $courses_chosen[$index]['course_id']
+                    ));
+                }
+            }
+
+            // add the examinees
+            for ($index=0; $index < count($courses); $index++) {
+                $select = "SELECT * FROM student_data WHERE stud_class = ? AND course_done = ?";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("ss", $courses[$index]['course_level'], $courses[$index]['course_id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result) {
+                    while ($row = $result->fetch_assoc()) {
+                        $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`) VALUES (?,?,?)";
+                        $statement = $conn2->prepare($insert);
+                        $examinee_status = "1";
+                        $statement->bind_param("sss", $exam_id, $row['adm_no'],$examinee_status);
+                        $statement->execute();
+                    }
+                }
+            }
+            echo "<p class='text-success'>Exams Added successfully!</p>";
+        }elseif (isset($_POST['update_exam_details'])){
+            $exam_name = $_POST['exam_name'];
+            $course_chosen = $_POST['course_chosen'];
+            $exam_start_date = $_POST['exam_start_date'];
+            $exam_end_date = $_POST['exam_end_date'];
+            $exam_id = $_POST['exam_id'];
+
+            // delete all students and all units
+            $delete_student = "DELETE FROM examinees WHERE exam_id = ?";
+            $stmt = $conn2->prepare($delete_student);
+            $stmt->bind_param("s", $exam_id);
+            $stmt->execute();
+
+            // delete units
+            $delete_units = "DELETE FROM exam_unit WHERE exam_id = ?";
+            $stmt = $conn2->prepare($delete_units);
+            $stmt->bind_param("s", $exam_id);
+            $stmt->execute();
+
+            // update the exam
+            $update = "UPDATE exams_tbl SET exams_name = ?, start_date = ?, end_date = ? WHERE  exams_id = ?";
+            $stmt = $conn2->prepare($update);
+            $exam_start_date = date("YmdHis", strtotime($exam_start_date));
+            $exam_end_date = date("YmdHis", strtotime($exam_end_date));
+            $stmt->bind_param("ssss", $exam_name, $exam_start_date, $exam_end_date, $exam_id);
+            $stmt->execute();
+
+            // RE-INSERT THE UNITS
+            $courses = [];
+            $courses_chosen = isJson_report($course_chosen) ? json_decode($course_chosen, true) : [];
+            for ($index=0; $index < count($courses_chosen); $index++) {
+                $insert_units = "INSERT INTO exam_unit (unit_id, course_id, course_level, exam_id) VALUES (?,?,?,?)";
+                $statement = $conn2->prepare($insert_units);
+                $statement->bind_param("ssss", $courses_chosen[$index]['unit_id'], $courses_chosen[$index]['course_id'], $courses_chosen[$index]['course_level'], $exam_id);
+                $statement->execute();
+
+                // add course and course level as an array to retrieve examinees
+                $present = false;
+                for ($ind=0; $ind < count($courses); $ind++) { 
+                    if ($courses[$ind]['course_level'] == $courses_chosen[$index]['course_level'] && $courses[$ind]['course_id'] == $courses_chosen[$index]['course_id']) {
+                        $present = true;
+                        break;
+                    }
+                }
+
+                if (!$present) {
+                    array_push($courses, array(
+                        "course_level" => $courses_chosen[$index]['course_level'],
+                        "course_id" => $courses_chosen[$index]['course_id']
+                    ));
+                }
+            }
+
+            // add the examinees
+            for ($index=0; $index < count($courses); $index++) {
+                $select = "SELECT * FROM student_data WHERE stud_class = ? AND course_done = ?";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("ss", $courses[$index]['course_level'], $courses[$index]['course_id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result) {
+                    while ($row = $result->fetch_assoc()) {
+                        $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`) VALUES (?,?,?)";
+                        $statement = $conn2->prepare($insert);
+                        $examinee_status = "1";
+                        $statement->bind_param("sss", $exam_id, $row['adm_no'],$examinee_status);
+                        $statement->execute();
+                    }
+                }
+            }
+            echo "<p class='text-success'>Exams updated successfully!</p>";
         }
     }
 

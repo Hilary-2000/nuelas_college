@@ -14,8 +14,7 @@
             <div class="body4">
                 <p>Start by doing either of the following:</p>
                 <p class="block_btn" id="registerexamsbtn">Register New Exam</p>
-                <p class="block_btn" id="viewexams">View Exams</p>
-                <p class="block_btn" id="generate_exams_reports">Generate Reports</p>
+                <p class="block_btn hide" id="generate_exams_reports">Generate Reports</p>
                 <div class="conts bordered_bottom">
                     <div class="options hide border border-dark p-2 col-md-6 my-1" id="viewexam">
                         <h5>Search Exams</h5>
@@ -366,6 +365,7 @@
                             </tr>
                         </table>
                     </div>
+                    <p id="error_handler_exams"></p>
                 </div>
                 <div class="container hide" id="exams_details_window">
                     <!-- get the exams details class-->
