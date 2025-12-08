@@ -1057,6 +1057,57 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             }else {
                 echo "Nothing";
             }
+        }elseif(isset($_GET['get_exam_cats'])){
+            $exam_id = $_GET['exam_id'];
+            $select = "SELECT * FROM `exams_cat` WHERE exam_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $exam_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<table class='table' id='exam_cat_table'><thead><tr><th>No.</th><th>CAT Name</th><th>Max Marks</th><th>Exam Status</th><th>Actions</th></tr></thead><tbody>";
+            if ($result) {
+                $index = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display .= "<tr><td> <input type='hidden' value='".json_encode($row)."' id='cat_data_holder_".$row['cat_id']."'>".$index.".</td><td>".$row['name']."</td><td>".$row['max_marks']." Marks</td><td>".($row['include_in_exam'] == "1" ? "Included" : "Standalone")."</td><td><span class='edit_cat_data link mx-1' id='edit_cat_data_".$row['cat_id']."'><i class='fa fa-pen-fancy'></i> Edit</span> | <span class='delete_cat_data link mx-1' id='delete_cat_data_".$row['cat_id']."'><i class='fa fa-trash'></i> Del</span></td></tr>";
+                    $index++;
+                }
+            }
+            $data_to_display .= "</tbody></table>";
+            echo $data_to_display;
+        }elseif(isset($_GET['delete_cat'])){
+            $cat_id = $_GET['cat_id'];
+            $delete = "DELETE FROM exams_cat WHERE cat_id = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s", $cat_id);
+            $stmt->execute();
+            
+            echo "<p class='text-success'>CAT has been successfully deleted!</p>";
+        }elseif(isset($_GET['register_cat'])){
+            $register_cat = $_GET['register_cat'];
+            $cat_name = $_GET['cat_name'];
+            $exam_id = $_GET['exam_id'];
+            $cat_maximum_marks = $_GET['cat_maximum_marks'];
+            $include_in_exam = $_GET['include_in_exam'];
+
+            $insert = "INSERT INTO exams_cat (`name`, `exam_id`, `max_marks`, `include_in_exam`) VALUES (?,?,?,?)";
+            $stmt = $conn2->prepare($insert);
+            $stmt->bind_param("ssss", $cat_name, $exam_id, $cat_maximum_marks, $include_in_exam);
+            $stmt->execute();
+            
+            echo "<p class='text-success'>CAT has been registered successfully!</p>";
+        }elseif(isset($_GET['update_cat_details'])){
+            $cat_id = $_GET['cat_id'];
+            $cat_name = $_GET['cat_name'];
+            $exam_id = $_GET['exam_id'];
+            $cat_maximum_marks = $_GET['cat_maximum_marks'];
+            $include_in_exam = $_GET['include_in_exam'];
+
+            $update = "UPDATE exams_cat SET `name` = ?, `max_marks` = ?, `include_in_exam` = ? WHERE `cat_id` = ?";
+            $stmt = $conn2->prepare($update);
+            $stmt->bind_param("ssss", $cat_name, $cat_maximum_marks, $include_in_exam, $cat_id);
+            $stmt->execute();
+            
+            echo "<p class='text-success'>CAT Updated successfully!</p>";
         }elseif(isset($_GET['get_exam_unit_list'])){
             $exam_id = $_GET['exam_id'];
             $select = "SELECT * FROM exam_unit WHERE exam_id = ?";
@@ -1074,7 +1125,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             echo json_encode($exam_units);
         }elseif (isset($_GET['getexams_classes'])) {
             $exam_id = $_GET['getexams_classes'];
-            $select = "SELECT * FROM `exams_tbl` WHERE `exams_id` = '".$exam_id."'";
+            $select = "SELECT course_level FROM `exam_unit` WHERE `exam_id` = '".$exam_id."' GROUP BY course_level;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -1082,20 +1133,28 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             if ($result) {
                 $data_to_display.="<select required name='classes_for_exams' id='classes_for_exams' class='form-control'><option value='' hidden>Select option</option>";
                 $counter  = 0;
-                if ($row = $result->fetch_assoc()) {
-                    $data = strlen($row['class_sitting']) > 0 ? explode(",",substr($row['class_sitting'],1,(strlen($row['class_sitting'])-2))) : [];
-                    for ($ind=0; $ind < count($data); $ind++) { 
-                        $data_to_display.="<option value='".$data[$ind]."'>".className($data[$ind])."</option>";
-                        $counter++;
-                    }
-                    $data_to_display.="</select>";
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display.="<option value='".$row['course_level']."'>".$row['course_level']."</option>";
                 }
-                if ($counter > 0) {
-                    echo $data_to_display;
-                }else{
-                    echo "<p class='text-danger'>No class present to display!</p>";
+                $data_to_display.="</select>";
+            }
+            echo $data_to_display;
+        }elseif(isset($_GET['get_course_list'])){
+            $course_level = $_GET['course_level'];
+            $exam_id = $_GET['exam_id'];
+            $select = "SELECT course_id FROM exam_unit WHERE exam_id = '".$exam_id."' GROUP BY course_id;";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<select required name='courses_for_exams' id='courses_for_exams' class='form-control'><option value='' hidden>Select option</option>";
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $course_name = get_course_name($row['course_id'], $conn2);
+                    $data_to_display.="<option value='".$row['course_id']."'>".$course_name."</option>";
                 }
             }
+            $data_to_display.="</select>";
+            echo $data_to_display;
         }elseif (isset($_GET['getExamsSubjects'])) {
             $examid = $_GET['getExamsSubjects'];
             $select = "SELECT * FROM `exams_tbl` WHERE `exams_id` = ?";
@@ -3805,11 +3864,31 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 $result = $stmt->get_result();
                 if ($result) {
                     while ($row = $result->fetch_assoc()) {
-                        $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`) VALUES (?,?,?)";
-                        $statement = $conn2->prepare($insert);
-                        $examinee_status = "1";
-                        $statement->bind_param("sss", $exam_id, $row['adm_no'],$examinee_status);
-                        $statement->execute();
+                        // only active students are examinees
+                        $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
+                        $status = "In-Active";
+                        // get the course status
+                        for($in = 0; $in < count($course_progress); $in++){
+                            $course_status = $course_progress[$in]->course_status;
+                            if($course_status == 1){
+                                $module_terms = $course_progress[$in]->module_terms;
+                                for($ind = 0; $ind < count($module_terms); $ind++){
+                                    if($module_terms[$ind]->status == 1){
+                                        // end date
+                                        $status = "Active";
+                                    }
+                                }
+                            }
+                        }
+
+                        if($status == "Active"){
+                            // insert examinees
+                            $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`) VALUES (?,?,?)";
+                            $statement = $conn2->prepare($insert);
+                            $examinee_status = "1";
+                            $statement->bind_param("sss", $exam_id, $row['adm_no'],$examinee_status);
+                            $statement->execute();
+                        }
                     }
                 }
             }
@@ -4411,5 +4490,27 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             }
         }
         return null;
+    }
+
+    // get the course id when given the name
+    function get_course_name($course_id, $conn2){
+        // get all courses
+        $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $course_levels = [];
+        $result = $stmt->get_result();
+        if($result){
+            if($row = $result->fetch_assoc()){
+                $course_levels = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+            }
+        }
+
+        foreach ($course_levels as $key => $value) {
+            if(strtolower($course_id) == strtolower($value->id)){
+                return $value->course_name;
+            }
+        }
+        return "";
     }
 ?>

@@ -1554,7 +1554,10 @@ window.onload = function () {
         placeholder: "Select Incident Type",
         width: "100%"
     });
-
+    $("#include_in_final_exam").select2({
+        placeholder: "Select Option",
+        width: "100%"
+    });
     $('#incident_category').select2({
         placeholder: "Select Category",
         width: "100%"

@@ -388,6 +388,13 @@
                             proceed!</p>
                     </div>
                 </div>
+                <div class="container hide" id="show_exam_cats">
+                    <h6 class="text-center">Exam CAT Management</h6>
+                    <button id="add_exam_cat"><i class="fas fa-plus"></i> Add CAT</button>
+                    <div id="cat_management_table"></div>
+                    <div id="cat_exam_err_holders"></div>
+                    <button id="back_to_exam_list"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
             </div>
         </div>
         <div class="bottom1">

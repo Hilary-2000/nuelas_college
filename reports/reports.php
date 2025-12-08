@@ -8228,9 +8228,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $classes_for_exams = $_POST['classes_for_exams'];
         $what_to_print = $_POST['what_to_print'];
         $exam_ids_printing = $_POST['exam_ids_printing'];
+        $courses_for_exams = $_POST['courses_for_exams'];
+        // echo json_encode($_POST);
         if ($what_to_print == "exams_filling_slip") {
             include("../connections/conn2.php");
             include("../connections/conn1.php");
+            // get the course
+            $all_courses = [];
+            $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+            $statements = $conn2->prepare($select);
+            $statements->execute();
+            $res = $statements->get_result();
+            if($res){
+                if($rows = $res->fetch_assoc()){
+                    $all_courses = isJson_report($rows['valued']) ? json_decode($rows['valued']) : [];
+                }
+            }
+
+            // get the department
+            $all_department = [];
+            $select = "SELECT * FROM `settings` WHERE `sett` = 'departments'";
+            $statements = $conn2->prepare($select);
+            $statements->execute();
+            $res = $statements->get_result();
+            if($res){
+                if($rows = $res->fetch_assoc()){
+                    $all_department = isJson_report($rows['valued']) ? json_decode($rows['valued']) : [];
+                }
+            }
             $select = "SELECT * FROM `exams_tbl` WHERE `exams_id` = '" . $exam_ids_printing . "'";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
@@ -8238,61 +8263,61 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
             if ($result) {
                 if ($row = $result->fetch_assoc()) {
                     $exams_names = $row['exams_name'];
-                    $students_sitting = strlen($row['students_sitting']) > 0 ? json_decode($row['students_sitting']) : [];
-                    $subjects_examined = strlen($row['subject_done']) > 0 ? explode(",", substr($row['subject_done'], 1, (strlen($row['subject_done']) - 2))) : [];
-                    // get the subjects taught in the selected class.
-                    $subjects_present = [];
-                    for ($ind = 0; $ind < count($subjects_examined); $ind++) {
-                        $present = isSubjectTaught($conn2, $subjects_examined[$ind], $classes_for_exams);
-                        if ($present == 1) {
-                            array_push($subjects_present, $subjects_examined[$ind]);
-                        }
-                    }
-                    // get the class that is needed
-                    $class_lists = [];
-                    for ($index = 0; $index < count($students_sitting); $index++) {
-                        $curr_class = $students_sitting[$index]->classname;
-                        if ($curr_class == $classes_for_exams) {
-                            $class_lists = $students_sitting[$index]->classlist;
-                            break;
-                        }
-                    }
+                    $select = "SELECT * FROM examinees LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE student_data.course_done = ? AND student_data.stud_class = ? AND examinees.exam_id = ?";
+                    $stmt = $conn2->prepare($select);
+                    $stmt->bind_param("sss", $courses_for_exams, $classes_for_exams, $exam_ids_printing);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
                     $student_data = [];
-                    $admno = [];
-                    // go through all students and get their information
-                    for ($index = 0; $index < count($class_lists); $index++) {
-                        $select = "SELECT * FROM `student_data` WHERE `adm_no` = '" . $class_lists[$index] . "'";
-                        $stmt = $conn2->prepare($select);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        if ($result) {
-                            if ($row = $result->fetch_assoc()) {
-                                $student_names = $row['first_name'] . " " . $row['second_name'];
-                                $adm = $row['adm_no'];
-                                array_push($student_data, $student_names);
-                                array_push($admno, $adm);
+                    if($result){
+                        $number = 1;
+                        while($row = $result->fetch_assoc()){
+                            // get their course progress details
+                            $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
+                            $status = "In-Active";
+                            // get the course status
+                            for($in = 0; $in < count($course_progress); $in++){
+                                $course_status = $course_progress[$in]->course_status;
+                                if($course_status == 1){
+                                    $module_terms = $course_progress[$in]->module_terms;
+                                    for($ind = 0; $ind < count($module_terms); $ind++){
+                                        if($module_terms[$ind]->status == 1){
+                                            // end date
+                                            $status = "Active";
+                                        }
+                                    }
+                                }
                             }
+
+                            // show departments
+                            $course_id = $row['course_done'];
+                            $course_name = "N/A";
+                            $department_id = null;
+                            for($index =0; $index < count($all_courses); $index++){
+                                if($all_courses[$index]->id == $course_id){
+                                    $course_name = $all_courses[$index]->course_name;
+                                    $courses_name = $course_name;
+                                    $department_id = $all_courses[$index]->department;
+                                    break;
+                                }
+                            }
+                            
+                            // intake
+                            $intake = $row['intake_month'].":".$row['intake_year'];
+
+                            // course level
+                            $each_stud = array($number, ucwords(strtolower($row['first_name']." ".$row['second_name'])), $row['adm_no'], $row['gender'], $course_name, $intake, $row['D_O_B'], $row['D_O_A'], $row['address'],$status);
+                            array_push($student_data, $each_stud);
+                            // array_push($student_data, $row);
+                            $number++;
                         }
                     }
-                    // take all students in that class
-                    // $select = "SELECT * FROM `student_data` WHERE `stud_class` = '".$classes_for_exams."'";
-                    // $stmt = $conn2->prepare($select);
-                    // $stmt->execute();
-                    // $result = $stmt->get_result();
-                    // if ($result) {
-                    //     while($row = $result->fetch_assoc()){
-                    //         $student_names = $row['first_name']." ".$row['second_name'] ;
-                    //         $adm = $row['adm_no'];
-                    //         array_push($student_data,$student_names);
-                    //         array_push($admno,$adm);
-                    //     }
-                    // }
 
-                    if (count($admno) > 0) {
+                    if (count($student_data) > 0) {
                         // take the data and get the
-                        $pdf = new PDF('P', 'mm', 'A4');
-                        $pdf->setHeaderPos(200);
-                        $tittle = "" . ucwords(strtolower($exams_names)) . " " . className_exam($classes_for_exams) . " Score Sheet.";
+                        $pdf = new PDF('L', 'mm', 'A4');
+                        // $pdf->setHeaderPos(200);
+                        $tittle = "" . ucwords(strtolower($exams_names. " - " . className_exam($classes_for_exams) . " in $course_name Examinees List."));
                         $pdf->set_document_title($tittle);
                         $pdf->setSchoolLogo("../../" . schoolLogo($conn));
                         $pdf->set_school_name($_SESSION['schname']);
@@ -8300,35 +8325,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $pdf->set_school_box_code($_SESSION['box_codes']);
                         $pdf->set_school_contact($_SESSION['school_contact']);
                         $pdf->AddPage();
-                        $original = 170;
-                        $no = 8;
-                        $names = 35;
-                        $admnos = 20;
-                        $original = $original - ($names + $no);
-                        $widths = round($original / (count($subjects_present) + 1));
-                        $width = [$no, $names, $admnos];
-                        $subjects = [];
-                        for ($index = 0; $index < count($subjects_present); $index++) {
-                            array_push($width, $widths);
-                            $sub_name = subjectName($conn2, $subjects_present[$index]);
-                            array_push($subjects, $sub_name);
-                        }
-                        array_push($width, $widths);
-                        $header = ["No", "Student Name", "Adm No"];
-                        $header = array_merge($header, $subjects, ["Total"]);
-                        // get the subjects data
-                        $all_data = [];
-                        for ($index = 0; $index < count($student_data); $index++) {
-                            $in_data = [$index + 1, ucwords(strtolower($student_data[$index])), $admno[$index]];
-                            for ($index2 = 0; $index2 < count($subjects); $index2++) {
-                                array_push($in_data, "");
-                            }
-                            array_push($in_data, "");
-                            array_push($all_data, $in_data);
-                        }
-                        $pdf->SetFont("Helvetica", "", 7);
-                        $pdf->setConn($conn2);
-                        $pdf->exams_results($header, $all_data, $width);
+
+
+                        // $original = 170;
+                        // $no = 8;
+                        // $names = 35;
+                        // $admnos = 20;
+                        // $original = $original - ($names + $no);
+                        // $widths = round($original / (count($subjects_present) + 1));
+                        // $width = [$no, $names, $admnos];
+                        // $subjects = [];
+                        // for ($index = 0; $index < count($subjects_present); $index++) {
+                        //     array_push($width, $widths);
+                        //     $sub_name = subjectName($conn2, $subjects_present[$index]);
+                        //     array_push($subjects, $sub_name);
+                        // }
+                        // array_push($width, $widths);
+                        // $header = ["No", "Student Name", "Adm No"];
+                        // $header = array_merge($header, $subjects, ["Total"]);
+                        // // get the subjects data
+                        // $all_data = [];
+                        // for ($index = 0; $index < count($student_data); $index++) {
+                        //     $in_data = [$index + 1, ucwords(strtolower($student_data[$index])), $admno[$index]];
+                        //     for ($index2 = 0; $index2 < count($subjects); $index2++) {
+                        //         array_push($in_data, "");
+                        //     }
+                        //     array_push($in_data, "");
+                        //     array_push($all_data, $in_data);
+                        // }
+                        $pdf->SetFont("Helvetica", "", 9);
+                        // $pdf->setConn($conn2);
+                        $header = array('No', 'Student Name', 'Reg no', 'Sex', 'Course', 'Intake', 'D.O.B', 'D.O.A', 'Address',"Status");
+                        $width = array(7, 30, 20, 10, 60, 25, 25, 20, 45,15);
+                        $pdf->FancyTable($header, $student_data, $width);
+                        // $pdf->exams_results($header, $all_data, $width);
 
                         $pdf->Output();
                     } else {

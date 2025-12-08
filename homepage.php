@@ -1665,6 +1665,40 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
+        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="register_cat_exams_window">
+            <div class="changesubwindow editexams animate">
+                <div class="conts">
+                    <p class="funga" id="close_register_cat_exams">&times</p>
+                    <h6 class="text-center"><b id='register_cat_exams_title'>Register C.A.T</b></h6>
+                </div>
+                <form class="add_expense" id='register_cat_exams_form'>
+                    <div class="conts my-2">
+                        <input type="hidden" name="register_cat_exams_action" value="add" id="register_cat_exams_action">
+                        <input type="hidden" value="0" id="register_cat_exams_exam_id">
+                        <input type="hidden" name="edit_cat_id" id="edit_cat_id">
+                        <label class="form-control-label" for="cat_name">CAT name: <br></label>
+                        <input class="form-control w-100" type="text" name="cat_name" id="cat_name" placeholder="CAT ONE, or CAT 1">
+                    </div>
+                    <div class="conts my-2">
+                        <label class="form-control-label" for="cat_maximum_marks">CAT Maximum Marks: <br></label>
+                        <input class="form-control w-100" type="text" name="cat_maximum_marks" id="cat_maximum_marks" placeholder="15 MKs">
+                    </div>
+                    <div class="conts my-2">
+                        <label for="include_in_final_exam" class="form-control-label">Include in Exam</label>
+                        <select name="include_in_final_exam" id="include_in_final_exam" class="form-control">
+                            <option value="">Select Option</option>
+                            <option value="1">Included in exam</option>
+                            <option value="0">Standalone CAT</option>
+                        </select>
+                    </div>
+                </form>
+                <p id='error_cat_register'></p>
+                <div class="btns">
+                    <button type="button" class="" id='register_cat_exams_save_btn'>Save</button>
+                    <button type="button" id="register_cat_exams_close_btn">Close</button>
+                </div>
+            </div>
+        </div>
         <div class="confirmpaymentwindow hide" style="overflow: auto;" id="editexams">
             <div class="changesubwindow editregexams animate">
                 <div class="conts">
@@ -2092,7 +2126,7 @@ function checkPresnt($array, $string){
         <div class="confirmpaymentwindow hide" id='confirm_delete_exams_win'>
             <div class="confirmpayment animate">
                 <input type="hidden" id="exams_ids_delete">
-                <h6>Confirm</h6>
+                <h6>Confirm Exam Delete</h6>
                 <p>Are you sure you want to delete this exam "<b><span id="name_of_students_exams"></span></b>" ? <br> <span class="text-danger">This action is irreversible.</span></p>
                 <div class="btns">
                     <button type='button' id='confirm_del_exams_yes'>Yes</button>
@@ -4320,6 +4354,19 @@ function checkPresnt($array, $string){
             </div>
         </div>
     </div>
+    <div class="dialogholder hide" id="delete_cat_window">
+        <div class="dialogwindow animate2">
+            <h6>Confirm Delete</h6>
+            <div class="message">
+                <p>Are you sure you want to delete this record permanently?</p>
+            </div>
+            <input type="hidden" name="delete_cat_id" id="delete_cat_id">
+            <div class="buttons">
+                <button type='button' id='yes_delete_cat'>Yes</button>
+                <button type='button' id='no_delete_cat'>No</button>
+            </div>
+        </div>
+    </div>
     <div class="dialogholder hide" id="delete_lecture_hall">
         <div class="dialogwindow animate2">
             <h6>Delete Lecture Hall</h6>
@@ -4526,20 +4573,31 @@ function checkPresnt($array, $string){
                 <p>Below you will be able to print this exam in different formats.</p>
             </div>
             <form method="POST" action="reports/reports.php" target="_blank" class="w-100">
-                <input type="hidden" name="exam_ids_printing" id="exam_ids_printing">
-                <label for="what_to_print" class="form-control-label"><b>Select what to print:</b></label>
-                <select required name="what_to_print" id="what_to_print" class="form-control">
-                    <option value="" hidden>Select option</option>
-                    <option value="exams_filling_slip">Examinees</option>
-                    <option value="exams_marks">Examinees with Marks</option>
-                    <option value="student_report_card">Students Results Slip</option>
-                </select>
-                
-                <!-- class doing to  -->
-                <label for="classes_for_exams" class="form-control-label"><b>Select classes: </b></label>
-                <span id="all_classes_here"></span>
-                <button class="my-2" type="submit">Print <i class="fas fa-print"></i></button>
-                <button class="my-2 mx-1" id="canc_exam_print" type="button">Cancel</button>
+                <div class="conts">
+                    <input type="hidden" name="exam_ids_printing" id="exam_ids_printing">
+                    <label for="what_to_print" class="form-control-label"><b>Select what to print:</b></label>
+                    <select required name="what_to_print" id="what_to_print" class="form-control">
+                        <option value="" hidden>Select option</option>
+                        <option value="exams_filling_slip">Examinees</option>
+                        <option value="exams_marks">Examinees with Marks</option>
+                        <option value="student_report_card">Students Results Slip</option>
+                    </select>
+                </div>
+
+                <div class="conts">
+                    <!-- class doing to  -->
+                    <label for="classes_for_exams" class="form-control-label"><b>Select classes: </b></label>
+                    <span id="all_classes_here"></span>
+                </div>
+
+                <div class="conts">
+                    <label for="courses_for_exams" class="form-control-label">Course List</label>
+                    <span id="all_couse_lists_print_holder"></span>
+                </div>
+                <div class="btns">
+                    <button class="my-2" type="submit">Print <i class="fas fa-print"></i></button>
+                    <button class="my-2 mx-1" id="canc_exam_print" type="button">Cancel</button>
+                </div>
             </form>
         </div>
     </div>
