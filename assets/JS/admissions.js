@@ -458,7 +458,7 @@ function displayPaymentOption() {
                 }
                 select += "</select>";
                 const element = json_data[index];
-                var checked = element.show ? "checked" : "";
+                var checked = element.show == "true" ? "checked" : "";
                 data_to_display += "<tr><td>" + (index + 1) + ". </td><td id='descriptied" + (index + 1) + "'>" + element.description + "</td>";
                 data_to_display += "<td>" + select + "</td>";
                 data_to_display += "<td><input type='checkbox' " + checked + " class='pd_show_' id='pd_show_" + (index + 1) + "'></td><td><p><span class='mx-1 link edit_pd' id='edit_pd_" + (index + 1) + "'> <i class='fas fa-pen-fancy'></i></span> <span class='mx-1 link delete_pd' id='delete_pd_" + (index + 1) + "'><i class='fas fa-trash'></i></span></p></td></tr>";
@@ -1054,43 +1054,6 @@ cObj("enroll_boarding_btn").onclick = function () {
     removesidebar();
     cObj("display_all_present").click();
 }
-function selectListeners() {
-    cObj("btn_panel").classList.remove("btns");
-    cObj("btn_panel").classList.add("hide");
-    cObj("classes_list").classList.add("hide");
-    cObj("grading_methods").classList.add("hide");
-    cObj("subject_list").classList.remove("hide");
-    var exam_id = this.value;
-    var datapass = "?get_exam_class=" + exam_id;
-    sendData1("GET", "academic/academic.php", datapass, cObj("subject_list"));
-    setTimeout(() => {
-        var timeout = 0;
-        var ids = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(ids);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                if (typeof (cObj("sub_jectlists")) != 'undefined' && cObj("sub_jectlists") != null) {
-                    cObj("sub_jectlists").addEventListener("change", selectSubject);
-                }
-                stopInterval(ids);
-            }
-        }, 100);
-    }, 200);
-}
-function selectSubject() {
-    cObj("classes_list").classList.remove("hide");
-    cObj("grading_methods").classList.remove("hide");
-    cObj("btn_panel").classList.add("btns");
-    cObj("btn_panel").classList.remove("hide");
-    //show classes available 
-    var subject_id = this.value;
-    var exam_id = cObj("exam_list").value;
-    var datapass = "?subjects_id_ds=" + subject_id + "&exams_id_ids=" + exam_id;
-    sendData1("GET", "academic/academic.php", datapass, cObj("classes_list"));
-}
 cObj("examanagement").onclick = function () {
     hideWindow();
     unselectbtns();
@@ -1148,10 +1111,36 @@ function getExamsInfor() {
     cObj("exams_table_list").classList.add("hide");
     cObj("exams_details_window").classList.remove("hide");
     var datapass = "?get_exams_results=" + this.id.substr(16);
+    var exam_id = this.id.substring(16);
     cObj("exams_id_result").innerText = this.id.substr(16);
-    sendData2("GET", "academic/academic.php", datapass, cObj("exams_details_holder"), cObj("exams_details_loader"));
-    // cObj("exams_window_display").innerHTML = "";
-
+    sendData2("GET", "academic/academic.php", datapass, cObj("exams_details_holder"), cObj("exams_details_loader"), function () {
+        if (cObj("class_label_exams_result") != null) {
+            $('#class_label_exams_result').select2({
+                width: '100%'
+            });
+            cObj("class_label_exams_result").onchange = function () {
+                // get the course list
+                var datapass = "?get_course_list=true&exam_id="+exam_id+"&course_level="+valObj("class_label_exams_result")+"&object_id=course_list_view_results";
+                sendData1("GET", "academic/academic.php", datapass, cObj("course_list_holder_view_results"), function () {
+                    if (cObj("course_list_view_results") != undefined) {
+                        $("#course_list_view_results").select2({
+                            width: '100%'
+                        })
+                        cObj("course_list_view_results").onchange = function () {
+                            var datapass = "?get_course_module_terms="+this.value+"&object_id=course_module_level";
+                            sendData2("GET","administration/admissions.php", datapass, cObj("course_module_level_holder"), cObj("loadings"), function () {
+                                if (cObj("course_module_level") != undefined) {
+                                    $("#course_module_level").select2({
+                                        width: '100%'
+                                    })
+                                }
+                            });
+                        };
+                    }
+                });
+            };
+        }
+    });
 }
 
 cObj("back_exams_list").onclick = function () {

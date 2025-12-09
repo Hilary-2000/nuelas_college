@@ -5911,7 +5911,7 @@
                     if($res){
                         while($row1 = $res->fetch_assoc()){
                             // delete the supplier payment
-                            $delete = "DELETE FROM `supplier_bill_payments` WHERE `payment_for` = '".$row['bill_id']."'";
+                            $delete = "DELETE FROM `supplier_bill_payments` WHERE `payment_for` = '".$row1['bill_id']."'";
                             $stmt = $conn2->prepare($delete);
                             $stmt->execute();
                         }

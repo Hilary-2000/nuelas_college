@@ -1,3 +1,8 @@
+09th Dec 2025 08:37:24AM : Agnes  - of Reg No. (NC-2025-006) data has been updated successfully! - {ANN AKOTCH}
+09th Dec 2025 08:28:27AM : Admission prefix has has been updated successfully! - {ANN AKOTCH}
+09th Dec 2025 08:28:11AM : Class "Bachelors" added successfully - {ANN AKOTCH}
+09th Dec 2025 08:28:03AM : Class "Diploma" added successfully - {ANN AKOTCH}
+09th Dec 2025 08:26:28AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 08th Dec 2025 11:38:45AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 06th Dec 2025 10:12:04AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 05th Dec 2025 09:47:48AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}

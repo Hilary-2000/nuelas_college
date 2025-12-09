@@ -1096,7 +1096,7 @@ cObj("display_exams_for_classes").onclick = function () {
         var err = 0;
         err+=checkBlank("class_label_exams_result");
         if (err == 0) {
-            var datapass = "?get_perfomance_for_class=true&class_sat="+valObj("class_label_exams_result")+"&exam_id="+cObj("exams_id_result").innerText;
+            var datapass = "?get_perfomance_for_class=true&course_level="+valObj("class_label_exams_result")+"&course_name="+valObj("course_list_view_results")+"&course_module="+valObj("course_module_level")+"&exam_id="+cObj("exams_id_result").innerText;
             sendData2("GET","academic/academic.php",datapass,cObj("exams_window_display"),cObj("exams_details_loader"));
         }else{
             cObj("results_output").innerHTML = "<p class='text-danger'>Select a class to proceed</p>";
@@ -1116,7 +1116,13 @@ function printExamsFunc() {
             cObj("classes_for_exams").onchange = function () {
                 // get the course list
                 var datapass = "?get_course_list=true&exam_id="+ids+"&course_level="+valObj("classes_for_exams");
-                sendData1("GET", "academic/academic.php", datapass, cObj("all_couse_lists_print_holder"));
+                sendData1("GET", "academic/academic.php", datapass, cObj("all_couse_lists_print_holder"), function () {
+                    if (cObj("courses_for_exams") != undefined) {
+                        $("#courses_for_exams").select2({
+                            width: '100%'
+                        })
+                    }
+                });
             }
             $("#classes_for_exams").select2({
                 width: '100%'
@@ -1445,17 +1451,29 @@ cObj("saveexams232").onclick = function () {
 
 }
 cObj("populate_btn").onclick = function () {
-    cObj("display_result").classList.add("hide");
-    cObj("record_exams_id").classList.remove("hide");
+    var err = checkBlank("option_exams");
+    err += checkBlank("exam_list");
+    err += checkBlank("sub_jectlists");
+    err += checkBlank("course_list_exam_filling");
+    err += checkBlank("module_list_exam_filling");
+    err += checkBlank("unit_list_exam_filling");
+    if (err == 0) {
+        cObj("display_result").classList.add("hide");
+        cObj("record_exams_id").classList.remove("hide");
+        cObj("exam_record_err").innerHTML = "";
+    }else{
+        cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+    }
+    return;
     if(typeof(cObj("cls_lists")) != 'undefined' && cObj("cls_lists") != null){
-        cObj("exma_record_err").innerHTML = "<p style='color:red;font-size:13px'></p>";
+        cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'></p>";
         //check for errors first
         var err = checkBlank("cls_lists");
         err+=checkBlank("grade_mode");
         if (err == 0) {
             cObj("resulters").classList.remove("hide");
             cObj("finded").classList.add("hide");
-            cObj("exma_record_err").innerHTML = "<p style='color:red;font-size:13px'></p>";
+            cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'></p>";
             //send the data to the database and retrieve the class requested
             var datapass = "?get_class_for_exams="+cObj("cls_lists").value+"&subject__id="+cObj("sub_jectlists").value+"&exam__id="+cObj("exam_list").value+"&grd_mode="+cObj("grade_mode").value;
             sendData1("GET","academic/academic.php",datapass,cObj("record_exams_id"));
@@ -1488,10 +1506,10 @@ cObj("populate_btn").onclick = function () {
                 }, 100);
             }, 200);
         }else{
-            cObj("exma_record_err").innerHTML = "<p style='color:red;font-size:13px'>Check all fields colored with red-border!</p>";
+            cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'>Check all fields colored with red-border!</p>";
         }
     }else{
-        cObj("exma_record_err").innerHTML = "<p style='color:red;font-size:13px'>Select a class to proceed!</p>";
+        cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'>Select a class to proceed!</p>";
     }
 }
 function setGrades() {
@@ -1701,52 +1719,126 @@ cObj("curriculum1").onchange = function () {
     }
 }
 cObj("option_exams").onchange = function () {
-    if (this.value == "view_exams") {
-        displayTerms();
-        cObj("exam_fill").classList.add("hide");
-        cObj("view_exams_record").classList.remove("hide");
-        cObj("view_exams_class_record").classList.add("hide");
-        cObj("display_class_result").classList.add("hide");
-    }else if (this.value == "fill_in_exams") {
+    if (this.value == "fill_in_exams" || this.value == "view_exams") {
         displayExams();
         cObj("exam_fill").classList.remove("hide");
         cObj("view_exams_record").classList.add("hide");
         cObj("view_exams_class_record").classList.add("hide");
         cObj("display_class_result").classList.add("hide");
-    }else if (this.value == "view_per_class") {
-        getTerms_ofClass();
-        cObj("exam_fill").classList.add("hide");
+        cObj("subject_list").classList.add("hide");
+        cObj("classes_list").classList.add("hide");
+        cObj("module_list_exams").classList.add("hide");
+        cObj("unit_list_holder").classList.add("hide");
+        cObj("cat_list_window").classList.add("hide");
+    }else if (this.value == "fill_in_cat_marks" || this.value == "view_cat") {
+        displayExams();
+        cObj("exam_fill").classList.remove("hide");
         cObj("view_exams_record").classList.add("hide");
-        cObj("view_exams_class_record").classList.remove("hide");
-        cObj("select_one_exams").classList.add("hide");
-        cObj("select_one_class_siting").classList.add("hide");
-        cObj("display_btns").classList.add("hide");
-        cObj("display_class_result").classList.remove("hide");
-        cObj("record_exams_id").classList.add("hide");
-        cObj("display_result").classList.add("hide");
+        cObj("view_exams_class_record").classList.add("hide");
+        cObj("display_class_result").classList.add("hide");
+        cObj("subject_list").classList.add("hide");
+        cObj("classes_list").classList.add("hide");
+        cObj("module_list_exams").classList.add("hide");
+        cObj("unit_list_holder").classList.add("hide");
+        cObj("cat_list_window").classList.add("hide");
     }
+}
+function selectListeners() {
+    cObj("btn_panel").classList.remove("btns");
+    cObj("btn_panel").classList.add("hide");
+    cObj("classes_list").classList.add("hide");
+    cObj("grading_methods").classList.add("hide");
+    cObj("subject_list").classList.remove("hide");
+    
+    var exam_id = this.value;
+    var datapass = "?getexams_classes="+exam_id+"&object_id=sub_jectlists";
+    sendData1("GET","academic/academic.php",datapass,cObj("course_level_holder_exam_filling"), function () {
+        if (cObj("sub_jectlists") != null) {
+            cObj("sub_jectlists").onchange = function () {
+                cObj("classes_list").classList.remove("hide");
+                cObj("grading_methods").classList.remove("hide");
+                cObj("btn_panel").classList.add("btns");
+                cObj("btn_panel").classList.remove("hide");
+                cObj("module_list_exams").classList.remove("hide");
+                cObj("unit_list_holder").classList.remove("hide");
+                if (valObj("option_exams") == "fill_in_cat_marks"){
+                    cObj("cat_list_window").classList.remove("hide");
+                }
+                // get the course list
+                var datapass = "?get_course_list=true&exam_id="+exam_id+"&course_level="+valObj("sub_jectlists")+"&object_id=course_list_exam_filling";
+                sendData1("GET", "academic/academic.php", datapass, cObj("course_list_exam_filling_holder"), function () {
+                    if (cObj("course_list_exam_filling") != undefined) {
+                        cObj("course_list_exam_filling").onchange = function () {
+                            var datapass = "?get_course_module_terms="+this.value+"&object_id=module_list_exam_filling";
+                            sendData2("GET","administration/admissions.php", datapass, cObj("module_list_exam_filling_holder"), cObj("loadings"), function () {
+                                if (cObj("module_list_exam_filling") != undefined){
+                                    cObj("module_list_exam_filling").onchange = function () {
+                                        var datapass = "?get_course_modular_units=true&module_id="+valObj("module_list_exam_filling")+"&course_id="+valObj("course_list_exam_filling")+"&exam_id="+exam_id+"&object_id=unit_list_exam_filling";
+                                        sendData1("GET", "academic/academic.php", datapass, cObj("unit_list_exam_filling_holder"), function () {
+                                            if (cObj("unit_list_exam_filling") != undefined) {
+                                                cObj("unit_list_exam_filling").onchange = function () {
+                                                    if (valObj("option_exams") == "fill_in_cat_marks") {
+                                                        var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=cat_list_exam_filling";
+                                                        sendData1("GET", "academic/academic.php", datapass, cObj("cat_list_exam_filling_holder"), function () {
+                                                            
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            // $("#classes_for_exams").select2({
+            //     width: '100%'
+            // });
+        }
+    });
+    return;
+    var exam_id = this.value;
+    var datapass = "?get_exam_class=" + exam_id;
+    sendData1("GET", "academic/academic.php", datapass, cObj("subject_list"));
+    setTimeout(() => {
+        var timeout = 0;
+        var ids = setInterval(() => {
+            timeout++;
+            //after two minutes of slow connection the next process wont be executed
+            if (timeout == 1200) {
+                stopInterval(ids);
+            }
+            if (cObj("loadings").classList.contains("hide")) {
+                if (typeof (cObj("sub_jectlists")) != 'undefined' && cObj("sub_jectlists") != null) {
+                    cObj("sub_jectlists").addEventListener("change", selectSubject);
+                }
+                stopInterval(ids);
+            }
+        }, 100);
+    }, 200);
+}
+function selectSubject() {
+    cObj("classes_list").classList.remove("hide");
+    cObj("grading_methods").classList.remove("hide");
+    cObj("btn_panel").classList.add("btns");
+    cObj("btn_panel").classList.remove("hide");
+    //show classes available 
+    var subject_id = this.value;
+    var exam_id = cObj("exam_list").value;
+    var datapass = "?subjects_id_ds=" + subject_id + "&exams_id_ids=" + exam_id;
+    sendData1("GET", "academic/academic.php", datapass, cObj("classes_list"));
 }
 function displayExams() {
     //if (cObj("record_exams_id").innerText.length < 10) {
         cObj("exam_select").classList.remove("hide");
         var datapass = "?get_exam_available=true";
-        sendData1("GET","academic/academic.php",datapass,cObj("exam_select"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout==1200) {
-                    stopInterval(ids);                        
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    if (typeof(cObj("exam_list")) != 'undefined' && cObj("exam_list") != null){
-                        cObj("exam_list").addEventListener("change",selectListeners);
-                    }
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 200);
+        sendData1("GET","academic/academic.php",datapass,cObj("exam_select"), function () {
+            if (typeof(cObj("exam_list")) != 'undefined' && cObj("exam_list") != null){
+                cObj("exam_list").addEventListener("change",selectListeners);
+            }
+        });
         cObj("btn_panel").classList.add("hide");
         cObj("subject_list").classList.add("hide");
         cObj("classes_list").classList.add("hide");
@@ -4424,6 +4516,8 @@ cObj("edit_add_grades_in").onclick = function () {
 }
 cObj("canc_exam_print").onclick = function () {
     cObj("printer_window").classList.add("hide");
+    cObj("all_classes_here").innerHTML = '<p class="text-success p-1 my-2 border border-success rounded">Course Level Will appear here!</p>';
+    cObj("all_couse_lists_print_holder").innerHTML = '<p class="text-success p-1 my-2 border border-success rounded">Course List Will appear here!</p>';
 }
 cObj("close_exams_printing").onclick = function () {
     cObj("printer_window").classList.add("hide");

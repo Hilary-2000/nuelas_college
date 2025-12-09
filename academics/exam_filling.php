@@ -18,9 +18,10 @@
                     <label class="form-control-label" for="option_exams">Select an option: <br></label>
                     <select name="option_exams" class="form-control" id="option_exams">
                         <option value="" hidden>Select..</option>
-                        <option value="view_exams">View Marks per subject</option>
-                        <!-- <option value="view_per_class">View per class</option> -->
-                        <option value="fill_in_exams">Record student marks</option>
+                        <option value="view_exams">View Student Marks</option>
+                        <option value="view_cat">View Student CAT Marks</option>
+                        <option value="fill_in_exams">Record Student marks</option>
+                        <option value="fill_in_cat_marks">Record Student C.A.T marks</option>
                     </select>
                 </div>
                 <div class="exam_fill" id="exam_fill">
@@ -31,18 +32,28 @@
                         </select>
                     </div>
                     <!--Subject list-->
-                    <div class="conts hide" id="subject_list">
-                        <select name="exam_list" id="">
-                            <option value="" hidden>Select an option..</option>
-                        </select>
+                    <div class="conts hide mt-2" id="subject_list">
+                        <label for="sub_jectlists" class="form-control-label">Course Level</label>
+                        <span id="course_level_holder_exam_filling"><p class="text-success p-1 my-2 border border-success rounded">Course Level Will appear here!</p></span>
                     </div>
                     <!--Class list-->
-                    <div class="conts hide" id="classes_list">
-                        <select name="exam_list" id="">
-                            <option value="" hidden>Select an option..</option>
-                        </select>
+                    <div class="conts hide my-2" id="classes_list">
+                        <label for="course_list_exam_filling" class="form-control-label">Course List</label>
+                        <span id="course_list_exam_filling_holder"><p class="text-success p-1 my-2 border border-success rounded">Course List Will appear here!</p></span>
                     </div>
-                    <div class="conts hide" id="grading_methods">
+                    <div class="conts hide" id="module_list_exams">
+                        <label for="module_list_exam_filling" class="form-control-label">Module List</label>
+                        <span id="module_list_exam_filling_holder"><p class="text-success p-1 my-2 border border-success rounded">Module List Will appear here!</p></span>
+                    </div>
+                    <div class="conts hide" id="unit_list_holder">
+                        <label for="unit_list_exam_filling" class="form-control-label">Unit List</label>
+                        <span id="unit_list_exam_filling_holder"><p class="text-success p-1 my-2 border border-success rounded">Unit List Will appear here!</p></span>
+                    </div>
+                    <div class="conts hide" id="cat_list_window">
+                        <label for="cat_list_exam_filling" class="form-control-label">Select C.A.T</label>
+                        <span id="cat_list_exam_filling_holder"><p class="text-success p-1 my-2 border border-success rounded">CAT List Will appear here!</p></span>
+                    </div>
+                    <div class="conts hide d-none" id="grading_methods">
                         <label class="form-control-label" for="grade_mode">Select grading method: <br></label>
                         <select class="form-control" name="grade_mode" id="grade_mode">
                             <option value="" hidden>Select an option</option>
@@ -53,10 +64,10 @@
                         </select>
                     </div>
                     <div class="conts">
-                        <p id="exma_record_err"></p>
+                        <p id="exam_record_err"></p>
                     </div>
                     <div class="hide" id="btn_panel">
-                        <button type="button" id = "populate_btn">Populate</button>
+                        <button type="button" id = "populate_btn"><i class="fas fa-eye"></i> Display Examinees</button>
                     </div>
                 </div>
                 <div class="view_exams" id="view_exams_record">

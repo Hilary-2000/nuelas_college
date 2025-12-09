@@ -374,11 +374,19 @@
                     <div class="container col-md-6 border border-secondary">
                         <p class="text-center"><b>Display Results</b></p>
                         <p class="hide" id="exams_id_result"></p>
-                        <p class="text-success"><small>Classes that did the exams are the only ones that appear
-                                below</small></p>
-                        <label for="class_label_exams_result" class="form-control-label">Select a class to display the
-                            result</label><br>
-                        <span id="exams_details_holder">Please wait...</span><br>
+                        <p class="text-success"><small>Classes that did the exams are the only ones that appear below</small></p>
+                        <div class="form-group">
+                            <label for="class_label_exams_result" class="form-control-label">Select Course Level</label><br>
+                            <span id="exams_details_holder"><p class="text-success p-1 my-2 border border-success rounded">Course Level Will appear here!</p></span><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="course_list_view_results" class="form-control-label">Select Course List</label><br>
+                            <span id="course_list_holder_view_results"><p class="text-success p-1 my-1 border border-success rounded">Course List Will appear here!</p></span><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="course_module_level" class="form-control-label">Select Module Level</label><br>
+                            <span id="course_module_level_holder"><p class="text-success p-1 my-1 border border-success rounded">Course Module Level appear here!</p></span><br>
+                        </div>
                         <button id="display_exams_for_classes">Display</button>
                         <span id="results_output"></span>
                     </div>

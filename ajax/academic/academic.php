@@ -1057,6 +1057,24 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             }else {
                 echo "Nothing";
             }
+        }elseif(isset($_GET['get_exam_cats_list'])){
+            $exam_id = $_GET['exam_id'];
+            $select = "SELECT * FROM `exams_cat` WHERE exam_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $exam_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $object_id = $_GET['object_id'];
+            $data_to_display = "<select class='form-control' id='$object_id'><option value='' hidden>Select an option</option>";
+            if ($result) {
+                $index = 1;
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display .= "<option value='".$row['cat_id']."'>".$row['name']." (".$row['max_marks']." Mks)</option>";
+                    $index++;
+                }
+            }
+            $data_to_display .= "</select>";
+            echo $data_to_display;
         }elseif(isset($_GET['get_exam_cats'])){
             $exam_id = $_GET['exam_id'];
             $select = "SELECT * FROM `exams_cat` WHERE exam_id = ?";
@@ -1125,13 +1143,14 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             echo json_encode($exam_units);
         }elseif (isset($_GET['getexams_classes'])) {
             $exam_id = $_GET['getexams_classes'];
+            $object_id = isset($_GET['object_id']) ? $_GET['object_id'] : "classes_for_exams";
             $select = "SELECT course_level FROM `exam_unit` WHERE `exam_id` = '".$exam_id."' GROUP BY course_level;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
             $data_to_display = "";
             if ($result) {
-                $data_to_display.="<select required name='classes_for_exams' id='classes_for_exams' class='form-control'><option value='' hidden>Select option</option>";
+                $data_to_display.="<select required name='$object_id' id='$object_id' class='form-control'><option value='' hidden>Select option</option>";
                 $counter  = 0;
                 while ($row = $result->fetch_assoc()) {
                     $data_to_display.="<option value='".$row['course_level']."'>".$row['course_level']."</option>";
@@ -1139,14 +1158,37 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 $data_to_display.="</select>";
             }
             echo $data_to_display;
+        }elseif(isset($_GET['get_course_modular_units'])){
+            $module_id = $_GET['module_id'];
+            $course_id = $_GET['course_id'];
+            $exam_id = $_GET['exam_id'];
+            $object_id = $_GET['object_id'];
+            $select = "SELECT * FROM exam_unit LEFT JOIN course_unit_assignment ON course_unit_assignment.course_id = exam_unit.course_id LEFT JOIN table_subject ON table_subject.subject_id = course_unit_assignment.unit_id WHERE course_unit_assignment.module_number = ? AND exam_unit.exam_id = ? AND exam_unit.course_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("sss", $module_id, $exam_id, $course_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data_to_display = "<select class='form-control' id='$object_id'><option hidden >Select an option</option>";
+            $subject_array = [];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    if (!in_array($row['subject_id'], $subject_array)) {
+                        $data_to_display.="<option value='".$row['subject_id']."'>".$row['display_name']." {".$row['timetable_id']."}</option>";
+                        array_push($subject_array, $row['subject_id']);
+                    }
+                }
+            }
+            $data_to_display .= "</select>";
+            echo $data_to_display;
         }elseif(isset($_GET['get_course_list'])){
             $course_level = $_GET['course_level'];
             $exam_id = $_GET['exam_id'];
+            $object_id = isset($_GET['object_id']) ? $_GET['object_id'] : "courses_for_exams";
             $select = "SELECT course_id FROM exam_unit WHERE exam_id = '".$exam_id."' GROUP BY course_id;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            $data_to_display = "<select required name='courses_for_exams' id='courses_for_exams' class='form-control'><option value='' hidden>Select option</option>";
+            $data_to_display = "<select required name='$object_id' id='$object_id' class='form-control'><option value='' hidden>Select option</option>";
             if ($result) {
                 while ($row = $result->fetch_assoc()) {
                     $course_name = get_course_name($row['course_id'], $conn2);
@@ -1613,7 +1655,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 echo "<p style='color:red;font-size:13px;'>An error has occured!</p>";
             }
         }elseif (isset($_GET['get_exam_available'])) {
-            $select = "SELECT `exams_id`,`exams_name` FROM `exams_tbl` WHERE `end_date` >= ?";
+            $select = "SELECT `exams_id`,`exams_name` FROM `exams_tbl` WHERE `end_date` >= ? ORDER BY exams_id DESC";
             $date = date("Y-m-d");
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("s",$date);
@@ -2439,6 +2481,21 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             echo $my_total_sub;
         }
         elseif (isset($_GET['get_perfomance_for_class'])) {
+            $course_level = $_GET['course_level'];
+            $course_name = $_GET['course_name'];
+            $course_module = $_GET['course_module'];
+            $exam_id = $_GET['exam_id'];
+            $select = "SELECT * FROM `course_unit_assignment` WHERE course_id = ? AND module_number = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss",$course_name, $course_module);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    
+                }
+            }
+            return;
             $class_sat = $_GET['class_sat'];
             $exam_id = $_GET['exam_id'];
             //get the subjects done by class
@@ -3202,48 +3259,20 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             }
         }elseif (isset($_GET['get_exams_results'])) {
             $select_class_id = "class_label_exams_result";
-            $select = "SELECT * FROM `exams_tbl` WHERE `exams_id` = '".$_GET['get_exams_results']."'";
+            $select = "SELECT course_level FROM `exam_unit` WHERE `exam_id` = '".$_GET['get_exams_results']."' GROUP BY course_level;";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            $students_sitting = "";
-            $class_sitting_b = "";
+            $data_to_display = "";
             if ($result) {
-                if ($row = $result->fetch_assoc()) {
-                    $students_sitting = $row['students_sitting'];
-                    $class_sitting_b = $row['class_sitting'];
+                $data_to_display.="<select required name='$select_class_id' id='$select_class_id' class='form-control'><option value='' hidden>Select option</option>";
+                $counter  = 0;
+                while ($row = $result->fetch_assoc()) {
+                    $data_to_display.="<option value='".$row['course_level']."'>".$row['course_level']."</option>";
                 }
+                $data_to_display.="</select>";
             }
-
-            // get the class sitting
-            if (strlen(trim($students_sitting)) > 0) {
-                // means that students are present
-                $data = json_decode(trim($students_sitting));
-                $my_classes = [];
-                // loop through the data and get classes
-                $string_to_display = "<select class='form-control w-100' name='".$select_class_id."' id='".$select_class_id."'> <option value='' hidden>Select..</option>";
-                for ($indexed=0; $indexed < count($data); $indexed++) { 
-                    $class_names = $data[$indexed]->classname;
-                    $string_to_display.="<option id='".$class_names."' value='".$class_names."'>".className($class_names)."</option>";
-                }
-                $string_to_display.="</select>";
-                echo $string_to_display;
-            }else{
-                // means that students are not present
-                $class_sitting_b = trim($class_sitting_b);
-                if (strlen($class_sitting_b) > 0) {
-                    $studentd_data = explode(",",substr($class_sitting_b,1,(strlen($class_sitting_b)-2)));
-                    $my_classes = $studentd_data;
-                    // loop through the data and get classes
-                    $string_to_display = "<select class='form-control w-100' name='".$select_class_id."' id='".$select_class_id."'> <option value='' hidden>Select..</option>";
-                    for ($indexed=0; $indexed < count($my_classes); $indexed++) { 
-                        $class_names = $my_classes[$indexed];
-                        $string_to_display.="<option id='".$class_names."' value='".$class_names."'>".className($class_names)."</option>";
-                    }
-                    $string_to_display.="</select>";
-                    echo $string_to_display;
-                }
-            }
+            echo $data_to_display;
         }elseif (isset($_GET['get_custom_table'])) {
             include("../../connections/conn1.php");
             $get_custom_table = $_SESSION['timetable_id'];

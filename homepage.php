@@ -440,7 +440,7 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts">
+            <div class="conts d-none">
                 <button class="navButs htbtn">Human Resource<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc hide">
@@ -4586,13 +4586,13 @@ function checkPresnt($array, $string){
 
                 <div class="conts">
                     <!-- class doing to  -->
-                    <label for="classes_for_exams" class="form-control-label"><b>Select classes: </b></label>
-                    <span id="all_classes_here"></span>
+                    <label for="classes_for_exams" class="form-control-label"><b>Select Course List </b></label>
+                    <span id="all_classes_here"><p class="text-success p-1 my-2 border border-success rounded">Course Level Will appear here!</p></span>
                 </div>
 
                 <div class="conts">
                     <label for="courses_for_exams" class="form-control-label">Course List</label>
-                    <span id="all_couse_lists_print_holder"></span>
+                    <span id="all_couse_lists_print_holder"><p class="text-success p-1 my-2 border border-success rounded">Course List Will appear here!</p></span>
                 </div>
                 <div class="btns">
                     <button class="my-2" type="submit">Print <i class="fas fa-print"></i></button>
