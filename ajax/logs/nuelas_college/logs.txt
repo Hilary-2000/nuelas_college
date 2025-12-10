@@ -1,3 +1,16 @@
+10th Dec 2025 14:14:41PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+10th Dec 2025 14:13:32PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+10th Dec 2025 14:13:14PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+10th Dec 2025 14:00:13PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 14:00:09PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 14:00:05PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 13:55:40PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 13:53:31PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 13:48:24PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 12:39:57PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+10th Dec 2025 12:39:46PM : Role "New Role" has been updated successfully! - {ANN AKOTCH}
+10th Dec 2025 12:10:43PM : Role "New Role" has been added successfully! - {ANN AKOTCH}
+10th Dec 2025 11:02:23AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 09th Dec 2025 08:37:24AM : Agnes  - of Reg No. (NC-2025-006) data has been updated successfully! - {ANN AKOTCH}
 09th Dec 2025 08:28:27AM : Admission prefix has has been updated successfully! - {ANN AKOTCH}
 09th Dec 2025 08:28:11AM : Class "Bachelors" added successfully - {ANN AKOTCH}

@@ -3680,16 +3680,16 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 $stmt = $conn2->prepare($update);
                 $stmt->bind_param("s",$raw_data);
                 if($stmt->execute()){
-                    echo "<p class='text-success'>Updates done successfully!</p>";
+                    echo "<p class='text-success border border-success p-1 my-2 rounded'>Updates done successfully!</p>";
                     
                     // create the log text
                     $log_text = "Role has been deleted successfully!";
                     log_academic($log_text);
                 }else {
-                    echo "<p class='text-danger'>An error occured during update!</p>";
+                    echo "<p class='text-danger border border-danger p-1 my-2 rounded'>An error occured during update!</p>";
                 }
             }else{
-                echo "<p class='text-danger'>Cannot delete role because one or more users in your school is assigned the role!</p>";
+                echo "<p class='text-danger border border-danger p-1 my-2 rounded'>Cannot delete role because one or more users in your school is assigned the role!</p>";
             }
         }elseif (isset($_POST['addsubject'])) {
             $unit_name = $_POST['unit_name'];

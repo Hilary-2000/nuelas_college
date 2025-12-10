@@ -1457,10 +1457,14 @@ cObj("populate_btn").onclick = function () {
     err += checkBlank("course_list_exam_filling");
     err += checkBlank("module_list_exam_filling");
     err += checkBlank("unit_list_exam_filling");
+    err += checkBlank("unit_list_exam_filling");
+    if (valObj("option_exams") == "view_cat" || valObj("option_exams") == "fill_in_cat_marks") {
+        err += checkBlank("cat_list_exam_filling");
+    }
     if (err == 0) {
         cObj("display_result").classList.add("hide");
         cObj("record_exams_id").classList.remove("hide");
-        cObj("exam_record_err").innerHTML = "";
+        cObj("exam_record_err").innerHTML = "We are here!";
     }else{
         cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
     }
@@ -1761,7 +1765,7 @@ function selectListeners() {
                 cObj("btn_panel").classList.remove("hide");
                 cObj("module_list_exams").classList.remove("hide");
                 cObj("unit_list_holder").classList.remove("hide");
-                if (valObj("option_exams") == "fill_in_cat_marks"){
+                if (valObj("option_exams") == "fill_in_cat_marks" || valObj("option_exams") == "view_cat"){
                     cObj("cat_list_window").classList.remove("hide");
                 }
                 // get the course list
@@ -1777,7 +1781,7 @@ function selectListeners() {
                                         sendData1("GET", "academic/academic.php", datapass, cObj("unit_list_exam_filling_holder"), function () {
                                             if (cObj("unit_list_exam_filling") != undefined) {
                                                 cObj("unit_list_exam_filling").onchange = function () {
-                                                    if (valObj("option_exams") == "fill_in_cat_marks") {
+                                                    if (valObj("option_exams") == "fill_in_cat_marks" || valObj("option_exams") == "view_cat") {
                                                         var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=cat_list_exam_filling";
                                                         sendData1("GET", "academic/academic.php", datapass, cObj("cat_list_exam_filling_holder"), function () {
                                                             

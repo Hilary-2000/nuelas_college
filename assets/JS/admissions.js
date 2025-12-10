@@ -1296,9 +1296,9 @@ window.onload = function () {
         const element = routesnvans1[index];
         element.addEventListener("change", route_check);
     }
-    var academic_sect = document.getElementsByClassName("academic_sect");
-    for (let index = 0; index < academic_sect.length; index++) {
-        const element = academic_sect[index];
+    var academic_sector = document.getElementsByClassName("academic_sector");
+    for (let index = 0; index < academic_sector.length; index++) {
+        const element = academic_sector[index];
         element.addEventListener("change", academic_check);
     }
     var boarding_sect = document.getElementsByClassName("boarding_sect");
@@ -1342,6 +1342,11 @@ window.onload = function () {
     for (let index = 0; index < human_resource_mgmt_2.length; index++) {
         const element = human_resource_mgmt_2[index];
         element.addEventListener("change", hr_check2);
+    }
+    var academic_sector_2 = document.getElementsByClassName("academic_sector_2");
+    for (let index = 0; index < academic_sector_2.length; index++) {
+        const element = academic_sector_2[index];
+        element.addEventListener("change", academic_check_2);
     }
 
     // get if the reports button is set
@@ -5997,9 +6002,16 @@ function administration_check() {
         }
     }
     if (count == classin.length) {
+        cObj("all_administration").indeterminate = false;
         cObj("all_administration").checked = true;
     } else {
-        cObj("all_administration").checked = false;
+        if (count > 0) {
+            cObj("all_administration").indeterminate = true;
+            cObj("all_administration").checked = false;
+        }else{
+            cObj("all_administration").indeterminate = false;
+            cObj("all_administration").checked = false;
+        }
     }
 }
 
@@ -6012,29 +6024,22 @@ function finance_check() {
             count++;
         }
     }
+    
     if (count == classin.length) {
+        cObj("all_finance_sect").indeterminate = false;
         cObj("all_finance_sect").checked = true;
     } else {
-        cObj("all_finance_sect").checked = false;
+        if (count > 0) {
+            cObj("all_finance_sect").indeterminate = true;
+            cObj("all_finance_sect").checked = false;
+        }else{
+            cObj("all_finance_sect").indeterminate = false;
+            cObj("all_finance_sect").checked = false;
+        }
     }
 }
 function hr_check() {
-    var human_resource_mgmt = document.getElementsByClassName("human_resource_mgmt");
-    var count = 0;
-    for (let index = 0; index < human_resource_mgmt.length; index++) {
-        const element = human_resource_mgmt[index];
-        if (element.checked == true) {
-            count++;
-        }
-    }
-    if (count == human_resource_mgmt.length) {
-        cObj("all_hr_check").checked = true;
-    } else {
-        cObj("all_hr_check").checked = false;
-    }
-}
-function academic_check() {
-    var classin = document.getElementsByClassName("academic_sect");
+    var classin = document.getElementsByClassName("human_resource_mgmt");
     var count = 0;
     for (let index = 0; index < classin.length; index++) {
         const element = classin[index];
@@ -6043,9 +6048,38 @@ function academic_check() {
         }
     }
     if (count == classin.length) {
-        cObj("academic_section").checked = true;
+        cObj("all_hr_check").indeterminate = false;
+        cObj("all_hr_check").checked = true;
     } else {
-        cObj("academic_section").checked = false;
+        if (count > 0) {
+            cObj("all_hr_check").indeterminate = true;
+            cObj("all_hr_check").checked = false;
+        }else{
+            cObj("all_hr_check").indeterminate = false;
+            cObj("all_hr_check").checked = false;
+        }
+    }
+}
+function academic_check() {
+    var classin = document.getElementsByClassName("academic_sector");
+    var count = 0;
+    for (let index = 0; index < classin.length; index++) {
+        const element = classin[index];
+        if (element.checked == true) {
+            count++;
+        }
+    }
+    if (count == classin.length) {
+        cObj("all_academic_section").indeterminate = false;
+        cObj("all_academic_section").checked = true;
+    } else {
+        if (count > 0) {
+            cObj("all_academic_section").indeterminate = true;
+            cObj("all_academic_section").checked = false;
+        }else{
+            cObj("all_academic_section").indeterminate = false;
+            cObj("all_academic_section").checked = false;
+        }
     }
 }
 function boarding_check() {
@@ -6058,9 +6092,16 @@ function boarding_check() {
         }
     }
     if (count == classin.length) {
+        cObj("all_boarding_section").indeterminate = false;
         cObj("all_boarding_section").checked = true;
     } else {
-        cObj("all_boarding_section").checked = false;
+        if (count > 0) {
+            cObj("all_boarding_section").indeterminate = true;
+            cObj("all_boarding_section").checked = false;
+        }else{
+            cObj("all_boarding_section").indeterminate = false;
+            cObj("all_boarding_section").checked = false;
+        }
     }
 }
 function all_sms_check() {
@@ -6073,9 +6114,16 @@ function all_sms_check() {
         }
     }
     if (count == classin.length) {
+        cObj("all_sms_check").indeterminate = false;
         cObj("all_sms_check").checked = true;
     } else {
-        cObj("all_sms_check").checked = false;
+        if (count > 0) {
+            cObj("all_sms_check").indeterminate = true;
+            cObj("all_sms_check").checked = false;
+        }else{
+            cObj("all_sms_check").indeterminate = false;
+            cObj("all_sms_check").checked = false;
+        }
     }
 }
 function all_account_settings() {
@@ -6088,9 +6136,16 @@ function all_account_settings() {
         }
     }
     if (count == classin.length) {
+        cObj("accounts_sector").indeterminate = false;
         cObj("accounts_sector").checked = true;
     } else {
-        cObj("accounts_sector").checked = false;
+        if (count > 0) {
+            cObj("accounts_sector").indeterminate = true;
+            cObj("accounts_sector").checked = false;
+        }else{
+            cObj("accounts_sector").indeterminate = false;
+            cObj("accounts_sector").checked = false;
+        }
     }
 }
 /***HEY DONT CONFUSE UP AND DOWN */
@@ -6104,9 +6159,16 @@ function administration_check2() {
         }
     }
     if (count == classin.length) {
+        cObj("all_administration2").indeterminate = false;
         cObj("all_administration2").checked = true;
     } else {
-        cObj("all_administration2").checked = false;
+        if (count > 0) {
+            cObj("all_administration2").indeterminate = true;
+            cObj("all_administration2").checked = false;
+        }else{
+            cObj("all_administration2").indeterminate = false;
+            cObj("all_administration2").checked = false;
+        }
     }
 }
 
@@ -6120,11 +6182,42 @@ function finance_check2() {
         }
     }
     if (count == classin.length) {
+        cObj("all_finance_sect2").indeterminate = false;
         cObj("all_finance_sect2").checked = true;
     } else {
-        cObj("all_finance_sect2").checked = false;
+        if (count > 0) {
+            cObj("all_finance_sect2").indeterminate = true;
+            cObj("all_finance_sect2").checked = false;
+        }else{
+            cObj("all_finance_sect2").indeterminate = false;
+            cObj("all_finance_sect2").checked = false;
+        }
     }
 }
+
+function academic_check_2() {
+    var classin = document.getElementsByClassName("academic_sector_2");
+    var count = 0;
+    for (let index = 0; index < classin.length; index++) {
+        const element = classin[index];
+        if (element.checked == true) {
+            count++;
+        }
+    }
+    if (count == classin.length) {
+        cObj("all_academic_section_2").indeterminate = false;
+        cObj("all_academic_section_2").checked = true;
+    } else {
+        if (count > 0) {
+            cObj("all_academic_section_2").indeterminate = true;
+            cObj("all_academic_section_2").checked = false;
+        }else{
+            cObj("all_academic_section_2").indeterminate = false;
+            cObj("all_academic_section_2").checked = false;
+        }
+    }
+}
+
 function hr_check2() {
     var classin = document.getElementsByClassName("human_resource_mgmt_2");
     var count = 0;
@@ -6135,9 +6228,16 @@ function hr_check2() {
         }
     }
     if (count == classin.length) {
+        cObj("all_hr_check2").indeterminate = false;
         cObj("all_hr_check2").checked = true;
     } else {
-        cObj("all_hr_check2").checked = false;
+        if (count > 0) {
+            cObj("all_hr_check2").indeterminate = true;
+            cObj("all_hr_check2").checked = false;
+        }else{
+            cObj("all_hr_check2").indeterminate = false;
+            cObj("all_hr_check2").checked = false;
+        }
     }
 }
 function all_sms_check2() {
@@ -6150,9 +6250,16 @@ function all_sms_check2() {
         }
     }
     if (count == classin.length) {
+        cObj("all_sms_check2").indeterminate = false;
         cObj("all_sms_check2").checked = true;
     } else {
-        cObj("all_sms_check2").checked = false;
+        if (count > 0) {
+            cObj("all_sms_check2").indeterminate = true;
+            cObj("all_sms_check2").checked = false;
+        }else{
+            cObj("all_sms_check2").indeterminate = false;
+            cObj("all_sms_check2").checked = false;
+        }
     }
 }
 function all_account_settings2() {
@@ -6165,160 +6272,113 @@ function all_account_settings2() {
         }
     }
     if (count == classin.length) {
+        cObj("accounts_sector2").indeterminate = false;
         cObj("accounts_sector2").checked = true;
     } else {
-        cObj("accounts_sector2").checked = false;
+        if (count > 0) {
+            cObj("accounts_sector2").indeterminate = true;
+            cObj("accounts_sector2").checked = false;
+        }else{
+            cObj("accounts_sector2").indeterminate = false;
+            cObj("accounts_sector2").checked = false;
+        }
     }
 }
 /****ENDS HERE */
 
 cObj("all_administration").onchange = function () {
     var mychecks = document.getElementsByClassName("administration1");
-    if (this.checked == true) {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < mychecks.length; index++) {
+        const element = mychecks[index];
+        element.checked = this.checked;
     }
 }
 
 cObj("all_finance_sect").onchange = function () {
     var mychecks = document.getElementsByClassName("finance1");
-    if (this.checked == true) {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < mychecks.length; index++) {
+        const element = mychecks[index];
+        element.checked = this.checked;
     }
 }
 // all_hr_check
 cObj("all_hr_check").onchange = function () {
     var all_hr_check = document.getElementsByClassName("human_resource_mgmt");
-    if (this.checked == true) {
-        for (let index = 0; index < all_hr_check.length; index++) {
-            const element = all_hr_check[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < all_hr_check.length; index++) {
-            const element = all_hr_check[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < all_hr_check.length; index++) {
+        const element = all_hr_check[index];
+        element.checked = this.checked;
+    }
+}
+// all_academic_section
+cObj("all_academic_section").onchange = function () {
+    var all_academic_section = document.getElementsByClassName("academic_sector");
+    for (let index = 0; index < all_academic_section.length; index++) {
+        const element = all_academic_section[index];
+        element.checked = this.checked;
     }
 }
 
 cObj("all_sms_check").onchange = function () {
     var mychecks = document.getElementsByClassName("sms_broadcasted");
-    if (this.checked == true) {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < mychecks.length; index++) {
+        const element = mychecks[index];
+        element.checked = this.checked;
     }
 }
 cObj("accounts_sector").onchange = function () {
     var mychecks = document.getElementsByClassName("accounts_section");
-    if (this.checked == true) {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < mychecks.length; index++) {
+        const element = mychecks[index];
+        element.checked = this.checked;
     }
 }
 /**HEY HEYE HEYE HEY */
 /**HEY DONT GET CONFUSED HERE THE UPPER CODE IS DUPLICATE AS DOWN HERE */
 cObj("all_administration2").onchange = function () {
     var mychecks = document.getElementsByClassName("administration12");
-    if (this.checked == true) {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < mychecks.length; index++) {
+        const element = mychecks[index];
+        element.checked = this.checked;
     }
 }
 
 cObj("all_finance_sect2").onchange = function () {
     var mychecks = document.getElementsByClassName("finance12");
-    if (this.checked == true) {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < mychecks.length; index++) {
+        const element = mychecks[index];
+        element.checked = this.checked;
     }
 }
 
 // all hr checks
 cObj("all_hr_check2").onchange = function () {
     var human_resource_mgmt_2 = document.getElementsByClassName("human_resource_mgmt_2");
-    if (this.checked == true) {
-        for (let index = 0; index < human_resource_mgmt_2.length; index++) {
-            const element = human_resource_mgmt_2[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < human_resource_mgmt_2.length; index++) {
-            const element = human_resource_mgmt_2[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < human_resource_mgmt_2.length; index++) {
+        const element = human_resource_mgmt_2[index];
+        element.checked = this.checked;
+    }
+}
+
+cObj("all_academic_section_2").onchange = function () {
+    var academic_sector_2 = document.getElementsByClassName("academic_sector_2");
+    for (let index = 0; index < academic_sector_2.length; index++) {
+        const element = academic_sector_2[index];
+        element.checked = this.checked;
     }
 }
 
 cObj("all_sms_check2").onchange = function () {
     var mychecks = document.getElementsByClassName("sms_broadcasted2");
-    if (this.checked == true) {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < mychecks.length; index++) {
+        const element = mychecks[index];
+        element.checked = this.checked;
     }
 }
 cObj("accounts_sector2").onchange = function () {
     var mychecks = document.getElementsByClassName("accounts_section2");
-    if (this.checked == true) {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = true;
-        }
-    } else {
-        for (let index = 0; index < mychecks.length; index++) {
-            const element = mychecks[index];
-            element.checked = false;
-        }
+    for (let index = 0; index < mychecks.length; index++) {
+        const element = mychecks[index];
+        element.checked = this.checked;
     }
 }
 /**ENDS HERE BRUH */
@@ -6418,6 +6478,42 @@ function getEditedStaffRoles(status = "new"){
             {
                 "name": "general_reports",
                 "Status": status == "edit" ? (cObj("my_school_reports2") != undefined ? (cObj("my_school_reports2").checked ? "yes" : "no") : "no") : (cObj("my_school_reports") != undefined ? (cObj("my_school_reports").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "regsub",
+                "Status": status == "edit" ? (cObj("register_unit_sector2") != undefined ? (cObj("register_unit_sector2").checked ? "yes" : "no") : "no") : (cObj("register_unit_sector") != undefined ? (cObj("register_unit_sector").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "managesub",
+                "Status": status == "edit" ? (cObj("unit_management_sector2") != undefined ? (cObj("unit_management_sector2").checked ? "yes" : "no") : "no") : (cObj("unit_management_sector") != undefined ? (cObj("unit_management_sector").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "managetrnsub",
+                "Status": status == "edit" ? (cObj("staff_unit_assignment_sector2") != undefined ? (cObj("staff_unit_assignment_sector2").checked ? "yes" : "no") : "no") : (cObj("staff_unit_assignment_sector") != undefined ? (cObj("staff_unit_assignment_sector").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "course_unit_assignment",
+                "Status": status == "edit" ? (cObj("course_unit_assignment_sector2") != undefined ? (cObj("course_unit_assignment_sector2").checked ? "yes" : "no") : "no") : (cObj("course_unit_assignment_sector") != undefined ? (cObj("course_unit_assignment_sector").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "lecture_halls_btn",
+                "Status": status == "edit" ? (cObj("lecture_hall_sector2") != undefined ? (cObj("lecture_hall_sector2").checked ? "yes" : "no") : "no") : (cObj("lecture_hall_sector") != undefined ? (cObj("lecture_hall_sector").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "generate_tt_btn",
+                "Status": status == "edit" ? (cObj("generate_timetable_sector2") != undefined ? (cObj("generate_timetable_sector2").checked ? "yes" : "no") : "no") : (cObj("generate_timetable_sector") != undefined ? (cObj("generate_timetable_sector").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "examanagement",
+                "Status": status == "edit" ? (cObj("exam_management_sector2") != undefined ? (cObj("exam_management_sector2").checked ? "yes" : "no") : "no") : (cObj("exam_management_sector") != undefined ? (cObj("exam_management_sector").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "exam_fill_btn",
+                "Status": status == "edit" ? (cObj("student_marks_entry_sector2") != undefined ? (cObj("student_marks_entry_sector2").checked ? "yes" : "no") : "no") : (cObj("student_marks_entry_sector") != undefined ? (cObj("student_marks_entry_sector").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "academic_report_btn",
+                "Status": status == "edit" ? (cObj("academic_report_sector2") != undefined ? (cObj("academic_report_sector2").checked ? "yes" : "no") : "no") : (cObj("academic_report_sector") != undefined ? (cObj("academic_report_sector").checked ? "yes" : "no") : "no")
             }
         ]
     };
@@ -6561,6 +6657,7 @@ function editRoleListener() {
     // create a window to display the data
     cObj("add_user_role_window2").classList.remove("hide");
     var data2 = obj.roles;
+    console.log(data2);
     for (let index = 0; index < data2.length; index++) {
         const element = data2[index];
         checkRoles(element, "edit");
@@ -6572,6 +6669,7 @@ function editRoleListener() {
     finance_check2();
     all_account_settings2();
     hr_check2();
+    academic_check_2();
 }
 
 function checkRoles(roles, edit_status = "new") {
@@ -6767,6 +6865,78 @@ function checkRoles(roles, edit_status = "new") {
         if(cObj(element_id) != undefined){ 
             cObj(element_id).checked = roles.Status == "yes";
         }
+    }else if(roles.name == "regsub"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "register_unit_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "managesub"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "unit_management_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "managetrnsub"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "staff_unit_assignment_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "course_unit_assignment"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "course_unit_assignment_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "lecture_halls_btn"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "lecture_hall_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "generate_tt_btn"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "generate_timetable_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "examanagement"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "exam_management_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "exam_fill_btn"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "student_marks_entry_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "academic_report_btn"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "academic_report_sector2";
+        }
+        if(cObj(element_id) != undefined){ 
+            cObj(element_id).checked = roles.Status == "yes";
+        }
     }
 }
 cObj("cancel_role_btn2").onclick = function () {
@@ -6787,65 +6957,31 @@ cObj("confirmyes_roled").onclick = function () {
     if (roles_n_user.length > 0) {
         cObj("cancel_role_btn2").click()
         var object = JSON.parse(roles_n_user);
-        var data_to_upload = "[";
+        console.log(object);
+        // return;
+        var data_to_upload = [];
         var role_name = "";
-        var counted = 0;
         for (let index = 0; index < object.length; index++) {
             const element = object[index];
             if (index != role_index) {
-                data_to_upload += JSON.stringify(element) + ",";
-                counted++;
+                data_to_upload.push(element);
             } else {
                 role_name = element.name;
             }
         }
-        data_to_upload = data_to_upload.substring(0, (data_to_upload.length - 1)) + "]";
-        if (counted > 0) {
-            // send data to be uploaded
-            var datapass = "delete_roles=" + role_name + "&raw_data=" + data_to_upload;
-            sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("roles_errors"), cObj("load_roles"));
-            cObj("confirmno_roled").click();
+        
+        // object_length
+        var new_object = JSON.stringify(data_to_upload);
+        
+        // send data to be uploaded
+        var datapass = "delete_roles=" + role_name + "&raw_data=" + new_object;
+        sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("roles_errors"), cObj("load_roles"), function () {
+            cObj("set_btns").click();
             setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(ids);
-                    }
-                    if (cObj("load_roles").classList.contains("hide")) {
-                        cObj("set_btns").click()
-                        setTimeout(() => {
-                            cObj("roles_errors").innerText = "";
-                        }, 4000);
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 100);
-        } else {
-            data_to_upload = "";
-            // send data to be uploaded
-            var datapass = "?delete_roles=" + role_name + "&raw_data=" + data_to_upload;
-            sendData2("GET", "academic/academic.php", datapass, cObj("roles_errors"), cObj("load_roles"));
-            cObj("confirmno_roled").click();
-            setTimeout(() => {
-                var timeout = 0;
-                var ids = setInterval(() => {
-                    timeout++;
-                    //after two minutes of slow connection the next process wont be executed
-                    if (timeout == 1200) {
-                        stopInterval(ids);
-                    }
-                    if (cObj("load_roles").classList.contains("hide")) {
-                        cObj("set_btns").click()
-                        setTimeout(() => {
-                            cObj("roles_errors").innerText = "";
-                        }, 4000);
-                        stopInterval(ids);
-                    }
-                }, 100);
-            }, 100);
-        }
+                cObj("roles_errors").innerText = "";
+            }, 10000);
+        });
+        cObj("confirmno_roled").click();
     } else {
         cObj("confirmno_roled").click();
     }

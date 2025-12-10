@@ -6,10 +6,10 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn", "academic_report_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn", "academic_report_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
         $allowed = ["sms_broadcast","update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
@@ -440,10 +440,10 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts d-none">
+            <div class="conts">
                 <button class="navButs htbtn">Human Resource<span class="arrow rotate_right"></button>
                 <div class="contsd">
-                    <div class="contsc hide">
+                    <div class="contsc">
                         <button type='button' class="sidebtns <?php echo allowed("payroll"); ?> htbtn" id='payroll_sys'><span><img class="icons" src="images/report.png"></span>Payroll</button>
                         <button type='button' class="sidebtns <?php echo allowed("leave_mgmt"); ?> htbtn" id='humanresource'><span><img class="icons" src="images/managestaff.png"></span>Leave Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("apply_leave_menu"); ?> htbtn" id='apply_leave_menu'><span><img class="icons" src="images/timetable.png"></span>Apply Leave</button>
@@ -455,15 +455,15 @@ function checkPresnt($array, $string){
                 <button class="navButs">Academic<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc">
-                        <button type='button' class="sidebtns <?php echo allowed("regsub"); ?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register Units</button>
-                        <button type='button' class="sidebtns <?php echo allowed("managesub"); ?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Unit Management</button>
-                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub"); ?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Unit Assignment</button>
-                        <button type='button' class="sidebtns <?php echo allowed("course_unit_assignment"); ?> htbtn" id='course_unit_assignment'><span><img class="icons" src="images/managemarks.png"></span>Course-Unit Assignment</button>
-                        <button type='button' class="sidebtns <?php echo allowed("lecture_halls_btn"); ?> htbtn" id='lecture_halls_btn'><span><img class="icons" src="images/manageteach.png"></span>Lecture Halls</button>
-                        <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn"); ?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Generate Timetable</button>
-                        <button type='button' class="sidebtns <?php echo allowed("examanagement"); ?> htbtn" id='examanagement'><span><img class="icons" src="images/addmarks.png"></span>Exam Management</button>
-                        <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Students Marks Entry</button>
-                        <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/analysis.png"></span>Academic Reports</button>
+                        <button type='button' class="sidebtns <?php echo allowed("regsub");?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register Units</button>
+                        <button type='button' class="sidebtns <?php echo allowed("managesub");?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Unit Management</button>
+                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub");?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Unit Assignment</button>
+                        <button type='button' class="sidebtns <?php echo allowed("course_unit_assignment");?> htbtn" id='course_unit_assignment'><span><img class="icons" src="images/managemarks.png"></span>Course-Unit Assignment</button>
+                        <button type='button' class="sidebtns <?php echo allowed("lecture_halls_btn");?> htbtn" id='lecture_halls_btn'><span><img class="icons" src="images/manageteach.png"></span>Lecture Halls</button>
+                        <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn");?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Generate Timetable</button>
+                        <button type='button' class="sidebtns <?php echo allowed("examanagement");?> htbtn" id='examanagement'><span><img class="icons" src="images/addmarks.png"></span>Exam Management</button>
+                        <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn");?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Students Marks Entry</button>
+                        <button type='button' class="sidebtns <?php echo allowed("academic_report_btn");?> " id='academic_report_btn'><span><img class="icons" src="images/analysis.png"></span>Academic Reports</button>
                     </div>
                 </div>
             </div>
@@ -1179,7 +1179,7 @@ function checkPresnt($array, $string){
                             <input class='finance1' type='checkbox' name='supplier_account' id='supplier_account'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='asset_management'>9. Asset Accounts</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='asset_management'>8. Asset Accounts</label>
                             <input class='finance1' type='checkbox' name='asset_management' id='asset_management'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
@@ -1188,25 +1188,67 @@ function checkPresnt($array, $string){
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check'><b>Human Resource</b></label>
                             <input class='' type='checkbox' name='all_hr_check' id='all_hr_check'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_management'>1. Payroll</label>
                             <input class='human_resource_mgmt' type='checkbox' name='payroll_management' id='payroll_management'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management'>2. Leave Management</label>
                             <input class='human_resource_mgmt' type='checkbox' name='leave_management' id='leave_management'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='apply_leave_main'>3. Apply Leave</label>
                             <input class='human_resource_mgmt' type='checkbox' name='apply_leave_main' id='apply_leave_main'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_main'>4. Payslip & Advance</label>
                             <input class='human_resource_mgmt' type='checkbox' name='payroll_and_advance_main' id='payroll_and_advance_main'>
+                        </div>
+                        <hr class="d-none">
+                        <!-- Academic Section -->
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_academic_section'><b>Academic Section</b></label>
+                            <input class='' type='checkbox' name='all_academic_section' id='all_academic_section'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='register_unit_sector'>1. Register Units</label>
+                            <input class='academic_sector' type='checkbox' name='register_unit_sector' id='register_unit_sector'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='unit_management_sector'>2. Unit Management</label>
+                            <input class='academic_sector' type='checkbox' name='unit_management_sector' id='unit_management_sector'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='staff_unit_assignment_sector'>3. Staff-Unit Assignment</label>
+                            <input class='academic_sector' type='checkbox' name='staff_unit_assignment_sector' id='staff_unit_assignment_sector'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='course_unit_assignment_sector'>4. Course-Unit Assignment</label>
+                            <input class='academic_sector' type='checkbox' name='course_unit_assignment_sector' id='course_unit_assignment_sector'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='lecture_hall_sector'>5. Lecture Hall</label>
+                            <input class='academic_sector' type='checkbox' name='lecture_hall_sector' id='lecture_hall_sector'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='generate_timetable_sector'>6. Generate Timetable</label>
+                            <input class='academic_sector' type='checkbox' name='generate_timetable_sector' id='generate_timetable_sector'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='exam_management_sector'>7. Exam Management</label>
+                            <input class='academic_sector' type='checkbox' name='exam_management_sector' id='exam_management_sector'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='student_marks_entry_sector'>8. Student Marks Entry</label>
+                            <input class='academic_sector' type='checkbox' name='student_marks_entry_sector' id='student_marks_entry_sector'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='academic_report_sector'>9. Academic Reports</label>
+                            <input class='academic_sector' type='checkbox' name='academic_report_sector' id='academic_report_sector'>
                         </div>
                         <hr>
                         <!-- staft of sms section -->
@@ -1314,7 +1356,7 @@ function checkPresnt($array, $string){
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='allow_expense_approvals_2'>6. Allow Expense Approvals</label>
-                            <input class='finance1' type='checkbox' name='allow_expense_approvals_2' id='allow_expense_approvals_2'>
+                            <input class='fill_data finance12' type='checkbox' name='allow_expense_approvals_2' id='allow_expense_approvals_2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='supplier_account_2'>7. Supplier Account</label>
@@ -1330,25 +1372,67 @@ function checkPresnt($array, $string){
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check2'><b>Human Resource</b></label>
                             <input class='' type='checkbox' name='all_hr_check2' id='all_hr_check2'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_management2'>1. Payroll</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='payroll_management2' id='payroll_management2'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management2'>2. Leave Management</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='leave_management2' id='leave_management2'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='apply_leave_edit'>3. Apply Leave</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='apply_leave_edit' id='apply_leave_edit'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_edit'>4. Payslip & Advance</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='payroll_and_advance_edit' id='payroll_and_advance_edit'>
+                        </div>
+                        <hr class="d-none">
+                        <!-- Academic Section -->
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_academic_section_2'><b>Academic Section</b></label>
+                            <input class='' type='checkbox' name='all_academic_section_2' id='all_academic_section_2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='register_unit_sector2'>1. Register Units</label>
+                            <input class='academic_sector_2' type='checkbox' name='register_unit_sector2' id='register_unit_sector2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='unit_management_sector2'>2. Unit Management</label>
+                            <input class='academic_sector_2' type='checkbox' name='unit_management_sector2' id='unit_management_sector2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='staff_unit_assignment_sector2'>3. Staff-Unit Assignment</label>
+                            <input class='academic_sector_2' type='checkbox' name='staff_unit_assignment_sector2' id='staff_unit_assignment_sector2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='course_unit_assignment_sector2'>4. Course-Unit Assignment</label>
+                            <input class='academic_sector_2' type='checkbox' name='course_unit_assignment_sector2' id='course_unit_assignment_sector2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='lecture_hall_sector2'>5. Lecture Hall</label>
+                            <input class='academic_sector_2' type='checkbox' name='lecture_hall_sector2' id='lecture_hall_sector2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='generate_timetable_sector2'>6. Generate Timetable</label>
+                            <input class='academic_sector_2' type='checkbox' name='generate_timetable_sector2' id='generate_timetable_sector2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='exam_management_sector2'>7. Exam Management</label>
+                            <input class='academic_sector_2' type='checkbox' name='exam_management_sector2' id='exam_management_sector2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='student_marks_entry_sector2'>8. Student Marks Entry</label>
+                            <input class='academic_sector_2' type='checkbox' name='student_marks_entry_sector2' id='student_marks_entry_sector2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='academic_report_sector2'>9. Academic Reports</label>
+                            <input class='academic_sector_2' type='checkbox' name='academic_report_sector2' id='academic_report_sector2'>
                         </div>
                         <hr>
                         <!-- staft of sms section -->
