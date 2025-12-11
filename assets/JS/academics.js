@@ -1457,14 +1457,91 @@ cObj("populate_btn").onclick = function () {
     err += checkBlank("course_list_exam_filling");
     err += checkBlank("module_list_exam_filling");
     err += checkBlank("unit_list_exam_filling");
-    err += checkBlank("unit_list_exam_filling");
     if (valObj("option_exams") == "view_cat" || valObj("option_exams") == "fill_in_cat_marks") {
         err += checkBlank("cat_list_exam_filling");
     }
     if (err == 0) {
-        cObj("display_result").classList.add("hide");
+        cObj("resulters").classList.remove("hide");
         cObj("record_exams_id").classList.remove("hide");
-        cObj("exam_record_err").innerHTML = "We are here!";
+        cObj("display_result").classList.add("hide");
+        cObj("display_class_result").classList.add("hide");
+        cObj("finded").classList.add("hide");
+        cObj("exam_record_err").innerHTML = "";
+
+        // get the exams examinees
+        if (cObj("option_exams").value == "fill_in_exams") {
+            var datapass = "?get_examinees=true&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
+                var student_grading_class = document.getElementsByClassName("student_grading_class");
+                for (let index = 0; index < student_grading_class.length; index++) {
+                    const element = student_grading_class[index];
+                    element.addEventListener("keyup", unit_auto_grading);
+                }
+
+                var save_student_score = document.getElementsByClassName("save_student_score");
+                for (let index = 0; index < save_student_score.length; index++) {
+                    const element = save_student_score[index];
+                    element.addEventListener("click", function () {
+                        var err = checkBlank("student_grading_class_"+this.id.substring(19));
+                        if (err == 0) {
+                            var input_value = (valObj("student_grading_class_"+this.id.substring(19))*1);
+                            var total_cat_marks = cObj("total_cat_marks_"+this.id.substring(19)).value*1;
+                            if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= (input_value+total_cat_marks) && input_value >= 0) {
+                                var datapass = "?add_student_grades=true&unit_score="+valObj("student_grading_class_"+this.id.substring(19))+"&unit_grade="+cObj("student_grade_holder_"+this.id.substring(19)).innerText+"&exam_id="+valObj("exam_list")+"&student_adm_no="+this.id.substring(19)+"&examinee_id="+valObj("examinees_id_"+this.id.substring(19))+"&unit_id="+valObj("unit_list_exam_filling");
+                                sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_"+this.id.substring(19)), function () {
+                                    cObj("populate_btn").click();
+                                });
+                            }else{
+                                if (cObj("max_marks_for_unit").value*1 < (input_value+total_cat_marks)) {
+                                    cObj("student_grade_holder_"+this.id.substring(19)).innerHTML = "<p style='color:red;font-size:13px'>The student score can`t be more than "+(cObj("max_marks_for_unit").value*1)+"</p>";
+                                    return;
+                                }
+                                cObj("student_grade_holder_"+this.id.substring(19)).innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+                            }
+                        }else{
+                            cObj("student_grade_holder_"+this.id.substring(19)).innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+                        }
+                    });
+                }
+            });
+        }else if(cObj("option_exams").value == "fill_in_cat_marks"){
+            var datapass = "?get_examinees_cat=true&cat_id="+valObj("cat_list_exam_filling")+"&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
+                var student_grading_class = document.getElementsByClassName("student_grading_class_cat");
+                for (let index = 0; index < student_grading_class.length; index++) {
+                    const element = student_grading_class[index];
+                    element.addEventListener("keyup", unit_auto_grading_cat);
+                }
+
+                var save_student_score = document.getElementsByClassName("save_student_score_cat");
+                for (let index = 0; index < save_student_score.length; index++) {
+                    const element = save_student_score[index];
+                    element.addEventListener("click", function () {
+                        var err = checkBlank("student_grading_class_cat_"+this.id.substring(23));
+                        if (err == 0) {
+                            if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= valObj("student_grading_class_cat_"+this.id.substring(23))*1 && (valObj("student_grading_class_cat_"+this.id.substring(23))*1) >= 0) {
+                                var datapass = "?add_student_cat_scores=true&unit_score="+valObj("student_grading_class_cat_"+this.id.substring(23))+"&unit_grade="+cObj("student_grade_holder_cat_"+this.id.substring(23)).innerText+"&exam_id="+valObj("exam_list")+"&student_adm_no="+this.id.substring(23)+"&examinee_id="+valObj("examinees_id_cat_"+this.id.substring(23))+"&unit_id="+valObj("unit_list_exam_filling")+"&cat_id="+valObj("cat_list_exam_filling");
+                                sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_cat_"+this.id.substring(23)), function () {
+                                    cObj("populate_btn").click();
+                                });
+                            }else{
+                                if (cObj("max_marks_for_unit").value*1 < valObj("student_grading_class_cat_"+this.id.substring(23))*1 ) {
+                                    cObj("student_grade_holder_cat_"+this.id.substring(23)).innerHTML = "<p style='color:red;font-size:13px'>The student score can`t be more than "+(cObj("max_marks_for_unit").value*1)+"</p>";
+                                    return;
+                                }
+                                cObj("student_grade_holder_cat_"+this.id.substring(23)).innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+                            }
+                        }else{
+                            cObj("student_grade_holder_cat_"+this.id.substring(23)).innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+                        }
+                    });
+                }
+            });
+        }else if(cObj("option_exams").value == "view_exams"){
+
+        }else if(cObj("option_exams").value == "view_cat"){
+
+        }
     }else{
         cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
     }
@@ -1516,6 +1593,54 @@ cObj("populate_btn").onclick = function () {
         cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'>Select a class to proceed!</p>";
     }
 }
+function unit_auto_grading () {
+    if (cObj("unit_grading") != null) {
+        if (hasJsonStructure(valObj("unit_grading"))) {
+            var unit_grades = JSON.parse(valObj("unit_grading"));
+            var grading = "N/A";
+            var total_score = cObj("total_cat_marks_"+this.id.substring(22)).value*1;
+            for (let ind = 0; ind < unit_grades.length; ind++) {
+                const elem = unit_grades[ind];
+                var score = (this.value*1) + total_score;
+                if (score >= elem.min*1 && score <= elem.max*1) {
+                    grading = elem.grade_name;
+                    break;
+                }
+            }
+            // total score
+            total_score += (this.value*1);
+            cObj("student_grade_holder_"+this.id.substring(22)).innerHTML = "<span class='text-center w-100'>"+grading+"</span>";
+            cObj("total_student_score_"+this.id.substring(22)).innerHTML = "<span class='text-center w-100'>"+total_score+"%</span>";
+        }else{
+            cObj("student_grade_holder_"+this.id.substring(22)).innerHTML = "<span class='text-center w-100'>-</span>";
+        }
+    }else{
+        cObj("student_grade_holder_"+this.id.substring(22)).innerHTML = "<span class='text-center w-100'>-</span>";
+    }
+}
+
+function unit_auto_grading_cat () {
+    if (cObj("unit_grading") != null) {
+        if (hasJsonStructure(valObj("unit_grading"))) {
+            var unit_grades = JSON.parse(valObj("unit_grading"));
+            var grading = "N/A";
+            for (let ind = 0; ind < unit_grades.length; ind++) {
+                const elem = unit_grades[ind];
+                var score = (this.value*1 * 100) / valObj("max_marks_for_unit")*1;
+                if (score >= elem.min*1 && score <= elem.max*1) {
+                    grading = elem.grade_name;
+                    break;
+                }
+            }
+            cObj("student_grade_holder_"+this.id.substring(22)).innerHTML = "<span class='text-center w-100'>"+grading+"</span>";
+        }else{
+            cObj("student_grade_holder_"+this.id.substring(22)).innerHTML = "<span class='text-center w-100'>-</span>";
+        }
+    }else{
+        cObj("student_grade_holder_"+this.id.substring(22)).innerHTML = "<span class='text-center w-100'>-</span>";
+    }
+}
+
 function setGrades() {
     var values = this.value;
     var grade_mode = valObj("grade_mode");

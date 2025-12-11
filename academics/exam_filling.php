@@ -189,8 +189,8 @@
                     </div>
                 </div>
                 <div class="btns">
-                    <button class="" id="go_back" >Back</button>
-                    <button type="button" id="print_results"><i class="fa fa-print"></i> Print</button>
+                    <button class="" id="go_back" ><i class="fas fa-arrow-left"></i> Back</button>
+                    <button class="hide" type="button" id="print_results"><i class="fa fa-print"></i> Print</button>
                 </div>
             </div>
         </div>

@@ -1,54 +1,32 @@
 [
     {
-        "id": "1",
-        "course_name": "FASHION AND DESIGN",
-        "course_levels": "[]",
-        "department": "FS-001",
-        "course_level": "9",
-        "no_of_terms": "6",
-        "fulltime_fees": "9500",
-        "weekend_fees": "5000",
-        "evening_fees": "7500",
-        "term_duration": "6",
-        "duration_intervals": "months"
+        "grade_name": "A",
+        "max": "100",
+        "min": "80",
+        "grade_id": "1"
     },
     {
-        "id": 2,
-        "course_name": "FRUIT MAKER",
-        "course_levels": "[]",
-        "department": "DAT-001",
-        "course_level": "9",
-        "no_of_terms": "6",
-        "fulltime_fees": "5000",
-        "evening_fees": "4000",
-        "weekend_fees": "3000",
-        "term_duration": "1",
-        "duration_intervals": "months"
+        "grade_name": "B",
+        "max": "79",
+        "min": "60",
+        "grade_id": "1"
     },
     {
-        "id": 3,
-        "course_name": "FASHION AND DESIGN II",
-        "course_levels": "[]",
-        "department": "DAT-001",
-        "course_level": "9",
-        "no_of_terms": "6",
-        "fulltime_fees": "5000",
-        "evening_fees": "0",
-        "weekend_fees": "0",
-        "term_duration": "1",
-        "duration_intervals": "months"
+        "grade_name": "C",
+        "max": "59",
+        "min": "40",
+        "grade_id": "1"
     },
     {
-        "id": 4,
-        "course_name": "Fashion & Design",
-        "course_levels": "[]",
-        "department": "DAT-001",
-        "course_level": "10",
-        "no_of_terms": "6",
-        "fulltime_fees": "7500",
-        "evening_fees": "6500",
-        "weekend_fees": "5500",
-        "term_duration": "1",
-        "duration_intervals": "months"
+        "grade_name": "D",
+        "max": "39",
+        "min": "20",
+        "grade_id": "1"
+    },
+    {
+        "grade_name": "E",
+        "max": "19",
+        "min": "0",
+        "grade_id": "1"
     }
 ]
