@@ -1470,12 +1470,13 @@ cObj("populate_btn").onclick = function () {
 
         // get the exams examinees
         if (cObj("option_exams").value == "fill_in_exams") {
-            var datapass = "?get_examinees=true&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            var datapass = "?get_examinees=true&exam_option=add&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
             sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
                 var student_grading_class = document.getElementsByClassName("student_grading_class");
                 for (let index = 0; index < student_grading_class.length; index++) {
                     const element = student_grading_class[index];
                     element.addEventListener("keyup", unit_auto_grading);
+                    element.addEventListener("change", unit_auto_grading);
                 }
 
                 var save_student_score = document.getElementsByClassName("save_student_score");
@@ -1505,7 +1506,7 @@ cObj("populate_btn").onclick = function () {
                 }
             });
         }else if(cObj("option_exams").value == "fill_in_cat_marks"){
-            var datapass = "?get_examinees_cat=true&cat_id="+valObj("cat_list_exam_filling")+"&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            var datapass = "?get_examinees_cat=true&cat_option=add&cat_id="+valObj("cat_list_exam_filling")+"&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
             sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
                 var student_grading_class = document.getElementsByClassName("student_grading_class_cat");
                 for (let index = 0; index < student_grading_class.length; index++) {
@@ -1538,9 +1539,97 @@ cObj("populate_btn").onclick = function () {
                 }
             });
         }else if(cObj("option_exams").value == "view_exams"){
+            var datapass = "?get_examinees=true&exam_option=edit&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
+                var student_grading_class = document.getElementsByClassName("student_grading_class");
+                for (let index = 0; index < student_grading_class.length; index++) {
+                    const element = student_grading_class[index];
+                    element.addEventListener("keyup", unit_auto_grading);
+                    element.addEventListener("change", unit_auto_grading);
+                }
 
+                var edit_student_score = document.getElementsByClassName("edit_student_score");
+                for (let index = 0; index < edit_student_score.length; index++) {
+                    const element = edit_student_score[index];
+                    element.addEventListener("click", function () {
+                        var err = checkBlank("student_grading_class_"+this.id.substring(19));
+                        if (err == 0) {
+                            var input_value = (valObj("student_grading_class_"+this.id.substring(19))*1);
+                            var total_cat_marks = cObj("total_cat_marks_"+this.id.substring(19)).value*1;
+                            if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= (input_value+total_cat_marks) && input_value >= 0) {
+                                var datapass = "?update_student_grades=true&result_id="+valObj("result_id_"+this.id.substring(19))+"&unit_score="+valObj("student_grading_class_"+this.id.substring(19))+"&unit_grade="+cObj("student_grade_holder_"+this.id.substring(19)).innerText;
+                                sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_"+this.id.substring(19)), function () {
+                                    cObj("populate_btn").click();
+                                });
+                            }else{
+                                if (cObj("max_marks_for_unit").value*1 < (input_value+total_cat_marks)) {
+                                    cObj("student_grade_holder_"+this.id.substring(19)).innerHTML = "<p style='color:red;font-size:13px'>The student score can`t be more than "+(cObj("max_marks_for_unit").value*1)+"</p>";
+                                    return;
+                                }
+                                cObj("student_grade_holder_"+this.id.substring(19)).innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+                            }
+                        }else{
+                            cObj("student_grade_holder_"+this.id.substring(19)).innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+                        }
+                    });
+                }
+
+                var delete_student_score = document.getElementsByClassName("delete_student_score");
+                for (let index = 0; index < delete_student_score.length; index++) {
+                    const element = delete_student_score[index];
+                    element.addEventListener("click", function () {
+                        var datapass = "?delete_student_score=true&result_id="+valObj("result_id_"+this.id.substring(21));
+                        sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_"+this.id.substring(21)), function () {
+                            cObj("populate_btn").click();
+                        });
+                    });
+                }
+            });
         }else if(cObj("option_exams").value == "view_cat"){
+            var datapass = "?get_examinees_cat=true&cat_option=edit&cat_id="+valObj("cat_list_exam_filling")+"&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
+                var student_grading_class = document.getElementsByClassName("student_grading_class_cat");
+                for (let index = 0; index < student_grading_class.length; index++) {
+                    const element = student_grading_class[index];
+                    element.addEventListener("keyup", unit_auto_grading_cat);
+                    element.addEventListener("change", unit_auto_grading_cat);
+                }
 
+                var edit_student_cat_score = document.getElementsByClassName("edit_student_cat_score");
+                for (let index = 0; index < edit_student_cat_score.length; index++) {
+                    const element = edit_student_cat_score[index];
+                    element.addEventListener("click", function () {
+                        var err = checkBlank("student_grading_class_cat_"+this.id.substring(23));
+                        if (err == 0) {
+                            if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= valObj("student_grading_class_cat_"+this.id.substring(23))*1 && (valObj("student_grading_class_cat_"+this.id.substring(23))*1) >= 0) {
+                                var datapass = "?edit_student_cat_scores=true&result_id="+valObj("result_id_"+this.id.substring(23))+"&unit_score="+valObj("student_grading_class_cat_"+this.id.substring(23));
+                                sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_cat_"+this.id.substring(23)), function () {
+                                    cObj("populate_btn").click();
+                                });
+                            }else{
+                                if (cObj("max_marks_for_unit").value*1 < valObj("student_grading_class_cat_"+this.id.substring(23))*1 ) {
+                                    cObj("student_grade_holder_cat_"+this.id.substring(23)).innerHTML = "<p style='color:red;font-size:13px'>The student score can`t be more than "+(cObj("max_marks_for_unit").value*1)+"</p>";
+                                    return;
+                                }
+                                cObj("student_grade_holder_cat_"+this.id.substring(23)).innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+                            }
+                        }else{
+                            cObj("student_grade_holder_cat_"+this.id.substring(23)).innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";
+                        }
+                    });
+                }
+
+                var delete_student_cat_score = document.getElementsByClassName("delete_student_cat_score");
+                for (let index = 0; index < delete_student_cat_score.length; index++) {
+                    const element = delete_student_cat_score[index];
+                    element.addEventListener("click", function () {
+                        var datapass = "?delete_student_cat_scores=true&result_id="+valObj("result_id_"+this.id.substring(25));
+                        sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_cat_"+this.id.substring(25)), function () {
+                            cObj("populate_btn").click();
+                        });
+                    });
+                }
+            });
         }
     }else{
         cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'>Fill all fields with red border!!</p>";

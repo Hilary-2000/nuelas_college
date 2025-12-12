@@ -670,7 +670,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 $index = 0;
                 while ($row = $result->fetch_assoc()) {
                     $data.="<div class = 'checkboxholder checkbox_holder_unit_assign w-100' style='margin:10px 0;padding:0px 0px;' id='checkbox_holder_unit_assign_".$row['subject_id']."'>";
-                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_unit_assign ' id='search_courses_unit_assign_".$row['subject_id']."' for='course_name_unit_assign_".$row['subject_id']."'>".($index+1).". ".$row['subject_name']." ".($row['is_used'] > 0 ? "<span class='text-success'>✔</span>" : "")."</label>";
+                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_unit_assign ' id='search_courses_unit_assign_".$row['subject_id']."' for='course_name_unit_assign_".$row['subject_id']."'>".($index+1).". ".$row['subject_name']." {".$row['timetable_id']."} ".($row['is_used'] > 0 ? "<span class='text-success'>✔</span>" : "")."</label>";
                     $data.="<input class='subjectclass_unit_assign' type='checkbox' name='course_name_unit_assign_".$row['subject_id']."' value='".$row['subject_id']."' id='course_name_unit_assign_".$row['subject_id']."'>";
                     $data.="</div>";
                     $index+=1;
@@ -1822,13 +1822,16 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             
             }
         }elseif(isset($_GET['get_examinees'])){
+            include("../../connections/conn1.php");
             $get_examinees = $_GET['get_examinees'];
             $exam_id = $_GET['exam_id'];
             $course_level = $_GET['course_level'];
             $course_id = $_GET['course_id'];
             $module_id = $_GET['module_id'];
             $unit_id = $_GET['unit_id'];
+            $exam_option = $_GET['exam_option'];
 
+            $is_teacher = isTeacherAssignedToUnit($conn, $conn2, $unit_id, $course_level, $course_id);
             $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_record_tbl WHERE examinee_id = examinees.examinee_id) AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ?";
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("sss", $exam_id, $course_level, $course_id);
@@ -1837,7 +1840,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $student_data = [];
             if ($result) {
                 while ($row = $result->fetch_assoc()) {
-                    if (($row['marks_added']*1) > 0) {
+                    if ((($row['marks_added']*1) > 0 && $exam_option == "add") || (($row['marks_added']*1) <= 0 && $exam_option == "edit")) {
                         continue;
                     }
                     // only active students are examinees
@@ -1886,9 +1889,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                     $tick = "";
                     if ($row['include_in_exam'] == "1") {
                         $tick = "<span class='badge bg-success'> in</span>";
+                        $cat_max_marks_total += $row['max_marks'];
                     }
                     $cat_titles .= "<th>".$row['name']." (".$row['max_marks']." Mks) $tick</th>";
-                    $cat_max_marks_total += $row['max_marks'];
                 }
             }
 
@@ -1901,11 +1904,13 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $result = $stmt->get_result();
             $max_marks = 100;
             $unit_name = "";
+            $unit_code = "";
             $grading_table = "<div class='container w-50 mt-2'><h6 class='text-center'>Grading Table</h6><table class='table'><tr><th>No</th><th>Grade</th><th>Range</th></tr>";
             if ($row = $result->fetch_assoc()) {
                 $grading = isJson_report($row['grading']) ? json_decode($row['grading'], true) : [];
                 $max_marks = $row['max_marks'];
                 $unit_name = $row['display_name'];
+                $unit_code = $row['timetable_id'];
                 for ($index=0; $index < count($grading); $index++) {
                     $grading_table .= "<tr><td>".($index+1)."</td><td>".$grading[$index]['grade_name']."</td><td>".$grading[$index]['max']." - ".$grading[$index]['min']."</td></tr>";
                 }
@@ -1913,7 +1918,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $grading_table .= "</table></div>";
 
             // get the student list
-            $data_to_display = $grading_table."<h6 class='text-center mt-2'><u>Examinees list on <b>".$course_level."</b> in <b>".$unit_name."</b></u></h6><input type='hidden' value='".$cat_max_marks_total."' id='total_cat_max_marks'><input type='hidden' id='max_marks_for_unit' value='".$max_marks."'><input type='hidden' id='unit_grading' value='".json_encode($grading)."'><table class='table'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th>$cat_titles<th>Exam Score</th><th>Total</th><th>Grade</th><th>Action</th></tr></thead><tbody>";
+            $data_to_display = $grading_table."<h6 class='text-center mt-2'><u>Examinees list on <b>".$course_level."</b> in <b>".$unit_name." {".$unit_code."}</b></u></h6><input type='hidden' value='".$cat_max_marks_total."' id='total_cat_max_marks'><input type='hidden' id='max_marks_for_unit' value='".$max_marks."'><input type='hidden' id='unit_grading' value='".json_encode($grading)."'><table class='table'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th>$cat_titles<th>Exam Score (Max: ".($max_marks - $cat_max_marks_total)." Mks)</th><th>Total</th><th>Grade</th><th>Action</th></tr></thead><tbody>";
             for ($index=0; $index < count($student_data); $index++) {
                 $cat_scores = "";
                 $total_cat_marks = 0;
@@ -1924,10 +1929,49 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                     }
                     $cat_scores.= "<td>".$score." Mks</td>";
                 }
-                $data_to_display .= "<tr><td>".($index+1).".</td><td><input type='hidden' id='examinees_id_".$student_data[$index]['adm_no']."' value='".$student_data[$index]['examinee_id']."'>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td>$cat_scores<td><input class='form-control w-100 mb-2 student_grading_class' type='number' name='marks_enter' min='0' max='100' id='student_grading_class_".$student_data[$index]['adm_no']."' placeholder ='Enter Marks'><input type='hidden' value='".$total_cat_marks."' id='total_cat_marks_".$student_data[$index]['adm_no']."'></td><td><span id='total_student_score_".$student_data[$index]['adm_no']."'>$total_cat_marks%</span></td><td id='student_grade_holder_".$student_data[$index]['adm_no']."'>-</td><td><button class='save_student_score' id='save_student_score_".$student_data[$index]['adm_no']."'><i class='fas fa-save'></i> Save</button></td></tr>";
+                $action_button = "<button class='save_student_score' id='save_student_score_".$student_data[$index]['adm_no']."'><i class='fas fa-save'></i> Save</button>";
+                $student_marks_value = 0;
+                $student_grade_value = "-";
+                $result_data = "";
+                if($exam_option == "edit"){
+                    $student_score = get_student_exam_score($conn2, $exam_id, $student_data[$index]['examinee_id'], $unit_id);;
+                    $student_marks_value = $student_score['exam_score'];
+                    $student_grade_value = $student_score['exam_grade'];
+                    $result_data = "<input type='hidden' id='result_id_".$student_data[$index]['adm_no']."' value='".$student_score['result_id']."'>";
+                    $action_button = "<span class='link edit_student_score' id='edit_student_score_".$student_data[$index]['adm_no']."'><i class='fas fa-upload'></i> Update</span> | <span class='link delete_student_score' id='delete_student_score_".$student_data[$index]['adm_no']."'><i class='fas fa-trash'></i> Del</span>";
+                }
+                if(!$is_teacher){
+                    $action_button = "<span class='badge bg-danger'>No permission to grade</span>";
+                }
+                $data_to_display .= "<tr><td>".($index+1).".</td><td>$result_data<input type='hidden' id='examinees_id_".$student_data[$index]['adm_no']."' value='".$student_data[$index]['examinee_id']."'>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td>$cat_scores<td><input class='form-control w-100 mb-2 student_grading_class' type='number' value='$student_marks_value' name='marks_enter' min='0' max='100' id='student_grading_class_".$student_data[$index]['adm_no']."' placeholder ='Enter Marks'><input type='hidden' value='".$total_cat_marks."' id='total_cat_marks_".$student_data[$index]['adm_no']."'></td><td><span id='total_student_score_".$student_data[$index]['adm_no']."'>".($total_cat_marks+$student_marks_value)."%</span></td><td id='student_grade_holder_".$student_data[$index]['adm_no']."'>$student_grade_value</td><td>$action_button</td></tr>";
             }
             $data_to_display .= "</table>";
             echo $data_to_display;
+        }elseif(isset($_GET['update_student_grades'])){
+            $result_id = $_GET['result_id'];
+            $unit_score = $_GET['unit_score'];
+            $unit_grade = $_GET['unit_grade'];
+            
+            $update = "UPDATE `exam_record_tbl` SET `exam_marks` = ? , `exam_grade` = ? WHERE `result_id` = ?";
+            $stmt = $conn2->prepare($update);
+            $stmt->bind_param("sss",$unit_score,$unit_grade,$result_id);
+            if($stmt->execute()){
+                echo "<p class='text-success border border-success rounded-lg p-1 my-2'>Student score updated successfully!</p>";
+            }else {
+                echo "<p class='text-danger border border-danger rounded-lg p-1 my-2'>An error has occured please try again!</p>";
+            }
+        }elseif(isset($_GET['delete_student_score'])){
+            $result_id = $_GET['result_id'];
+            
+            $delete = "DELETE FROM `exam_record_tbl` WHERE `result_id` = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s",$result_id);
+            if($stmt->execute()){
+                echo "<p class='text-success border border-success rounded-lg p-1 my-2'>Student score deleted successfully!</p>";
+            }else {
+                echo "<p class='text-danger border border-danger rounded-lg p-1 my-2'>An error has occured please try again!</p>";
+            }
+
         }elseif(isset($_GET['get_examinees_cat'])){
             $get_examinees_cat = $_GET['get_examinees_cat'];
             $exam_id = $_GET['exam_id'];
@@ -1936,6 +1980,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $module_id = $_GET['module_id'];
             $unit_id = $_GET['unit_id'];
             $cat_id = $_GET['cat_id'];
+            $cat_option = $_GET['cat_option'];
 
             $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_cat_scores WHERE examinee_id = examinees.examinee_id AND cat_id = '$cat_id') AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ?";
             $stmt = $conn2->prepare($select);
@@ -1945,9 +1990,10 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $student_data = [];
             if ($result) {
                 while ($row = $result->fetch_assoc()) {
-                    if (($row['marks_added']*1) > 0) {
+                    if ((($row['marks_added']*1) > 0 && $cat_option == "add") || (($row['marks_added']*1) <= 0 && $cat_option == "edit")) {
                         continue;
                     }
+
                     // only active students are examinees
                     $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
                     $status = "In-Active";
@@ -2010,10 +2056,40 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             // get the student list
             $data_to_display = $grading_table."<h6 class='text-center mt-2'><u>Examinees list on <b>".$course_level."</b> in <b>".$unit_name." - ".$cat_name." ($cat_max_marks Mks)</b></u></h6><input type='hidden' id='max_marks_for_unit' value='".$cat_max_marks."'><input type='hidden' id='unit_grading' value='".json_encode($grading)."'><table class='table'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th><th>Score</th><th>Grade</th><th>Action</th></tr></thead><tbody>";
             for ($index=0; $index < count($student_data); $index++) {
-                $data_to_display .= "<tr><td>".($index+1).".</td><td><input type='hidden' id='examinees_id_cat_".$student_data[$index]['adm_no']."' value='".$student_data[$index]['examinee_id']."'>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td><td><input class='form-control w-100 mb-0 student_grading_class_cat' type='number' name='marks_enter' min='0' max='100' id='student_grading_class_cat_".$student_data[$index]['adm_no']."' placeholder ='Enter Marks'></td><td id='student_grade_holder_cat_".$student_data[$index]['adm_no']."'>-</td><td><button class='save_student_score_cat' id='save_student_score_cat_".$student_data[$index]['adm_no']."'><i class='fas fa-save'></i> Save</button></td></tr>";
+                $action_button = "<button class='save_student_score_cat' id='save_student_score_cat_".$student_data[$index]['adm_no']."'><i class='fas fa-save'></i> Save</button>";
+                $student_marks_value = 0;
+                $student_grade_value = "-";
+                $result_data = "";
+                if($cat_option == "edit"){
+                    $student_score = get_student_cat_score($conn2, $cat_id, $student_data[$index]['examinee_id']);
+                    $student_marks_value = $student_score['cat_score'];
+                    $result_data = "<input type='hidden' id='result_id_".$student_data[$index]['adm_no']."' value='".$student_score['result_id']."'>";
+                    $action_button = "<span class='link edit_student_cat_score' id='edit_student_cat_score_".$student_data[$index]['adm_no']."'><i class='fas fa-upload'></i> Update</span> | <span class='link delete_student_cat_score' id='delete_student_cat_score_".$student_data[$index]['adm_no']."'><i class='fas fa-trash'></i> Del</span>";
+                }
+                $data_to_display .= "<tr><td>".($index+1).".</td><td>$result_data<input type='hidden' id='examinees_id_cat_".$student_data[$index]['adm_no']."' value='".$student_data[$index]['examinee_id']."'>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td><td><input class='form-control w-100 mb-0 student_grading_class_cat' type='number' name='marks_enter' min='0' max='100' value='$student_marks_value' id='student_grading_class_cat_".$student_data[$index]['adm_no']."' placeholder ='Enter Marks'></td><td id='student_grade_holder_cat_".$student_data[$index]['adm_no']."'>-</td><td>$action_button</td></tr>";
             }
             $data_to_display .= "</table>";
             echo $data_to_display;
+        }elseif(isset($_GET['delete_student_cat_scores'])){
+            $result_id = $_GET['result_id'];
+            
+            $delete = "DELETE FROM `exam_cat_scores` WHERE `score_id` = ?";
+            $stmt = $conn2->prepare($delete);
+            $stmt->bind_param("s",$result_id);
+            if($stmt->execute()){
+                echo "<p class='text-success border border-success rounded p-1 my-2'>CAT scores deleted successfully!</p>";
+            }else {
+                echo "<p class='text-danger border border-danger rounded p-1 my-2'>An error has occured please try again!</p>";
+            }
+        }elseif(isset($_GET['edit_student_cat_scores'])){
+            $update = "UPDATE exam_cat_scores SET student_score = ? WHERE score_id = ?";
+            $stmt = $conn2->prepare($update);
+            $stmt->bind_param("ss", $_GET['unit_score'], $_GET['result_id']);
+            if($stmt->execute()){
+                echo "<p class='text-success border border-success rounded p-1 my-2'>CAT scores updated!</p>";
+            }else {
+                echo "<p class='text-danger border border-danger rounded p-1 my-2'>An error occured please try again!</p>";
+            }
         }elseif(isset($_GET['add_student_grades'])){
             $add_student_grades = $_GET['add_student_grades'];
             $unit_score = $_GET['unit_score'];
@@ -4153,18 +4229,6 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $exam_end_date = $_POST['exam_end_date'];
             $exam_id = $_POST['exam_id'];
 
-            // delete all students and all units
-            $delete_student = "DELETE FROM examinees WHERE exam_id = ?";
-            $stmt = $conn2->prepare($delete_student);
-            $stmt->bind_param("s", $exam_id);
-            $stmt->execute();
-
-            // delete units
-            $delete_units = "DELETE FROM exam_unit WHERE exam_id = ?";
-            $stmt = $conn2->prepare($delete_units);
-            $stmt->bind_param("s", $exam_id);
-            $stmt->execute();
-
             // update the exam
             $update = "UPDATE exams_tbl SET exams_name = ?, start_date = ?, end_date = ? WHERE  exams_id = ?";
             $stmt = $conn2->prepare($update);
@@ -4177,6 +4241,18 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $courses = [];
             $courses_chosen = isJson_report($course_chosen) ? json_decode($course_chosen, true) : [];
             for ($index=0; $index < count($courses_chosen); $index++) {
+                // check if the units are present, if not add them
+                $select = "SELECT * FROM exam_unit WHERE unit_id = ? AND course_id = ? AND course_level = ? AND exam_id = ?";
+                $smtmt = $conn2->prepare($select);
+                $smtmt->bind_param("ssss", $courses_chosen[$index]['unit_id'], $courses_chosen[$index]['course_id'], $courses_chosen[$index]['course_level'], $exam_id);
+                $smtmt->execute();
+                $smtmt->store_result();
+                $rnums = $smtmt->num_rows;
+                if ($rnums > 0) {
+                    continue;
+                }
+
+                // INSERT THE UNITS THAT IS ABSENT.
                 $insert_units = "INSERT INTO exam_unit (unit_id, course_id, course_level, exam_id) VALUES (?,?,?,?)";
                 $statement = $conn2->prepare($insert_units);
                 $statement->bind_param("ssss", $courses_chosen[$index]['unit_id'], $courses_chosen[$index]['course_id'], $courses_chosen[$index]['course_level'], $exam_id);
@@ -4227,6 +4303,18 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 
                         // Active
                         if($status == "Active"){
+                            // check if the examinee is present
+                            $select = "SELECT * FROM examinees WHERE exam_id = ? AND student_id = ? AND examinees_status = '1'";
+                            $smt = $conn2->prepare($select);
+                            $smt->bind_param("ss", $exam_id, $row['adm_no']);
+                            $smt->execute();
+                            $smt->store_result();
+                            $rnum = $smt->num_rows;
+                            if($rnum > 0){
+                                continue;
+                            }
+
+                            // if not add a new examinee.
                             $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`) VALUES (?,?,?)";
                             $statement = $conn2->prepare($insert);
                             $examinee_status = "1";
@@ -4800,5 +4888,79 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             }
         }
         return $cat_score;
+    }
+
+    function get_student_exam_score($conn2, $exam_id, $examinee_id, $unit_id){
+        $select = "SELECT * FROM exam_record_tbl WHERE exam_id = ? AND examinee_id = ? AND unit_id = ?";
+        $stmt = $conn2->prepare($select);
+        $stmt->bind_param("sss", $exam_id, $examinee_id, $unit_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $exam_score = 0;
+        $exam_grade = "N/A";
+        $result_id = 0;
+        if($result){
+            if ($row = $result->fetch_assoc()) {
+                $exam_score = $row['exam_marks'];
+                $exam_grade = $row['exam_grade'];
+                $result_id = $row['result_id'];
+            }
+        }
+        return array(
+            "exam_score" => $exam_score,
+            "exam_grade" => $exam_grade,
+            "result_id" => $result_id
+        );
+    }
+
+    // get student cat score
+    function get_student_cat_score($conn2, $cat_id, $examinee_id){
+        $select = "SELECT * FROM `exam_cat_scores` WHERE cat_id = ? AND examinee_id = ?";
+        $stmt = $conn2->prepare($select);
+        $stmt->bind_param("ss", $cat_id, $examinee_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $cat_score = 0;
+        $cat_grade = "N/A";
+        $result_id = 0;
+        if($result){
+            if ($row = $result->fetch_assoc()) {
+                $cat_score = $row['student_score'];
+                $result_id = $row['score_id'];
+            }
+        }
+        return array(
+            "cat_score" => $cat_score,
+            "cat_grade" => $cat_grade,
+            "result_id" => $result_id
+        );
+    }
+
+    function isTeacherAssignedToUnit($conn, $conn2, $unit_id, $course_level_id, $course_id){
+        $staff_id = $_SESSION['userids'];
+        $select = "SELECT * FROM user_tbl WHERE user_id = ?";
+        $stmt = $conn->prepare($select);
+        $stmt->bind_param("s", $unit_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result){
+            if($row = $result->fetch_assoc()){
+                if($row['academic_super_user'] == "1"){
+                    return true;
+                }
+
+                // get to see if the staff is the unit assigned teacher
+                $select = "SELECT * FROM `teacher_unit_assignment` WHERE unit_id = ? AND teacher_id = ? AND course_level_id = ? AND course_id = ?";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("ssss", $unit_id, $staff_id, $course_level_id,$course_id);
+                $stmt->execute();
+                $stmt->store_result();
+                $rnums = $stmt->num_rows;
+                if ($rnums > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 ?>
