@@ -1065,7 +1065,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $stmt->execute();
             $result = $stmt->get_result();
             $object_id = $_GET['object_id'];
-            $data_to_display = "<select class='form-control' id='$object_id'><option value='' hidden>Select an option</option>";
+            $data_to_display = "<select class='form-control' name='$object_id' id='$object_id'><option value='' hidden>Select an option</option>";
             if ($result) {
                 $index = 1;
                 while ($row = $result->fetch_assoc()) {
@@ -1168,7 +1168,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $stmt->bind_param("sss", $module_id, $exam_id, $course_id);
             $stmt->execute();
             $result = $stmt->get_result();
-            $data_to_display = "<select class='form-control' id='$object_id'><option hidden value='' >Select an option</option>";
+            $data_to_display = "<select class='form-control' name='$object_id' id='$object_id'><option hidden value='' >Select an option</option>";
             $subject_array = [];
             if ($result) {
                 while ($row = $result->fetch_assoc()) {

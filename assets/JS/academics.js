@@ -1118,6 +1118,32 @@ function printExamsFunc() {
                 var datapass = "?get_course_list=true&exam_id="+ids+"&course_level="+valObj("classes_for_exams");
                 sendData1("GET", "academic/academic.php", datapass, cObj("all_couse_lists_print_holder"), function () {
                     if (cObj("courses_for_exams") != undefined) {
+                        cObj("courses_for_exams").onchange = function () {
+                            var datapass = "?get_course_module_terms="+this.value+"&object_id=course_modules_for_exams";
+                            sendData2("GET","administration/admissions.php", datapass, cObj("course_modules_list_holder"), cObj("loadings"), function () {
+                                if (cObj("course_modules_for_exams") != undefined){
+                                    cObj("course_modules_for_exams").onchange = function () {
+                                        var datapass = "?get_course_modular_units=true&module_id="+valObj("course_modules_for_exams")+"&course_id="+valObj("courses_for_exams")+"&exam_id="+valObj("exam_ids_printing")+"&object_id=course_units_for_exams";
+                                        sendData1("GET", "academic/academic.php", datapass, cObj("course_units_list_holder"), function () {
+                                            if (cObj("course_units_for_exams") != undefined) {
+                                                cObj("course_units_for_exams").onchange = function () {
+                                                    if (valObj("what_to_print") == "examinees_cat_mark_list" || valObj("what_to_print") == "exams_cat_marks") {
+                                                        var datapass = "?get_exam_cats_list=true&exam_id="+valObj("exam_ids_printing")+"&object_id=course_cats_for_exams";
+                                                        sendData1("GET", "academic/academic.php", datapass, cObj("course_cats_list_holder"));
+                                                    }
+                                                }
+                                                $("#course_units_for_exams").select2({
+                                                    width: '100%'
+                                                });
+                                            }
+                                        });
+                                    }
+                                    $("#course_modules_for_exams").select2({
+                                        width: '100%'
+                                    });
+                                }
+                            });
+                        }
                         $("#courses_for_exams").select2({
                             width: '100%'
                         })
@@ -1129,6 +1155,24 @@ function printExamsFunc() {
             });
         }
     });
+}
+
+cObj("what_to_print").onchange = function () {
+    if(this.value == "examinees_list"){
+        cObj("corse_module_window").classList.add("hide");
+        cObj("corse_unit_window").classList.add("hide");
+    }else{
+        cObj("corse_module_window").classList.remove("hide");
+        cObj("corse_unit_window").classList.remove("hide");
+        // cObj("course_modules_list_holder").innerHTML = '<p class="text-success p-1 my-2 border border-success rounded">Course Modules will appear here!</p>';
+        cObj("course_units_list_holder").innerHTML = '<p class="text-success p-1 my-2 border border-success rounded">Course units will appear here!</p>';
+
+        if (this.value == "examinees_cat_mark_list" || this.value == "exams_cat_marks") {
+            cObj("course_cat_modules_window").classList.remove("hide");
+        }else{
+            cObj("course_cat_modules_window").classList.add("hide");
+        }
+    }
 }
 function viewExamslistener() {
     var examid = this.id.substr(8);

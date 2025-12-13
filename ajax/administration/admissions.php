@@ -6067,7 +6067,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 foreach($courses as $course){
                     if($course->id == $_GET['get_course_module_terms']){
                         $object_id = isset($_GET['object_id']) ? $_GET['object_id'] : "course_module_terms";
-                        $data_to_display = "<select class='form-control' id='$object_id'><option hidden value=''>Select Term to start from</option>";
+                        $data_to_display = "<select class='form-control' name='$object_id' id='$object_id'><option hidden value=''>Select Term to start from</option>";
                         $module_terms = isset($course->no_of_terms) ? $course->no_of_terms : 3;
                         for($index = 0; $index < $module_terms; $index++){
                             $data_to_display .= "<option value='".($index+1)."'>Module Term ".($index+1)."</option>";

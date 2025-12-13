@@ -4644,7 +4644,7 @@ function checkPresnt($array, $string){
         </div>
     </div>
     <div class="dialogholder hide" id="printer_window">
-        <div class="dialogwindow animate2">
+        <div class="changesubwindow editexams animate2">
             <div class="w-100 row">
                 <div class="col-md-10">
                     <h6 class="text-center">Print Exams : <span id="exsms_name"></span> </h6>
@@ -4656,27 +4656,42 @@ function checkPresnt($array, $string){
             <div class="message" id="mssg_name">
                 <p>Below you will be able to print this exam in different formats.</p>
             </div>
-            <form method="POST" action="reports/reports.php" target="_blank" class="w-100">
+            <form method="POST" action="reports/reports.php" target="_blank" class="w-100 rounded border border-secondary p-2">
                 <div class="conts">
                     <input type="hidden" name="exam_ids_printing" id="exam_ids_printing">
                     <label for="what_to_print" class="form-control-label"><b>Select what to print:</b></label>
                     <select required name="what_to_print" id="what_to_print" class="form-control">
                         <option value="" hidden>Select option</option>
-                        <option value="exams_filling_slip">Examinees</option>
-                        <option value="exams_marks">Examinees with Marks</option>
-                        <option value="student_report_card">Students Results Slip</option>
+                        <option value="examinees_list">Examinees</option>
+                        <option value="examinees_mark_list">Examinees Exams Sheet</option>
+                        <option value="examinees_cat_mark_list">Examinees C.A.T Sheet</option>
+                        <option value="exams_marks">Examinees Exam Marks Sheet</option>
+                        <option value="exams_cat_marks">Examinees C.A.T Marks Sheet</option>
+                        <option hidden value="student_report_card">Students Results Slip</option>
                     </select>
                 </div>
 
                 <div class="conts">
                     <!-- class doing to  -->
-                    <label for="classes_for_exams" class="form-control-label"><b>Select Course List </b></label>
+                    <label for="classes_for_exams" class="form-control-label"><b>Select Course Level </b></label>
                     <span id="all_classes_here"><p class="text-success p-1 my-2 border border-success rounded">Course Level Will appear here!</p></span>
                 </div>
 
                 <div class="conts">
                     <label for="courses_for_exams" class="form-control-label">Course List</label>
                     <span id="all_couse_lists_print_holder"><p class="text-success p-1 my-2 border border-success rounded">Course List Will appear here!</p></span>
+                </div>
+                <div class="conts hide" id='corse_module_window'>
+                    <label for="course_modules_for_exams" class="form-control-label">Course Modules</label>
+                    <span id="course_modules_list_holder"><p class="text-success p-1 my-2 border border-success rounded">Course Modules will appear here!</p></span>
+                </div>
+                <div class="conts hide" id='corse_unit_window'>
+                    <label for="course_units_for_exams" class="form-control-label">Course Unit</label>
+                    <span id="course_units_list_holder"><p class="text-success p-1 my-2 border border-success rounded">Course units will appear here!</p></span>
+                </div>
+                <div class="conts hide" id='course_cat_modules_window'>
+                    <label for="course_cats_for_exams" class="form-control-label">Exam C.A.T</label>
+                    <span id="course_cats_list_holder"><p class="text-success p-1 my-2 border border-success rounded">Exam C.A.T will appear here!</p></span>
                 </div>
                 <div class="btns">
                     <button class="my-2" type="submit">Print <i class="fas fa-print"></i></button>
