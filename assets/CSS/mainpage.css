@@ -1780,13 +1780,12 @@ select option:hover{
 .link{
     /* all: unset; */
     color: rgb(3, 78, 47);
-    font-size: 14px; /**changed from 12px**/
+    font-size: 12px; /**changed from 12px**/
     /* font-weight: 500; */
     cursor: pointer;
     /**margin: 5px auto;*/
     text-align: center;
     width: fit-content;
-    font-size: 12px;
 }
 .link:hover{
     color: brown;

@@ -351,6 +351,15 @@ function setClassAndsubj() {
     });
 }
 
+cObj("academic_super_admin").onchange = function () {
+    var datapass = "?update_academic_super_user_status=true&teacher_id="+cObj("teacher_id_unit_assignment").value+"&status="+this.value;
+    sendData2("GET", "academic/academic.php", datapass, cObj("err_holder_super_user_assignment"), cObj("academic_super_admin_spinner"), function () {
+        setTimeout(() => {
+            cObj("err_holder_super_user_assignment").innerHTML = "";
+        }, 3000);
+    });
+}
+
 cObj("confirm_no_remove_assignment").onclick = function () {
     cObj("confirm_delete_assignment").classList.add("hide");
 }
@@ -1094,12 +1103,40 @@ cObj("display_exams_for_classes").onclick = function () {
     if (cObj("class_label_exams_result") != null && cObj("class_label_exams_result") != undefined) {
         cObj("results_output").innerHTML = "";
         var err = 0;
+        err+=checkBlank("exam_result_options");
         err+=checkBlank("class_label_exams_result");
+        err+=checkBlank("course_list_view_results");
+        err+=checkBlank("course_module_level");
+        err+=checkBlank("course_unit_exam_result");
+        if(valObj("exam_result_options") == "cat"){
+            err+=checkBlank("exam_cat_list");
+        }
         if (err == 0) {
-            var datapass = "?get_perfomance_for_class=true&course_level="+valObj("class_label_exams_result")+"&course_name="+valObj("course_list_view_results")+"&course_module="+valObj("course_module_level")+"&exam_id="+cObj("exams_id_result").innerText;
-            sendData2("GET","academic/academic.php",datapass,cObj("exams_window_display"),cObj("exams_details_loader"));
+            if(valObj("exam_result_options") == "exam"){
+                var datapass = "?get_perfomance_for_class=true&course_level="+valObj("class_label_exams_result")+"&course_name="+valObj("course_list_view_results")+"&course_module="+valObj("course_module_level")+"&exam_id="+cObj("exams_id_result").innerText+"&unit_id="+valObj("course_unit_exam_result");
+                sendData2("GET","academic/academic.php",datapass,cObj("exams_window_display"),cObj("exams_details_loader"), function () {
+                    // SHOW 50 PER PAGE
+                    console.log("We are here!");
+                    if(cObj("exam_view_result_table") != null || cObj("exam_view_result_table") != undefined){
+                        $('#exam_view_result_table').DataTable({
+                            "pageLength": 25
+                        });
+                    }
+                });
+            }else{
+                var datapass = "?get_cat_perfomance_for_class=true&course_level="+valObj("class_label_exams_result")+"&course_name="+valObj("course_list_view_results")+"&course_module="+valObj("course_module_level")+"&exam_id="+cObj("exams_id_result").innerText+"&unit_id="+valObj("course_unit_exam_result")+"&cat_id="+valObj("exam_cat_list");
+                sendData2("GET","academic/academic.php",datapass,cObj("exams_window_display"),cObj("exams_details_loader"), function () {
+                    // SHOW 50 PER PAGE
+                    console.log("We are here!");
+                    if(cObj("exam_cat_view_result_table") != null || cObj("exam_cat_view_result_table") != undefined){
+                        $('#exam_cat_view_result_table').DataTable({
+                            "pageLength": 25
+                        });
+                    }
+                });
+            }
         }else{
-            cObj("results_output").innerHTML = "<p class='text-danger'>Select a class to proceed</p>";
+            cObj("results_output").innerHTML = "<p class='text-danger'>Ensure all options are selected!</p>";
         }
     }else{
         cObj("results_output").innerHTML = "<p class='text-danger'>Class sitting for this exams has not been uploaded yet</p>";
@@ -1531,13 +1568,13 @@ cObj("populate_btn").onclick = function () {
                         if (err == 0) {
                             var input_value = (valObj("student_grading_class_"+this.id.substring(19))*1);
                             var total_cat_marks = cObj("total_cat_marks_"+this.id.substring(19)).value*1;
-                            if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= (input_value+total_cat_marks) && input_value >= 0) {
+                            if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= (input_value) && input_value >= 0) {
                                 var datapass = "?add_student_grades=true&unit_score="+valObj("student_grading_class_"+this.id.substring(19))+"&unit_grade="+cObj("student_grade_holder_"+this.id.substring(19)).innerText+"&exam_id="+valObj("exam_list")+"&student_adm_no="+this.id.substring(19)+"&examinee_id="+valObj("examinees_id_"+this.id.substring(19))+"&unit_id="+valObj("unit_list_exam_filling");
                                 sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_"+this.id.substring(19)), function () {
                                     cObj("populate_btn").click();
                                 });
                             }else{
-                                if (cObj("max_marks_for_unit").value*1 < (input_value+total_cat_marks)) {
+                                if (cObj("max_marks_for_unit").value*1 < (input_value)) {
                                     cObj("student_grade_holder_"+this.id.substring(19)).innerHTML = "<p style='color:red;font-size:13px'>The student score can`t be more than "+(cObj("max_marks_for_unit").value*1)+"</p>";
                                     return;
                                 }
@@ -1600,13 +1637,13 @@ cObj("populate_btn").onclick = function () {
                         if (err == 0) {
                             var input_value = (valObj("student_grading_class_"+this.id.substring(19))*1);
                             var total_cat_marks = cObj("total_cat_marks_"+this.id.substring(19)).value*1;
-                            if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= (input_value+total_cat_marks) && input_value >= 0) {
+                            if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= (input_value) && input_value >= 0) {
                                 var datapass = "?update_student_grades=true&result_id="+valObj("result_id_"+this.id.substring(19))+"&unit_score="+valObj("student_grading_class_"+this.id.substring(19))+"&unit_grade="+cObj("student_grade_holder_"+this.id.substring(19)).innerText;
                                 sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_"+this.id.substring(19)), function () {
                                     cObj("populate_btn").click();
                                 });
                             }else{
-                                if (cObj("max_marks_for_unit").value*1 < (input_value+total_cat_marks)) {
+                                if (cObj("max_marks_for_unit").value*1 < (input_value)) {
                                     cObj("student_grade_holder_"+this.id.substring(19)).innerHTML = "<p style='color:red;font-size:13px'>The student score can`t be more than "+(cObj("max_marks_for_unit").value*1)+"</p>";
                                     return;
                                 }
@@ -2096,6 +2133,9 @@ function displayExams() {
     //if (cObj("record_exams_id").innerText.length < 10) {
         cObj("exam_select").classList.remove("hide");
         var datapass = "?get_exam_available=true";
+        if(cObj("option_exams").value == "fill_in_exams" || cObj("option_exams").value == "fill_in_cat_marks"){
+            datapass += "&record_exam=yes";
+        }
         sendData1("GET","academic/academic.php",datapass,cObj("exam_select"), function () {
             if (typeof(cObj("exam_list")) != 'undefined' && cObj("exam_list") != null){
                 cObj("exam_list").addEventListener("change",selectListeners);

@@ -457,7 +457,7 @@ function checkPresnt($array, $string){
                     <div class="contsc">
                         <button type='button' class="sidebtns <?php echo allowed("regsub");?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register Units</button>
                         <button type='button' class="sidebtns <?php echo allowed("managesub");?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Unit Management</button>
-                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub");?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Unit Assignment</button>
+                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub");?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Staff-Unit Assignment</button>
                         <button type='button' class="sidebtns <?php echo allowed("course_unit_assignment");?> htbtn" id='course_unit_assignment'><span><img class="icons" src="images/managemarks.png"></span>Course-Unit Assignment</button>
                         <button type='button' class="sidebtns <?php echo allowed("lecture_halls_btn");?> htbtn" id='lecture_halls_btn'><span><img class="icons" src="images/manageteach.png"></span>Lecture Halls</button>
                         <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn");?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Generate Timetable</button>

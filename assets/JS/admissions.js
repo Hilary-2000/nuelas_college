@@ -1061,6 +1061,7 @@ cObj("examanagement").onclick = function () {
     cObj("exammanagement").classList.remove("hide");
     removesidebar();
     getExams();
+    cObj("back_exams_list").click();
 }
 /******end of active window****** */
 
@@ -1130,6 +1131,28 @@ function getExamsInfor() {
                             var datapass = "?get_course_module_terms="+this.value+"&object_id=course_module_level";
                             sendData2("GET","administration/admissions.php", datapass, cObj("course_module_level_holder"), cObj("loadings"), function () {
                                 if (cObj("course_module_level") != undefined) {
+                                    cObj("course_module_level").onchange = function () {
+                                        var datapass = "?get_course_modular_units=true&module_id="+valObj("course_module_level")+"&course_id="+valObj("course_list_view_results")+"&exam_id="+exam_id+"&object_id=course_unit_exam_result";
+                                        sendData1("GET", "academic/academic.php", datapass, cObj("course_unit_exam_result_holder"), function () {
+                                            if (cObj("course_unit_exam_result") != undefined) {
+                                                cObj("course_unit_exam_result").onchange = function () {
+                                                    if (valObj("exam_result_options") == "cat") {
+                                                        var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=exam_cat_list";
+                                                        sendData1("GET", "academic/academic.php", datapass, cObj("exam_cat_result_holder"), function () {
+                                                            if (cObj("exam_cat_list") != undefined){
+                                                                $("#exam_cat_list").select2({
+                                                                    width: '100%'
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                                $("#course_unit_exam_result").select2({
+                                                    width: '100%'
+                                                });
+                                            }
+                                        });
+                                    }
                                     $("#course_module_level").select2({
                                         width: '100%'
                                     })
@@ -1583,6 +1606,18 @@ window.onload = function () {
     $('#unit_year_of_study_edit').select2({
         width: '100%'
     });
+
+    $("#exam_result_options").select2({
+        width: '100%'
+    });
+
+    cObj("exam_result_options").onchange = function () {
+        if(this.value == "exam"){
+            cObj("cat_option_list_window").classList.add("hide");
+        }else{
+            cObj("cat_option_list_window").classList.remove("hide");
+        }
+    }
 }
 
 /*******end of it********/

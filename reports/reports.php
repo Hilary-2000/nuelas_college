@@ -8307,7 +8307,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         }
                     }
 
-                    $select = "SELECT * FROM examinees LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE student_data.course_done = ? AND student_data.stud_class = ? AND examinees.exam_id = ?";
+                    $select = "SELECT * FROM examinees LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE student_data.course_done = ? AND student_data.stud_class = ? AND examinees.exam_id = ? ORDER BY examinees.active_module ASC";
                     $stmt = $conn2->prepare($select);
                     $stmt->bind_param("sss", $courses_for_exams, $classes_for_exams, $exam_ids_printing);
                     $stmt->execute();
@@ -8318,22 +8318,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         while($row = $result->fetch_assoc()){
                             // get their course progress details
                             $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
-                            $status = "In-Active";
-                            $active_module = "In-Active";
-                            // get the course status
-                            for($in = 0; $in < count($course_progress); $in++){
-                                $course_status = $course_progress[$in]->course_status;
-                                if($course_status == 1){
-                                    $module_terms = $course_progress[$in]->module_terms;
-                                    for($ind = 0; $ind < count($module_terms); $ind++){
-                                        if($module_terms[$ind]->status == 1){
-                                            // end date
-                                            $status = "Active";
-                                            $active_module = $module_terms[$ind]->term_name;
-                                        }
-                                    }
-                                }
-                            }
+                            $active_module = $row['active_module'];
 
                             // show departments
                             $course_id = $row['course_done'];
@@ -8351,16 +8336,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             // intake
                             $intake = $row['intake_month'].":".$row['intake_year'];
 
-                            // GET UNIT THE COURSE AND MODULE THEY ARE DOING
-                            $units = $status == "Active" ? get_course_units($conn2, $course_id, explode(" ", $active_module)[1]) : [];
-
                             // course level
-                            $each_stud = array($number, ucwords(strtolower($row['first_name']." ".$row['second_name'])), $row['adm_no'], $course_name, count($units)." Units");
-                            // foreach($cats as $cat){
-                            //     array_push($each_stud, "-");
-                            // }
+                            $each_stud = array($number, ucwords(strtolower($row['first_name']." ".$row['second_name'])), $row['adm_no'], $active_module, $intake);
                             array_push($student_data, $each_stud);
-                            // array_push($student_data, $row);
                             $number++;
                         }
                     }
@@ -8379,12 +8357,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $pdf->AddPage();
                         $pdf->SetFont("Helvetica", "", 9);
                         // $pdf->setConn($conn2);
-                        $header = array('No', 'Student Name', 'Reg no', 'Course', 'Units Examined');
-                        $width = array(7, 50, 20, 80, 30);
-                        // foreach($cats as $cat){
-                        //     array_push($header, ($cat['include_in_exam'] == "1" ? $cat['name']." (in)" : $cat['name']));
-                        //     array_push($width, round(105 / count($cats)));
-                        // }
+                        $header = array('No', 'Student Name', 'Reg no', 'Active Module', "Intake");
+                        $width = array(7, 50, 40, 60, 30);
                         $pdf->display_table($header, $student_data, $width);
                         $pdf->Output();
                     } else {
@@ -8439,9 +8413,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         }
                     }
 
-                    $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_record_tbl WHERE examinee_id = examinees.examinee_id) AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ?";
+                    $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_record_tbl WHERE examinee_id = examinees.examinee_id) AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ? ORDER BY examinees.active_module ASC";
                     $stmt = $conn2->prepare($select);
-                    $stmt->bind_param("sss", $exam_ids_printing, $classes_for_exams, $courses_for_exams);
+                    $active_module = "MODULE ".$_POST['course_modules_for_exams'];
+                    $stmt->bind_param("ssss", $exam_ids_printing, $classes_for_exams, $courses_for_exams, $active_module);
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $student_data = [];
@@ -8450,30 +8425,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         while($row = $result->fetch_assoc()){
                             // get their course progress details
                             $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
-                            $status = "In-Active";
-                            $active_module = "In-Active";
-                            for($in = 0; $in < count($course_progress); $in++){
-                                $course_status = $course_progress[$in]->course_status;
-                                if($course_status == 1){
-                                    $module_terms = $course_progress[$in]->module_terms;
-                                    for($ind = 0; $ind < count($module_terms); $ind++){
-                                        if($module_terms[$ind]->status == 1 && $module_terms[$ind]->term_name == "MODULE ".$_POST['course_modules_for_exams']){
-                                            // end date
-                                            $status = "Active";
-                                            $active_module = $module_terms[$ind]->term_name;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if($status == "Active"){
-                                    break;
-                                }
-                            }
-
-                            // if not active on that particular module skip them
-                            if($status != "Active"){
-                                continue;
-                            }
+                            $status = "Active";
+                            $active_module = $row['active_module'];
 
                             // show departments
                             $course_id = $row['course_done'];
@@ -8487,15 +8440,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                     break;
                                 }
                             }
-                            
-                            // intake
-                            $intake = $row['intake_month'].":".$row['intake_year'];
-
-                            // GET UNIT THE COURSE AND MODULE THEY ARE DOING
-                            $units = $status == "Active" ? get_course_units($conn2, $course_id, explode(" ", $active_module)[1]) : [];
 
                             // course level
-                            $each_stud = array($number, ucwords(strtolower($row['first_name']." ".$row['second_name'])), $row['adm_no'], count($units)." Units");
+                            $each_stud = array($number, ucwords(strtolower($row['first_name']." ".$row['second_name'])), $row['adm_no'], $active_module);
                             $total_cat_marks = 0;
                             $total_cat_max_marks = 0;
                             foreach($cats as $cat){
@@ -8545,10 +8492,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $pdf->AddPage();
                         $pdf->SetFont("Helvetica", "BU", 9);
                         // $pdf->setConn($conn2);
-                        $pdf->Cell(290, 10, "Unit: ".$unit_name,0,1,"C");
+                        $pdf->Cell(290, 10, "Unit: ".$unit_name.", MODULE: ".$active_module,0,1,"C");
                         // $pdf->setConn($conn2);
                         $pdf->SetFont("Helvetica", "", 9);
-                        $header = array('No', 'Student Name', 'Reg no', 'Units Examined');
+                        $header = array('No', 'Student Name', 'Reg no', 'Active Module');
                         $width = array(7, 40, 20, 30);
                         foreach($cats as $cat){
                             array_push($header, ($cat['include_in_exam'] == "1" ? ($cat['name']." (".$cat['max_marks']." Mks) (in)") : ($cat['name']." (".$cat['max_marks']." Mks)")));
@@ -8635,47 +8582,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
             }
             
             // GET EXAMINEES DATA
-            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_cat_scores WHERE examinee_id = examinees.examinee_id AND cat_id = '$cat_id') AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ?";
+            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_cat_scores WHERE examinee_id = examinees.examinee_id AND cat_id = '$cat_id') AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ?";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("sss", $exam_id, $course_level, $course_id);
+            $active_module = "MODULE ".$_POST['course_modules_for_exams'];
+            $stmt->bind_param("ssss", $exam_id, $course_level, $course_id, $active_module);
             $stmt->execute();
             $result = $stmt->get_result();
             $student_data = [];
             if ($result) {
                 $number = 1;
                 while ($row = $result->fetch_assoc()) {
-                    // only active students are examinees
-                    $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
-                    $status = "In-Active";
-                    // get the course status
-                    for($in = 0; $in < count($course_progress); $in++){
-                        $course_status = $course_progress[$in]->course_status;
-                        if($course_status == 1){
-                            $module_terms = $course_progress[$in]->module_terms;
-                            for($ind = 0; $ind < count($module_terms); $ind++){
-                                if($module_terms[$ind]->status == 1 && $module_terms[$ind]->term_name == "MODULE ".$module_id){
-                                    // end date
-                                    $status = "Active";
-                                    break;
-                                }
-                            }
-                        }
-                        if($status == "Active"){
-                            break;
-                        }
-                    }
                     // course level
-                    $each_stud = array($number, ucwords(strtolower($row['first_name']." ".$row['second_name'])), $row['adm_no'], $unit_name);
+                    $each_stud = array($number, ucwords(strtolower($row['first_name']." ".$row['second_name'])), $row['adm_no'], $unit_name, $active_module);
                     if($what_to_print == "exams_cat_marks"){
                         $cat_score = get_student_cat_score($conn2, $cat_id, null, $row['adm_no']);
                         array_push($each_stud, $cat_score['cat_score']." Mks");
                     }else{
                         array_push($each_stud, "");
                     }
-                    if($status == "Active"){
-                        array_push($student_data, $each_stud);
-                        $number++;
-                    }
+                    array_push($student_data, $each_stud);
+                    $number++;
                 }
             }
 
@@ -8694,10 +8620,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $pdf->AddPage();
                 $pdf->SetFont("Helvetica", "BU", 9);
                 // $pdf->setConn($conn2);
-                $pdf->Cell(200, 10, "Unit: ".$unit_name. " - CAT: ".$cat_name,0,1,"C");
+                $pdf->Cell(200, 10, "Unit: ".$unit_name. " - CAT: ".$cat_name.", MODULE 1: ".$active_module,0,1,"C");
                 $pdf->SetFont("Helvetica", "", 9);
-                $header = array('No', 'Student Name', 'Reg no', 'Unit Name', $cat_name." (".$cat_max_marks." Mks)");
-                $width = array(7, 40, 20, 80, 40);
+                $header = array('No', 'Student Name', 'Reg no', 'Unit Name', "Active Module", $cat_name." (".$cat_max_marks." Mks)");
+                $width = array(7, 40, 20, 60, 30, 30);
                 $pdf->display_table($header, $student_data, $width);
                 $pdf->Output();
             } else {

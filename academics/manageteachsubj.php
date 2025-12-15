@@ -66,6 +66,7 @@
                             <input type="text"  class="form-control"  name="teachname" id="teachname" readonly placeholder = "Teacher name">
                         </div>
                         <div class="conts my-2">
+                            <p id="err_holder_super_user_assignment"></p>
                             <label class="form-control-label" for="academic_super_admin"><b>Academic Super Admin: <span class="hide"  id='academic_super_admin_spinner'><i class="fa fa-spinner fa-spin"></i></span> </b></label>
                             <select class="form-control" name="academic_super_admin" id="academic_super_admin">
                                 <option value="" hidden>Select..</option>

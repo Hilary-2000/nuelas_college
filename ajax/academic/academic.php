@@ -450,6 +450,13 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $data_to_display.="</tbody></table></div>";
             echo $data_to_display."<input type='hidden' id='teacher_academic_super_user_status' value='".$academic_su."'>";
             return;
+        }elseif(isset($_GET['update_academic_super_user_status'])){
+            include("../../connections/conn1.php");
+            $update = "UPDATE user_tbl SET academic_super_user = ? WHERE user_id = ?";
+            $stmt = $conn->prepare($update);
+            $stmt->bind_param("ss", $_GET['status'], $_GET['teacher_id']);
+            $stmt->execute();
+            echo "<p class='text-success border border-success rounded p-2 my-2'>Academic super user status updated successfully!</p>";
         }elseif(isset($_GET['remove_assignment_id'])){
             $assignment_id = $_GET['assignment_id'];
             $delete = "DELETE FROM course_unit_assignment WHERE assignment_id = ?";
@@ -1048,7 +1055,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                                         <td>".$active."</td>
                                         <td>".date("D dS M, Y",strtotime($startingday))."</td>
                                         <td>".date("D dS M, Y",strtotime($endingday))."</td>
-                                        <td><span type='button' style='font-size:12px;' class='viewExams link mx-1' id='examview".$row['exams_id']."' ><i class ='fa fa-pen-fancy'></i> Edit</span> <span type='button' style='font-size:12px;' id='exam_cats_".$row['exams_id']."' class='link exam_cats mx-1'><i class ='fa fa-file'></i> C.A.T</span> <span type='button' style='font-size:12px;' id='prints_exams".$row['exams_id']."' class='link prints_exams mx-1'><i class ='fa fa-print'></i> Print</span> <span type='button' style='font-size:12px;' id='view_exam_result".$row['exams_id']."' class='link view_exam_result mx-1'><i class ='fa fa-eye'></i> View</span><span type='button' style='font-size:12px;' id='delete_exams_".$row['exams_id']."' class='link delete_exams_ mx-1'><i class ='fa fa-trash'></i> Del</span></td>
+                                        <td><span type='button' style='font-size:12px;' class='viewExams link mx-1' id='examview".$row['exams_id']."' ><i class ='fa fa-pen-fancy'></i> Edit</span> <span type='button' style='font-size:12px;' id='exam_cats_".$row['exams_id']."' class='link exam_cats mx-1'><i class ='fa fa-file'></i> C.A.T</span> <span type='button' style='font-size:12px;' id='prints_exams".$row['exams_id']."' class='link prints_exams mx-1'><i class ='fa fa-print'></i> Print</span> <span type='button' style='font-size:12px;' id='view_exam_result".$row['exams_id']."' class='link view_exam_result mx-1'><i class ='fa fa-file'></i> Result</span><span type='button' style='font-size:12px;' id='delete_exams_".$row['exams_id']."' class='link delete_exams_ mx-1'><i class ='fa fa-trash'></i> Del</span></td>
                                     </tr>";
                     }
                     $datatoecho.="</tbody></table></div>";
@@ -1655,11 +1662,19 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 echo "<p style='color:red;font-size:13px;'>An error has occured!</p>";
             }
         }elseif (isset($_GET['get_exam_available'])) {
-            $select = "SELECT `exams_id`,`exams_name` FROM `exams_tbl` WHERE `end_date` >= ? ORDER BY exams_id DESC";
-            $date = date("Y-m-d");
-            $stmt = $conn2->prepare($select);
-            $stmt->bind_param("s",$date);
-            $stmt->execute();
+            if(isset($_GET['record_exam']) && $_GET['record_exam'] == "yes"){
+                //record exam activity
+                $select = "SELECT * FROM `exams_tbl` WHERE `end_date` >= ? ORDER BY exams_id DESC";
+                $date = date("YmdHis");
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("s",$date);
+                $stmt->execute();
+            }else{
+                $select = "SELECT * FROM `exams_tbl` LIMIT 20";
+                $date = date("YmdHis");
+                $stmt = $conn2->prepare($select);
+                $stmt->execute();
+            }
             $result = $stmt->get_result();
             if ($result) {
                 $string_display = "<label class='form-control-label' for='exam_list'>Select exam: <br></label><select class='form-control' name='exam_list' id='exam_list'>
@@ -1831,46 +1846,47 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $unit_id = $_GET['unit_id'];
             $exam_option = $_GET['exam_option'];
 
-            $is_teacher = isTeacherAssignedToUnit($conn, $conn2, $unit_id, $course_level, $course_id);
-            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_record_tbl WHERE examinee_id = examinees.examinee_id) AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ?";
+            $select = "SELECT * FROM `exams_tbl` WHERE exams_id = ? AND end_date > ?";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("sss", $exam_id, $course_level, $course_id);
+            $current_date = date("YmdHis");
+            $stmt->bind_param("ss", $exam_id, $current_date);
+            $stmt->execute();
+            $result = $stmt->store_result();
+            $is_closed = false;
+            if ($stmt->num_rows() == 0) {
+                $is_closed = true;
+            }
+
+            $is_teacher = isTeacherAssignedToUnit($conn, $conn2, $unit_id, $course_level, $course_id);
+            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_record_tbl WHERE examinee_id = examinees.examinee_id) AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ?";
+            $stmt = $conn2->prepare($select);
+            $active_module = "MODULE ".$module_id;
+            $stmt->bind_param("ssss", $exam_id, $course_level, $course_id, $active_module);
             $stmt->execute();
             $result = $stmt->get_result();
             $student_data = [];
+            $count = 0;
             if ($result) {
                 while ($row = $result->fetch_assoc()) {
+                    $count++;
                     if ((($row['marks_added']*1) > 0 && $exam_option == "add") || (($row['marks_added']*1) <= 0 && $exam_option == "edit")) {
                         continue;
                     }
-                    // only active students are examinees
-                    $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
-                    $status = "In-Active";
-                    // get the course status
-                    for($in = 0; $in < count($course_progress); $in++){
-                        $course_status = $course_progress[$in]->course_status;
-                        if($course_status == 1){
-                            $module_terms = $course_progress[$in]->module_terms;
-                            for($ind = 0; $ind < count($module_terms); $ind++){
-                                if($module_terms[$ind]->status == 1 && $module_terms[$ind]->term_name == "MODULE ".$module_id){
-                                    // end date
-                                    $status = "Active";
-                                    break;
-                                }
-                            }
-                        }
-                        if($status == "Active"){
-                            break;
-                        }
-                    }
-                    if($status == "Active"){
-                        array_push($student_data, $row);
-                    }
+                    array_push($student_data, $row);
                 }
             }
 
+            if($count == 0){
+                echo "<p class='text-success p-2 rounded border border-success my-2'>No examinees found!!</p>";
+                return;
+            }
+
             if (count($student_data) == 0) {
-                echo "<p class='text-success p-2 rounded border border-success my-2'>All students scores have been added, Use the view option to view and update the student scores!</p>";
+                if($exam_option == "add"){
+                    echo "<p class='text-success p-2 rounded border border-success my-2'>All students scores have been added, Use the view option to view and update the student scores!</p>";
+                }else{
+                    echo "<p class='text-success p-2 rounded border border-success my-2'>No student marks have been added yet!!</p>";
+                }
                 return;
             }
 
@@ -1918,7 +1934,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $grading_table .= "</table></div>";
 
             // get the student list
-            $data_to_display = $grading_table."<h6 class='text-center mt-2'><u>Examinees list on <b>".$course_level."</b> in <b>".$unit_name." {".$unit_code."}</b></u></h6><input type='hidden' value='".$cat_max_marks_total."' id='total_cat_max_marks'><input type='hidden' id='max_marks_for_unit' value='".$max_marks."'><input type='hidden' id='unit_grading' value='".json_encode($grading)."'><table class='table'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th>$cat_titles<th>Exam Score (Max: ".($max_marks - $cat_max_marks_total)." Mks)</th><th>Total</th><th>Grade</th><th>Action</th></tr></thead><tbody>";
+            $data_to_display = $grading_table."<h6 class='text-center mt-2'><u>Examinees list on <b>".$course_level."</b> in <b>".$unit_name." {".$unit_code."}</b></u></h6><input type='hidden' value='".$cat_max_marks_total."' id='total_cat_max_marks'><input type='hidden' id='max_marks_for_unit' value='".($max_marks-$cat_max_marks_total)."'><input type='hidden' id='unit_grading' value='".json_encode($grading)."'><table class='table'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th>$cat_titles<th>Exam Score (Max: ".($max_marks - $cat_max_marks_total)." Mks)</th><th>Total</th><th>Grade</th><th>Action</th></tr></thead><tbody>";
             for ($index=0; $index < count($student_data); $index++) {
                 $cat_scores = "";
                 $total_cat_marks = 0;
@@ -1943,6 +1959,11 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 if(!$is_teacher){
                     $action_button = "<span class='badge bg-danger'>No permission to grade</span>";
                 }
+
+                if($is_closed){
+                    $action_button = "<span class='badge bg-danger'>Exam closed</span>";
+                }
+
                 $data_to_display .= "<tr><td>".($index+1).".</td><td>$result_data<input type='hidden' id='examinees_id_".$student_data[$index]['adm_no']."' value='".$student_data[$index]['examinee_id']."'>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td>$cat_scores<td><input class='form-control w-100 mb-2 student_grading_class' type='number' value='$student_marks_value' name='marks_enter' min='0' max='100' id='student_grading_class_".$student_data[$index]['adm_no']."' placeholder ='Enter Marks'><input type='hidden' value='".$total_cat_marks."' id='total_cat_marks_".$student_data[$index]['adm_no']."'></td><td><span id='total_student_score_".$student_data[$index]['adm_no']."'>".($total_cat_marks+$student_marks_value)."%</span></td><td id='student_grade_holder_".$student_data[$index]['adm_no']."'>$student_grade_value</td><td>$action_button</td></tr>";
             }
             $data_to_display .= "</table>";
@@ -1982,9 +2003,21 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $cat_id = $_GET['cat_id'];
             $cat_option = $_GET['cat_option'];
 
-            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_cat_scores WHERE examinee_id = examinees.examinee_id AND cat_id = '$cat_id') AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ?";
+            $select = "SELECT * FROM `exams_tbl` WHERE exams_id = ? AND end_date > ?";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("sss", $exam_id, $course_level, $course_id);
+            $current_date = date("YmdHis");
+            $stmt->bind_param("ss", $exam_id, $current_date);
+            $stmt->execute();
+            $result = $stmt->store_result();
+            $is_closed = false;
+            if ($stmt->num_rows() == 0) {
+                $is_closed = true;
+            }
+
+            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_cat_scores WHERE examinee_id = examinees.examinee_id AND cat_id = '$cat_id') AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ?";
+            $stmt = $conn2->prepare($select);
+            $active_module = "MODULE ".$module_id;
+            $stmt->bind_param("ssss", $exam_id, $course_level, $course_id, $active_module);
             $stmt->execute();
             $result = $stmt->get_result();
             $student_data = [];
@@ -1993,30 +2026,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                     if ((($row['marks_added']*1) > 0 && $cat_option == "add") || (($row['marks_added']*1) <= 0 && $cat_option == "edit")) {
                         continue;
                     }
-
-                    // only active students are examinees
-                    $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
-                    $status = "In-Active";
-                    // get the course status
-                    for($in = 0; $in < count($course_progress); $in++){
-                        $course_status = $course_progress[$in]->course_status;
-                        if($course_status == 1){
-                            $module_terms = $course_progress[$in]->module_terms;
-                            for($ind = 0; $ind < count($module_terms); $ind++){
-                                if($module_terms[$ind]->status == 1 && $module_terms[$ind]->term_name == "MODULE ".$module_id){
-                                    // end date
-                                    $status = "Active";
-                                    break;
-                                }
-                            }
-                        }
-                        if($status == "Active"){
-                            break;
-                        }
-                    }
-                    if($status == "Active"){
-                        array_push($student_data, $row);
-                    }
+                    array_push($student_data, $row);
                 }
             }
             $cat_max_marks = 10;
@@ -2065,6 +2075,10 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                     $student_marks_value = $student_score['cat_score'];
                     $result_data = "<input type='hidden' id='result_id_".$student_data[$index]['adm_no']."' value='".$student_score['result_id']."'>";
                     $action_button = "<span class='link edit_student_cat_score' id='edit_student_cat_score_".$student_data[$index]['adm_no']."'><i class='fas fa-upload'></i> Update</span> | <span class='link delete_student_cat_score' id='delete_student_cat_score_".$student_data[$index]['adm_no']."'><i class='fas fa-trash'></i> Del</span>";
+                }
+
+                if($is_closed){
+                    $action_button = "<span class='badge bg-danger'>Exam closed</span>";
                 }
                 $data_to_display .= "<tr><td>".($index+1).".</td><td>$result_data<input type='hidden' id='examinees_id_cat_".$student_data[$index]['adm_no']."' value='".$student_data[$index]['examinee_id']."'>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td><td><input class='form-control w-100 mb-0 student_grading_class_cat' type='number' name='marks_enter' min='0' max='100' value='$student_marks_value' id='student_grading_class_cat_".$student_data[$index]['adm_no']."' placeholder ='Enter Marks'></td><td id='student_grade_holder_cat_".$student_data[$index]['adm_no']."'>-</td><td>$action_button</td></tr>";
             }
@@ -2780,319 +2794,158 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 }
             }
             echo $my_total_sub;
-        }
-        elseif (isset($_GET['get_perfomance_for_class'])) {
+        }elseif(isset($_GET['get_cat_perfomance_for_class'])){
+            $exam_id = $_GET['exam_id'];
+            $course_level = $_GET['course_level'];
+            $course_id = $_GET['course_name'];
+            $module_id = $_GET['course_module'];
+            $unit_id = $_GET['unit_id'];
+            $cat_id = $_GET['cat_id'];
+
+            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_cat_scores WHERE examinee_id = examinees.examinee_id AND cat_id = '$cat_id') AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ?";
+            $stmt = $conn2->prepare($select);
+            $active_module = "MODULE ".$_GET['course_module'];
+            $stmt->bind_param("ssss", $exam_id, $course_level, $course_id, $active_module);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $student_data = [];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($student_data, $row);
+                }
+            }
+            $cat_max_marks = 10;
+            $cat_name = "N/A";
+            $select = "SELECT * FROM `exams_cat` WHERE cat_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $cat_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result) {
+                if ($row = $result->fetch_assoc()) {
+                    $cat_max_marks = $row['max_marks']*1;
+                    $cat_name = $row['name'];
+                }
+            }
+
+            // get the unit grades
+            $unit_grades = [];
+            $select = "SELECT * FROM `table_subject` WHERE `subject_id` = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $unit_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $max_marks = 100;
+            $unit_name = "";
+            if ($row = $result->fetch_assoc()) {
+                $grading = isJson_report($row['grading']) ? json_decode($row['grading'], true) : [];
+                $max_marks = $row['max_marks'];
+                $unit_name = $row['display_name'];
+            }
+
+            // get the student list
+            $data_to_display = "<h6 class='text-center mt-2'><u>Examinees list on <b>".$course_level."</b> in <b>".$unit_name." - ".$cat_name." ($cat_max_marks Mks)</b></u></h6><input type='hidden' id='max_marks_for_unit' value='".$cat_max_marks."'><input type='hidden' id='unit_grading' value='".json_encode($grading)."'><table class='table' id='exam_cat_view_result_table'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th><th>Score</th></tr></thead><tbody>";
+            for ($index=0; $index < count($student_data); $index++) {
+                $action_button = "<button class='save_student_score_cat' id='save_student_score_cat_".$student_data[$index]['adm_no']."'><i class='fas fa-save'></i> Save</button>";
+                $student_grade_value = "-";
+                $result_data = "";
+                $student_score = get_student_cat_score($conn2, $cat_id, $student_data[$index]['examinee_id']);
+                $student_marks_value = $student_score['cat_score'];
+                $data_to_display .= "<tr><td>".($index+1).".</td><td>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td><td>$student_marks_value Mks</td></tr>";
+            }
+            $data_to_display .= "</table>";
+            echo $data_to_display;
+        }elseif (isset($_GET['get_perfomance_for_class'])) {
             $course_level = $_GET['course_level'];
             $course_name = $_GET['course_name'];
             $course_module = $_GET['course_module'];
             $exam_id = $_GET['exam_id'];
-            $select = "SELECT * FROM `course_unit_assignment` WHERE course_id = ? AND module_number = ?";
-            $stmt = $conn2->prepare($select);
-            $stmt->bind_param("ss",$course_name, $course_module);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result) {
-                while ($row = $result->fetch_assoc()) {
-                    
-                }
-            }
-            return;
-            $class_sat = $_GET['class_sat'];
+
+            include("../../connections/conn1.php");
             $exam_id = $_GET['exam_id'];
-            //get the subjects done by class
-            $select = "SELECT `subject_id`,`subject_name` FROM `table_subject` WHERE `classes_taught` like ? AND `sub_activated` = 1";
-            $class = "%".$class_sat."%";
+            $course_level = $_GET['course_level'];
+            $course_id = $_GET['course_name'];
+            $module_id = $_GET['course_module'];
+            $unit_id = $_GET['unit_id'];
+            $exam_option = "add";
+
+            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_record_tbl WHERE examinee_id = examinees.examinee_id) AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ?";
             $stmt = $conn2->prepare($select);
-            $stmt->bind_param("s",$class);
+            $active_module = "MODULE ".$_GET['course_module'];
+            $stmt->bind_param("ssss", $exam_id, $course_level, $course_id, $active_module);
             $stmt->execute();
             $result = $stmt->get_result();
+            $student_data = [];
             if ($result) {
-                $subject_id = [];
                 while ($row = $result->fetch_assoc()) {
-                    array_push($subject_id,$row['subject_id']);
-                }
-                if (count($subject_id) > 0) {
-                    //the get the subjects done in the exam
-                    $select = "SELECT `subject_done` FROM `exams_tbl` WHERE `exams_id` = ?";
-                    $stmt = $conn2->prepare($select);
-                    $stmt->bind_param("s",$exam_id);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    if ($result) {
-                        $subject_id2 = [];
-                        if ($row = $result->fetch_assoc()) {
-                            $subject_id2 = explode(",",rBkts($row['subject_done']));
-                        }
-                        if (count($subject_id2) > 0) {
-                            //the last subject list
-                            $last_subjects = [];
-                            for ($ind=0; $ind < count($subject_id); $ind++) { 
-                                $present = checkPresnt($subject_id2,$subject_id[$ind]);
-                                if ($present == 1) {
-                                    array_push($last_subjects,$subject_id[$ind]);
-                                }
-                            }
-                            if (count($last_subjects) > 0) {
-                                //get the students for class six and their subject marks
-                                $select = "SELECT `first_name`,`second_name`,`adm_no` FROM `student_data` WHERE `deleted` = 0 AND `activated` = 1 AND `stud_class` = ?";
-                                $stmt = $conn2->prepare($select);
-                                $stmt->bind_param("s",$class_sat);
-                                $stmt->execute();
-                                $result = $stmt->get_result();
-                                if ($result) {
-                                    $student_ids = [];
-                                    while ($row = $result->fetch_assoc()) {
-                                        array_push($student_ids,$row['adm_no']);
-                                    }
-                                    if (count($student_ids) > 0) {
-                                        $row_data = [];
-                                        //for each student get each student marks for each subject
-                                        for ($stud_index=0; $stud_index < count($student_ids); $stud_index++) { 
-                                            $data_column = [];
-                                            array_push($data_column,$student_ids[$stud_index]);
-                                            for ($sub_index=0; $sub_index < count($last_subjects); $sub_index++) {
-                                                $select = "SELECT `exam_marks`,`exam_grade` FROM `exam_record_tbl` WHERE `student_id` = ? AND `exam_id` = ? and `subject_id` = ?";
-                                                $stmt = $conn2->prepare($select);
-                                                $stmt->bind_param("sss",$student_ids[$stud_index],$exam_id,$last_subjects[$sub_index]);
-                                                $stmt->execute();
-                                                $result = $stmt->get_result();
-                                                if ($result) {
-                                                    if ($row = $result->fetch_assoc()) {
-                                                        array_push($data_column,$row['exam_marks']);
-                                                    }else {
-                                                        array_push($data_column,"101");
-                                                    }
-                                                }else {
-                                                    array_push($data_column,"101");
-                                                }
-                                            }
-                                            array_push($row_data,$data_column);
-                                        }
-                                        if (count($row_data) > 0) {
-                                            //get the totals
-                                            $grand_total = [];
-                                            for ($rowindex=0; $rowindex < count($row_data); $rowindex++) { 
-                                                $tot = 0;
-                                                $col_data = $row_data[$rowindex];
-                                                for ($col_index=0; $col_index < count($col_data); $col_index++) { 
-                                                    $columns_data = $col_data[$col_index];
-                                                    if ($columns_data >4.9 && $columns_data <= 100 && $col_index > 0) {
-                                                        $tot=$tot + $columns_data;
-                                                    }elseif($columns_data <= 4 && $col_index > 0) {
-                                                        $tot+=$columns_data;
-                                                    }
-                                                }
-                                                $grand_total[$rowindex] = $tot;
-                                            }
-                                            foreach ($grand_total as $keys => $values) {
-                                                //echo "Key = ".$keys.", ".$values."<br>";
-                                            }
-                                            arsort($grand_total);
-                                            //echo "<br>Sorted<br>";
-                                            foreach ($grand_total as $keys => $values) {
-                                                //echo "Key = ".$keys.", ".$values."<br>";
-                                            }
-
-                                            $data_to_display="<div class='my-2 ' id='exam-results-in' style='text-align:center;'><h6 class='my-0'>".getExamName($exam_id,$conn2)."</h6>
-                                                            <h6>".className($class_sat)." Results</h6>
-                                                            </div>";
-                                            $data_to_display.="<div class='tableHolder'><table class='table'><tr><th>Pos.</th><th>Student Name</th>";
-
-                                            for ($subj_index=0; $subj_index < count($last_subjects); $subj_index++) { 
-                                                if (count($last_subjects)>4) {
-                                                    $data_to_display.="<th title='".getSubjectName($last_subjects[$subj_index],$conn2)."'>".getSubjectTT($last_subjects[$subj_index],$conn2)."</th>";
-                                                }else {
-                                                    $data_to_display.="<th>".getSubjectName($last_subjects[$subj_index],$conn2)."</th>";
-                                                }
-                                                
-                                            }$data_to_display.="<th>Total</th></tr>";
-                                            $xsd=0;
-                                            $total_marked = [];
-                                            foreach ($grand_total as $keys => $values) {
-                                                $row_ind = $keys;
-                                            }
-                                            $cbc_1 = 0;
-                                            $ei44 = 0;
-                                            //for ($row_ind=0; $row_ind < count($row_data); $row_ind++) { 
-                                            foreach ($grand_total as $keys => $values) {
-                                                $row_ind = $keys;
-                                                $xsd++;
-                                                //ROW
-                                                $column_data = $row_data[$row_ind];
-                                                $data_to_display.="<tr>";
-                                                $totals = 0;
-                                                for ($inter=0; $inter < count($column_data); $inter++) { 
-                                                    $datacol = $column_data[$inter];
-                                                    //COLUMN
-                                                    if ($inter == 0) {
-                                                        if ($xsd <= 3) {
-                                                            $data_to_display.="<td>".$xsd." 🏆</td>";
-                                                        }else {
-                                                            $data_to_display.="<td>".$xsd." </td>";
-                                                        }
-                                                        $stud_name = getStudentName($datacol,$conn2);
-                                                        $data_to_display.="<td>".ucwords(strtolower($stud_name))."<small style='color:brown;'> (".$datacol.")</small></td>";
-                                                    }else {
-                                                        if ($datacol > 4 && $datacol <= 100 ) {
-                                                            if ($datacol>0) {
-                                                                $ei44++;
-                                                            }
-                                                            $data_to_display.="<td>".$datacol."%</td>";
-                                                        }else {
-                                                            if ($datacol>0 && $datacol != 101) {
-                                                                $cbc_1++;
-                                                            }
-                                                            if ($datacol == 4) {
-                                                                $data_to_display.="<td>"."E.E"."</td>";
-                                                            }elseif ($datacol == 3) {
-                                                                $data_to_display.="<td>"."M.E"."</td>";
-                                                            }elseif ($datacol == 2) {
-                                                                $data_to_display.="<td>"."A.E"."</td>";
-                                                            }elseif ($datacol == 1) {
-                                                                $data_to_display.="<td>"."B.E"."</td>";
-                                                            }elseif ($datacol == 0) {
-                                                                $data_to_display.="<td>"."A"."</td>";
-                                                            }elseif ($datacol == 101){
-                                                                $data_to_display.="<td>"."-"."</td>";
-                                                            }
-                                                        }
-                                                    }
-                                                    if ($datacol >4.9 && $datacol <= 100 && $inter > 0) {
-                                                        $totals=$totals + $datacol;
-                                                    }elseif($datacol <= 4 && $inter > 0) {
-                                                        $totals+=$datacol;
-                                                    }
-                                                }
-                                                if ($totals/count($last_subjects) <= 4) {
-                                                    $cbc = round($totals/count($last_subjects),2);
-                                                    if ($cbc >= 3.5 && $cbc < 4) {
-                                                        $data_to_display.="<td>"."E.E"."</td>";
-                                                    }elseif ($cbc >= 2.8) {
-                                                        $data_to_display.="<td>"."M.E"."</td>";
-                                                    }elseif ($cbc >= 1.8) {
-                                                        $data_to_display.="<td>"."A.E"."</td>";
-                                                    }elseif ($cbc >= 0.8) {
-                                                        $data_to_display.="<td>"."B.E"."</td>";
-                                                    }elseif ($cbc >= 0) {
-                                                        $data_to_display.="<td>"."A"."</td>";
-                                                    }elseif ($cbc == 101){
-                                                        $data_to_display.="<td>"."-"."</td>";
-                                                    }
-                                                    //$data_to_display.="<td>".$cbc."</td></tr>";
-                                                    array_push($total_marked,round($totals/count($last_subjects)));
-                                                }else {
-                                                    $data_to_display.="<td>".$totals."</td></tr>";
-                                                    array_push($total_marked,$totals);
-                                                }
-                                                //$total_marked[$xsd] = $totals;
-                                            }
-                                            $data_to_display.="</table></div>";
-                                            $mean_scored = round(arrayCounter($total_marked,0)/count($total_marked),2);
-                                            if ($mean_scored <= 5) {
-                                                if ($mean_scored >= 4) {
-                                                    $mean_scored="<b>Exceeding Expectation</b>";
-                                                }elseif ($mean_scored >=3) {
-                                                    $mean_scored="<b>Meeting Expectation</b>";
-                                                }elseif ($mean_scored >= 2) {
-                                                    $mean_scored="<b>Approaching Expectation</b>";
-                                                }elseif ($mean_scored >= 1) {
-                                                    $mean_scored="<b>Below Expectation</b>";
-                                                }elseif ($mean_scored >= 0) {
-                                                    $mean_scored="<b>Not recorded!</b>";
-                                                }elseif ($mean_scored == 101){
-                                                    $mean_scored="<b>-</b>";
-                                                }
-                                            }
-                                            $data_to_display.="<div class='meanscores'>
-                                                                <p><strong>Overall Mean score:</strong> ".$mean_scored."</p>";
-                                            if ($xsd > 6) {
-                                                $data_to_display.="<div class='meanscores123'><div>
-                                                <p><strong>Top 3</strong></p><table><tr><th>No</th><th>Student Name</th><th>Marks Scored</th></tr>";
-                                                                    $xm = 0;
-                                                foreach ($grand_total as $keys => $values) {
-                                                    $xm++;
-                                                    if ($xm > 3) {
-                                                        break;
-                                                    }
-                                                    $rowindexs = $keys;
-                                                    $student_name = ucwords(strtolower(getStudentName($row_data[$rowindexs][0],$conn2)));
-                                                    if ($grand_total[$keys]/count($last_subjects) < 5) {
-                                                        $final_total = $grand_total[$keys]/count($last_subjects);
-                                                        $my_totals = "-";
-                                                        if ($final_total >= 3.5 && $final_total < 4) {
-                                                            $my_totals ="E.E";
-                                                        }elseif ($final_total >= 2.8) {
-                                                            $my_totals ="M.E";
-                                                        }elseif ($final_total >= 1.8) {
-                                                            $my_totals ="A.E";
-                                                        }elseif ($final_total >= .8) {
-                                                            $my_totals ="B.E";
-                                                        }elseif ($final_total >= 0) {
-                                                            $my_totals ="A";
-                                                        }
-                                                        $data_to_display.="<tr><td>".$xm." 🏆 </td> <td><span style='color:green;font-size:14px;'>".$student_name."</span> <small> (".$row_data[$rowindexs][0].")</small></td> <td>".$my_totals."</td></tr>";
-                                                    }else {
-                                                        $data_to_display.="<tr><td>".$xm." 🏆 </td> <td><span style='color:green;font-size:14px;'>".$student_name."</span> <small> (".$row_data[$rowindexs][0].")</small></td> <td>".$grand_total[$keys]."</td></tr>";
-                                                    }
-                                                }
-    
-                                                $data_to_display.="</table></div><div>";
-                                                $data_to_display.="<p><strong> Bottom 3</strong></p>";
-                                                $data_to_display.="<table><tr><th>No.</th><th>Student Name</th><th>Marks Scored</th></tr>";
-                                                $xmd = 0;
-                                                $xmd2 = 2;
-                                                foreach ($grand_total as $keys => $values) {
-                                                    $xmd++;
-                                                    if (count($grand_total)-$xmd == $xmd2) {
-                                                        $student_name = ucwords(strtolower(getStudentName($row_data[$keys][0],$conn2)));
-                                                        if ($grand_total[$keys]/count($last_subjects) < 5) {
-                                                            $final_total = $grand_total[$keys]/count($last_subjects);
-                                                            $my_totals = "-";
-                                                            if ($final_total >= 3.5 && $final_total < 4) {
-                                                                $my_totals ="E.E";
-                                                            }elseif ($final_total >= 2.8) {
-                                                                $my_totals ="M.E";
-                                                            }elseif ($final_total >= 1.8) {
-                                                                $my_totals ="A.E";
-                                                            }elseif ($final_total >= 0.8) {
-                                                                $my_totals ="B.E";
-                                                            }elseif ($final_total >= 0) {
-                                                                $my_totals ="A";
-                                                            }
-                                                            $data_to_display.="<tr><td>".$xmd." 🚩</td><td><span style='color:brown;font-size:14px;'>".$student_name."</span> <small>(".$row_data[$keys][0].")</small></td><td>".$my_totals."</td></tr>";
-                                                        }else {
-                                                            $data_to_display.="<tr><td>".$xmd." 🚩</td><td><span style='color:brown;font-size:14px;'>".$student_name."</span> <small>(".$row_data[$keys][0].")</small></td><td>".$grand_total[$keys]."</td></tr>";                                                            
-                                                        }
-                                                        $xmd2--;
-                                                    }
-                                                }
-                                                $data_to_display.="</table></div></div>";                                                
-                                            }
-                                            $data_to_display.="<p><br><strong>Hint</strong><br>\t- Hover your mouse over the subject name to get its full name</p>
-                                                                </div>";
-                                            if ($xsd > 0) {
-                                                if ($cbc_1 > 0 || $ei44 > 0) {
-                                                    if ($cbc_1 > 0 && $ei44 > 0) {
-                                                        echo "<p class='fa-fw fa-xs red_notice ' style='line-height:15px;text-align:center;'>Different grading system used the results might be in-accurate<br>Changes should be done to the subjects with different grading method.</p>";
-                                                    }
-                                                }
-                                                echo $data_to_display;
-                                            }
-                                            
-                                        }
-                                    }else {
-                                        echo "<p style='margin-top:10px;font-size:12px;font-weight:600;color:red;'>No students present in ".className($class_sat)."!</p>";
-                                    }
-                                }
-                            }else {
-                                echo "<p style='margin-top:10px;font-size:12px;font-weight:600;color:red;'>No subjects were done by ".className($class_sat)."!</p>";
-                            }
-                        }
-                    }
-                }else {
-                    echo "<p style='margin-top:10px;font-size:12px;font-weight:600;color:red;'>No subjects done by that class!</p>";
+                    // only active students are examinees
+                    array_push($student_data, $row);
                 }
             }
+
+            if (count($student_data) == 0) {
+                echo "<p class='text-danger p-2 rounded border border-danger my-2'>No students present!!</p>";
+                return;
+            }
+
+            // get the exams cats
+            $select = "SELECT * FROM `exams_cat` WHERE exam_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $exam_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $cats = [];
+            $cat_titles = "";
+            $cat_max_marks_total = 0;
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($cats, $row);
+                    $tick = "";
+                    if ($row['include_in_exam'] == "1") {
+                        $tick = "<span class='badge bg-success'> in</span>";
+                        $cat_max_marks_total += $row['max_marks'];
+                    }
+                    $cat_titles .= "<th>".$row['name']." (".$row['max_marks']." Mks) $tick</th>";
+                }
+            }
+
+            // get the unit grades
+            $unit_grades = [];
+            $select = "SELECT * FROM `table_subject` WHERE `subject_id` = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $unit_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $max_marks = 100;
+            $unit_name = "";
+            $unit_code = "";
+            if ($row = $result->fetch_assoc()) {
+                $grading = isJson_report($row['grading']) ? json_decode($row['grading'], true) : [];
+                $max_marks = $row['max_marks'];
+                $unit_name = $row['display_name'];
+                $unit_code = $row['timetable_id'];
+            }
+
+            // get the student list
+            $data_to_display = "<h6 class='text-center mt-2'><u>Examinees Results in <b>".$course_level."</b> in <b>".$unit_name." {".$unit_code."}</b></u></h6><table class='table' id='exam_view_result_table'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th>$cat_titles<th>Exam Score (Max: ".($max_marks - $cat_max_marks_total)." Mks)</th><th>Total</th><th>Grade</th></tr></thead><tbody>";
+            for ($index=0; $index < count($student_data); $index++) {
+                $cat_scores = "";
+                $total_cat_marks = 0;
+                for ($ind=0; $ind < count($cats); $ind++) { 
+                    $score = get_cat_scores($conn2, $cats[$ind]['cat_id'], $student_data[$index]['examinee_id']);
+                    if($cats[$ind]['include_in_exam'] == 1){
+                        $total_cat_marks += $score*1;
+                    }
+                    $cat_scores.= "<td>".$score." Mks</td>";
+                }
+                $action_button = "<button class='save_student_score' id='save_student_score_".$student_data[$index]['adm_no']."'><i class='fas fa-save'></i> Save</button>";
+                $student_score = get_student_exam_score($conn2, $exam_id, $student_data[$index]['examinee_id'], $unit_id);
+                $student_marks_value = $student_score['exam_score'];
+                $student_grade_value = $student_score['exam_grade'];
+                $data_to_display .= "<tr><td>".($index+1).".</td><td>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td>$cat_scores<td>".$student_marks_value."</td><td><span id='total_student_score_".$student_data[$index]['adm_no']."'>".($total_cat_marks+$student_marks_value)."%</span></td><td id='student_grade_holder_".$student_data[$index]['adm_no']."'>$student_grade_value</td></tr>";
+            }
+            $data_to_display .= "</table>";
+            echo $data_to_display;
         }elseif (isset($_GET['deletesubject'])) {
             $delete = "DELETE FROM `table_subject` WHERE `subject_id` = ?;";
             $stmt = $conn2->prepare($delete);
@@ -4197,6 +4050,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                         $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
                         $status = "In-Active";
                         // get the course status
+                        $active_module = "MODULE 1";
                         for($in = 0; $in < count($course_progress); $in++){
                             $course_status = $course_progress[$in]->course_status;
                             if($course_status == 1){
@@ -4205,6 +4059,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                                     if($module_terms[$ind]->status == 1){
                                         // end date
                                         $status = "Active";
+                                        $active_module = $module_terms[$ind]->term_name;
                                     }
                                 }
                             }
@@ -4212,10 +4067,10 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 
                         if($status == "Active"){
                             // insert examinees
-                            $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`) VALUES (?,?,?)";
+                            $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`, `active_module`, `course_level`, `course_id`) VALUES (?,?,?,?,?,?)";
                             $statement = $conn2->prepare($insert);
                             $examinee_status = "1";
-                            $statement->bind_param("sss", $exam_id, $row['adm_no'],$examinee_status);
+                            $statement->bind_param("ssssss", $exam_id, $row['adm_no'], $examinee_status, $active_module, $courses[$index]['course_level'], $courses[$index]['course_id']);
                             $statement->execute();
                         }
                     }
@@ -4274,6 +4129,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                     ));
                 }
             }
+            $courses = $courses_chosen;
 
             // add the examinees
             for ($index=0; $index < count($courses); $index++) {
@@ -4288,6 +4144,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                         $course_progress = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
                         $status = "In-Active";
                         // get the course status
+                        $active_module = "MODULE 1";
                         for($in = 0; $in < count($course_progress); $in++){
                             $course_status = $course_progress[$in]->course_status;
                             if($course_status == 1){
@@ -4296,6 +4153,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                                     if($module_terms[$ind]->status == 1){
                                         // end date
                                         $status = "Active";
+                                        $active_module = $module_terms[$ind]->term_name;
                                     }
                                 }
                             }
@@ -4314,11 +4172,11 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                                 continue;
                             }
 
-                            // if not add a new examinee.
-                            $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`) VALUES (?,?,?)";
+                            // insert examinees
+                            $insert = "INSERT INTO examinees (`exam_id`, `student_id`, `examinees_status`, `active_module`, `course_level`, `course_id`) VALUES (?,?,?,?,?,?)";
                             $statement = $conn2->prepare($insert);
                             $examinee_status = "1";
-                            $statement->bind_param("sss", $exam_id, $row['adm_no'],$examinee_status);
+                            $statement->bind_param("ssssss", $exam_id, $row['adm_no'], $examinee_status, $active_module, $row['stud_class'], $row['course_done']);
                             $statement->execute();
                         }
                     }

@@ -369,12 +369,20 @@
                 </div>
                 <div class="container hide" id="exams_details_window">
                     <!-- get the exams details class-->
-                    <h5 class="text-center my-2">Exams Details <img src="images/ajax_clock_small.gif" class="hide" id="exams_details_loader"></h5>
+                    <h5 class="text-center my-2">Exams Results <img src="images/ajax_clock_small.gif" class="hide" id="exams_details_loader"></h5>
                     <span class="link" id="back_exams_list"><i class="fas fa-arrow-left"></i> Back Exam List</span>
                     <div class="container col-md-6 border border-secondary">
                         <p class="text-center"><b>Display Results</b></p>
                         <p class="hide" id="exams_id_result"></p>
                         <p class="text-success"><small>Classes that did the exams are the only ones that appear below</small></p>
+                        <div class="form-group">
+                            <label for="exam_result_options" class="form-control-label">Select Option</label><br>
+                            <select name="exam_result_options" id="exam_result_options" class="form-control">
+                                <option value="" hidden>Select an option</option>
+                                <option value="exam">View Exam Results</option>
+                                <option value="cat">View C.A.T Results</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label for="class_label_exams_result" class="form-control-label">Select Course Level</label><br>
                             <span id="exams_details_holder"><p class="text-success p-1 my-2 border border-success rounded">Course Level Will appear here!</p></span><br>
@@ -386,6 +394,14 @@
                         <div class="form-group">
                             <label for="course_module_level" class="form-control-label">Select Module Level</label><br>
                             <span id="course_module_level_holder"><p class="text-success p-1 my-1 border border-success rounded">Course Module Level appear here!</p></span><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="course_unit_exam_result" class="form-control-label">Select Course Unit</label><br>
+                            <span id="course_unit_exam_result_holder"><p class="text-success p-1 my-1 border border-success rounded">Course Course Unit appear here!</p></span><br>
+                        </div>
+                        <div class="form-group hide" id="cat_option_list_window">
+                            <label for="exam_cat_list" class="form-control-label">Select CAT</label><br>
+                            <span id="exam_cat_result_holder"><p class="text-success p-1 my-1 border border-success rounded">Exam C.A.T appear here!</p></span><br>
                         </div>
                         <button id="display_exams_for_classes">Display</button>
                         <span id="results_output"></span>
