@@ -995,6 +995,13 @@ cObj("exam_fill_btn").onclick = function () {
     cObj("exam_fillings").classList.remove("hide");
     removesidebar();
 }
+cObj("academic_report_btn").onclick = function () {
+    hideWindow();
+    unselectbtns();
+    addselected(this.id);
+    cObj("academic_reports_window").classList.remove("hide");
+    removesidebar();
+}
 cObj("sms_broadcast").onclick = function () {
     hideWindow();
     unselectbtns();
@@ -1610,6 +1617,10 @@ window.onload = function () {
     $("#exam_result_options").select2({
         width: '100%'
     });
+
+    $("#filter_option").select2({
+        width: '100%'
+    })
 
     cObj("exam_result_options").onchange = function () {
         if(this.value == "exam"){
@@ -10177,7 +10188,7 @@ cObj("upload_new_students_button").onclick = function () {
         formData.append("last_row_number", valObj("last_row_number"));
       
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/ajax/administration/admissions.php", true);
+        xhr.open("POST", "/nuelas_college/ajax/administration/admissions.php", true);
         
         xhr.upload.onprogress = function (e) {
           if (e.lengthComputable) {

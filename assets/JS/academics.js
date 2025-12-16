@@ -360,6 +360,167 @@ cObj("academic_super_admin").onchange = function () {
     });
 }
 
+cObj("filter_option").onchange = function () {
+    cObj("cat_list_option_window").classList.add("d-none");
+    cObj("exam_list_option_filter_holder").classList.remove("hide");
+    cObj("unit_list_holder_window").classList.remove("d-none");
+    cObj("display_course_reports").classList.remove("d-none");
+    if (this.value == "student_perfomance") {
+        if (typeof(cObj("exam_list_option")) == 'undefined' || cObj("exam_list_option") == null){
+            get_exam_list_report();
+        }
+    }else if(this.value == "student_cat_perfomance"){
+        cObj("cat_list_option_window").classList.remove("d-none");
+        if (typeof(cObj("exam_list_option")) == 'undefined' || cObj("exam_list_option") == null){
+            get_exam_list_report();
+        }else{
+            var datapass = "?get_exam_cats_list=true&exam_id="+valObj("exam_list_option")+"&object_id=cat_list_option";
+            sendData1("GET", "academic/academic.php", datapass, cObj("cat_list_filter_holder"), function () {
+                $("#cat_list_option").select2({
+                    width: '100%'
+                });
+            });
+        }
+    }else if(this.value == "transcripts" || this.value == "report_card"){
+        cObj("display_course_reports").classList.add("d-none");
+        cObj("exam_list_option_filter_holder").classList.add("hide");
+        cObj("unit_list_holder_window").classList.add("d-none");
+        cObj("exam_list_option_filter_holder").innerHTML = '<p class="text-success p-1 my-2 border border-success rounded">Exam List appear here!</p>';
+
+        // display course levels
+        if(cObj("course_level_option") == undefined){
+            get_course_level_filter();
+        }
+    }
+}
+
+function get_exam_list_report(){
+    var datapass = "?get_exam_available=true&object_id=exam_list_option";
+    sendData1("GET","academic/academic.php",datapass,cObj("exam_list_option_filter_holder"), function () {
+        if (typeof(cObj("exam_list_option")) != 'undefined' && cObj("exam_list_option") != null){
+            cObj("exam_list_option").onchange = get_course_level_filter;
+            $("#exam_list_option").select2({
+                width: "100%"
+            });
+        }
+    });
+}
+
+function get_course_level_filter() {
+    var datapass = "?getclass=true&select_class_id=course_level_option";
+    sendData1("GET", "administration/admissions.php", datapass, cObj("course_level_filter_holder"), function () {
+        if (cObj("course_level_option") != undefined) {
+            $("#course_level_option").select2({
+                width: "100%"
+            });
+            cObj("course_level_option").onchange = display_course_list_report;
+        }
+    });
+}
+
+function display_course_list_report() {
+    // get the course lists
+    var datapass = "?get_course_list=true&exam_id="+valObj("exam_list_option")+"&course_level="+this.value+"&object_id=course_list_option";
+    sendData2("GET","administration/admissions.php",datapass,cObj("course_list_filter_holder"),cObj("loadings"), function () {
+        if (cObj("course_list_option") != undefined) {
+            $("#course_list_option").select2({
+                width: "100%"
+            });
+            cObj("course_list_option").onchange = display_course_unit_report;
+        }
+    });
+}
+
+function display_course_unit_report() {
+    var datapass = "?get_course_module_terms="+this.value+"&object_id=module_list_option";
+    sendData2("GET","administration/admissions.php", datapass, cObj("module_list_filter_holder"), cObj("loadings"), function () {
+        if (cObj("module_list_option") != undefined){
+            cObj("module_list_option").onchange = function () {
+                var datapass = "?get_course_modular_units=true&module_id="+valObj("module_list_option")+"&course_id="+valObj("course_list_option")+"&exam_id="+valObj("exam_list_option")+"&object_id=unit_list_option";
+                sendData1("GET", "academic/academic.php", datapass, cObj("unit_list_filter_holder"), function () {
+                    if (cObj("unit_list_option") != undefined) {
+                        cObj("unit_list_option").onchange = function () {
+                            if (valObj("filter_option") == "student_cat_perfomance") {
+                                var datapass = "?get_exam_cats_list=true&exam_id="+valObj("exam_list_option")+"&object_id=cat_list_option";
+                                sendData1("GET", "academic/academic.php", datapass, cObj("cat_list_filter_holder"), function () {
+                                    $("#cat_list_option").select2({
+                                        width: '100%'
+                                    });
+                                });
+                            }
+                        }
+                        $("#unit_list_option").select2({
+                            width: '100%'
+                        });
+                    }
+                });
+            }
+            $("#module_list_option").select2({
+                width: '100%'
+            });
+        }
+    });
+}
+
+cObj("display_course_reports").onclick = function () {
+    var err = checkBlank("filter_option");
+    if(valObj("filter_option") == "student_perfomance" || valObj("filter_option") == "student_cat_perfomance"){
+        err += cObj("unit_list_option") != null && cObj("unit_list_option") != undefined ? checkBlank("unit_list_option") : 1;
+        err += cObj("exam_list_option") != null && cObj("exam_list_option") != undefined ? checkBlank("exam_list_option") : 1;
+    }
+    err += cObj("course_level_option") != null && cObj("course_level_option") != undefined ? checkBlank("course_level_option") : 1;
+    err += cObj("course_list_option") != null && cObj("course_list_option") != undefined ? checkBlank("course_list_option") : 1;
+    err += cObj("module_list_option") != null && cObj("module_list_option") != undefined ? checkBlank("module_list_option") : 1;
+
+    // student cat perfomance
+    if(valObj("filter_option") == "student_cat_perfomance"){
+        err += (cObj("cat_list_option") != null && cObj("cat_list_option") != undefined) ? checkBlank("cat_list_option") : 1;
+    }
+    
+    if (err == 0) {
+        cObj("unit_report_display_holder").innerHTML = "";
+        if (valObj("filter_option") == "student_perfomance") {
+            var datapass = "?display_unit_report=true&filter_option="+valObj("filter_option")+"&exam_id="+valObj("exam_list_option")+"&course_level="+valObj("course_level_option")+"&course_id="+valObj("course_list_option")+"&module_id="+valObj("module_list_option")+"&unit_id="+valObj("unit_list_option");
+            sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
+                if(cObj("report_exam_table")!=null && cObj("report_exam_table")!=undefined){
+                    $('#report_exam_table').DataTable({
+                        pageLength: 25
+                    });
+                }
+            });
+        }else if(valObj("filter_option") == "student_cat_perfomance"){
+            var datapass = "?display_cat_report=true&filter_option="+valObj("filter_option")+"&exam_id="+valObj("exam_list_option")+"&course_level="+valObj("course_level_option")+"&course_id="+valObj("course_list_option")+"&module_id="+valObj("module_list_option")+"&unit_id="+valObj("unit_list_option")+"&cat_id="+valObj("cat_list_option");
+            sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
+                if(cObj("table_cat_report")!=null && cObj("table_cat_report")!=undefined){
+                    $('#table_cat_report').DataTable({
+                        pageLength: 25
+                    });
+                }
+            });
+        }else if(valObj("filter_option") == "transcripts"){
+            // var datapass = "?display_cat_report=true&filter_option="+valObj("filter_option")+"&exam_id="+valObj("exam_list_option")+"&course_level="+valObj("course_level_option")+"&course_id="+valObj("course_list_option")+"&module_id="+valObj("module_list_option")+"&unit_id="+valObj("unit_list_option")+"&cat_id="+valObj("cat_list_option");
+            // sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
+            //     if(cObj("table_cat_report")!=null && cObj("table_cat_report")!=undefined){
+            //         $('#table_cat_report').DataTable({
+            //             pageLength: 25
+            //         });
+            //     }
+            // });
+        }else if(valObj("filter_option") == "report_card"){
+            // var datapass = "?display_cat_report=true&filter_option="+valObj("filter_option")+"&exam_id="+valObj("exam_list_option")+"&course_level="+valObj("course_level_option")+"&course_id="+valObj("course_list_option")+"&module_id="+valObj("module_list_option")+"&unit_id="+valObj("unit_list_option")+"&cat_id="+valObj("cat_list_option");
+            // sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
+            //     if(cObj("table_cat_report")!=null && cObj("table_cat_report")!=undefined){
+            //         $('#table_cat_report').DataTable({
+            //             pageLength: 25
+            //         });
+            //     }
+            // });
+        }
+    }else{
+        cObj("unit_report_display_holder").innerHTML = "<p class='text-danger'>Please fill all the fields with red borders!</p>";
+    }
+}
+
 cObj("confirm_no_remove_assignment").onclick = function () {
     cObj("confirm_delete_assignment").classList.add("hide");
 }

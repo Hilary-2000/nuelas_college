@@ -7668,7 +7668,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $gender = $cell(3, $row);
                     $course_chosen = get_course_id($cell(4, $row), $conn2);
                     $level_id = get_course_level_valid($cell(5, $row), $conn2);
-                    $course_module_terms = $cell(6, $row);
+                    $course_module_terms = $cell(6, $row)*1;
                     $study_mode = $cell(7, $row);
                     $student_contact = $cell(8, $row);
                     $student_id = $cell(9, $row);
@@ -7699,6 +7699,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             break;
                         }
                     }
+
+                    // calculate from the intake period the intake they are in
+                    $intake = $intake_year."-".$intake_month."-01";
+                    for($index = 0; $index < $course_module_terms; $index++){
+                        if($index == 0){
+                            continue;
+                        }
+                        $intake = addPeriod(date("Ymd", strtotime($intake)).date("His"), $module_period);
+                    }
                     
                     // ------------------------SET COURSE DETAILS----------------------------
                     // set up the course details
@@ -7713,9 +7722,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $term = new stdClass();
                         $term->id = $index + 1;
                         $term->term_name = "MODULE ". ($index + 1);
-                        $term->status = $course_module_terms == ($index+1) ? 1 : 0;
-                        $term->start_date = $course_module_terms == ($index+1) ? date("Ymd", strtotime($doa)).date("His") : "";
-                        $end_date = addPeriod(date("Ymd", strtotime($doa)).date("His"), $module_period);
+                        $term->status = $course_module_terms == ($index+1) ? 1 : ($course_module_terms > ($index+1) ? 2 : 0);
+                        $term->start_date = $course_module_terms == ($index+1) ? date("Ymd", strtotime($intake)).date("His") : "";
+                        $end_date = addPeriod(date("Ymd", strtotime($intake)).date("His"), $module_period);
                         $term->end_date = $course_module_terms == ($index+1) ? $end_date : "";
                         $term->fulltime_cost = $fulltime_cost;
                         $term->evening_cost = $evening_cost;

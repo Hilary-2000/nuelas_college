@@ -568,6 +568,7 @@ function checkPresnt($array, $string){
             include("academics/timetable.php");
             include("academics/lecture_hall.php");
             include("academics/course_unit_assignment.php");
+            include("academics/academic_reports.php");
             include("system_error_pages/inconvinience.php");
             include("boarding_pages/enroll_boarding.php");
             include("boarding_pages/register_dorm.php");
@@ -4767,41 +4768,6 @@ function checkPresnt($array, $string){
     <script src="assets/JS/chartconfig.js"></script>
 
     <script>
-        // tinymce.init({
-        // selector: '#email_messages',
-        // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-        // toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        // menubar: true,
-        // toolbar: true
-        // });
-        
-        // tinymce.init({
-        //     selector: '#email_editored',
-        //     plugins: ["link","code","media","image","emoticons"],
-        //     // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-        //     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        //     menubar: true,
-        //     toolbar: true,
-        //     setup : function(ed) {
-        //         ed.on('keyup', function(e) {
-        //             working_onit(ed);
-        //         });
-        //     }
-        // });
-        
-        // tinymce.init({
-        //     selector: '#email_contents_exam_reports',
-        //     plugins: ["link","code","media","image","emoticons"],
-        //     // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-        //     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        //     menubar: true,
-        //     toolbar: true,
-        //     setup : function(ed) {
-        //         ed.on('keyup', function(e) {
-        //             editSamplesData(ed);
-        //         });
-        //     }
-        // });
 
         // email_messages
         CKEDITOR.replace('email_messages', {
@@ -4850,6 +4816,41 @@ function checkPresnt($array, $string){
             });
         });
     </script>
+    <?php if (date('dm') >= '1512' && date('dm') <= "3105"): ?>
+        <script>
+            // const snowflakes = 20;
+            // const colors = ["#ffffff", "#FDE4F3", "#CFE6F8", "#ECE4F4"]; // preset colors
+
+            // for (let i = 0; i < snowflakes; i++) {
+            //     const snow = document.createElement("div");
+            //     snow.innerHTML = "❄";
+
+            //     // random color from preset list
+            //     snow.style.color = colors[Math.floor(Math.random() * colors.length)];
+
+            //     snow.style.position = "fixed";
+            //     snow.style.top = Math.random() * -100 + "px";
+            //     snow.style.left = Math.random() * window.innerWidth + "px";
+            //     snow.style.fontSize = Math.random() * 20 + 10 + "px";
+            //     snow.style.opacity = Math.random();
+            //     snow.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
+            //     snow.style.pointerEvents = "none";
+            //     snow.style.zIndex = "9999";
+
+            //     document.body.appendChild(snow);
+            // }
+
+            // const style = document.createElement("style");
+            // style.innerHTML = `
+            // @keyframes fall {
+            //     to {
+            //         transform: translateY(110vh);
+            //     }
+            // }
+            // `;
+            // document.head.appendChild(style);
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

@@ -1676,8 +1676,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 $stmt->execute();
             }
             $result = $stmt->get_result();
+            $object_id = isset($_GET['object_id']) ? $_GET['object_id'] : "exam_list";
             if ($result) {
-                $string_display = "<label class='form-control-label' for='exam_list'>Select exam: <br></label><select class='form-control' name='exam_list' id='exam_list'>
+                $string_display = "<label class='form-control-label' for='$object_id'>Select exam: <br></label><select class='form-control' name='$object_id' id='$object_id'>
                                         <option value='' hidden>Select an option..</option>";
                                     $xd = 0;
                 while ($row = $result->fetch_assoc()) {
@@ -1836,6 +1837,183 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 
             
             }
+        }elseif(isset($_GET['display_cat_report'])){
+            $exam_id = $_GET['exam_id'];
+            $course_level = $_GET['course_level'];
+            $course_id = $_GET['course_id'];
+            $module_id = $_GET['module_id'];
+            $unit_id = $_GET['unit_id'];
+            $cat_id = $_GET['cat_id'];
+
+            $select = "SELECT * FROM `exams_tbl` WHERE exams_id = ? AND end_date > ?";
+            $stmt = $conn2->prepare($select);
+            $current_date = date("YmdHis");
+            $stmt->bind_param("ss", $exam_id, $current_date);
+            $stmt->execute();
+            $result = $stmt->store_result();
+            $is_closed = false;
+            if ($stmt->num_rows() == 0) {
+                $is_closed = true;
+            }
+
+            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_cat_scores WHERE examinee_id = examinees.examinee_id AND cat_id = '$cat_id') AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ?";
+            $stmt = $conn2->prepare($select);
+            $active_module = "MODULE ".$module_id;
+            $stmt->bind_param("ssss", $exam_id, $course_level, $course_id, $active_module);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $student_data = [];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($student_data, $row);
+                }
+            }
+            $cat_max_marks = 10;
+            $cat_name = "N/A";
+            $select = "SELECT * FROM `exams_cat` WHERE cat_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $cat_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result) {
+                if ($row = $result->fetch_assoc()) {
+                    $cat_max_marks = $row['max_marks']*1;
+                    $cat_name = $row['name'];
+                }
+            }
+
+            // get the unit grades
+            $unit_grades = [];
+            $select = "SELECT * FROM `table_subject` WHERE `subject_id` = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $unit_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $max_marks = 100;
+            $unit_name = "";
+            if ($row = $result->fetch_assoc()) {
+                $grading = isJson_report($row['grading']) ? json_decode($row['grading'], true) : [];
+                $max_marks = $row['max_marks'];
+                $unit_name = $row['display_name'];
+            }
+
+            // get the student list
+            $data_to_display = "<h6 class='text-center mt-2'><u>Examinees list on <b>".$course_level."</b> in <b>".$unit_name." - ".$cat_name." ($cat_max_marks Mks)</b></u></h6><table class='table' id='table_cat_report'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th><th>Score ($cat_max_marks Mks)</th><th>Grade</th></tr></thead><tbody>";
+            for ($index=0; $index < count($student_data); $index++) {
+                $student_grade_value = "-";
+                $student_score = get_student_cat_score($conn2, $cat_id, $student_data[$index]['examinee_id']);
+                $student_marks_value = $student_score['cat_score'];
+                $data_to_display .= "<tr><td>".($index+1).".</td><td>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td><td>$student_marks_value Mks</td><td>-</td></tr>";
+            }
+            $data_to_display .= "</table>";
+            echo $data_to_display;
+        }elseif(isset($_GET['display_unit_report'])){
+            include("../../connections/conn1.php");
+            $display_unit_report = $_GET['display_unit_report'];
+            $exam_id = $_GET['exam_id'];
+            $course_level = $_GET['course_level'];
+            $course_id = $_GET['course_id'];
+            $module_id = $_GET['module_id'];
+            $unit_id = $_GET['unit_id'];
+
+            $select = "SELECT * FROM `exams_tbl` WHERE exams_id = ? AND end_date > ?";
+            $stmt = $conn2->prepare($select);
+            $current_date = date("YmdHis");
+            $stmt->bind_param("ss", $exam_id, $current_date);
+            $stmt->execute();
+            $result = $stmt->store_result();
+            $is_closed = false;
+            if ($stmt->num_rows() == 0) {
+                $is_closed = true;
+            }
+
+            $is_teacher = isTeacherAssignedToUnit($conn, $conn2, $unit_id, $course_level, $course_id);
+            $select = "SELECT examinees.*, student_data.*, (SELECT COUNT(*) FROM exam_record_tbl WHERE examinee_id = examinees.examinee_id) AS 'marks_added' FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ?";
+            $stmt = $conn2->prepare($select);
+            $active_module = "MODULE ".$module_id;
+            $stmt->bind_param("ssss", $exam_id, $course_level, $course_id, $active_module);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $student_data = [];
+            $count = 0;
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $count++;
+                    array_push($student_data, $row);
+                }
+            }
+
+            if($count == 0){
+                echo "<p class='text-success p-2 rounded border border-success my-2'>No examinees found!!</p>";
+                return;
+            }
+
+            if (count($student_data) == 0) {
+                if($exam_option == "add"){
+                    echo "<p class='text-success p-2 rounded border border-success my-2'>All students scores have been added, Use the view option to view and update the student scores!</p>";
+                }else{
+                    echo "<p class='text-success p-2 rounded border border-success my-2'>No student marks have been added yet!!</p>";
+                }
+                return;
+            }
+
+            // get the exams cats
+            $select = "SELECT * FROM `exams_cat` WHERE exam_id = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $exam_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $cats = [];
+            $cat_titles = "";
+            $cat_max_marks_total = 0;
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    array_push($cats, $row);
+                    $tick = "";
+                    if ($row['include_in_exam'] == "1") {
+                        $tick = "<span class='badge bg-success'> in</span>";
+                        $cat_max_marks_total += $row['max_marks'];
+                    }
+                    $cat_titles .= "<th>".$row['name']." (".$row['max_marks']." Mks) $tick</th>";
+                }
+            }
+
+            // get the unit grades
+            $unit_grades = [];
+            $select = "SELECT * FROM `table_subject` WHERE `subject_id` = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $unit_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $max_marks = 100;
+            $unit_name = "";
+            $unit_code = "";
+            if ($row = $result->fetch_assoc()) {
+                $grading = isJson_report($row['grading']) ? json_decode($row['grading'], true) : [];
+                $max_marks = $row['max_marks'];
+                $unit_name = $row['display_name'];
+                $unit_code = $row['timetable_id'];
+            }
+
+            // get the student list
+            $data_to_display = "<h6 class='text-center mt-2'><u>Examinees list on <b>".$course_level."</b> in <b>".$unit_name." {".$unit_code."}</b></u></h6><table class='table' id='report_exam_table'><thead><tr><th>No.</th><th>Student Name</th><th>Adm No.</th>$cat_titles<th>Exam Score (Max: ".($max_marks - $cat_max_marks_total)." Mks)</th><th>Total</th><th>Grade</th></tr></thead><tbody>";
+            for ($index=0; $index < count($student_data); $index++) {
+                $cat_scores = "";
+                $total_cat_marks = 0;
+                for ($ind=0; $ind < count($cats); $ind++) { 
+                    $score = get_cat_scores($conn2, $cats[$ind]['cat_id'], $student_data[$index]['examinee_id']);
+                    if($cats[$ind]['include_in_exam'] == 1){
+                        $total_cat_marks += $score*1;
+                    }
+                    $cat_scores.= "<td>".$score." Mks</td>";
+                }
+                $student_score = get_student_exam_score($conn2, $exam_id, $student_data[$index]['examinee_id'], $unit_id);
+                $student_marks_value = $student_score['exam_score'];
+                $student_grade_value = $student_score['exam_grade'];
+                $data_to_display .= "<tr><td>".($index+1).".</td><td>".ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name']))."</td><td>".$student_data[$index]['adm_no']."</td>$cat_scores<td>$student_marks_value</td><td><span>".($total_cat_marks+$student_marks_value)."%</span></td><td>$student_grade_value</td></tr>";
+            }
+            $data_to_display .= "</table>";
+            echo $data_to_display;
         }elseif(isset($_GET['get_examinees'])){
             include("../../connections/conn1.php");
             $get_examinees = $_GET['get_examinees'];
