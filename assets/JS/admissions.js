@@ -10188,7 +10188,7 @@ cObj("upload_new_students_button").onclick = function () {
         formData.append("last_row_number", valObj("last_row_number"));
       
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/nuelas_college/ajax/administration/admissions.php", true);
+        xhr.open("POST", "/ajax/administration/admissions.php", true);
         
         xhr.upload.onprogress = function (e) {
           if (e.lengthComputable) {

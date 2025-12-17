@@ -430,17 +430,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     
                     // check if the course is present in the level selected
                     for($index = 0; $index < count($valued); $index++){
-                        // loop through course levels
-                        $course_levels = isJson_report($valued[$index]->course_levels) ? json_decode($valued[$index]->course_levels) : [];
-                        
                         // add course flag after looping through the course levele the course is offered
                         $proceed = false;
-                        // for ($ind=0; $ind < count($course_levels); $ind++) { 
-                        //     if($course_levels[$ind] == $course_id){
-                        //         $proceed = true;
-                        //         break;
-                        //     }
-                        // }
                         if(isset($valued[$index]->course_level)){
                             if($valued[$index]->course_level == $course_id){
                                 $proceed = true;
@@ -496,8 +487,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     
                     // check if the course is present in the level selected
                     for($index = 0; $index < count($valued); $index++){
-                        // loop through course levels
-                        $course_levels = isJson_report($valued[$index]->course_levels) ? json_decode($valued[$index]->course_levels) : [];
                         // add course flag after looping through the course levele the course is offered
                         $proceed = false;
                         if(isset($valued[$index]->course_level) && $valued[$index]->course_level == $course_id){
@@ -3388,26 +3377,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                 break;
                             }
                         }
-                        
-                        // get the levels
-                        // $levels = "No classes selected";
-                        // $level_ids = isJson_report($course_list[$index]->course_levels) ? json_decode($course_list[$index]->course_levels) : [];
-                        // // echo $course_list[$index]->course_levels."<br>";
-                        // if(count($level_ids) > 0){
-                        //     $levels = "<ul>";
-                        //     for($ind = 0; $ind < count($level_ids); $ind++){
-                        //         $level_name = $level_ids[$ind];
-                        //         for($in = 0; $in < count($course_levels); $in++){
-                        //             // echo $course_levels[$in]->id." ".$level_name." ".$course_levels[$in]->classes."<br>";
-                        //             if($level_name == $course_levels[$in]->id){
-                        //                 $level_name = $course_levels[$in]->classes;
-                        //                 break;
-                        //             }
-                        //         }
-                        //         $levels .= "<li>".$level_name."</li>";
-                        //     }
-                        // }
-                        // $levels.="</ul>";
 
                         $level = "Level not defined!";
                         if(isset($course_list[$index]->course_level)){
@@ -7666,8 +7635,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $student_name = explode(" ", $cell(1, $row));
                     $reg_no = $cell(2, $row);
                     $gender = $cell(3, $row);
-                    $course_chosen = get_course_id($cell(4, $row), $conn2);
-                    $level_id = get_course_level_valid($cell(5, $row), $conn2);
+                    $level_name = $cell(5, $row);
+                    $course_name = $cell(4, $row);
+                    $level_id = get_course_level_id($conn2, $level_name);
+                    $course_chosen = get_course_id($course_name, $level_id, $conn2);
                     $course_module_terms = $cell(6, $row)*1;
                     $study_mode = $cell(7, $row);
                     $student_contact = $cell(8, $row);
@@ -7777,7 +7748,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
                     $stmt = $conn2->prepare($insert);
                     $stmt->execute([
-                        $student_name[0], $student_name[1], $student_name[2], $reg_no, $course_chosen, $level_id,
+                        $student_name[0], $student_name[1], $student_name[2], $reg_no, $course_chosen, $level_name,
                         $intake_month, $intake_year, $dob, $doa,
                         $parent_name_1, $contact_1, $parent_name_2, $contact_2, $gender, $course_details_string,$study_mode, $student_contact
                     ]);
@@ -13458,8 +13429,29 @@ function isJson_report($string) {
         }
     }
 
+    function get_course_level_id($conn2, $course_level_name){
+        if ($course_level_name == "-1" || $course_level_name == "-2" || $course_level_name == "-3") {
+            return $course_level_name;
+        }
+        $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($result){
+            if($row = $result->fetch_assoc()){
+                $course_levels = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+                foreach ($course_levels as $key => $value) {
+                    if(trim(strtolower($course_level_name)) == trim(strtolower($value->classes))){
+                        return $value->id;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     // get the course id when given the name
-    function get_course_id($course_name, $conn2){
+    function get_course_id($course_name, $course_level_id, $conn2){
         if ($course_name == "-1" || $course_name == "-2" || $course_name == "-3") {
             return $course_name;
         }
@@ -13476,34 +13468,8 @@ function isJson_report($string) {
         }
 
         foreach ($course_levels as $key => $value) {
-            if(strtolower($course_name) == strtolower($value->course_name)){
+            if(trim(strtolower($course_name)) == trim(strtolower($value->course_name)) && $course_level_id == $value->course_level){
                 return $value->id;
-            }
-        }
-        return "";
-    }
-
-    // get the course id when given the name
-    function get_course_level_valid($course_level, $conn2){
-        if ($course_level == "-1" || $course_level == "-2" || $course_level == "-3") {
-            return $course_level;
-        }
-
-        // get all courses
-        $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
-        $stmt = $conn2->prepare($select);
-        $stmt->execute();
-        $course_levels = [];
-        $result = $stmt->get_result();
-        if($result){
-            if($row = $result->fetch_assoc()){
-                $course_levels = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
-            }
-        }
-
-        foreach ($course_levels as $key => $value) {
-            if(strtolower($course_level) == strtolower($value->classes)){
-                return $value->classes;
             }
         }
         return "";

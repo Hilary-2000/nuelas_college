@@ -1,3 +1,6 @@
+17th Dec 2025 16:37:49PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+17th Dec 2025 16:30:28PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+17th Dec 2025 10:58:08AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 16th Dec 2025 14:57:40PM : Departments (Digital art and Technology) with a code of (DAT-001) have been updated successfully! - {ANN AKOTCH}
 16th Dec 2025 14:57:11PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
 16th Dec 2025 14:57:02PM : Course "FASHION AND DESIGN" has been added successfully! - {ANN AKOTCH}

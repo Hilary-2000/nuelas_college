@@ -1,302 +1,67 @@
 [
     {
-        "Day": "Monday",
-        "classes": [
-            {
-                "classname": "Grade 6",
-                "lessons": [
-                    "MAT {IHA}|SST {IDI} = RM1",
-                    "MAT {IHA}|SST {IDI}",
-                    "ENG {HGB}",
-                    "KIS {BBE}",
-                    "ENG {HGB}",
-                    " SCI {BJI}",
-                    "MAT {IHA}|SST {IDI}",
-                    " ENG {HGB}",
-                    " CRE {BJD}",
-                    " CRE {BJD}"
-                ]
-            },
-            {
-                "classname": "Grade 8",
-                "lessons": [
-                    "ENG {HGB}",
-                    " KIS {BBE}",
-                    " MAT {IHA}",
-                    " ENG {HGB}",
-                    " SST {IDI}",
-                    " MAT {IHA}",
-                    " SCI {BJI}",
-                    " SST {IDI}",
-                    " SCI {BJI}",
-                    " KIS {BBE}"
-                ]
-            },
-            {
-                "classname": "Grade 7",
-                "lessons": [
-                    "MAT {BJI}",
-                    "MAT {BJI}",
-                    "ENG {IDI}",
-                    " ENG {IDI}",
-                    " KIS {BJD}",
-                    "KIS {BJD}",
-                    " SST {HGB}",
-                    " SCI {IHA}",
-                    " CRE {BBE}",
-                    ""
-                ]
-            }
-        ]
+        "id": "1",
+        "course_name": "FASHION AND DESIGN",
+        "course_levels": "[]",
+        "department": "FS-001",
+        "course_level": "9",
+        "no_of_terms": "6",
+        "fulltime_fees": "9500",
+        "weekend_fees": "5000",
+        "evening_fees": "7500",
+        "term_duration": "6",
+        "duration_intervals": "months"
     },
     {
-        "Day": "Tuesday",
-        "classes": [
-            {
-                "classname": "Grade 6",
-                "lessons": [
-                    "KIS {BBE}",
-                    " ENG {HGB}",
-                    "MAT {IHA}|SST {IDI}",
-                    "MAT {IHA}|SST {IDI}",
-                    " ENG {HGB}",
-                    " CRE {BJD}",
-                    " SCI {BJI}",
-                    " KIS {BBE}",
-                    "",
-                    "MAT {IHA}|SST {IDI}"
-                ]
-            },
-            {
-                "classname": "Grade 8",
-                "lessons": [
-                    "MAT {IHA}",
-                    "MAT {IHA}",
-                    "ENG {HGB}",
-                    " KIS {BBE}",
-                    "SCI {BJI}",
-                    " SCI {BJI}",
-                    "SST {IDI}",
-                    " ENG {HGB}",
-                    " CRE {BJD}",
-                    ""
-                ]
-            },
-            {
-                "classname": "Grade 7",
-                "lessons": [
-                    "ENG {IDI}",
-                    " MAT {BJI}",
-                    " KIS {BJD}",
-                    " KIS {BJD}",
-                    " ENG {IDI}",
-                    " SCI {IHA}",
-                    " CRE {BBE}",
-                    "MAT {BJI}",
-                    " SCI {IHA}",
-                    "SST {HGB}"
-                ]
-            }
-        ]
+        "id": 2,
+        "course_name": "FRUIT MAKER",
+        "course_levels": "[]",
+        "department": "DAT-001",
+        "course_level": "9",
+        "no_of_terms": "6",
+        "fulltime_fees": "5000",
+        "evening_fees": "4000",
+        "weekend_fees": "3000",
+        "term_duration": "1",
+        "duration_intervals": "months"
     },
     {
-        "Day": "Wednesday",
-        "classes": [
-            {
-                "classname": "Grade 6",
-                "lessons": [
-                    "KIS {BBE}",
-                    "MAT {IHA}|SST {IDI}",
-                    " ENG {HGB}",
-                    "MAT {IHA}|SST {IDI}",
-                    " ENG {HGB}",
-                    " CRE {BJD}",
-                    " KIS {BBE}",
-                    " SCI {BJI}",
-                    " SCI {BJI}",
-                    ""
-                ]
-            },
-            {
-                "classname": "Grade 8",
-                "lessons": [
-                    "SCI {BJI}",
-                    " ENG {HGB}",
-                    "MAT {IHA}",
-                    " KIS {BBE}",
-                    " MAT {IHA}",
-                    " SCI {BJI}",
-                    "ENG {HGB}",
-                    " CRE {BJD}",
-                    " SST {IDI}",
-                    "MAT {IHA}"
-                ]
-            },
-            {
-                "classname": "Grade 7",
-                "lessons": [
-                    "ENG {IDI}",
-                    " KIS {BJD}",
-                    "MAT {BJI}",
-                    " MAT {BJI}",
-                    "KIS {BJD}",
-                    " CRE {BBE}",
-                    "ENG {IDI}",
-                    " SST {HGB}",
-                    "CRE {BBE}",
-                    " SST {HGB}"
-                ]
-            }
-        ]
+        "id": 3,
+        "course_name": "FASHION AND DESIGN II",
+        "course_levels": "[]",
+        "department": "DAT-001",
+        "course_level": "9",
+        "no_of_terms": "6",
+        "fulltime_fees": "5000",
+        "evening_fees": "0",
+        "weekend_fees": "0",
+        "term_duration": "1",
+        "duration_intervals": "months"
     },
     {
-        "Day": "Thursday",
-        "classes": [
-            {
-                "classname": "Grade 6",
-                "lessons": [
-                    "ENG {HGB}",
-                    "",
-                    " KIS {BBE}",
-                    " ENG {HGB}",
-                    "MAT {IHA}|SST {IDI}",
-                    " KIS {BBE}",
-                    "MAT {IHA}|SST {IDI}",
-                    " CRE {BJD}",
-                    " SCI {BJI}",
-                    "MAT {IHA}|SST {IDI}"
-                ]
-            },
-            {
-                "classname": "Grade 8",
-                "lessons": [
-                    "CRE {BJD}",
-                    "SST {IDI}",
-                    "MAT {IHA}",
-                    " KIS {BBE}",
-                    " ENG {HGB}",
-                    "ENG {HGB}",
-                    " CRE {BJD}",
-                    " SCI {BJI}",
-                    "SST {IDI}",
-                    "KIS {BBE}"
-                ]
-            },
-            {
-                "classname": "Grade 7",
-                "lessons": [
-                    "ENG {IDI}",
-                    "MAT {BJI}",
-                    "MAT {BJI}",
-                    "KIS {BJD}",
-                    "CRE {BBE}",
-                    "KIS {BJD}",
-                    "CRE {BBE}",
-                    "SCI {IHA}",
-                    "SCI {IHA}",
-                    "SST {HGB}"
-                ]
-            }
-        ]
+        "id": 4,
+        "course_name": "Fashion & Design",
+        "course_levels": "[]",
+        "department": "DAT-001",
+        "course_level": "10",
+        "no_of_terms": "6",
+        "fulltime_fees": "7500",
+        "evening_fees": "6500",
+        "weekend_fees": "5500",
+        "term_duration": "1",
+        "duration_intervals": "months"
     },
     {
-        "Day": "Friday",
-        "classes": [
-            {
-                "classname": "Grade 6",
-                "lessons": [
-                    "KIS {BBE}",
-                    " ENG {HGB}",
-                    " KIS {BBE}",
-                    " ENG {HGB}",
-                    "MAT {IHA}|SST {IDI}",
-                    " CRE {BJD}",
-                    "",
-                    " SCI {BJI}",
-                    " SCI {BJI}",
-                    "MAT {IHA}|SST {IDI}"
-                ]
-            },
-            {
-                "classname": "Grade 8",
-                "lessons": [
-                    "MAT {IHA}",
-                    " KIS {BBE}",
-                    " ENG {HGB}",
-                    " MAT {IHA}",
-                    " KIS {BBE}",
-                    " SST {IDI}",
-                    " SCI {BJI}",
-                    " CRE {BJD}",
-                    " ENG {HGB}",
-                    " SCI {BJI}"
-                ]
-            },
-            {
-                "classname": "Grade 7",
-                "lessons": [
-                    "MAT {BJI}",
-                    " KIS {BJD}",
-                    " KIS {BJD}",
-                    " ENG {IDI}",
-                    " MAT {BJI}",
-                    " SST {HGB}",
-                    " SCI {IHA}",
-                    " SCI {IHA}",
-                    " ENG {IDI}",
-                    " CRE {BBE}"
-                ]
-            }
-        ]
-    },
-    {
-        "Day": "Saturday",
-        "classes": [
-            {
-                "classname": "Grade 6",
-                "lessons": [
-                    "MAT {IHA}|SST {IDI}",
-                    "MAT {IHA}|SST {IDI}",
-                    " KIS {BBE}",
-                    " ENG {HGB}",
-                    " ENG {HGB}",
-                    "",
-                    " KIS {BBE}",
-                    " SCI {BJI}",
-                    " SCI {BJI}",
-                    " CRE {BJD}"
-                ]
-            },
-            {
-                "classname": "Grade 8",
-                "lessons": [
-                    "ENG {HGB}",
-                    "KIS {BBE}",
-                    "SCI {BJI}",
-                    "MAT {IHA}",
-                    " KIS {BBE}",
-                    " SCI {BJI}",
-                    " SST {IDI}",
-                    " CRE {BJD}",
-                    " SST {IDI}",
-                    "MAT {IHA}"
-                ]
-            },
-            {
-                "classname": "Grade 7",
-                "lessons": [
-                    "MAT {BJI}",
-                    " MAT {BJI}",
-                    " KIS {BJD}",
-                    "KIS {BJD}",
-                    " SCI {IHA}",
-                    "SCI {IHA}",
-                    "SST {HGB}",
-                    " CRE {BBE}",
-                    "SST {HGB}",
-                    " ENG {IDI}"
-                ]
-            }
-        ]
+        "id": "5",
+        "course_name": "FASHION AND DESIGN",
+        "course_levels": "[]",
+        "department": "DAT-001",
+        "course_level": "11",
+        "no_of_terms": "6",
+        "fulltime_fees": "0",
+        "weekend_fees": "0",
+        "evening_fees": "0",
+        "term_duration": "4",
+        "duration_intervals": "months"
     }
 ]

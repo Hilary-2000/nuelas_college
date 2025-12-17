@@ -8259,7 +8259,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $what_to_print = $_POST['what_to_print'];
         $exam_ids_printing = $_POST['exam_ids_printing'];
         $courses_for_exams = $_POST['courses_for_exams'];
-        // echo json_encode($_POST);
         if ($what_to_print == "examinees_list") {
             include("../connections/conn2.php");
             include("../connections/conn1.php");

@@ -369,6 +369,7 @@ cObj("filter_option").onchange = function () {
         if (typeof(cObj("exam_list_option")) == 'undefined' || cObj("exam_list_option") == null){
             get_exam_list_report();
         }
+        cObj("what_to_print_2").value = "exams_marks";
     }else if(this.value == "student_cat_perfomance"){
         cObj("cat_list_option_window").classList.remove("d-none");
         if (typeof(cObj("exam_list_option")) == 'undefined' || cObj("exam_list_option") == null){
@@ -379,8 +380,12 @@ cObj("filter_option").onchange = function () {
                 $("#cat_list_option").select2({
                     width: '100%'
                 });
+                cObj("cat_list_option").onchange =  function (){
+                    cObj("course_cats_for_exams_2").value = this.value;
+                }
             });
         }
+        cObj("what_to_print_2").value = "exams_cat_marks";
     }else if(this.value == "transcripts" || this.value == "report_card"){
         cObj("display_course_reports").classList.add("d-none");
         cObj("exam_list_option_filter_holder").classList.add("hide");
@@ -407,6 +412,7 @@ function get_exam_list_report(){
 }
 
 function get_course_level_filter() {
+    cObj("exam_ids_printing_2").value = cObj("exam_list_option").value;
     var datapass = "?getclass=true&select_class_id=course_level_option";
     sendData1("GET", "administration/admissions.php", datapass, cObj("course_level_filter_holder"), function () {
         if (cObj("course_level_option") != undefined) {
@@ -419,6 +425,7 @@ function get_course_level_filter() {
 }
 
 function display_course_list_report() {
+    cObj("classes_for_exams_2").value = cObj("course_level_option").value;
     // get the course lists
     var datapass = "?get_course_list=true&exam_id="+valObj("exam_list_option")+"&course_level="+this.value+"&object_id=course_list_option";
     sendData2("GET","administration/admissions.php",datapass,cObj("course_list_filter_holder"),cObj("loadings"), function () {
@@ -432,20 +439,26 @@ function display_course_list_report() {
 }
 
 function display_course_unit_report() {
-    var datapass = "?get_course_module_terms="+this.value+"&object_id=module_list_option";
+    cObj("courses_for_exams_3").value = cObj("course_list_option").value;
+    var datapass = "?get_course_module_terms="+cObj("course_list_option").value+"&object_id=module_list_option";
     sendData2("GET","administration/admissions.php", datapass, cObj("module_list_filter_holder"), cObj("loadings"), function () {
         if (cObj("module_list_option") != undefined){
             cObj("module_list_option").onchange = function () {
+                cObj("course_modules_for_exams_2").value = this.value;
                 var datapass = "?get_course_modular_units=true&module_id="+valObj("module_list_option")+"&course_id="+valObj("course_list_option")+"&exam_id="+valObj("exam_list_option")+"&object_id=unit_list_option";
                 sendData1("GET", "academic/academic.php", datapass, cObj("unit_list_filter_holder"), function () {
                     if (cObj("unit_list_option") != undefined) {
                         cObj("unit_list_option").onchange = function () {
+                            cObj("course_units_for_exams_2").value = this.value;
                             if (valObj("filter_option") == "student_cat_perfomance") {
                                 var datapass = "?get_exam_cats_list=true&exam_id="+valObj("exam_list_option")+"&object_id=cat_list_option";
                                 sendData1("GET", "academic/academic.php", datapass, cObj("cat_list_filter_holder"), function () {
                                     $("#cat_list_option").select2({
                                         width: '100%'
                                     });
+                                    cObj("cat_list_option").onchange =  function (){
+                                        cObj("course_cats_for_exams_2").value = this.value;
+                                    }
                                 });
                             }
                         }

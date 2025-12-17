@@ -18,7 +18,7 @@
             </div>
             <div class="body4">
                 <p>Use the filters below:</p>
-                <div class="row">
+                <form class="row" target="_blank" method="post" action="reports/reports.php">
                     <div class="col-md-4">
                         <label for="filter_option" class="form-control-label"><b>Select an option</b></label>
                         <select name="filter_option" id="filter_option" class="form-control">
@@ -29,6 +29,13 @@
                             <option value="report_card">Year-wise Transcripts. </option>
                         </select>
                     </div>
+                    <input type="hidden" name="what_to_print" id="what_to_print_2">
+                    <input type="hidden" name="classes_for_exams" id="classes_for_exams_2">
+                    <input type="hidden" name="exam_ids_printing" id="exam_ids_printing_2">
+                    <input type="hidden" name="courses_for_exams" id="courses_for_exams_3">
+                    <input type="hidden" name="course_modules_for_exams" id="course_modules_for_exams_2">
+                    <input type="hidden" name="course_units_for_exams" id="course_units_for_exams_2">
+                    <input type="hidden" name="course_cats_for_exams" id="course_cats_for_exams_2">
                     <div class="col-md-4" id='exam_list_option_filter_holder'>
                         <span id=""><p class="text-success p-1 my-2 border border-success rounded">Exam List appear here!</p></span>
                     </div>
@@ -56,7 +63,7 @@
                         <button type="button" id="display_course_reports"><i class="fas fa-eye"></i> Display</button>
                         <button type="submit" id="print_course_reports"><i class="fas fa-print"></i> Print</button>
                     </div>
-                </div>
+                </form>
                 <div class="container" id="unit_report_display_holder"></div>
             </div>
         </div>

@@ -9873,6 +9873,15 @@ function Income_Tax($gross_salary, $effect_year){
     return round($payee, 2);
 }
 
+function Nhif_Shif_Relief($gross_salary, $effect_year) {
+    $nhif_shif_amount = Nhif_Shif_Amount($gross_salary, $effect_year)*1;
+    if ($effect_year >= 202201) {
+        return 0.15 * $nhif_shif_amount > 5000 ? 5000 : 0.15 * $nhif_shif_amount;
+    }else{
+        return 0.15 * $nhif_shif_amount;
+    }
+}
+
 function Income_Tax_Relief($effect_year){
     if ($effect_year > 202004) {
         return 2400;
