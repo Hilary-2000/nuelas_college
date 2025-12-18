@@ -387,6 +387,7 @@ cObj("filter_option").onchange = function () {
         }
         cObj("what_to_print_2").value = "exams_cat_marks";
     }else if(this.value == "transcripts" || this.value == "report_card"){
+        cObj("what_to_print_2").value = this.value;
         cObj("display_course_reports").classList.add("d-none");
         cObj("exam_list_option_filter_holder").classList.add("hide");
         cObj("unit_list_holder_window").classList.add("d-none");

@@ -8628,6 +8628,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
             } else {
                 echo "<p style='color:red;'><b>Note: </b><br>No student were available in that class during this exams occurence!</p>";
             }
+        } elseif($what_to_print == "transcripts"){
+            echo "<p>Transcript will appear here!</p>";
+        } elseif($what_to_print == "report_card"){
+            echo "<p>Report card will appear here!</p>";
         }
     } elseif (isset($_POST['print_or_send_invoice_btn'])) {
         if (strlen(trim($_POST['students_ids'])) > 0) {
