@@ -1,72 +1,32 @@
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','22','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','23','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','24','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','25','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','26','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','27','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','28','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','29','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','30','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','31','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','32','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','14','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','33','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','34','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','35','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','36','1','provisional');
-
-INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) 
-VALUES ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (Internal Certification)','37','1','provisional');
-
 INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) VALUES 
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','39','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','40','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','41','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','42','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','43','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','44','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','45','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','46','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','47','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','48','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','49','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','50','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','51','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','52','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','53','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','54','1','provisional'),
-('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Craft Certificate (KNEC/TVET CDACC Certification)','55','1','provisional');
+('CLINICAL OFFICERS COUNCIL FEE', '7500','0','0','Diploma','1','1','provisional'),
+('CLINICAL OFFICERS COUNCIL FEE', '7500','0','0','Diploma','2','1','provisional'),
+('Registration fee', '1000','0','0','Diploma','1','1','provisional'),
+('Registration fee', '1000','0','0','Diploma','2','1','provisional'),
+('Log Book', '1000','0','0','Diploma','1','1','provisional'),
+('Log Book', '1000','0','0','Diploma','2','1','provisional'),
+('Graduation Fee', '5500','0','0','Diploma','1','1','provisional'),
+('Graduation Fee', '5500','0','0','Diploma','2','1','provisional'),
+('Industrial Attachment Fee', '4000','0','0','Diploma','1','1','provisional'),
+('Industrial Attachment Fee', '4000','0','0','Diploma','2','1','provisional'),
+('HEPATITIS B. VACCINE', '3000','0','0','Diploma','1','1','provisional'),
+('HEPATITIS B. VACCINE', '3000','0','0','Diploma','2','1','provisional'),
+('Uniform ', '6000','0','0','Diploma','1','1','provisional'),
+('Uniform ', '6000','0','0','Diploma','2','1','provisional'),
+('Library Fee', '1500','0','0','Diploma','1','1','regular'),
+('Library Fee', '1500','0','0','Diploma','2','1','regular'),
+('Students` representative council (SRC)-Fee', '500','0','0','Diploma','1','1','regular'),
+('Students` representative council (SRC)-Fee', '500','0','0','Diploma','2','1','regular'),
+('Examination fee', '2000','0','0','Diploma','1','1','regular'),
+('Examination fee', '2000','0','0','Diploma','2','1','regular'),
+('Activity fee', '1000','0','0','Diploma','1','1','provisional'),
+('Activity fee', '1000','0','0','Diploma','2','1','provisional'),
+('ICT Services', '1500','0','0','Diploma','1','1','regular'),
+('ICT Services', '1500','0','0','Diploma','2','1','regular'),
+('Student ID', '500','0','0','Diploma','1','1','provisional'),
+('Student ID', '500','0','0','Diploma','2','1','provisional'),
+('LUNCH ONLY', '10000','0','0','Diploma','1','1','regular'),
+('LUNCH ONLY', '10000','0','0','Diploma','2','1','regular');
 
 INSERT INTO fees_structure (expenses, TERM_1, TERM_2, TERM_3, classes, course, activated, roles) VALUES
 ('Student Activity Fee (Trips, Industry Experts) (Annual)', '1000','0','0','Diploma (Internal Certification)','3','1','provisional'),

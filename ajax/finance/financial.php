@@ -7846,6 +7846,7 @@
             }
         }
         // echo json_encode($my_course_list[0]);
+        // echo $course_fees." ".($omit_course_fees ? "true" : "false")."<br>";
 
         // GET THE STUDENT STANDING BALANCE.
         $student_balance = $include_bcf ? $student_data['balance_carry_forward'] : 0;

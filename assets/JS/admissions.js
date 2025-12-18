@@ -955,6 +955,7 @@ cObj("course_unit_assignment").onclick = function () {
     cObj("course_unit_assignment_window").classList.remove("hide");
     removesidebar();
     getAllCourses();
+    cObj("back_to_course_list_holder").click();
 }
 cObj("lecture_halls_btn").onclick = function () {
     hideWindow();

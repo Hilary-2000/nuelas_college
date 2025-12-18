@@ -326,7 +326,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            $data_to_display = "<h6 class='text-center'><u><b>Course List</b></u></h6><div class='tableme'><table class='table' id='course_list_assignment_table'><thead><tr><th>No.</th><th>Course Name</th><th>Unit Assigned</th><th>Module Number</th><th>Action</th></tr></thead><tbody>";
+            $data_to_display = "<h6 class='text-center'><u><b>Course List</b></u></h6><div class='tableme'><table class='table' id='course_list_assignment_table'><thead><tr><th>No.</th><th>Course Level</th><th>Course Name</th><th>Unit Assigned</th><th>Module Number</th><th>Action</th></tr></thead><tbody>";
             if($result){
                 if ($row = $result->fetch_assoc()) {
                     $course_data = isJson_report($row['valued']) ? json_decode($row['valued'], true) : [];
@@ -342,7 +342,8 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                                 $course_count = $row['unit_count'];
                             }
                         }
-                        $data_to_display .= "<tr><td> <input type='hidden' value='".json_encode($course_data[$index])."' id='course_list_data_".$course_data[$index]['id']."'>".($index+1).".</td><td>".$course_data[$index]['course_name']."</td><td>".$course_count." Courses</td><td>".$course_data[$index]['no_of_terms']." Modules</td><td><span class='course_unit_assignment_btn link' id='course_unit_assignment_btn_".$course_data[$index]['id']."'><i class='fas fa-pen-fancy'></i> Set-Up</span></td></tr>";
+                        $course_level_name = get_course_level_name($course_data[$index]['course_level'], $conn2);
+                        $data_to_display .= "<tr><td> <input type='hidden' value='".json_encode($course_data[$index])."' id='course_list_data_".$course_data[$index]['id']."'>".($index+1).".</td><td>".$course_level_name."</td><td>".$course_data[$index]['course_name']."</td><td>".$course_count." Units</td><td>".$course_data[$index]['no_of_terms']." Modules</td><td><span class='course_unit_assignment_btn link' id='course_unit_assignment_btn_".$course_data[$index]['id']."'><i class='fas fa-pen-fancy'></i> Set-Up</span></td></tr>";
                     }
                 }
             }
@@ -738,7 +739,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
                 $index = 0;
                 while ($row = $result->fetch_assoc()) {
                     $data.="<div class='checkboxholder checkbox_holder_module_unit_assign w-100' style='margin:10px 0;padding:0px 0px;' id='checkbox_holder_module_unit_assign_".$row['subject_id']."'>";
-                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_module_unit_assign ' id='search_courses_module_unit_assign_".$row['subject_id']."' for='course_name_module_unit_assign_".$row['subject_id']."'>".($index+1).". ".$row['subject_name']." ".($row['is_used'] > 0 ? "<small class='text-success'>(Module ".$row['module_number'].")</small>" : "")."</label>";
+                    $data.="<label style='margin-right:5px;cursor:pointer;font-size:14px;' class='search_courses_module_unit_assign ' id='search_courses_module_unit_assign_".$row['subject_id']."' for='course_name_module_unit_assign_".$row['subject_id']."'>".($index+1).". ".$row['display_name']." {".$row['timetable_id']."} ".($row['is_used'] > 0 ? "<small class='text-success'>(Module ".$row['module_number'].")</small>" : "")."</label>";
                     $data.="<input class='subjectclass_module_unit_assign' type='checkbox' name='course_name_module_unit_assign_".$row['subject_id']."' value='".$row['subject_id']."' id='course_name_module_unit_assign_".$row['subject_id']."'>";
                     $data.="</div>";
                     $index+=1;
@@ -4998,5 +4999,28 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             }
         }
         return false;
+    }
+
+    function get_course_level_name($course_level_id, $conn2){
+        // course list
+        $course_level = "N/A";
+        $select = "SELECT * FROM `settings` WHERE sett = 'class';";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result) {
+            if ($row = $result->fetch_assoc()) {
+                if (isJson_report($row['valued'])) {
+                    $courses = json_decode($row['valued'], true);
+                    for ($index = 0; $index < count($courses); $index++) { 
+                        if ($courses[$index]['id'] == $course_level_id) {
+                            $course_level = $courses[$index]['classes'];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return $course_level;
     }
 ?>
