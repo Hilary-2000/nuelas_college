@@ -1682,11 +1682,6 @@ cObj("display_my_students").onclick = function () {
     var datapassing = "?find=true" + "&classes=" + valObj("class_assigned_tr");
     //showPleasewait();
     sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody"), function () {
-        if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-            $(document).ready(function() {
-                $('#student-list-table').DataTable();  // Just one line!
-            });
-        }
         var btns = document.getElementsByClassName("view_students");
         for (let index = 0; index < btns.length; index++) {
             const element = btns[index];
@@ -1699,6 +1694,11 @@ cObj("display_my_students").onclick = function () {
         }
         if (cObj("search_student_tables") != undefined && cObj("search_student_tables") != null) {
             cObj("search_student_tables").addEventListener("keyup", showStudentData);
+        }
+        if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+            $(document).ready(function() {
+                $('#student-list-table').DataTable();  // Just one line!
+            });
         }
     });
 }
@@ -2420,11 +2420,6 @@ cObj("findingstudents").onclick = function () {
             //showPleasewait();
             // console.log("No error!");
             sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody"), function () {
-                if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-                    $(document).ready(function() {
-                        $('#student-list-table').DataTable();  // Just one line!
-                    });
-                }
                 var btns = document.getElementsByClassName("view_students");
                 for (let index = 0; index < btns.length; index++) {
                     const element = btns[index];
@@ -2437,6 +2432,11 @@ cObj("findingstudents").onclick = function () {
                 }
                 if (cObj("search_student_tables") != undefined && cObj("search_student_tables") != null) {
                     cObj("search_student_tables").addEventListener("keyup", showStudentData);
+                }
+                if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                    $(document).ready(function() {
+                        $('#student-list-table').DataTable();  // Just one line!
+                    });
                 }
             });
         }
@@ -2509,15 +2509,15 @@ function viewlisteners() {
     datapassing += "&classes=" + ids;
     //showPleasewait();
     sendData1("GET", "administration/admissions.php", datapassing, cObj("resultsbody"), function () {
-        if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-            $(document).ready(function() {
-                $('#student-list-table').DataTable();  // Just one line!
-            });
-        }
         var btns = document.getElementsByClassName("view_students");
         for (let index = 0; index < btns.length; index++) {
             const element = btns[index];
             setListenerBtnTab(element.id);
+        }
+        if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+            $(document).ready(function() {
+                $('#student-list-table').DataTable();  // Just one line!
+            });
         }
     });
 }
@@ -2529,15 +2529,15 @@ cObj("name").onkeyup = function () {
         //query the server
         var datapass = "?find=true&bynametype=" + name;
         sendData2("GET", "administration/admissions.php", datapass, cObj("resultsbody"), cObj("names_loaders_find"), function () {
-            if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
-                $(document).ready(function() {
-                    $('#student-list-table').DataTable();  // Just one line!
-                });
-            }
             var btns = document.getElementsByClassName("view_students");
             for (let index = 0; index < btns.length; index++) {
                 const element = btns[index];
                 setListenerBtnTab(element.id);
+            }
+            if (cObj("student-list-table") != undefined && cObj("student-list-table") != null) {
+                $(document).ready(function() {
+                    $('#student-list-table').DataTable();  // Just one line!
+                });
             }
         });
     }
@@ -10800,13 +10800,6 @@ function getBranches() {
                 stopInterval(ids);
             }
             if (cObj("college_branch_loader").classList.contains("hide")) {
-                if(cObj("branches_list_table") != undefined && cObj("branches_list_table") != null){
-                    // set the datatable
-                    $(document).ready(function() {
-                        $('#branches_list_table').DataTable();  // Just one line!
-                    });
-                }
-
                 if (cObj("branch_list_arr_holder") != null && cObj("branch_list_arr_holder") != undefined) {
                     cObj("college_branch_holder").value = cObj("branch_list_arr_holder").value;
                 }
@@ -10845,6 +10838,12 @@ function getBranches() {
                         }else{
                             cObj("college_branch_name").innerText = "this branch";
                         }
+                    });
+                }
+                if(cObj("branches_list_table") != undefined && cObj("branches_list_table") != null){
+                    // set the datatable
+                    $(document).ready(function() {
+                        $('#branches_list_table').DataTable();  // Just one line!
                     });
                 }
                 stopInterval(ids);

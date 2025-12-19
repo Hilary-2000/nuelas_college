@@ -2011,12 +2011,6 @@ cObj("see_enrolled").onclick = function () {
 function seeEnrolled() {
     var datapass = "?getEnrolled=true";
     sendData1("GET", "finance/financial.php", datapass, cObj("my_enrolled_staff"), function () {
-        if (cObj("see_enrolled_payroll_table") != undefined) {
-            // set the datatable
-            $(document).ready(function() {
-                $('#see_enrolled_payroll_table').DataTable();  // Just one line!
-            });
-        }
         var edit_salary = document.getElementsByClassName("edit_salary");
         for (let index = 0; index < edit_salary.length; index++) {
             const element = edit_salary[index];
@@ -2036,6 +2030,12 @@ function seeEnrolled() {
         for (let index = 0; index < enroll_pays.length; index++) {
             const element = enroll_pays[index];
             element.addEventListener("click", enrollPay);
+        }
+        if (cObj("see_enrolled_payroll_table") != undefined) {
+            // set the datatable
+            $(document).ready(function() {
+                $('#see_enrolled_payroll_table').DataTable();  // Just one line!
+            });
         }
     });
 }

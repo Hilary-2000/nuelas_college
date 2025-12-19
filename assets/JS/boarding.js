@@ -634,10 +634,6 @@ cObj("discipline_tab").onclick = display_incidents;
 function display_incidents() {
     var datapass = "?display_incidents=true";
     sendData1("GET","boarding/boarding.php", datapass, cObj("incident_table_holder"), function () {
-        $(document).ready(function() {
-            $('#incident_discipline_table').DataTable();  // Just one line!
-        });
-
         var edit_discipline_incident = document.getElementsByClassName("edit_discipline_incident");
         for (let index = 0; index < edit_discipline_incident.length; index++) {
             const element = edit_discipline_incident[index];
@@ -649,6 +645,9 @@ function display_incidents() {
             const element = delete_discipline_incident[index];
             element.addEventListener("click", delete_discipline_incident_func);
         }
+        $(document).ready(function() {
+            $('#incident_discipline_table').DataTable();  // Just one line!
+        });
         // set tool tip
         initiateTooltip();
     });
@@ -818,12 +817,6 @@ cObj("warning_tab").onclick = display_warning;
 function display_warning() {
     var datapass  = "?display_warning=true";
     sendData2("GET", "boarding/boarding.php", datapass, cObj("warning_table_holder"), cObj("loadings"), function () {
-        if (cObj("warning_tables") != undefined) {
-            $(document).ready(function() {
-                $('#warning_tables').DataTable();  // Just one line!
-            });
-        }
-
         var edit_warning_record = document.getElementsByClassName("edit_warning_record");
         for (let index = 0; index < edit_warning_record.length; index++) {
             const element = edit_warning_record[index];
@@ -834,6 +827,11 @@ function display_warning() {
         for (let index = 0; index < delete_warning_record.length; index++) {
             const element = delete_warning_record[index];
             element.addEventListener("click", delete_warning_record_func);
+        }
+        if (cObj("warning_tables") != undefined) {
+            $(document).ready(function() {
+                $('#warning_tables').DataTable();  // Just one line!
+            });
         }
     });
 }

@@ -313,10 +313,6 @@ function setClassAndsubj() {
     var object_id = this.id;
     var datapass = "?getbyid="+this.id+"&teacher_id="+this.id.substr(3);
     sendData1("GET","academic/academic.php",datapass,cObj("outputsubs"), function () {
-        $('#staff_course_list').DataTable({
-            lengthChange: false,
-            pageLength: 5
-        });
         cObj("teachname").value = cObj("tr_fullname_"+object_id.substr(3)).innerText;
         cObj("editsubinfor").classList.remove("hide");
         cObj("viewsubinformations").classList.add("hide");
@@ -348,6 +344,10 @@ function setClassAndsubj() {
                 cObj("assignment_id_holder").value = this.id.substr(19);
             })
         }
+        $('#staff_course_list').DataTable({
+            lengthChange: false,
+            pageLength: 5
+        });
     });
 }
 
@@ -5926,7 +5926,6 @@ function display_course_unit_list() {
 function display_lecture_halls() {
     var datapass = "?display_lecture_halls=true";
     sendData1("GET", "academic/academic.php", datapass, cObj("lecture_hall_list_holder"), function () {
-        $('#lecture_hall_table_list').DataTable();
         var edit_lecture_hall = document.getElementsByClassName("edit_lecture_hall");
         for (let index = 0; index < edit_lecture_hall.length; index++) {
             const element = edit_lecture_hall[index];
@@ -5963,7 +5962,8 @@ function display_lecture_halls() {
                 cObj("delete_lecture_hall").classList.remove("hide");
             })
         }
-    })
+        $('#lecture_hall_table_list').DataTable();
+    });
 }
 
 cObj("yes_delete_lecture_hall").onclick = function () {
@@ -6039,9 +6039,6 @@ cObj("add_new_lecture_hall").onclick = function () {
 function getAllCourses() {
     var datapass = "?get_all_course_unit_assignment_list=true";
     sendData1("GET", "academic/academic.php", datapass, cObj("course_list_holder_unit_assignment"), function () {
-        if (cObj("course_list_assignment_table") != undefined) {
-            $("#course_list_assignment_table").DataTable();
-        }
         var course_unit_assignment_btn = document.getElementsByClassName("course_unit_assignment_btn");
         for (let index = 0; index < course_unit_assignment_btn.length; index++) {
             const element = course_unit_assignment_btn[index];
@@ -6057,6 +6054,9 @@ function getAllCourses() {
                     display_table_unit_course_assignment();
                 })
             })
+        }
+        if (cObj("course_list_assignment_table") != undefined) {
+            $("#course_list_assignment_table").DataTable();
         }
     });
 }
