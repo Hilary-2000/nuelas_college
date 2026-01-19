@@ -31,7 +31,7 @@
                             <option value="" hidden>Select an option</option>
                             <option value="all_students">Student Information</option>
                             <option value="students_admitted">Students Admitted</option>
-                            <!-- <option value="school_in_attendance">School Attendance</option> -->
+                            <option value="school_in_attendance">School Attendance</option>
                             <option value="show_alumni">Alumni</option>
                         </select>
                     </div>

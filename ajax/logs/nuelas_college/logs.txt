@@ -1,3 +1,47 @@
+19th Jan 2026 17:10:37PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+07th Jan 2026 11:38:24AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+19th Dec 2025 12:44:16PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+18th Dec 2025 12:39:32PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+17th Dec 2025 16:37:49PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+17th Dec 2025 16:30:28PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+17th Dec 2025 10:58:08AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+16th Dec 2025 14:57:40PM : Departments (Digital art and Technology) with a code of (DAT-001) have been updated successfully! - {ANN AKOTCH}
+16th Dec 2025 14:57:11PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+16th Dec 2025 14:57:02PM : Course "FASHION AND DESIGN" has been added successfully! - {ANN AKOTCH}
+16th Dec 2025 11:50:21AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+15th Dec 2025 11:11:08AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+13th Dec 2025 12:54:24PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+12th Dec 2025 11:14:20AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+11th Dec 2025 11:23:58AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+10th Dec 2025 14:14:41PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+10th Dec 2025 14:13:32PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+10th Dec 2025 14:13:14PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+10th Dec 2025 14:00:13PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 14:00:09PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 14:00:05PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 13:55:40PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 13:53:31PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 13:48:24PM : Role has been deleted successfully! - {ANN AKOTCH}
+10th Dec 2025 12:39:57PM : Role "Accountant" has been updated successfully! - {ANN AKOTCH}
+10th Dec 2025 12:39:46PM : Role "New Role" has been updated successfully! - {ANN AKOTCH}
+10th Dec 2025 12:10:43PM : Role "New Role" has been added successfully! - {ANN AKOTCH}
+10th Dec 2025 11:02:23AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+09th Dec 2025 08:37:24AM : Agnes  - of Reg No. (NC-2025-006) data has been updated successfully! - {ANN AKOTCH}
+09th Dec 2025 08:28:27AM : Admission prefix has has been updated successfully! - {ANN AKOTCH}
+09th Dec 2025 08:28:11AM : Class "Bachelors" added successfully - {ANN AKOTCH}
+09th Dec 2025 08:28:03AM : Class "Diploma" added successfully - {ANN AKOTCH}
+09th Dec 2025 08:26:28AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+08th Dec 2025 11:38:45AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+06th Dec 2025 10:12:04AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+05th Dec 2025 09:47:48AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+04th Dec 2025 10:08:16AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+03rd Dec 2025 11:08:29AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+02nd Dec 2025 17:09:55PM : Fees structure has been modified. Votehead "Insurance" has been added successfully! - {ANN AKOTCH}
+02nd Dec 2025 11:42:09AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+01st Dec 2025 07:50:50AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+30th Nov 2025 13:51:35PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+29th Nov 2025 11:41:07AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+28th Nov 2025 09:31:35AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 27th Nov 2025 11:05:23AM : Fees structure has been modified. Votehead "Tuition Fees" has been added successfully! - {ANN AKOTCH}
 27th Nov 2025 11:04:20AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 26th Nov 2025 20:26:22PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}

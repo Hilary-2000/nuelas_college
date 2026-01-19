@@ -1720,7 +1720,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             $unattendedtable.="<td>".presentStats($conn2,$rows['adm_no'],$rows['stud_class'], $rows['course_done'])."</td>";
                             $unattendedtable.="<td>".classNameAdms($rows['stud_class'])."</td>";
                             $unattendedtable.="<td>".ucwords(strtolower(get_course_name($rows['course_done'], $conn2)))."</td>";
-                            $unattendedtable.="<td>"."Absent"."</td></tr>"; 
+                            $unattendedtable.="<td>"."<span class='badge bg-danger'>Absent</span>"."</td></tr>"; 
                             $absentno++;
                         }
                     }
@@ -9167,17 +9167,17 @@ function isJson_report($string) {
             $data.="<th>Time</th>";
             $data.="<th>Present <input type='checkbox' class='present_all d-none' id='present_all'></th></tr></thead><tbody>";
             while($row = $result->fetch_assoc()){
+                $date_today = presentStudent($conn2,$row['adm_no'],$date_used);
                 $xs++;
                 $data.="<tr><td>".$xs."</td>";
-                $data.="<td><label for='".$row['adm_no']."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."<br><small>{".$row['adm_no']."}</small></label></td>";
+                $data.="<td><label for='".$row['adm_no']."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."".(!isset($date_today['time']) ? "" : "<span class='badge bg-success'>present</span>")."<br><small>{".$row['adm_no']."}</small></label></td>";
                 $data.="<td>".branch_name($conn2, $row['branch_name'])."</td>";
                 $data.="<td>".$row['gender']."</td>";
                 $data.="<td><small>".presentStats($conn2,$row['adm_no'], $row['stud_class'], $row['course_done'])."</small></td>";
                 $data.="<td>".classNameAdms($row['stud_class'])."</td>";
-                $date_today = presentStudent($conn2,$row['adm_no'],$date_used);
-                $time = $date_today ? date("H:i:s", strtotime($date_today)) : date("H:i:s");
-                $data.="<td>"."<input type='time' class='form-control' value='".$time."' class='date_time_att' id='date_time_att_".$row['adm_no']."'>"."</td>";
-                $data.="<td>"."<input type='checkbox' ".($date_today != null ? "checked" : "")." value='".$row['adm_no']."' class='present all_present_students' id='all_present_students".$xs."'>"."</td></tr>";
+                $time = isset($date_today['time']) ? date("H:i:s", strtotime($date_today['time'])) : date("H:i:s");
+                $data.="<td>".(!isset($date_today['time']) ? "<input type='time' class='form-control' value='".$time."' class='date_time_att' id='date_time_att_".$row['adm_no']."'>" : "<input type='hidden' class='form-control' value='".$time."' class='date_time_att' id='date_time_att_".$row['adm_no']."'><small class='text-muted'>Marked Present at : ".date("h:iA", strtotime(date("Y-m-d")."".$time))." <br> (by <b>".$date_today['signedby']."</b>)</small>")."</td>";
+                $data.="<td>"."<input type='checkbox' ".(isset($date_today['time']) ? "checked" : "")." value='".$row['adm_no']."' class='present all_present_students' id='all_present_students".$xs."'>"."</td></tr>";
             }
             $data.="</tbody></table></div>";
             $data.="<span class='text-danger'>Always confirm the date before submitting!</span>";
@@ -9268,7 +9268,7 @@ function isJson_report($string) {
         $result = $stmt->get_result();
         if($result){
             if ($row = $result->fetch_assoc()) {
-                return $row['time'] ?? date("H:i:s");
+                return $row;
             }
         }
         return null;
@@ -9355,7 +9355,7 @@ function isJson_report($string) {
                 $attendedtable.="<td>".presentStats($conn2, $rows['adm_no'], $rows['stud_class'], $rows['course_done'])."</p></td>";
                 $attendedtable.="<td>".classNameAdms($rows['stud_class'])."</p></td>";
                 $attendedtable.="<td>".ucwords(strtolower(get_course_name($rows['course_done'], $conn2)))."</p></td>";
-                $attendedtable.="<td>"."Present"."</p></td></tr>";
+                $attendedtable.="<td>"."<span class='badge bg-success'>present</span>"."</p></td></tr>";
             }
         }
         $attendedtable.="</tbody></table></div>";

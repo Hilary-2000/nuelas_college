@@ -2777,6 +2777,7 @@ cObj("clasregyes").onclick = function () {
     var datapass = "insertattendance="+valObj("attendance_statistics_holder")+"&call_date=" + cObj("class_register_dates").value+"&course_level="+valObj("selectclass")+"&course_list="+valObj("course_list_attendance");
     sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("tablein"), cObj("loadings"), function () {
         cObj("clasregno").click();
+        cObj("display_student_attendances").click();
     });
 }
 cObj("clasregno").onclick = function () {
