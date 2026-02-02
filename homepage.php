@@ -435,7 +435,7 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts">
+            <div class="conts d-none">
                 <button class="navButs htbtn">Human Resource<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc hide">
@@ -1177,23 +1177,23 @@ function checkPresnt($array, $string){
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check'><b>Human Resource</b></label>
                             <input class='' type='checkbox' name='all_hr_check' id='all_hr_check'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_management'>1. Payroll</label>
                             <input class='human_resource_mgmt' type='checkbox' name='payroll_management' id='payroll_management'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management'>2. Leave Management</label>
                             <input class='human_resource_mgmt' type='checkbox' name='leave_management' id='leave_management'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='apply_leave_main'>3. Apply Leave</label>
                             <input class='human_resource_mgmt' type='checkbox' name='apply_leave_main' id='apply_leave_main'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_main'>4. Payslip & Advance</label>
                             <input class='human_resource_mgmt' type='checkbox' name='payroll_and_advance_main' id='payroll_and_advance_main'>
                         </div>
@@ -1319,23 +1319,23 @@ function checkPresnt($array, $string){
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check2'><b>Human Resource</b></label>
                             <input class='' type='checkbox' name='all_hr_check2' id='all_hr_check2'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_management2'>1. Payroll</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='payroll_management2' id='payroll_management2'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management2'>2. Leave Management</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='leave_management2' id='leave_management2'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='apply_leave_edit'>3. Apply Leave</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='apply_leave_edit' id='apply_leave_edit'>
                         </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_edit'>4. Payslip & Advance</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='payroll_and_advance_edit' id='payroll_and_advance_edit'>
                         </div>

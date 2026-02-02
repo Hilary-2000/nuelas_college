@@ -5,8 +5,8 @@
     }
     date_default_timezone_set('Africa/Nairobi');
 
-    $_SESSION['databasename'] = 'lizola_college';
-    include("/var/www/html/lizola_college/college_sims/connections/conn2.php");
+    $_SESSION['databasename'] = 'lizola_college_new';
+    include("/var/www/html/lizola_college_new/college_sims/connections/conn2.php");
     // include "../../connections/conn1.php";
     // include "../../connections/conn2.php";
 
