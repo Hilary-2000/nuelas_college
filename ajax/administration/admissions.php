@@ -9122,7 +9122,6 @@ function isJson_report($string) {
         // Parse the custom format: YYYYmmddHHiiss
         $target = DateTime::createFromFormat('YmdHis', $rawDate);
         if (!$target) {
-            echo $rawDate." -- <br>";
             return "Invalid date format.";
         }
     

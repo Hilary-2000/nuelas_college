@@ -10,12 +10,12 @@ $databases = ['nuelas_college', 'lizola_college_new'];
 foreach ($databases as $database) {
     // $_SESSION['databasename'] = $database;
     include_once("/var/www/html/lizola_college_new/college_sims/ajax/finance/financial.php");
-    include_once("/var/www/html/lizola_college_new/college_sims/connections/module_stepper_conn.php");
+    include("/var/www/html/lizola_college_new/college_sims/connections/module_stepper_conn.php");
     // include_once("/opt/lampp/htdocs/lizola_college_new/ajax/finance/financial.php");
     // include_once("/opt/lampp/htdocs/lizola_college_new/connections/module_stepper_conn.php");
     // include_once("../../connections/module_stepper_conn.php");
     // include_once("../../ajax/finance/financial.php");
-    if ($conn2) {
+    if ($conn2 != null) {
         // include("../finance/financial.php");
         // GET ALL COURSE
         $select = "SELECT * FROM `settings` WHERE `sett` = 'courses';";
@@ -84,6 +84,7 @@ foreach ($databases as $database) {
                 }
             }
         }
+        $conn2->close();
     }
 }
 ?>
