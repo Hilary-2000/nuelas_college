@@ -6429,15 +6429,14 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $stmt->bind_param("sss",$course_level,$course_name, $date);
             $stmt->execute();
             $stmt->store_result();
-            $rnums=0;
             $rnums = $stmt->num_rows;
             /**********end**** */
             
 
+            $were_present = [];
             if($rnums > 0){
                 $stmt->execute();
                 $result = $stmt->get_result();
-                $new_attendance_data = [];
                 if($result){
                     while($row = $result->fetch_assoc()){
                         $present = false;
@@ -6450,24 +6449,38 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         }
 
                         if(!$present){
-                            foreach($attendance_data as $attendance){
-                                if($attendance['adm_no'] == $row['admission_no']){
-                                    array_push($new_attendance_data, $attendance);
-                                    break;
-                                }
-                            }
-
                             // delete for the unchecked students.
                             $delete = "DELETE FROM `attendancetable` WHERE `id` = ?";
                             $statement = $conn2->prepare($delete);
                             $statement->bind_param("s", $row['id']);
                             $statement->execute();
+                        }else{
+                            array_push($were_present, $row['admission_no']);
                         }
                     }
                 }
                 echo "<p style='color:red;'>Register was already called!</p>";
+
+                // convert the attendance data
+                // $attendance_data = $new_attendance_data;
             }
 
+            // check and see those that are present to not be marked twice
+            $new_attendance_data = [];
+            foreach($attendance_data as $attendance){
+                $present = false;
+                foreach($were_present as $student_present){
+                    if($attendance['adm_no'] == $student_present){
+                        $present = true;
+                        break;
+                    }
+                }
+                if(!$present){
+                    array_push($new_attendance_data, $attendance);
+                }
+            }
+            $attendance_data = $new_attendance_data;
+            
             // insert into attendance
             $insert = "INSERT INTO `attendancetable` (`admission_no`,`date`,`time`,`signedby`,`course_level`,`course_name`) VALUES (?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
