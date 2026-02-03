@@ -1,3 +1,8 @@
+03rd Feb 2026 13:36:15PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+03rd Feb 2026 13:23:42PM : JAMES WAKILI successfully logged into the system as Attendance Taker - {JAMES WAKILI}
+03rd Feb 2026 13:23:17PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+03rd Feb 2026 13:20:41PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
+03rd Feb 2026 13:17:27PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 02nd Feb 2026 18:14:11PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 02nd Feb 2026 14:41:20PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 28th Jan 2026 10:55:55AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
