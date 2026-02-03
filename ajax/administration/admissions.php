@@ -6405,10 +6405,36 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             
 
             if($rnums > 0){
-                $delete = "DELETE FROM `attendancetable` WHERE course_level = ? AND course_name = ? AND date = ?";
-                $stmt= $conn2->prepare($delete);
-                $stmt->bind_param("sss",$course_level,$course_name, $date);
                 $stmt->execute();
+                $result = $stmt->get_result();
+                $new_attendance_data = [];
+                if($result){
+                    while($row = $result->fetch_assoc()){
+                        $present = false;
+                        foreach($attendance_data as $attendance){
+                            if($attendance['adm_no'] == $row['admission_no']){
+                                $present = true;
+                                // it means the student was marked present
+                                break;
+                            }
+                        }
+
+                        if(!$present){
+                            foreach($attendance_data as $attendance){
+                                if($attendance['adm_no'] == $row['admission_no']){
+                                    array_push($new_attendance_data, $attendance);
+                                    break;
+                                }
+                            }
+
+                            // delete for the unchecked students.
+                            $delete = "DELETE FROM `attendancetable` WHERE `id` = ?";
+                            $statement = $conn2->prepare($delete);
+                            $statement->bind_param("s", $row['id']);
+                            $statement->execute();
+                        }
+                    }
+                }
                 echo "<p style='color:red;'>Register was already called!</p>";
             }
 
