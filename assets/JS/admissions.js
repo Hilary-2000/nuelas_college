@@ -2841,7 +2841,7 @@ cObj("submitclasspresent").onclick = function () {
 
 // call class register
 cObj("clasregyes").onclick = function () {
-    var datapass = "insertattendance="+valObj("attendance_statistics_holder")+"&call_date=" + cObj("class_register_dates").value+"&course_level="+valObj("selectclass")+"&course_list="+valObj("course_list_attendance");
+    var datapass = "insertattendance="+valObj("attendance_statistics_holder")+"&call_date=" + cObj("class_register_dates").value+"&course_level="+valObj("selectclass")+"&course_list="+valObj("course_list_attendance")+(cObj("register_branch_list") != undefined ? "&branch_name="+valObj("register_branch_list") : "");
     sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("tablein"), cObj("loadings"), function () {
         cObj("clasregno").click();
     });

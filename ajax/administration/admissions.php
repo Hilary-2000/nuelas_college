@@ -6385,6 +6385,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $call_date = $_POST['call_date'];
             $course_level = $_POST['course_level'];
             $course_name = $_POST['course_list'];
+            $branch_name = isset($_POST['branch_name']) ? $_POST['branch_name'] : "";
             $date = date("Y-m-d",strtotime($call_date));
 
             $attendance_data = [];
@@ -6394,7 +6395,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
             /*****check if class register already called** */
-            $select = "SELECT * FROM attendancetable WHERE course_level = ? AND course_name = ? AND date = ?";
+            $select = (empty($branch_name) || $branch_name == 0) ? "SELECT * FROM attendancetable WHERE course_level = ? AND course_name = ? AND date = ?" : "SELECT attendancetable.* FROM attendancetable LEFT JOIN student_data ON student_data.adm_no = attendancetable.admission_no WHERE course_level = ? AND course_name = ? AND date = ? AND student_data.branch_name = '$branch_name'";
             $stmt = $conn2->prepare($select);
             $stmt->bind_param("sss",$course_level,$course_name, $date);
             $stmt->execute();
@@ -6420,7 +6421,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
                         if(!$present){
                             // delete for the unchecked students.
-                            $delete = "DELETE FROM `attendancetable` WHERE `id` = ?";
+                            $delete = (empty($branch_name) || $branch_name == 0) ? "DELETE FROM `attendancetable` WHERE `id` = ?" : "DELETE attendancetable FROM `attendancetable` LEFT JOIN student_data ON student_data.adm_no = attendancetable.admission_no WHERE attendancetable.id = ? AND student_data.branch_name = '$branch_name'";
                             $statement = $conn2->prepare($delete);
                             $statement->bind_param("s", $row['id']);
                             $statement->execute();
@@ -6430,9 +6431,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
                 }
                 echo "<p style='color:red;'>Register was already called!</p>";
-
-                // convert the attendance data
-                // $attendance_data = $new_attendance_data;
             }
 
             // check and see those that are present to not be marked twice
