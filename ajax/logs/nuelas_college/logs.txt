@@ -1,3 +1,7 @@
+24th Feb 2026 11:30:34AM : Hillary Ngige of Reg No (NC-2026-001) discounts have been updated successfully - {ANN AKOTCH}
+24th Feb 2026 11:25:56AM : JANE KAMAU with admission number LC-2025-003 has been admitted successfully - {ANN AKOTCH}
+24th Feb 2026 11:24:41AM : JOHN WARIKOI with admission number NC-2026-002 has been admitted successfully - {ANN AKOTCH}
+24th Feb 2026 11:13:31AM : HILLARY NGIGE with admission number NC-2026-001 has been admitted successfully - {ANN AKOTCH}
 09th Feb 2026 15:17:44PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
 09th Feb 2026 15:07:08PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 03rd Feb 2026 15:29:29PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
