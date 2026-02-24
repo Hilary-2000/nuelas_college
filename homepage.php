@@ -440,7 +440,7 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts">
+            <div class="conts d-none">
                 <button class="navButs htbtn">Human Resource<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc">
@@ -478,7 +478,7 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="contsds">
+            <div class="contsds d-none">
                 <button class="navButs">Feedback <span class="arrow rotate_right"></span> </button>
                 <div class="contsd">
                     <div class="contsc hide">
@@ -1189,7 +1189,7 @@ function checkPresnt($array, $string){
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;display:none;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check'><b>Human Resource</b></label>
                             <input class='' type='checkbox' name='all_hr_check' id='all_hr_check'>
                         </div>

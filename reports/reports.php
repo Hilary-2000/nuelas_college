@@ -7449,7 +7449,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
             // DISCLAIMER
             $pdf->SetFont('Helvetica', 'I', 9);
-            $pdf->Cell(200,7,"** Receipts are not valid unless signed OR Stamped with the Official School Stamp  **","",1,"C",false);
+            $pdf->Cell(3,7,"**","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'BU', 9);
+            $pdf->Cell(7,7,"Note","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'IU', 9);
+            $pdf->Cell(185,7,":Payment once made not refundable.**","",1,"L",false);
             // $pdf->Ln(5);
             // get the school payment option
             $select = "SELECT * FROM `settings` WHERE `sett` = 'payment details';";
@@ -7461,11 +7465,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     $json_data = $row['valued'];
                     if(isJson_reports($json_data)){
                         $json_data = json_decode($json_data);
-                        if(count($json_data) > 0){
+                        $payment_option_counter = 0;
+                        for ($index=0; $index < count($json_data); $index++) { 
+                            if($json_data[$index]->show == "true"){
+                                $payment_option_counter++;
+                            }
+                        }
+
+                        // payment option counter
+                        if($payment_option_counter > 0){
                             $pdf->SetFont('Helvetica', 'U', 10);
                             $pdf->Cell(200,6,"Acceptable payment options","",1,"L",false);
                             $pdf->SetFont('Helvetica', '', 9);
                         }
+
+                        // indexes
                         $indexes = 1;
                         for ($index=0; $index < count($json_data); $index++) { 
                             if($json_data[$index]->show == "true"){
@@ -7677,7 +7691,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
             // DISCLAIMER
             $pdf->SetFont('Helvetica', 'I', 9);
-            $pdf->Cell(200,7,"** Receipts are not valid unless signed OR Stamped with the Official School Stamp  **","",1,"C",false);
+            $pdf->Cell(3,7,"**","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'BU', 9);
+            $pdf->Cell(7,7,"Note","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'IU', 9);
+            $pdf->Cell(185,7,":Payment once made not refundable.**","",1,"L",false);
             // $pdf->Ln(5);
             // get the school payment option
             $select = "SELECT * FROM `settings` WHERE `sett` = 'payment details';";
@@ -7689,8 +7707,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     $json_data = $row['valued'];
                     if(isJson_reports($json_data)){
                         $json_data = json_decode($json_data);
+                        $payment_option_counter = 0;
+                        for ($index=0; $index < count($json_data); $index++) { 
+                            if($json_data[$index]->show == "true"){
+                                $payment_option_counter++;
+                            }
+                        }
                         $counter = 1;
-                        if(count($json_data) > 0){
+                        if($payment_option_counter > 0){
                             $pdf->SetFont('Helvetica', 'U', 10);
                             $pdf->Cell(200,6,"Acceptable payment options","",1,"L",false);
                             $pdf->SetFont('Helvetica', '', 9);
@@ -14723,7 +14747,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
         // DISCLAIMER
         $pdf->SetFont('Helvetica', 'I', 9);
-        $pdf->Cell(200,7,"** Receipts are not valid unless signed OR Stamped with the Official School Stamp  **","",1,"C",false);
+        $pdf->Cell(3,7,"**","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'BU', 9);
+            $pdf->Cell(7,7,"Note","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'IU', 9);
+            $pdf->Cell(185,7,":Payment once made not refundable.**","",1,"L",false);
         // $pdf->Ln(5);
         
         $remaining_lines = 6;
@@ -14897,7 +14925,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
         // DISCLAIMER
         $pdf->SetFont('Helvetica', 'I', 9);
-        $pdf->Cell(200,7,"** Receipts are not valid unless signed OR Stamped with the Official School Stamp  **","",1,"C",false);
+        $pdf->Cell(3,7,"**","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'BU', 9);
+            $pdf->Cell(7,7,"Note","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'IU', 9);
+            $pdf->Cell(185,7,":Payment once made not refundable.**","",1,"L",false);
         // $pdf->Ln(5);
 
         $pdf->Output();
@@ -15176,7 +15208,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
         // DISCLAIMER
         $pdf->SetFont('Helvetica', 'I', 9);
-        $pdf->Cell(200,7,"** Receipts are not valid unless signed OR Stamped with the Official School Stamp  **","",1,"C",false);
+        $pdf->Cell(3,7,"**","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'BU', 9);
+            $pdf->Cell(7,7,"Note","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'IU', 9);
+            $pdf->Cell(185,7,":Payment once made not refundable.**","",1,"L",false);
         // $pdf->Ln(5);
         
         $remaining_lines = 6;
@@ -15350,7 +15386,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
         // DISCLAIMER
         $pdf->SetFont('Helvetica', 'I', 9);
-        $pdf->Cell(200,7,"** Receipts are not valid unless signed OR Stamped with the Official School Stamp  **","",1,"C",false);
+        $pdf->Cell(3,7,"**","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'BU', 9);
+            $pdf->Cell(7,7,"Note","",0,"L",false);
+            $pdf->SetFont('Helvetica', 'IU', 9);
+            $pdf->Cell(185,7,":Payment once made not refundable.**","",1,"L",false);
         // $pdf->Ln(5);
 
         $pdf->Output();
@@ -15891,8 +15931,14 @@ function print_A5_receipt($receipt_id, $database)
                 $json_data = $row['valued'];
                 if (isJson_reports($json_data)) {
                     $json_data = json_decode($json_data);
+                    $payment_option_counter = 0;
+                    for ($index=0; $index < count($json_data); $index++) { 
+                        if($json_data[$index]->show == "true"){
+                            $payment_option_counter++;
+                        }
+                    }
                     $counter = 1;
-                    if (count($json_data) > 0) {
+                    if ($payment_option_counter > 0) {
                         $pdf->SetFont('Helvetica', 'U', 10);
                         $pdf->Cell(200, 6, "Acceptable payment options", "", 1, "L", false);
                         $pdf->SetFont('Helvetica', '', 9);
