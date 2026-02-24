@@ -6085,6 +6085,17 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
         include("../../connections/conn2.php");
         // DELETE THE STUDENT
         if(isset($_POST['admit'])){
+            // check if the student admission number is present.
+            $select = "SELECT * FROM student_data WHERE adm_no = ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $_POST['admnos']);
+            $stmt->execute();
+            $stmt->store_result();
+            $rnums = $stmt->num_rows;
+            if($rnums > 0){
+                echo "<p class='text-danger'>Admission Number has already been used!</p>";
+                exit();
+            }
             // echo $_POST['surname'];
             $send_student_message = $_POST['send_student_message'];
             $send_first_parent = $_POST['send_first_parent'];
@@ -6228,8 +6239,14 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $stmt = $conn2->prepare($insert);
             $stmt->bind_param("ssssssssssssssssssssssssssss",$suname,$admno,$fname,$sname,$college_branch,$upis,$dob,$gender,$classenrol,$doa,$parentname,$parentcontact,$parentrelation,$parentemail,$parentname2,$parentcontact2,$parentrelation2,$pmail2,$address,$bcno,$parent_accupation1,$parent_accupation2,$course_chosen,$course_details_string,$intake_year,$intake_month,$student_contacts,$student_email);
             if($stmt->execute()){
+                $data = "<p style ='color:green;font-size:12px;'>".$fname." ".$sname." has been admitted successfully with admission number : ".$admno."<br>Use their admission number to search their information</p>";
+                $data.= "<input type='text' id='admnohold' value=".$admno." hidden> <input type='text' id='namehold' value='".$fname." ".$sname."' hidden>";
+                echo $data;
+                // proceed and log this event
+                $log_text = $fname." ".$sname." with admission number ".$admno." has been admitted successfully";
+                log_administration($log_text);
+
                 $latest_student_id = $conn2->insert_id;
-                $data = "<p style ='color:green;font-size:12px;'>".$fname." ".$sname." has been admitted successfully<br>Use their admission number to search their information</p>";
                 $stmt->close();
                 $select = "SELECT * FROM `student_data` where ids = '$latest_student_id' LIMIT 1";
                 $stmt = $conn2->prepare($select);
@@ -6240,7 +6257,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $parent_contact2 = null;
                 $student_contact = null;
                 if($result){
-
                     if($row=$result->fetch_assoc()){
                         $admissionNumber = $row['adm_no'];
                         $parent_contact2 = (strlen(trim($row['parent_contact2'])) > 0 && $row['parent_contact2'] != null) ? trim($row['parent_contact2']) : null;
@@ -6267,12 +6283,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                 $stmt->execute();
                             }
                         }
-                        $data.= "<input type='text' id='admnohold' value=".$admissionNumber." hidden> <input type='text' id='namehold' value='".$name."' hidden>";
-                        echo $data;
-
-                        // proceed and log this event
-                        $log_text = $fname." ".$sname." with admission number ".$admissionNumber." has been admitted successfully";
-                        log_administration($log_text);
                     }
 
                     // SEND SMS
