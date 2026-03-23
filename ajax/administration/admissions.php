@@ -799,8 +799,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $searh = "Student name = <span style='color:brown;'>\"".$_GET['bynametype']."\"</span>";
                 createStudentn4($conn2,$result,$searh);
             }elseif (isset($_GET['usingadmno'])) {
-                $admno = "%".$_GET['usingadmno']."%";
-                $select = "SELECT * FROM `student_data` WHERE `adm_no` LIKE ?";
+                $admno = $_GET['usingadmno'];
+                $select = "SELECT * FROM `student_data` WHERE `adm_no` = ?";
                 $stmt = $conn2->prepare($select);
                 $stmt->bind_param("s",$admno);
                 $stmt->execute();
@@ -6260,7 +6260,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $pmail2 = "none";
             }
  
-            $admno = $_POST['admnos'];
+            $admno = trim($_POST['admnos']);
             $upis = $_POST['upis'];
             $bcno = 0;
             if(isset($_POST['bcno'])){

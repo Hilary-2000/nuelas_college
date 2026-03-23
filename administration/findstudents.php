@@ -371,7 +371,7 @@
                                     <input type="email" class="form-control w-100" name="edit_student_email" id="edit_student_email" placeholder = "Enter email">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-control-label" for="college_branch_edit"><b>Course Level: </b><img src="images/ajax_clock_small.gif" class="hide" id="college_branch_loader_edit"><br></label>
+                                    <label class="form-control-label" for="college_branch_edit"><b>College Branch: </b><img src="images/ajax_clock_small.gif" class="hide" id="college_branch_loader_edit"><br></label>
                                     <div id="college_branch_edit_holder"></div>
                                 </div>
                             </div>
