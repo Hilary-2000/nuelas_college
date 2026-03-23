@@ -788,8 +788,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $searh = "Student name = <span style='color:brown;'>\"".$_GET['bynametype']."\"</span>";
                 createStudentn4($conn2,$result,$searh);
             }elseif (isset($_GET['usingadmno'])) {
-                $admno = $_GET['usingadmno'];
-                $select = "SELECT * FROM `student_data` WHERE `adm_no` = ? AND deleted=0 and activated=1 ";
+                $admno = "%".$_GET['usingadmno']."%";
+                $select = "SELECT * FROM `student_data` WHERE `adm_no` LIKE ?";
                 $stmt = $conn2->prepare($select);
                 $stmt->bind_param("s",$admno);
                 $stmt->execute();
@@ -3157,6 +3157,57 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             // return data
             $data = array("supplier_bill" => $supplier_bill, "supplier_payment" => $supplier_payment);
             echo json_encode($data);
+        }elseif(isset($_GET['get_course_update_options'])){
+            $select = "SELECT * FROM settings WHERE sett = 'course_update_options'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $course_update_options = "NO";
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $course_update_options = $row['valued'];
+                }
+            }
+            echo "<span id='course_option_temp_holder' class='hide'>".$course_update_options."</span>";
+        }elseif(isset($_GET['update_course_option'])){
+            $select = "SELECT * FROM settings WHERE sett = 'course_update_options'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $present = false;
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $present = true;
+                    $update_option = $_GET['course_update_option'];
+                    $update = "UPDATE `settings` SET `valued` = ? WHERE `sett` = ?";
+                    $stmt = $conn2->prepare($update);
+                    $sett = "course_update_options";
+                    $stmt->bind_param("ss",$update_option,$sett);
+                    if($stmt->execute()){
+                        echo "<p class='green_notice'>Course update option has been updated successfully!</p>";
+                        $log_text = "Course update option has been updated to \"".$update_option."\" successfully!";
+                        log_administration($log_text);
+                    }else{
+                        echo "<p class='red_notice'>An error has occured during update!</p>";
+                    }
+                }
+            }
+
+            if(!$present){
+                // insert the entry
+                $update_option = $_GET['course_update_option'];
+                $insert = "INSERT INTO `settings` (`sett`,`valued`) VALUES (?,?)";
+                $stmt = $conn2->prepare($insert);
+                $sett = "course_update_options";
+                $stmt->bind_param("ss",$sett,$update_option);
+                if($stmt->execute()){
+                    echo "<p class='green_notice'>Course update option has been updated successfully!</p>";
+                    $log_text = "Course update option has been updated to \"".$update_option."\" successfully!";
+                    log_administration($log_text);
+                }else{
+                    echo "<p class='red_notice'>An error has occured during update!</p>";
+                }
+            }
         }elseif(isset($_GET['edit_course'])){
             $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
             $stmt = $conn2->prepare($select);
@@ -3175,6 +3226,39 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $weekend_fees = $_GET['weekend_fees'];
             $term_duration = $_GET['term_duration'];
             $duration_intervals = $_GET['duration_intervals'];
+
+            // check if course update should affect the student
+            $select = "SELECT * FROM settings WHERE sett = 'course_update_options'";
+            $statement = $conn2->prepare($select);
+            $statement->execute();
+            $statement_result = $statement->get_result();
+            $course_update_options = "NO";
+            if($statement_result){
+                if($row_result = $statement_result->fetch_assoc()){
+                    $course_update_options = $row_result['valued'];
+                }
+            }
+
+            // get the course level name
+            $select = "SELECT * FROM `settings` WHERE sett = 'class';";
+            $statement = $conn2->prepare($select);
+            $statement->execute();
+            $course_result = $statement->get_result();
+            $course_level_name = "Certificate";
+            if($course_result){
+                if($course_level_row = $course_result->fetch_assoc()){
+                    $courses_level = $course_level_row['valued'];
+                    if(isJson_report($courses_level)){
+                        $courses_level = json_decode($courses_level);
+                        foreach($courses_level as $course){
+                            if($course->id == $course_level){
+                                $course_level_name = $course->classes;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
 
             if ($result) {
@@ -3214,7 +3298,49 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $stmt->bind_param("ss",$valued,$sett);
                     $stmt->execute();
 
-                    // log text
+                    // UPDATE THE STUDENTS COURSE DETAILS
+                    $student_list = "SELECT * FROM student_data WHERE course_done = ? AND stud_class = ?";
+                    $statement = $conn2->prepare($student_list);
+                    $statement->bind_param("ss", $course_id, $course_level_name);
+                    $statement->execute();
+                    $result_statement = $statement->get_result();
+                    if($result_statement && $course_update_options == "YES"){
+                        while($result_row = $result_statement->fetch_assoc()){
+                            $my_course_list = $result_row['my_course_list'];
+                            if(isJson_report($my_course_list)){
+                                $my_course_list = json_decode($result_row['my_course_list']);
+                                foreach($my_course_list as $course){
+                                    if($course->course_status == 1){
+                                        foreach($course->module_terms as $course_module){
+                                            $course_module->fulltime_cost = $fulltime_fees;
+                                            $course_module->evening_cost = $evening_fees;
+                                            $course_module->weekend_cost = $weekend_fees;
+
+                                            if($course_module->status == 1){
+                                                // extend the time with the new module duration
+                                                $start_date = $course_module->start_date;
+
+                                                // update the module duration
+                                                $date = new DateTime($start_date);
+                                                $date->modify("+$term_duration $duration_intervals");
+                                                $new_end_date = $date->format("YmdHis");
+                                                $course_module->end_date = $new_end_date;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // update the student course details
+                            $update = "UPDATE `student_data` SET `my_course_list` = ? WHERE `ids` = ?";
+                            $stmt = $conn2->prepare($update);
+                            $updated_course_list = json_encode($my_course_list);
+                            $stmt->bind_param("ss", $updated_course_list, $result_row['ids']);
+                            $stmt->execute();
+                        }
+                    }
+
+                    // log_text
                     $log_text = "Course \"".$course_name."\" has been updated successfully!";
                     log_administration($log_text);
                     echo "<p class='text-success'>Update has been done successfully!</p>";
