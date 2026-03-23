@@ -1,27 +1,70 @@
 [
     {
-        "adm_no": "NC-2025-001",
-        "time": "14:47:03",
-        "date": "2025-10-08"
-    },
-    {
-        "adm_no": "NC-2025-007",
-        "time": "14:47:03",
-        "date": "2025-10-08"
-    },
-    {
-        "adm_no": "NC-2025-008",
-        "time": "14:47:03",
-        "date": "2025-10-08"
-    },
-    {
-        "adm_no": "NC-2025-009",
-        "time": "14:47:03",
-        "date": "2025-10-08"
-    },
-    {
-        "adm_no": "NC-2025-014",
-        "time": "14:47:03",
-        "date": "2025-10-08"
+        "course_level": 11,
+        "course_name": "5",
+        "course_status": 1,
+        "id": 1,
+        "module_terms": [
+            {
+                "id": 1,
+                "term_name": "MODULE 1",
+                "status": 1,
+                "start_date": "20260224112441",
+                "end_date": "20260624112441",
+                "fulltime_cost": "0",
+                "evening_cost": "0",
+                "weekend_cost": "0"
+            },
+            {
+                "id": 2,
+                "term_name": "MODULE 2",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "0",
+                "evening_cost": "0",
+                "weekend_cost": "0"
+            },
+            {
+                "id": 3,
+                "term_name": "MODULE 3",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "0",
+                "evening_cost": "0",
+                "weekend_cost": "0"
+            },
+            {
+                "id": 4,
+                "term_name": "MODULE 4",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "0",
+                "evening_cost": "0",
+                "weekend_cost": "0"
+            },
+            {
+                "id": 5,
+                "term_name": "MODULE 5",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "0",
+                "evening_cost": "0",
+                "weekend_cost": "0"
+            },
+            {
+                "id": 6,
+                "term_name": "MODULE 6",
+                "status": 0,
+                "start_date": "",
+                "end_date": "",
+                "fulltime_cost": "0",
+                "evening_cost": "0",
+                "weekend_cost": "0"
+            }
+        ]
     }
 ]

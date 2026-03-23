@@ -81,6 +81,34 @@
             </div>
             <div class="setting_s">
                 <div class="bg-secondary mt-0">
+                    <p class="text-center text-white">Course Update Option</p>
+                </div>
+                <div class="conts p-1 m-1">
+                    <img src="images/ajax_clock_small.gif" class="hide" id="course_update_option_loader">
+                    <p id="course_options_holder"></p>
+                    <p>When updating the course details, also update the student details?</p>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="course_update_option_radios" id="course_update_yes" value="YES">
+                                <label class="form-check-label" for="course_update_yes">
+                                    Yes
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" checked type="radio" name="course_update_option_radios" id="course_update_no" value="NO">
+                                <label class="form-check-label" for="course_update_no">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting_s">
+                <div class="bg-secondary mt-0">
                     <p class="text-center text-white">Admission Number Prefix</p>
                 </div>
                 <div class="conts p-1 m-1">
