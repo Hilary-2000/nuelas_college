@@ -781,6 +781,7 @@ cObj("set_btns").onclick = function () {
     get_courses();
     get_admission_prefix();
     getBranches();
+    getCourseUpdateOptions();
 }
 
 if (typeof (cObj("callrollcall")) != 'undefined' && cObj("callrollcall") != null) {
@@ -10773,4 +10774,32 @@ cObj("add_branch_button").onclick = function () {
 function getBranchesSelect(branch_holder, object_id, object_loader, default_value = '', callback=null){
     var datapass = "?display_branches=true&object_id="+object_id+"&default_value="+default_value;
     sendData2("GET", "administration/admissions.php", datapass, cObj(branch_holder), cObj(object_loader), callback);
+}
+
+function getCourseUpdateOptions(){
+    var datapass = "?get_course_update_options=true";
+    sendData2("GET", "administration/admissions.php", datapass, cObj("course_options_holder"), cObj("course_update_option_loader"), function (){
+        if(cObj("course_option_temp_holder") != undefined && cObj("course_option_temp_holder").innerText.trim() == "YES"){
+            cObj("course_update_yes").checked = true;
+        }else{
+            cObj("course_update_no").checked = true;
+        }
+    });
+}
+
+cObj("course_update_yes").onclick = function (){
+    var datapass = "?update_course_option=true&course_update_option="+(this.checked ? "YES" : "NO");
+    sendData2("GET", "administration/admissions.php", datapass, cObj("course_options_holder"), cObj("course_update_option_loader"), function (){
+        setTimeout(() => {
+            cObj("course_options_holder").innerHTML = "";
+        }, 2000);
+    });
+}
+cObj("course_update_no").onclick = function (){
+    var datapass = "?update_course_option=true&course_update_option="+(this.checked ? "NO" : "YES");
+    sendData2("GET", "administration/admissions.php", datapass, cObj("course_options_holder"), cObj("course_update_option_loader"), function (){
+        setTimeout(() => {
+            cObj("course_options_holder").innerHTML = "";
+        }, 2000);
+    });
 }

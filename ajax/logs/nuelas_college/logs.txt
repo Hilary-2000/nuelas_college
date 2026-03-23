@@ -1,3 +1,35 @@
+23rd Mar 2026 16:45:36PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:45:15PM : Course update option has been updated to "NO" successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:43:35PM : Course update option has been updated to "YES" successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:42:28PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:42:18PM : Course update option has been updated to "YES" successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:41:55PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:33:07PM : Course update option has been updated to "YES" successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:33:02PM : Course update option has been updated to "YES" successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:26:14PM : Course update option has been updated to "YES" successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:20:42PM : Course update option has been updated to "YES" successfully! - {ANN AKOTCH}
+23rd Mar 2026 16:17:05PM : Course update option has been updated to "YES" successfully! - {ANN AKOTCH}
+23rd Mar 2026 14:15:37PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 14:11:33PM : John Warikoi - of Reg No. (NC-2026-002) data has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 14:11:24PM : John Warikoi - of Reg No. (NC-2026-002) data has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 14:11:18PM : John Warikoi - of Reg No. (NC-2026-002) data has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 14:11:12PM : John Warikoi - of Reg No. (NC-2026-002) data has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 14:11:01PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 14:10:28PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 14:09:58PM : John Warikoi - of Reg No. (NC-2026-002) data has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 13:26:13PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 13:25:42PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 13:24:58PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 13:23:51PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 13:23:09PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 13:22:21PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 13:05:47PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 13:03:59PM : Course "FASHION AND DESIGN" has been updated successfully! - {ANN AKOTCH}
+23rd Mar 2026 11:58:00AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+24th Feb 2026 11:30:34AM : Hillary Ngige of Reg No (NC-2026-001) discounts have been updated successfully - {ANN AKOTCH}
+24th Feb 2026 11:25:56AM : JANE KAMAU with admission number LC-2025-003 has been admitted successfully - {ANN AKOTCH}
+24th Feb 2026 11:24:41AM : JOHN WARIKOI with admission number NC-2026-002 has been admitted successfully - {ANN AKOTCH}
+24th Feb 2026 11:13:31AM : HILLARY NGIGE with admission number NC-2026-001 has been admitted successfully - {ANN AKOTCH}
 09th Feb 2026 15:17:44PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
 09th Feb 2026 15:07:08PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 03rd Feb 2026 15:29:29PM : JAMES WAKANDA successfully logged into the system as Accountant - {JAMES WAKANDA}
