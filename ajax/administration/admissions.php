@@ -2957,9 +2957,105 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $term = 3;
             $stmt->bind_param("ssss",$term_three_start,$term_three_end,$term_three_close,$term);
             $stmt->execute();
-            // log text
-            $log_text = "Academic calender has been updated successfully!";
-            log_administration($log_text);
+            
+            // check if course update should affect the student
+            $select = "SELECT * FROM settings WHERE sett = 'course_update_options'";
+            $statement = $conn2->prepare($select);
+            $statement->execute();
+            $statement_result = $statement->get_result();
+            $course_update_options = "NO";
+            if($statement_result){
+                if($row_result = $statement_result->fetch_assoc()){
+                    $course_update_options = $row_result['valued'];
+                }
+            }
+
+            
+
+            // GET THE COURSE LEVEL
+            $select = "SELECT * FROM `settings` WHERE sett = 'courses';";
+            $statement = $conn2->prepare($select);
+            $statement->execute();
+            $course_result = $statement->get_result();
+            $courses = [];
+            if($course_result){
+                if($course_level_row = $course_result->fetch_assoc()){
+                    $all_courses = $course_level_row['valued'];
+                    if(isJson_report($all_courses)){
+                        $courses = json_decode($all_courses);
+                    }
+                }
+            }
+
+            // INITIALIZE TERM DATES
+            $term_start_dates = null;
+            $term_end_dates = null;
+            $current_term = getTermV3($conn2);
+            $updated = false;
+
+            if($course_update_options == "YES"){
+                $select = "SELECT * FROM student_data WHERE course_progress_status = '1';";
+                $stmt = $conn2->prepare($select);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if($result){
+                    while($student_row = $result->fetch_assoc()){
+                        $my_course_list = $student_row['my_course_list'];
+                        if(isJson_report($my_course_list)){
+                            $my_course_list = json_decode($my_course_list);
+                            foreach($my_course_list as $active_course){
+                                if(isset($active_course->course_status) && $active_course->course_status == 1){
+                                    $module_terms = $active_course->module_terms;
+                                    foreach($module_terms as $module){
+                                        if($module->status == 1){
+                                            $term_duration = get_course_duration($courses,$active_course->course_name);
+                                            if($current_term == "TERM_1"){
+                                                $term_start_dates = $term_one_start;
+                                                $date = new DateTime($term_start_dates);
+                                                $date->modify("+$term_duration");
+                                                $term_end_dates = $date->format("YmdHis");
+                                            }elseif($current_term == "TERM_2"){
+                                                $term_start_dates = $term_two_start;
+                                                $date = new DateTime($term_start_dates);
+                                                $date->modify("+$term_duration");
+                                                $term_end_dates = $date->format("YmdHis");
+                                            }elseif($current_term == "TERM_3"){
+                                                $term_start_dates = $term_three_start;
+                                                $date = new DateTime($term_start_dates);
+                                                $date->modify("+$term_duration");
+                                                $term_end_dates = $date->format("YmdHis");
+                                            }
+
+                                            // update the module term dates
+                                            $module->start_date = date("YmdHis", strtotime($term_start_dates));
+                                            $module->end_date = date("YmdHis", strtotime($term_end_dates));
+                                            echo date("Y-m-d", strtotime($module->start_date))." start date<br>";
+                                            echo date("Y-m-d", strtotime($module->end_date))." end date<br>";
+                                        }
+                                    }
+                                }
+                            }
+                            // update the student course details
+                            $update = "UPDATE `student_data` SET `my_course_list` = ? WHERE `ids` = ?";
+                            $stmt = $conn2->prepare($update);
+                            $updated_course_list = json_encode($my_course_list);
+                            $stmt->bind_param("ss", $updated_course_list, $student_row['ids']);
+                            $stmt->execute();
+                        }
+                    }
+                }
+                $updated = true;
+            }
+
+            if($updated){
+                // log text
+                $log_text = "Academic calender has been updated successfully with permission to update the student information!";
+                log_administration($log_text);
+            }else{
+                // log text
+                $log_text = "Academic calender has been updated successfully!";
+                log_administration($log_text);
+            }
         }elseif (isset($_GET['add_admission_ess'])) {
             $component = $_GET['component'];
             $select = "SELECT `valued` FROM `settings` WHERE `sett` = 'admissionessentials'";
@@ -3352,7 +3448,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
 
                     // log_text
-                    $log_text = "Course \"".$course_name."\" has been updated successfully!";
+                    $log_text = "Course \"".$course_name."\" has been updated successfully".($course_update_options == "YES" ? " with permission to update the student information" : "")."!";
                     log_administration($log_text);
                     echo "<p class='text-success'>Update has been done successfully!</p>";
                 }else{
@@ -9480,6 +9576,18 @@ function isJson_report($string) {
         }
         return [$start_time,$end_time];
     }
+
+    function get_course_duration($courses_list, $course_id, $conn2 = null){
+        $course_duration = "3 months";
+        foreach($courses_list as $course){
+            if($course->id == $course_id){
+                $course_duration = $course->term_duration." ".$course->duration_intervals;
+                break;
+            }
+        }
+        return $course_duration;
+    }
+
     function getTermV3($conn2){
         $date = date("Y-m-d");
         $select = "SELECT `term` FROM `academic_calendar` WHERE `end_time` >= ? AND `start_time` <= ?";
