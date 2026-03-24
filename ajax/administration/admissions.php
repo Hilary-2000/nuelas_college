@@ -3695,6 +3695,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
                         // data to display
+                        $course_list[$index]->course_level_name = $level;
                         $data_to_display .= "<tr>
                                                 <td>".($index+1).". </td>
                                                 <td>".$course_list[$index]->course_name."</td>
@@ -3702,8 +3703,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                                 <td>".$department_name."</td>
                                                 <td>
                                                     <input hidden value='".json_encode($course_list[$index])."' id='hidden_value_courses_".$course_list[$index]->id."'>
-                                                    <span class='link remove_course mx-2' id='remove_course_".$course_list[$index]->id."' style='font-size:12px; color:brown;'><i class='fa fa-trash'></i></span>
-                                                    <span class='link edit_courses' id='edit_course_".$course_list[$index]->id."' style='font-size:12px; color:brown;'><i class='fa fa-pen-fancy'></i></span>
+                                                    <span class='link votehead_mgmt' title='Votehead Management' id='votehead_mgmt_".$course_list[$index]->id."' style='font-size:12px;'><i class='fa fa-coins'></i> Voteheads</span> 
+                                                    <span class='link edit_courses' title='Edit course' id='edit_course_".$course_list[$index]->id."' style='font-size:12px;'><i class='fa fa-pen-fancy'></i> Edit</span>
+                                                    <span class='link remove_course mx-2' title='Delete Course' id='remove_course_".$course_list[$index]->id."' style='font-size:12px;'><i class='fa fa-trash'></i> Del</span>
                                                 </td>
                                             </tr>";
                     }
