@@ -8,62 +8,62 @@
             {
                 "id": 1,
                 "term_name": "MODULE 1",
-                "status": 1,
-                "start_date": "20260224112441",
-                "end_date": "20260624112441",
-                "fulltime_cost": "0",
-                "evening_cost": "0",
-                "weekend_cost": "0"
+                "status": "1",
+                "start_date": "2026-01-01",
+                "end_date": "20260501000000",
+                "fulltime_cost": 7000,
+                "evening_cost": 3000,
+                "weekend_cost": 5678
             },
             {
                 "id": 2,
                 "term_name": "MODULE 2",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
-                "fulltime_cost": "0",
-                "evening_cost": "0",
-                "weekend_cost": "0"
+                "fulltime_cost": "7000",
+                "evening_cost": "3000",
+                "weekend_cost": "5678"
             },
             {
                 "id": 3,
                 "term_name": "MODULE 3",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
-                "fulltime_cost": "0",
-                "evening_cost": "0",
-                "weekend_cost": "0"
+                "fulltime_cost": "7000",
+                "evening_cost": "3000",
+                "weekend_cost": "5678"
             },
             {
                 "id": 4,
                 "term_name": "MODULE 4",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
-                "fulltime_cost": "0",
-                "evening_cost": "0",
-                "weekend_cost": "0"
+                "fulltime_cost": "7000",
+                "evening_cost": "3000",
+                "weekend_cost": "5678"
             },
             {
                 "id": 5,
                 "term_name": "MODULE 5",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
-                "fulltime_cost": "0",
-                "evening_cost": "0",
-                "weekend_cost": "0"
+                "fulltime_cost": "7000",
+                "evening_cost": "3000",
+                "weekend_cost": "5678"
             },
             {
                 "id": 6,
                 "term_name": "MODULE 6",
-                "status": 0,
+                "status": "0",
                 "start_date": "",
                 "end_date": "",
-                "fulltime_cost": "0",
-                "evening_cost": "0",
-                "weekend_cost": "0"
+                "fulltime_cost": "7000",
+                "evening_cost": "3000",
+                "weekend_cost": "5678"
             }
         ]
     }

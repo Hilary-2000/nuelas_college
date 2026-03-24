@@ -3388,7 +3388,6 @@ function edit_course_fees_func() {
 
 function SetVoteheadCheckbox(){
     var edit_course_fees = document.getElementsByClassName("edit_course_fees");
-    console.log(edit_course_fees.length);
     for (let index = 0; index < edit_course_fees.length; index++) {
         const one_vh = edit_course_fees[index];
         var className = one_vh.id;
@@ -5365,22 +5364,11 @@ cObj("Change_acad_cal").onclick = function () {
     var err = errTerm3();
     if (err == 0) {
         var datapass = "?update_sch_cal=true&term_one_start=" + valObj("term_one_start") + "&term_one_close=" + valObj("term_one_closing") + "&term_one_end=" + valObj("term_one_end") + "&term_two_start=" + valObj("term_two_start") + "&term_two_close=" + valObj("term_two_closing") + "&term_two_end=" + valObj("term_two_end") + "&term_three_start=" + valObj("term_three_start") + "&term_three_close=" + valObj("term_three_closing") + "&term_three_end=" + valObj("term_three_end") + "";
-        sendData1("GET", "administration/admissions.php", datapass, cObj("acad_cal_errhandler"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    resetWindow();
-                    cObj("acad_timetable_win").classList.add("hide");
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 500);
+        sendData1("GET", "administration/admissions.php", datapass, cObj("acad_cal_errhandler"), function (){
+            resetWindow();
+            cObj("acad_timetable_win").classList.add("hide");
+            activeTerms();
+        });
     }
 }
 cObj("close_win").onclick = function () {
