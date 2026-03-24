@@ -134,6 +134,75 @@
                 return;
             }
             echo "[\"Jan\",\"2019\"]";
+        }elseif(isset($_GET['get_course_voteheads'])){
+            $course_id = $_GET['course_id'];
+            $course_level = $_GET['course_level'];
+
+            // GET THE COURSE DETAILS
+            $course_data = null;
+            $select = "SELECT * FROM `settings` WHERE sett = 'courses';";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    if(isJson($row["valued"])){
+                        $courses_list = json_decode($row["valued"], true);
+                        for ($index=0; $index < count($courses_list); $index++) { 
+                            if($courses_list[$index]['id'] == $course_id){
+                                $course_data = $courses_list[$index];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // check if the course is valid
+            if($course_data  == null){
+                echo "<p class='text-danger border border-danger p-2 my-2'>Course is invalid</p>";
+                return;
+            }
+
+            // get the fee structure
+            $select = "SELECT * FROM fees_structure WHERE classes = ? AND course = ?";
+            $stmt_2 = $conn2->prepare($select);
+            $stmt_2->bind_param("ss", $course_level, $course_id);
+            $stmt_2->execute();
+            $res = $stmt_2->get_result();
+            $voteheads = [];
+            if($res){
+                while($rowed = $res->fetch_assoc()){
+                    array_push($voteheads,$rowed);
+                }
+            }
+
+            // display table data
+            $data_to_display = "<div class='tableme'><table class='table' id='course_votehead_table'><tr><th rowspan='2'>No</th><th rowspan='2'>Votehead Name</th><th rowspan='2'>Role</th><th colspan='".($course_data['no_of_terms'])."'>MODULES</th></tr><tr>";
+            for($index = 0; $index < $course_data['no_of_terms']; $index++){
+                $data_to_display.= "<th>".($index+1).".</th>";
+            }
+            $data_to_display.= "</tr>";
+                    
+            // add the course cost itself
+            $data_to_display.= "<tr><td>1. <input type='checkbox' class='edit_course_fees_vh' id='edit_course_fees_vh_0' checked></td><td>Course Fees</td><td><span class='badge bg-primary'>Regular</span></td>";
+            for($index = 0; $index < $course_data['no_of_terms']; $index++){
+                $check_module = "checked";
+                $data_to_display.="<td><input type='checkbox' class='edit_course_fees_vh' id='edit_module_course_fees_vh_0_".($index+1)."' ".$check_module."><small> 3 Modes</small></td>";
+            }
+            $data_to_display.="</tr>";
+
+            // go through the fees structure
+            foreach ($voteheads as $key => $votehead) {
+                $data_to_display.= "<tr><td>".($key+2).". <input type='checkbox' value='".$votehead['ids']."' class='edit_course_fees_vh' id='edit_course_fees_vh_".$votehead['ids']."' checked></td><td>".$votehead['expenses']."</td><td><span class='badge bg-primary'>".ucwords(strtolower($votehead['roles']))."</span></td>";
+                for($index = 0; $index < $course_data['no_of_terms']; $index++){
+                    $check_module = "checked";
+                    $data_to_display.="<td><input type='checkbox' class='edit_course_fees_vh' id='edit_module_course_fees_vh_".$votehead['ids']."_".$index."' ".$check_module."><small> 3 Modes</small></td>";
+                }
+                $data_to_display.="</tr>";
+            }
+            $data_to_display.="</table></div>";
+            echo $data_to_display;
         }elseif(isset($_GET['get_student_voteheads'])){
             $student_id = $_GET['student_id'];
             $select = "SELECT * FROM student_data WHERE adm_no = ?";
@@ -1384,6 +1453,29 @@
         }elseif (isset($_GET['feesstructurefind'])) {
             $class = $_GET['class'];
             $course_id = $_GET['course_id'];
+
+            // select the courses
+            $all_courses = [];
+            $select = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $all_courses = isJson($row['valued']) ? json_decode($row['valued']) : [];
+                }
+            }
+
+            $course_name = "N/A";
+            foreach($all_courses as $course){
+                if($course->id == $course_id){
+                    $course_name = $course->course_name;
+                    break;
+                }
+            }
+
+
+
             $select = "SELECT * FROM `fees_structure` WHERE `classes` = ? AND `course` = '".$course_id."'";
             $daros = "".$class."";
             if($class == "-3"){
@@ -1417,7 +1509,7 @@
                 if($class == "-3"){
                     $dat = "Un-assigned Payments";
                 }
-                $table = "<h6 style='text-align:center;'>Fees structure for <span id='class_display_fees'>".$dat."</span> </h6>";
+                $table = "<h6 style='text-align:center;'>Fees structure for <span id='class_display_fees'>".$dat." in ".$course_name."</span> </h6>";
                 $table.="<div class='tableme'><table class='table'>";
                 $table.="<tr>
                         <th>No.</th>

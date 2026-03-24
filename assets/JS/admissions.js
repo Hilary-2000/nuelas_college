@@ -10597,6 +10597,15 @@ function get_courses() {
                     const element = remove_course[index];
                     element.addEventListener("click",deleteCourse);
                 }
+
+                // votehead management
+                var votehead_mgmt = document.getElementsByClassName("votehead_mgmt");
+                for (let index = 0; index < votehead_mgmt.length; index++) {
+                    const element = votehead_mgmt[index];
+                    element.addEventListener("click",votehead_management);
+                }
+
+
                 // set the datatable
                 $(document).ready(function() {
                     $('#course-list-table').DataTable();  // Just one line!
@@ -10608,6 +10617,32 @@ function get_courses() {
     }, 100);
 }
 
+function votehead_management(){
+    var this_id = this.id.substr(14);
+    cObj("edit_course_voteheads").classList.remove("hide");
+    var course_data = valObj("hidden_value_courses_"+this_id);
+    if(hasJsonStructure(course_data)){
+        course_data = JSON.parse(course_data);
+        cObj("course_level_votehead").innerText = course_data.course_level_name;
+        cObj("course_name_voteheads").innerText = course_data.course_name;
+
+        // get the course voteheads
+        var datapass = "?get_course_voteheads=true&course_id="+course_data.id+"&course_level="+course_data.course_level_name;
+        sendData2("GET","finance/financial.php", datapass, cObj("course_voteheads_display"), cObj("loadings"), function (){
+
+        });
+    }else{
+
+    }
+}
+
+cObj("close_course_votehead").onclick = function (){
+    cObj("edit_course_voteheads").classList.add("hide");
+}
+
+cObj("close_edit_course_voteheads").onclick = function (){
+    cObj("edit_course_voteheads").classList.add("hide");
+}
 function deleteCourse() {
     var this_id = this.id.substr(14);
     var course_data = valObj("hidden_value_courses_"+this_id);

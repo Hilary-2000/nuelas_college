@@ -937,6 +937,31 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
+        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="edit_course_voteheads">
+            <div class="window_lg animate">
+                <div class="conts">
+                    <p class="funga" id="close_edit_course_voteheads">&times</p>
+                    <h5 class="text-center"><b>Edit Course Voteheads <img class="hide" src="images/ajax_clock_small.gif" id="load_course_voteheads"></b></h5>
+                </div>
+                <div class="add_expense">
+                    <div class="form-group my-2">
+                        <p><b>Course Level : </b><span id="course_level_votehead">Loading...</span></p>
+                        <p><b>Course Name : </b><span id="course_name_voteheads">Loading...</span></p>
+                    </div>
+                    <hr class="mx-auto">
+                    <div class="form-group my-2">
+                        <div id="course_voteheads_display">
+                            <p>Voteheads will appear here!</p>
+                        </div>
+                    </div>
+                    <div class="container" id="course_votehead_error_handler"></div>
+                </div>
+                <div class="btns">
+                    <button type="button" id='save_changed_evh'>Save Votehead Changes</button>
+                    <button type="button" id="close_course_votehead">Close</button>
+                </div>
+            </div>
+        </div>
         <div class="confirmpaymentwindow hide" id='remove_roles_windows'>
             <div class="confirmpayment animate">
                 <p class="hide" id="index_to_delete"></p>
