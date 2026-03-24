@@ -109,6 +109,34 @@
             </div>
             <div class="setting_s">
                 <div class="bg-secondary mt-0">
+                    <p class="text-center text-white">Course Start Date Option</p>
+                </div>
+                <div class="conts p-1 m-1">
+                    <img src="images/ajax_clock_small.gif" class="hide" id="course_start_date_option_loader">
+                    <p id="course_start_date_options_holder"></p>
+                    <p>When admitting a new student, when should the course start date be?</p>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="course_start_date_option_radios" id="on_registration_date" value="YES">
+                                <label class="form-check-label" for="on_registration_date">
+                                    On-Registration Date
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" checked type="radio" name="course_start_date_option_radios" id="on_term_start_date" value="NO">
+                                <label class="form-check-label" for="on_term_start_date">
+                                    On Current Term Start Date
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting_s">
+                <div class="bg-secondary mt-0">
                     <p class="text-center text-white">Admission Number Prefix</p>
                 </div>
                 <div class="conts p-1 m-1">
