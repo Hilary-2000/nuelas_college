@@ -782,6 +782,7 @@ cObj("set_btns").onclick = function () {
     get_admission_prefix();
     getBranches();
     getCourseUpdateOptions();
+    getCourseStartDateOptions();
 }
 
 if (typeof (cObj("callrollcall")) != 'undefined' && cObj("callrollcall") != null) {
@@ -10945,6 +10946,17 @@ function getCourseUpdateOptions(){
     });
 }
 
+function getCourseStartDateOptions(){
+    var datapass = "?get_course_start_date_options=true";
+    sendData2("GET", "administration/admissions.php", datapass, cObj("course_start_date_options_holder"), cObj("course_start_date_option_loader"), function (){
+        if(cObj("course_start_date_option_temp_holder") != undefined && cObj("course_start_date_option_temp_holder").innerText.trim() == "on_registration_date"){
+            cObj("on_registration_date").checked = true;
+        }else{
+            cObj("on_term_start_date").checked = true;
+        }
+    });
+}
+
 cObj("course_update_yes").onclick = function (){
     var datapass = "?update_course_option=true&course_update_option="+(this.checked ? "YES" : "NO");
     sendData2("GET", "administration/admissions.php", datapass, cObj("course_options_holder"), cObj("course_update_option_loader"), function (){
@@ -10958,6 +10970,23 @@ cObj("course_update_no").onclick = function (){
     sendData2("GET", "administration/admissions.php", datapass, cObj("course_options_holder"), cObj("course_update_option_loader"), function (){
         setTimeout(() => {
             cObj("course_options_holder").innerHTML = "";
+        }, 2000);
+    });
+}
+
+cObj("on_registration_date").onclick = function (){
+    var datapass = "?update_course_start_date_option=true&start_date_option="+(this.checked ? "on_registration_date" : "on_term_start_date");
+    sendData2("GET", "administration/admissions.php", datapass, cObj("course_start_date_options_holder"), cObj("course_start_date_option_loader"), function (){
+        setTimeout(() => {
+            cObj("course_start_date_options_holder").innerHTML = "";
+        }, 2000);
+    });
+}
+cObj("on_term_start_date").onclick = function (){
+    var datapass = "?update_course_start_date_option=true&start_date_option="+(this.checked ? "on_term_start_date" : "on_registration_date");
+    sendData2("GET", "administration/admissions.php", datapass, cObj("course_start_date_options_holder"), cObj("course_start_date_option_loader"), function (){
+        setTimeout(() => {
+            cObj("course_start_date_options_holder").innerHTML = "";
         }, 2000);
     });
 }

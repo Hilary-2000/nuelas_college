@@ -3265,6 +3265,18 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
             echo "<span id='course_option_temp_holder' class='hide'>".$course_update_options."</span>";
+        }elseif(isset($_GET['get_course_start_date_options'])){
+            $select = "SELECT * FROM settings WHERE sett = 'course_start_date_options'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $course_start_date_options = "on_registration_date";
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $course_start_date_options = $row['valued'];
+                }
+            }
+            echo "<span id='course_start_date_option_temp_holder' class='hide'>".$course_start_date_options."</span>";
         }elseif(isset($_GET['update_course_option'])){
             $select = "SELECT * FROM settings WHERE sett = 'course_update_options'";
             $stmt = $conn2->prepare($select);
@@ -3299,6 +3311,45 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 if($stmt->execute()){
                     echo "<p class='green_notice'>Course update option has been updated successfully!</p>";
                     $log_text = "Course update option has been updated to \"".$update_option."\" successfully!";
+                    log_administration($log_text);
+                }else{
+                    echo "<p class='red_notice'>An error has occured during update!</p>";
+                }
+            }
+        }elseif(isset($_GET['update_course_start_date_option'])){
+            $select = "SELECT * FROM settings WHERE sett = 'course_start_date_options'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $present = false;
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $present = true;
+                    $update_option = $_GET['start_date_option'];
+                    $update = "UPDATE `settings` SET `valued` = ? WHERE `sett` = ?";
+                    $stmt = $conn2->prepare($update);
+                    $sett = "course_start_date_options";
+                    $stmt->bind_param("ss",$update_option,$sett);
+                    if($stmt->execute()){
+                        echo "<p class='green_notice'>Course start date option has been updated successfully!</p>";
+                        $log_text = "Course start date option has been updated to \"".$update_option."\" successfully!";
+                        log_administration($log_text);
+                    }else{
+                        echo "<p class='red_notice'>An error has occured during update!</p>";
+                    }
+                }
+            }
+
+            if(!$present){
+                // insert the entry
+                $update_option = $_GET['start_date_option'];
+                $insert = "INSERT INTO `settings` (`sett`,`valued`) VALUES (?,?)";
+                $stmt = $conn2->prepare($insert);
+                $sett = "course_start_date_options";
+                $stmt->bind_param("ss",$sett,$update_option);
+                if($stmt->execute()){
+                    echo "<p class='green_notice'>Course start date option has been updated successfully!</p>";
+                    $log_text = "Course start date option has been updated to \"".$update_option."\" successfully!";
                     log_administration($log_text);
                 }else{
                     echo "<p class='red_notice'>An error has occured during update!</p>";
@@ -6288,6 +6339,23 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 echo "<p class='text-danger'>Admission Number has already been used!</p>";
                 exit();
             }
+            
+            // prepare course start date
+            $select = "SELECT * FROM settings WHERE sett = 'course_start_date_options'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $course_start_date = date("YmdHis");
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    if($row['valued'] == "on_term_start_date"){
+                        $current_term = getTermV3($conn2);
+                        $term_start_date = getAcademicStartV1($conn2,$term);
+                        $course_start_date = date("YmdHis", strtotime($term_start_date[0]));
+                    }
+                }
+            }
+            
             // echo $_POST['surname'];
             $send_student_message = $_POST['send_student_message'];
             $send_first_parent = $_POST['send_first_parent'];
@@ -6414,8 +6482,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $term->id = $index + 1;
                 $term->term_name = "MODULE ". ($index + 1);
                 $term->status = $course_module_terms == ($index+1) ? 1 : 0;
-                $term->start_date = $course_module_terms == ($index+1) ? date("Ymd", strtotime($doa)).date("His") : "";
-                $end_date = addPeriod(date("Ymd", strtotime($doa)).date("His"), $module_period);
+                $term->start_date = $course_module_terms == ($index+1) ? $course_start_date : "";
+                $end_date = addPeriod($course_start_date, $module_period);
                 $term->end_date = $course_module_terms == ($index+1) ? $end_date : "";
                 $term->fulltime_cost = $fulltime_cost;
                 $term->evening_cost = $evening_cost;
