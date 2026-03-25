@@ -164,6 +164,8 @@
                 return;
             }
 
+            $course_voteheads = isset($course_data['voteheads']) ? $course_data['voteheads'] : [];
+
             // get the fee structure
             $select = "SELECT * FROM fees_structure WHERE classes = ? AND course = ?";
             $stmt_2 = $conn2->prepare($select);
@@ -180,24 +182,24 @@
             // display table data
             $data_to_display = "<div class='tableme'><table class='table' id='course_votehead_table'><tr><th rowspan='2'>No</th><th rowspan='2'>Votehead Name</th><th rowspan='2'>Role</th><th colspan='".($course_data['no_of_terms'])."'>MODULES</th></tr><tr>";
             for($index = 0; $index < $course_data['no_of_terms']; $index++){
-                $data_to_display.= "<th>".($index+1).".</th>";
+                $data_to_display.= "<th><input type='checkbox' class='edit_course_fees_vh_module' value='".($index+1)."' id='edit_course_fees_vh_module_".($index+1)."'> ".($index+1).".</th>";
             }
             $data_to_display.= "</tr>";
                     
             // add the course cost itself
-            $data_to_display.= "<tr><td>1. <input type='checkbox' class='edit_course_fees_vh' id='edit_course_fees_vh_0' checked></td><td>Course Fees</td><td><span class='badge bg-primary'>Regular</span></td>";
+            $data_to_display.= "<tr><td>1. <input type='checkbox' class='edit_course_fees_vh' id='edit_course_fees_vh_0'></td><td>Course Fees</td><td><span class='badge bg-primary'>Regular</span></td>";
             for($index = 0; $index < $course_data['no_of_terms']; $index++){
-                $check_module = "checked";
-                $data_to_display.="<td><input type='checkbox' class='edit_course_fees_vh' id='edit_module_course_fees_vh_0_".($index+1)."' ".$check_module."><small> 3 Modes</small></td>";
+                $check_module = checkCourseVotehead($course_voteheads,($index+1), 0, "regular");
+                $data_to_display.="<td><input type='checkbox' class='edit_course_fees_vh_0' value='".($index+1)."' id='edit_module_course_fees_vh_0_".($index+1)."' ".$check_module."><small></small></td>";
             }
             $data_to_display.="</tr>";
 
             // go through the fees structure
             foreach ($voteheads as $key => $votehead) {
-                $data_to_display.= "<tr><td>".($key+2).". <input type='checkbox' value='".$votehead['ids']."' class='edit_course_fees_vh' id='edit_course_fees_vh_".$votehead['ids']."' checked></td><td>".$votehead['expenses']."</td><td><span class='badge bg-primary'>".ucwords(strtolower($votehead['roles']))."</span></td>";
+                $data_to_display.= "<tr><td>".($key+2).". <input type='checkbox' value='".$votehead['ids']."' class='edit_course_fees_vh' id='edit_course_fees_vh_".$votehead['ids']."'></td><td>".ucwords(strtolower($votehead['expenses']))."</td><td><span class='badge bg-primary'>".ucwords(strtolower($votehead['roles']))."</span></td>";
                 for($index = 0; $index < $course_data['no_of_terms']; $index++){
-                    $check_module = "checked";
-                    $data_to_display.="<td><input type='checkbox' class='edit_course_fees_vh' id='edit_module_course_fees_vh_".$votehead['ids']."_".$index."' ".$check_module."><small> 3 Modes</small></td>";
+                    $check_module = checkCourseVotehead($course_voteheads,($index+1), $votehead['ids'], $votehead['roles']);
+                    $data_to_display.="<td><input type='checkbox' class='edit_course_fees_vh_".$votehead['ids']."' value='".($index+1)."' id='edit_module_course_fees_vh_".$votehead['ids']."_".($index+1)."' ".$check_module."><small></small></td>";
                 }
                 $data_to_display.="</tr>";
             }
@@ -6171,6 +6173,19 @@
             return "checked";
         }
         return "";
+    }
+
+    function checkCourseVotehead($course_voteheads, $module_number, $votehead_id, $votehead_type = "provisional"){
+        foreach($course_voteheads as $votehead_module){
+            if($module_number == $votehead_module['module']){
+                foreach($votehead_module['voteheads'] as $votehead){
+                    if($votehead['ids'] == $votehead_id && $votehead['pay']){
+                        return "checked";
+                    }
+                }
+            }
+        }
+        return $votehead_type != "provisional" ? "checked" : "";
     }
 
     function deleteFile($filePath) {
