@@ -10454,15 +10454,123 @@ function votehead_management(){
         course_data = JSON.parse(course_data);
         cObj("course_level_votehead").innerText = course_data.course_level_name;
         cObj("course_name_voteheads").innerText = course_data.course_name;
+        cObj("course_votehead_holder").value = course_data.voteheads != undefined ? course_data.voteheads : [];
 
         // get the course voteheads
         var datapass = "?get_course_voteheads=true&course_id="+course_data.id+"&course_level="+course_data.course_level_name;
         sendData2("GET","finance/financial.php", datapass, cObj("course_voteheads_display"), cObj("loadings"), function (){
+            var edit_course_fees_vh = document.getElementsByClassName("edit_course_fees_vh");
+            for(var index = 0; index < edit_course_fees_vh.length; index++){
+                edit_course_fees_vh[index].addEventListener("change", course_votehead_mgt);
 
+                // every row event assignment
+                var row_checkboxes = document.getElementsByClassName(edit_course_fees_vh[index].id);
+                for(var indexex = 0; indexex < row_checkboxes.length; indexex++){
+                    row_checkboxes[indexex].addEventListener("change", course_module_checkboxes);
+                }
+            }
+            var edit_course_fees_vh_module = document.getElementsByClassName("edit_course_fees_vh_module");
+            for(var index = 0; index < edit_course_fees_vh_module.length; index++){
+                edit_course_fees_vh_module[index].addEventListener("change", all_module_checkboxes);
+            }
+
+            // ensure all check boxes are in the right state
+            check_parent_boxes();
         });
     }else{
 
     }
+}
+
+function all_module_checkboxes(){
+    var edit_course_fees_vh_module = document.getElementsByClassName("edit_course_fees_vh_module");
+    for(var index = 0; index < edit_course_fees_vh_module.length; index++){
+        var edit_course_fees_vh = document.getElementsByClassName("edit_course_fees_vh");
+        for(var index_2 = 0; index_2 < edit_course_fees_vh.length; index_2++){
+            // every row event assignment
+            var row_checkboxes = document.getElementsByClassName(edit_course_fees_vh[index_2].id);
+            for(var indexes = 0; indexes < row_checkboxes.length; indexes++){
+                if(row_checkboxes[indexes].value == this.value){
+                    row_checkboxes[indexes].checked = this.checked;
+                }
+            }
+        }
+    }
+    check_parent_boxes();
+}
+
+function check_parent_boxes(){
+    var edit_course_fees_vh = document.getElementsByClassName("edit_course_fees_vh");
+    for(var index = 0; index < edit_course_fees_vh.length; index++){
+        // every row event assignment
+        var row_checkboxes = document.getElementsByClassName(edit_course_fees_vh[index].id);
+        var checked = 0;
+        for(var indexes = 0; indexes < row_checkboxes.length; indexes++){
+            checked += row_checkboxes[indexes].checked ? 1 : 0;
+        }
+
+        if(checked > 0){
+            if(checked != row_checkboxes.length){
+                cObj(edit_course_fees_vh[index].id).checked = false;
+                cObj(edit_course_fees_vh[index].id).indeterminate = true;
+            }else{
+                cObj(edit_course_fees_vh[index].id).checked = true;
+                cObj(edit_course_fees_vh[index].id).indeterminate = false;
+            }
+        }else{
+            cObj(edit_course_fees_vh[index].id).checked = false;
+            cObj(edit_course_fees_vh[index].id).indeterminate = false;
+        }
+    }
+
+    var edit_course_fees_vh_module = document.getElementsByClassName("edit_course_fees_vh_module");
+    for(var index = 0; index < edit_course_fees_vh_module.length; index++){
+        var edit_course_fees_vh = document.getElementsByClassName("edit_course_fees_vh");
+        var my_column_count = 0;
+        var checked = 0;
+        for(var index_2 = 0; index_2 < edit_course_fees_vh.length; index_2++){
+            // every row event assignment
+            var row_checkboxes = document.getElementsByClassName(edit_course_fees_vh[index_2].id);
+            for(var indexes = 0; indexes < row_checkboxes.length; indexes++){
+                if(row_checkboxes[indexes].value == edit_course_fees_vh_module[index].value){
+                    my_column_count++;
+                    checked += row_checkboxes[indexes].checked ? 1 : 0;
+                }
+            }
+        }
+
+        if(checked > 0){
+            if(checked != my_column_count){
+                edit_course_fees_vh_module[index].checked = false;
+                edit_course_fees_vh_module[index].indeterminate = true;
+            }else{
+                edit_course_fees_vh_module[index].checked = true;
+                edit_course_fees_vh_module[index].indeterminate = false;
+            }
+        }else{
+            edit_course_fees_vh_module[index].checked = false;
+            edit_course_fees_vh_module[index].indeterminate = false;
+        }
+    }
+}
+
+function course_votehead_mgt(){
+    // check all children
+    for(var index = 0; index < document.getElementsByClassName(this.id).length; index++){
+        const element = document.getElementsByClassName(this.id)[index];
+        element.checked = this.checked;
+    }
+    check_parent_boxes();
+}
+
+function course_module_checkboxes(){
+    var my_siblings = document.getElementsByClassName(this.className);
+    var checked = 0;
+    for(var index = 0; index < my_siblings.length; index++){
+        checked += my_siblings[index].checked ? 1 : 0;
+    }
+
+    check_parent_boxes();
 }
 
 cObj("close_course_votehead").onclick = function (){

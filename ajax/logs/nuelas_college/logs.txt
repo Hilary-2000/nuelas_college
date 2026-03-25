@@ -1,3 +1,4 @@
+25th Mar 2026 12:08:38PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 24th Mar 2026 18:06:52PM : Fees structure has been modified. Votehead "Admission Fees" has been added successfully! - {ANN AKOTCH}
 24th Mar 2026 13:35:09PM : NYAROTSO PHANIS with admission number LC-2025-006 has been admitted successfully - {ANN AKOTCH}
 24th Mar 2026 13:31:58PM : Course start date option has been updated to "on_term_start_date" successfully! - {ANN AKOTCH}
