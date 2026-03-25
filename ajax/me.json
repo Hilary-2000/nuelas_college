@@ -62,6 +62,34 @@
         "weekend_fees": "5678",
         "evening_fees": "3000",
         "term_duration": "4",
-        "duration_intervals": "months"
+        "duration_intervals": "months",
+        "voteheads": [
+            {
+                "ids": "1",
+                "module": 1,
+                "voteheads": [
+                    {
+                        "ids": "1",
+                        "pay": true
+                    }
+                ]
+            },
+            {
+                "ids": "2",
+                "module": 2
+            },
+            {
+                "ids": "3",
+                "module": 3
+            },
+            {
+                "ids": "4",
+                "module": 4
+            },
+            {
+                "ids": "5",
+                "module": 5
+            }
+        ]
     }
 ]

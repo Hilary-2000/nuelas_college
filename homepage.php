@@ -945,8 +945,17 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="add_expense">
                     <div class="form-group my-2">
+                        <b>Note:</b>
+                        <ul>
+                            <li>Select only voteheads that you wish students doing this course would select.</li>
+                            <li>Once the voteheads are selected this will determine the amount the student pays!</li>
+                            <li>If a votehead selected is provisional, once you select it, it will be compulsory for the student to pay for that!</li>
+                        </ul>
+                    </div>
+                    <div class="form-group my-2">
                         <p><b>Course Level : </b><span id="course_level_votehead">Loading...</span></p>
                         <p><b>Course Name : </b><span id="course_name_voteheads">Loading...</span></p>
+                        <input type="hidden" name="course_votehead_holder" id="course_votehead_holder" value="[]">
                     </div>
                     <hr class="mx-auto">
                     <div class="form-group my-2">
