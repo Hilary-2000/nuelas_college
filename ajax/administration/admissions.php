@@ -3029,8 +3029,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                             // update the module term dates
                                             $module->start_date = date("YmdHis", strtotime($term_start_dates));
                                             $module->end_date = date("YmdHis", strtotime($term_end_dates));
-                                            echo date("Y-m-d", strtotime($module->start_date))." start date<br>";
-                                            echo date("Y-m-d", strtotime($module->end_date))." end date<br>";
                                         }
                                     }
                                 }
@@ -3424,25 +3422,22 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     // arrays
                     $courses = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
 
-                    // update where neccessary
-                    $new_courses = new stdClass();
-                    $new_courses->id = $course_id;
-                    $new_courses->course_name = $course_name;
-                    $new_courses->course_levels = $course_levels;
-                    $new_courses->department = $department_name;
-                    $new_courses->course_level = $course_level;
-                    $new_courses->no_of_terms = $no_of_terms;
-                    $new_courses->fulltime_fees = $fulltime_fees;
-                    $new_courses->weekend_fees = $weekend_fees;
-                    $new_courses->evening_fees = $evening_fees;
-                    $new_courses->term_duration = $term_duration;
-                    $new_courses->duration_intervals = $duration_intervals;
-
                     // add the courses
                     $new_course_data = [];
                     for($ind = 0; $ind < count($courses); $ind++){
                         if($courses[$ind]->id == $_GET['course_id']){
-                            array_push($new_course_data,$new_courses);
+                            $courses[$ind]->id = $course_id;
+                            $courses[$ind]->course_name = $course_name;
+                            $courses[$ind]->course_levels = $course_levels;
+                            $courses[$ind]->department = $department_name;
+                            $courses[$ind]->course_level = $course_level;
+                            $courses[$ind]->no_of_terms = $no_of_terms;
+                            $courses[$ind]->fulltime_fees = $fulltime_fees;
+                            $courses[$ind]->weekend_fees = $weekend_fees;
+                            $courses[$ind]->evening_fees = $evening_fees;
+                            $courses[$ind]->term_duration = $term_duration;
+                            $courses[$ind]->duration_intervals = $duration_intervals;
+                            array_push($new_course_data,$courses[$ind]);
                             continue;
                         }
                         array_push($new_course_data,$courses[$ind]);
@@ -3469,7 +3464,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                 $my_course_list = json_decode($result_row['my_course_list']);
                                 foreach($my_course_list as $course){
                                     if($course->course_status == 1){
-                                        foreach($course->module_terms as $course_module){
+                                        $new_course_module = [];
+                                        foreach($course->module_terms as $key => $course_module){
                                             $course_module->fulltime_cost = $fulltime_fees;
                                             $course_module->evening_cost = $evening_fees;
                                             $course_module->weekend_cost = $weekend_fees;
@@ -3483,6 +3479,41 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                                 $date->modify("+$term_duration $duration_intervals");
                                                 $new_end_date = $date->format("YmdHis");
                                                 $course_module->end_date = $new_end_date;
+                                            }
+
+                                            // REMOVE MODULES IN THE STUDENT COURSE LIST 
+                                            // IF THE CURRENT TERM IS MORE THAN THE NUMBER OF TERMS
+                                            if($key+1 <= $no_of_terms){
+                                                array_push($new_course_module, $course_module);
+                                            }
+                                        }
+
+                                        // NEW COURSE MODULE TERMS
+                                        $course->module_terms = $new_course_module;
+
+                                        // ADD MORE MODULE TERMS IN THE SYSTEM.
+                                        if(count($course->module_terms) < $no_of_terms){
+                                            // no of terms
+                                            $increase = $no_of_terms - count($course->module_terms);
+
+                                            // term details
+                                            $term_details = array(
+                                                "id" => $no_of_terms,
+                                                "term_name" => "MODULE ".$no_of_terms,
+                                                "status" => 0,
+                                                "start_date" => "",
+                                                "end_date" => "",
+                                                "fulltime_cost" => $fulltime_fees,
+                                                "evening_cost" => $evening_fees,
+                                                "weekend_cost" => $weekend_fees
+                                            );
+
+                                            // loop through terms
+                                            $current_term = count($course->module_terms)+1;
+                                            for($index = 0; $index < $increase; $index++){
+                                                $term_details['id'] = ($current_term*1)+$index;
+                                                $term_details['term_name'] = "MODULE ".$term_details['id'];
+                                                array_push($course->module_terms, $term_details);
                                             }
                                         }
                                     }
@@ -6382,7 +6413,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 if($row = $result->fetch_assoc()){
                     if($row['valued'] == "on_term_start_date"){
                         $current_term = getTermV3($conn2);
-                        $term_start_date = getAcademicStartV1($conn2,$term);
+                        $term_start_date = getAcademicStartV1($conn2,$current_term);
                         $course_start_date = date("YmdHis", strtotime($term_start_date[0]));
                     }
                 }
@@ -6432,7 +6463,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             if(isset($_POST['bcno'])){
                 $bcno = $_POST['bcno'];
             }
-                $parentemail = 'none';
+            $parentemail = 'none';
             if(isset($_POST['pemail'])){
                 $parentemail = $_POST['pemail'];
             }
@@ -6474,6 +6505,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $module_period = "0 days";
             $fulltime_cost = 0;
             $evening_cost = 0;
+            $course_voteheads = null;
             $weekend_cost = 0;
             $select = "SELECT * FROM `settings` WHERE `sett` = 'courses';";
             $stmt = $conn2->prepare($select);
@@ -6487,6 +6519,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             $module_terms = isset($courses[$index]->no_of_terms) ? $courses[$index]->no_of_terms : 0;
                             $module_period = isset($courses[$index]->term_duration) ? $courses[$index]->term_duration ." ". $courses[$index]->duration_intervals : "0 days";
                             // $term_cost = isset($courses[$index]->termly_fees) ? $courses[$index]->termly_fees : 0;
+                            $course_voteheads = isset($courses[$index]->voteheads) ? $courses[$index]->voteheads : null;
                             $fulltime_cost = isset($courses[$index]->fulltime_fees) ? $courses[$index]->fulltime_fees : 0;
                             $evening_cost = isset($courses[$index]->evening_fees) ? $courses[$index]->evening_fees : 0;
                             $weekend_cost = isset($courses[$index]->weekend_fees) ? $courses[$index]->weekend_fees : 0;
@@ -6497,6 +6530,18 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
             
             // ------------------------SET COURSE DETAILS----------------------------
+
+            // check if course update should affect the student
+            $select = "SELECT * FROM settings WHERE sett = 'course_update_options'";
+            $statement = $conn2->prepare($select);
+            $statement->execute();
+            $statement_result = $statement->get_result();
+            $course_update_options = "NO";
+            if($statement_result){
+                if($row_result = $statement_result->fetch_assoc()){
+                    $course_update_options = $row_result['valued'];
+                }
+            }
 
             // get the course name
             $course_name_chosen = $course_chosen;
@@ -6520,6 +6565,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $term->fulltime_cost = $fulltime_cost;
                 $term->evening_cost = $evening_cost;
                 $term->weekend_cost = $weekend_cost;
+
+                // ADD PREEXISTING VOTEHEADS
+                if($course_voteheads != null && $course_update_options == "YES"){
+                    foreach($course_voteheads as $course){
+                        if($course->module == $term->id){
+                            $term->voteheads = $course->voteheads;
+                        }
+                    }
+                }
                 array_push($course_detail->module_terms, $term);
             }
 
@@ -6834,6 +6888,83 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     
             echo "<p class='text-danger' id='error_edit_votehead' >An error has occured!!</p>";
             return 0;
+        }elseif(isset($_POST['update_course_voteheads'])){
+            $course_voteheads = $_POST['course_voteheads'];
+            $course_id = $_POST['course_id'];
+            $update_students = $_POST['update_students'];
+
+            // course list
+            $select = "SELECT * FROM `settings` WHERE sett = 'courses'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $course_list = null;
+            if($result){
+                while($row = $result->fetch_assoc()){
+                    $course_list = isJson_report($row['valued']) ? json_decode($row['valued']) : null;
+                }
+            }
+
+            if($course_list != null){
+                $course_voteheads = isJson_report($course_voteheads) ? json_decode($course_voteheads) : null;
+                if($course_voteheads != null){
+                    foreach($course_list as $course){
+                        if($course->id == $course_id){
+                            $course->voteheads = $course_voteheads;
+                        }
+                    }
+
+                    // update the settings table
+                    $update = "UPDATE `settings` SET `valued` = ? WHERE `sett` = 'courses'";
+                    $stmt = $conn2->prepare($update);
+                    $course_list = json_encode($course_list);
+                    $stmt->bind_param("s", $course_list);
+                    $stmt->execute();
+
+                    // update the students voteheads
+                    if($update_students == "yes"){
+                        // get the students doing that course
+                        $select = "SELECT * FROM student_data WHERE course_done = ?";
+                        $stmt = $conn2->prepare($select);
+                        $stmt->bind_param("s", $course_id);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        if($result){
+                            while($row = $result->fetch_assoc()){
+                                $course_list = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list']) : null;
+                                if($course_list != null){
+                                    foreach($course_list as $course){
+                                        if($course->course_name == $course_id && $course->course_status == 1){
+                                            $module_terms = $course->module_terms;
+                                            foreach($module_terms as $term){
+                                                // loop through the voteheads updated and set the correct votehead and module
+                                                foreach($course_voteheads as $course_vh){
+                                                    if($course_vh->ids == $term->id){
+                                                        $term->voteheads = $course_vh->voteheads;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // update 
+                                    $course_list = json_encode($course_list);
+                                    $update = "UPDATE student_data SET my_course_list = ? WHERE `ids` = ?";
+                                    $stmt = $conn2->prepare($update);
+                                    $stmt->bind_param("ss", $course_list, $row['ids']);
+                                    $stmt->execute();
+                                }
+                            }
+                        }
+                    }
+
+                    echo "<p class='text-success border border-success rounded p-1'>Course voteheads have been updated successfully!</p>";
+                    return;
+                }
+            }
+
+            echo "<p class='text-danger border border-danger rounded p-1'>An error has occured!</p>";
+            return;
         }elseif (isset($_POST['delete_student'])) {
             $std_id = $_POST['delete_student'];
             $student_data = getStudentData($std_id, $conn2);

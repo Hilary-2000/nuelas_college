@@ -10449,11 +10449,13 @@ function get_courses() {
 function votehead_management(){
     var this_id = this.id.substr(14);
     cObj("edit_course_voteheads").classList.remove("hide");
+    cObj("edit_student_voteheads").checked = false;
     var course_data = valObj("hidden_value_courses_"+this_id);
     if(hasJsonStructure(course_data)){
         course_data = JSON.parse(course_data);
         cObj("course_level_votehead").innerText = course_data.course_level_name;
         cObj("course_name_voteheads").innerText = course_data.course_name;
+        cObj("vh_course_id").value = course_data.id;
         cObj("course_votehead_holder").value = course_data.voteheads != undefined ? course_data.voteheads : [];
 
         // get the course voteheads
@@ -10476,9 +10478,12 @@ function votehead_management(){
 
             // ensure all check boxes are in the right state
             check_parent_boxes();
+
+            // paginate the table
+            // $('#course_votehead_table').DataTable();
         });
     }else{
-
+        cObj("course_voteheads_display").innerHTML = "<p class='text-danger p-2 border border-danger my-2'>An error has occured try again later!</p>";
     }
 }
 
@@ -10497,6 +10502,55 @@ function all_module_checkboxes(){
         }
     }
     check_parent_boxes();
+}
+
+cObj("save_course_voteheads").addEventListener("click", getVoteheadSelection);
+
+function getVoteheadSelection(){
+    var votehead_selection = [];
+    var edit_course_fees_vh = document.getElementsByClassName("edit_course_fees_vh");
+    for(var index_1 = 0; index_1 < edit_course_fees_vh.length; index_1++){
+        var votehead = document.getElementsByClassName(edit_course_fees_vh[index_1].id);
+        for(var index_2 = 0; index_2 < votehead.length; index_2++){
+            var votehead_details = {
+                votehead: votehead[index_2].className.substring(20),
+                pay: votehead[index_2].checked
+            }
+
+            // add votehead
+            votehead_selection = addVotehead(votehead_selection, votehead_details, votehead[index_2].value);
+        }
+    }
+
+    var datapass = "update_course_voteheads=true&course_voteheads="+encodeURIComponent(JSON.stringify(votehead_selection))+"&course_id="+valObj("vh_course_id")+"&update_students="+(cObj("edit_student_voteheads").checked ? "yes" : "no");
+    sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("course_votehead_error_handler"), cObj("loadings"),function(){
+        setTimeout(() => {
+            cObj("close_edit_course_voteheads").click();
+            cObj("course_votehead_error_handler").innerText = "";
+        }, 1000);
+    });
+}
+
+function addVotehead(votehead_selection, votehead_details, module_number){
+    var present = false;
+    var new_id = 0;
+    for(var index = 0; index < votehead_selection.length; index++){
+        if(votehead_selection[index].ids == module_number){
+            votehead_selection[index].voteheads.push(votehead_details);
+            present = true;
+        }
+        new_id = new_id > votehead_selection[index].ids ? new_id : votehead_selection[index].ids;
+    }
+
+    if(!present){
+        votehead_selection.push({
+            ids: new_id+1,
+            module: module_number,
+            voteheads: [votehead_details]
+        });
+    }
+
+    return votehead_selection;
 }
 
 function check_parent_boxes(){
