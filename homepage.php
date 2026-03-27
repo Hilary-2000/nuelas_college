@@ -956,6 +956,7 @@ function checkPresnt($array, $string){
                         <p><b>Course Level : </b><span id="course_level_votehead">Loading...</span></p>
                         <p><b>Course Name : </b><span id="course_name_voteheads">Loading...</span></p>
                         <input type="hidden" name="course_votehead_holder" id="course_votehead_holder" value="[]">
+                        <input type="hidden" name="vh_course_id" id="vh_course_id" value="0">
                     </div>
                     <hr class="mx-auto">
                     <div class="form-group my-2">
@@ -966,7 +967,11 @@ function checkPresnt($array, $string){
                     <div class="container" id="course_votehead_error_handler"></div>
                 </div>
                 <div class="btns">
-                    <button type="button" id='save_changed_evh'>Save Votehead Changes</button>
+                    <button type="button" id='save_course_voteheads'>Save Votehead Changes</button>
+                    <div class='form-group'>
+                        <input type="checkbox" id="edit_student_voteheads">
+                        <label for="edit_student_voteheads" class="form-control-label"><b>Edit Student Voteheads?</b></label>
+                    </div>
                     <button type="button" id="close_course_votehead">Close</button>
                 </div>
             </div>

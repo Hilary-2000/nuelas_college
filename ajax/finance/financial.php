@@ -6171,13 +6171,13 @@
         foreach($course_voteheads as $votehead_module){
             if($module_number == $votehead_module['module']){
                 foreach($votehead_module['voteheads'] as $votehead){
-                    if($votehead['ids'] == $votehead_id && $votehead['pay']){
+                    if($votehead['votehead'] == $votehead_id && $votehead['pay']){
                         return "checked";
                     }
                 }
             }
         }
-        return $votehead_type != "provisional" ? "checked" : "";
+        return count($course_voteheads) == 0 ? ($votehead_type != "provisional" ? "checked" : "") : "";
     }
 
     function deleteFile($filePath) {
