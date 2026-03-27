@@ -1,3 +1,51 @@
+27th Mar 2026 19:46:18PM : TERESIA NJERI with admission number LC-2025-009 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 19:44:57PM : KELVIN KAMAU with admission number LC-2025-008 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 19:43:32PM : PETER MUTUKU with admission number LC-2025-007 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 19:42:48PM : Owen Malingu of Reg No (LC-2025-010) discounts have been updated successfully - {ANN AKOTCH}
+27th Mar 2026 19:42:40PM : Peter Mugi of Reg No (LC-2025-009) discounts have been updated successfully - {ANN AKOTCH}
+27th Mar 2026 19:42:35PM : Peter Kimani of Reg No (LC-2025-008) discounts have been updated successfully - {ANN AKOTCH}
+27th Mar 2026 19:42:30PM : Jayden Kamau of Reg No (LC-2025-007) discounts have been updated successfully - {ANN AKOTCH}
+27th Mar 2026 19:38:25PM : OWEN MALINGU with admission number LC-2025-010 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 19:35:09PM : PETER MUGI with admission number LC-2025-009 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 19:33:49PM : John Karume of Reg No (LC-2025-009) discounts have been updated successfully - {ANN AKOTCH}
+27th Mar 2026 19:33:44PM : Peter Mugi of Reg No (LC-2025-010) discounts have been updated successfully - {ANN AKOTCH}
+27th Mar 2026 19:30:44PM : PETER MUGI with admission number LC-2025-010 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 19:20:19PM : Academic calender has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 19:15:45PM : JOHN KARUME with admission number LC-2025-009 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 19:14:12PM : PETER KIMANI with admission number LC-2025-008 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 19:10:40PM : JAYDEN KAMAU with admission number LC-2025-007 has been admitted successfully - {ANN AKOTCH}
+27th Mar 2026 18:34:03PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 18:33:43PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 18:33:08PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 18:31:41PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 18:11:02PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 18:10:20PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:56:42PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:56:20PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:55:52PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:53:37PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:53:07PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:52:18PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:51:40PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:50:36PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 17:17:02PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 16:40:01PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 16:39:30PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 16:37:51PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 16:37:22PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 16:37:13PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:52:15PM : Course "Fashion & Design" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:51:59PM : Course "Fashion & Design" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:45:10PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:44:45PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:44:34PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:39:32PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:38:47PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:38:21PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:38:07PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 15:37:57PM : Course "FASHION AND DESIGN" has been updated successfully with permission to update the student information! - {ANN AKOTCH}
+27th Mar 2026 14:24:19PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+27th Mar 2026 10:13:10AM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 25th Mar 2026 12:08:38PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
 24th Mar 2026 18:06:52PM : Fees structure has been modified. Votehead "Admission Fees" has been added successfully! - {ANN AKOTCH}
 24th Mar 2026 13:35:09PM : NYAROTSO PHANIS with admission number LC-2025-006 has been admitted successfully - {ANN AKOTCH}
