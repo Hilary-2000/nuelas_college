@@ -435,7 +435,7 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts d-none">
+            <div class="conts">
                 <button class="navButs htbtn">Human Resource<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc hide">
