@@ -833,7 +833,6 @@ function income_statement_quarterly(year) {
     sendData1("GET", "finance/financial.php", datapass, cObj("finance_statements"));
 }
 
-
 cObj("confirmyes").onclick = function () {
     // add sms functionality to the payment system
     var trancode = '';

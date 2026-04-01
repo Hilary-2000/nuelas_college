@@ -47,29 +47,16 @@ cObj("send_email_button").onclick = function () {
             if (err == 0) {
                 cObj("email_send_errors").innerHTML = "";
                 var datapass = "send_mail_to=" + valObj("staff_email_addressess") + "&cc=" + valObj("carbon_copy1") + "&bcc=" + valObj("blind_carbon_copy1") + "&message=" + encodeURIComponent(myContent) + "&email_header=" + valObj("email_header");
-                sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("email_send_errors"), cObj("load_email_sending"));
-                setTimeout(() => {
-                    var timeout = 0;
-                    var id23w = setInterval(() => {
-                        timeout++;
-                        //after two minutes of slow connection the next process wont be executed
-                        if (timeout == 1200) {
-                            stopInterval(id23w);
-                        }
-                        if (cObj("loadings").classList.contains("hide")) {
-                            CKEDITOR.instances['email_messages'].setData('');
-                            cObj("staff_email_addressess").value = "";
-                            cObj("carbon_copy1").value = "";
-                            cObj("blind_carbon_copy1").value = "";
-                            cObj("email_header").value = "";
-                            setTimeout(() => {
-                                cObj("email_send_errors").innerHTML = "";
-                            }, 4000);
-                            stopInterval(id23w);
-
-                        }
-                    }, 100);
-                }, 200);
+                sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("email_send_errors"), cObj("load_email_sending"), function () {
+                    CKEDITOR.instances['email_messages'].setData('');
+                    cObj("staff_email_addressess").value = "";
+                    cObj("carbon_copy1").value = "";
+                    cObj("blind_carbon_copy1").value = "";
+                    cObj("email_header").value = "";
+                    setTimeout(() => {
+                        cObj("email_send_errors").innerHTML = "";
+                    }, 4000);
+                });
             } else {
                 cObj("email_send_errors").innerHTML = "<p class='text-danger'>Please ensure that all the neccessary fields are filled!</p>";
             }
@@ -81,29 +68,16 @@ cObj("send_email_button").onclick = function () {
             if (err == 0) {
                 cObj("email_send_errors").innerHTML = "";
                 var datapass = "send_mail_to=" + valObj("select_staff_emails") + "&cc=" + valObj("carbon_copy1") + "&bcc=" + valObj("blind_carbon_copy1") + "&message=" + encodeURIComponent(myContent) + "&email_header=" + valObj("email_header");
-                sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("email_send_errors"), cObj("load_email_sending"));
-                setTimeout(() => {
-                    var timeout = 0;
-                    var id23w = setInterval(() => {
-                        timeout++;
-                        //after two minutes of slow connection the next process wont be executed
-                        if (timeout == 1200) {
-                            stopInterval(id23w);
-                        }
-                        if (cObj("loadings").classList.contains("hide")) {
-                            CKEDITOR.instances['email_messages'].setData('');
-                            // cObj("select_staff_emails").value = "";
-                            cObj("carbon_copy1").value = "";
-                            cObj("blind_carbon_copy1").value = "";
-                            cObj("email_header").value = "";
-                            setTimeout(() => {
-                                cObj("email_send_errors").innerHTML = "";
-                            }, 4000);
-                            stopInterval(id23w);
-
-                        }
-                    }, 100);
-                }, 200);
+                sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("email_send_errors"), cObj("load_email_sending"), function () {
+                    CKEDITOR.instances['email_messages'].setData('');
+                    // cObj("select_staff_emails").value = "";
+                    cObj("carbon_copy1").value = "";
+                    cObj("blind_carbon_copy1").value = "";
+                    cObj("email_header").value = "";
+                    setTimeout(() => {
+                        cObj("email_send_errors").innerHTML = "";
+                    }, 4000);
+                });
             } else {
                 cObj("email_send_errors").innerHTML = "<p class='text-danger'>Please ensure that all the neccessary fields are filled!</p>";
             }
@@ -126,51 +100,13 @@ cObj("send_sms_btns").onclick = function () {
                 cObj("out_put22").innerHTML = "";
                 //send data to the database
                 var datapass = "?send_sms=true&phone_no=" + valObj("staff_phones") + "&message=" + encodeURIComponent(valObj("text_message"));
-                //var datapass = "?message="+valObj("text_message")+"&mobile="+valObj("staff_phones")+"&shortcode=JuaMobile&partnerID=3468&apikey=9dbd3d8b9ae3d183db6598e815d66f12";
-                //var link = "https://quicksms.advantasms.com/api/services/sendsms/";
-                //sendData4("POST",link,datapass,cObj("out_put22"));
-                sendData1("GET", "sms/sms.php", datapass, cObj("out_put22"));
-                setTimeout(() => {
-                    var timeout = 0;
-                    var id23w = setInterval(() => {
-                        timeout++;
-                        //after two minutes of slow connection the next process wont be executed
-                        if (timeout == 1200) {
-                            stopInterval(id23w);
-                        }
-                        if (cObj("loadings").classList.contains("hide")) {
-                            //get the message description
-                            if (cObj("out_put22").innerText.length > 0) {
-                                var sms_data = cObj("out_put22").innerText;
-                                stopInterval(id23w);
-                                var data = JSON.parse(sms_data);
-                                if (Array.isArray(data.responses)) {
-                                    cObj("out_put22").innerHTML = "<p class='green_notice'>" + data.responses[0]['response-description'] + "fully sent.</p>";
-                                    //record the sms sent
-                                    var datapass = "?sms_val=true&message_type=Multicast&message_count=1&recipient_no=" + valObj("staff_phones") + "&text_message=" + valObj("text_message");
-                                    sendData1("GET", "sms/sms.php", datapass, cObj("out_put223"));
-                                    //clear text
-                                    cObj("text_message").value = "";
-                                    cObj("staff_phones").value = "";
-                                    setTimeout(() => {
-                                        cObj("out_put22").innerText = "";
-                                    }, 10000);
-                                } else {
-                                    if (data['response-description'] != undefined) {
-                                        cObj("out_put223").innerHTML = "<p class='red_notice'>" + data['response-description'] + "</p>";
-                                    } else if (data['message'] != undefined) {
-                                        cObj("out_put223").innerHTML = "<p class='red_notice'>" + data['message'] + "</p>";
-                                    } else {
-                                        cObj("out_put223").innerHTML = "<p class='red_notice'>Inssufficient balance</p>";
-                                    }
-                                }
-                            } else {
-                                cObj("out_put223").innerHTML = "<p class='red_notice'>Can`t connect to the sms server!</p>";
-                            }
-                            stopInterval(id23w);
-                        }
-                    }, 100);
-                }, 200);
+                sendData1("GET", "sms/sms.php", datapass, cObj("out_put22"), function () {
+                    cObj("text_message").value = "";
+                    cObj("staff_phones").value = "";
+                    setTimeout(() => {
+                        cObj("out_put22").innerHTML = "";
+                    }, 3000);
+                });
             } else {
                 cObj("out_put22").innerHTML = "<p class='red_notice'>Please fill all field covered with a red border</p>";
             }
@@ -181,44 +117,13 @@ cObj("send_sms_btns").onclick = function () {
                 cObj("out_put22").innerHTML = "";
                 //send data to the database
                 var datapass = "?send_sms=true&phone_no=" + valObj("select_staff_sms") + "&message=" + encodeURIComponent(valObj("text_message"));
-                //var datapass = "?message="+valObj("select_staff_sms")+"&mobile="+valObj("text_message")+"&shortcode=JuaMobile&partnerID=3468&apikey=9dbd3d8b9ae3d183db6598e815d66f12";
-                //var link = "https://quicksms.advantasms.com/api/services/sendsms/";
-                //sendData4("POST",link,datapass,cObj("out_put22"));
-                sendData1("GET", "sms/sms.php", datapass, cObj("out_put22"));
-                setTimeout(() => {
-                    var timeout = 0;
-                    var id23w = setInterval(() => {
-                        timeout++;
-                        //after two minutes of slow connection the next process wont be executed
-                        if (timeout == 1200) {
-                            stopInterval(id23w);
-                        }
-                        if (cObj("loadings").classList.contains("hide")) {
-                            //get the message description
-                            if (cObj("out_put22").innerText.length > 0) {
-                                var sms_data = cObj("out_put22").innerText;
-                                stopInterval(id23w);
-                                var data = JSON.parse(sms_data);
-                                if (Array.isArray(data.responses)) {
-                                    cObj("out_put22").innerHTML = "<p class='green_notice'>" + data.responses[0]['response-description'] + "fully sent.</p>";
-                                    //record the sms sent
-                                    var datapass = "?sms_val=true&message_type=Multicast&message_count=1&recipient_no=" + valObj("select_staff_sms") + "&text_message=" + valObj("text_message");
-                                    sendData1("GET", "sms/sms.php", datapass, cObj("out_put223"));
-                                    //clear text
-                                    cObj("text_message").value = "";
-                                    setTimeout(() => {
-                                        cObj("out_put22").innerText = "";
-                                    }, 10000);
-                                } else {
-                                    cObj("out_put223").innerHTML = "<p class='red_notice'>" + data['response-description'] + "</p>";
-                                }
-                            } else {
-                                cObj("out_put223").innerHTML = "<p class='red_notice'>Can`t connect to the sms server!</p>";
-                            }
-                            stopInterval(id23w);
-                        }
-                    }, 100);
-                }, 200);
+                sendData1("GET", "sms/sms.php", datapass, cObj("out_put22"), function () {
+                    cObj("text_message").value = "";
+                    cObj("select_staff_sms").children[0].selected = true;
+                    setTimeout(() => {
+                        cObj("out_put22").innerHTML = "";
+                    }, 3000);
+                });
             } else {
                 cObj("out_put22").innerHTML = "<p class='red_notice'>Please fill all field covered with a red border</p>";
             }
@@ -525,27 +430,13 @@ cObj("send_msg_btns").onclick = function () {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'></p>";
                     data = data.substr(0, data.length - 1);
                     var datapass = "?tr_ids_excempt=" + data + "&messages=" + encodeURIComponent(valObj("text_message2"));
-                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"));
-                    setTimeout(() => {
-                        var timeout = 0;
-                        var id23w = setInterval(() => {
-                            timeout++;
-                            //after two minutes of slow connection the next process wont be executed
-                            if (timeout == 1200) {
-                                stopInterval(id23w);
-                            }
-                            if (cObj("loadings").classList.contains("hide")) {
-                                setTimeout(() => {
-                                    cObj("err_hands_error").innerText = "";
-                                    //cObj("parents_lists_nm").classList.add("hide");
-                                    //cObj("cl_list_msg").classList.add("hide");
-                                    cObj("message_samples").innerHTML = "";
-                                    cObj("text_message2").value = "";
-                                }, 10000);
-                                stopInterval(id23w);
-                            }
-                        }, 100);
-                    }, 200);
+                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"), function () {
+                        cObj("text_message2").value = "";
+                        cObj("message_samples").innerHTML = "";
+                        setTimeout(() => {
+                            cObj("err_hands_error").innerText = "";
+                        }, 4000);
+                    });
                 } else {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select atleast one staff to send a message!</p>";
                 }
@@ -555,7 +446,14 @@ cObj("send_msg_btns").onclick = function () {
                     cObj("err_hands_error").innerHTML = "";
                     var data = cObj("seleceted_class").innerText;
                     var datapass = "?parents_ids_excempt=" + data + "&messages=" + encodeURIComponent(valObj("text_message2")) + "&to_whom=" + valObj("send_to_whom");
-                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"));
+                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"), function () {
+                        cObj("text_message2").value = "";
+                        cObj("message_samples").innerHTML = "";
+                        cObj("send_to_whom").children[0].selected = true;
+                        setTimeout(() => {
+                            cObj("err_hands_error").innerText = "";
+                        }, 4000);
+                    });
                 } else {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select which parents you will want to send SMS.</p>";
                 }
@@ -591,27 +489,13 @@ cObj("send_msg_btns").onclick = function () {
                     data = data.substr(0, data.length - 1);
                     var datapass = "?teacher_sms_id_group=" + data + "&messages=" + encodeURIComponent(CKEDITOR.instances.email_editored.getData()) + "&email_subject=" + valObj("email_bulk_subject") + "&email_cc=" + valObj("cc_email_bulk") + "&email_bcc=" + valObj("bcc_email_bulk");
                     // console.log(datapass);
-                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"));
-                    setTimeout(() => {
-                        var timeout = 0;
-                        var id23w = setInterval(() => {
-                            timeout++;
-                            //after two minutes of slow connection the next process wont be executed
-                            if (timeout == 1200) {
-                                stopInterval(id23w);
-                            }
-                            if (cObj("loadings").classList.contains("hide")) {
-                                CKEDITOR.instances['email_editored'].setData("");
-                                setTimeout(() => {
-                                    cObj("err_hands_error").innerText = "";
-                                    //cObj("parents_lists_nm").classList.add("hide");
-                                    //cObj("cl_list_msg").classList.add("hide");
-                                    cObj("message_samples").innerHTML = "";
-                                }, 10000);
-                                stopInterval(id23w);
-                            }
-                        }, 100);
-                    }, 200);
+                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"), function () {
+                        CKEDITOR.instances['email_editored'].setData("");
+                        setTimeout(() => {
+                            cObj("err_hands_error").innerText = "";
+                            cObj("message_samples").innerHTML = "";
+                        }, 4000);
+                    });
                 } else {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select atleast one staff so that you can send the email!</p>";
                 }
@@ -623,7 +507,13 @@ cObj("send_msg_btns").onclick = function () {
                     cObj("err_hands_error").innerHTML = "";
                     var data = cObj("seleceted_class").innerText;
                     var datapass = "?parents_ids_excempt_email=" + data + "&messages=" + encodeURIComponent(emeil_message) + "&to_whom=" + valObj("send_to_whom") + "&cc=" + valObj("cc_email_bulk") + "&bcc=" + valObj("bcc_email_bulk") + "&subject=" + valObj("email_bulk_subject");
-                    sendData2("GET", "sms/sms.php", datapass, cObj("err_hands_error"), cObj("load_bulk_emails_sending"));
+                    sendData2("GET", "sms/sms.php", datapass, cObj("err_hands_error"), cObj("load_bulk_emails_sending"), function () {
+                        CKEDITOR.instances['email_editored'].setData('');
+                        setTimeout(() => {
+                            cObj("err_hands_error").innerText = "";
+                            cObj("message_samples").innerHTML = "";
+                        }, 4000);
+                    });
                     cObj("err_hands_error").innerHTML = "<p class='text-success'>Sending bulk E-Mails can take some time. <br>Kindly be patient as the process is done by the system</p>";
                 } else {
                     cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select which parents you will want to send SMS.</p>";
