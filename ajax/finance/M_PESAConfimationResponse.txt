@@ -362,3 +362,16 @@
             "MSISDN": "256ba4bdab7e75c9fb99cf9af551b2a8c970777a098d61262a137b8ae59d7b99",
             "FirstName": "HILLARY"
         }
+[2026-04-01 18:21:53] {
+    "TransactionType": "Pay Bill",
+    "TransID": "TJ1NG678KC",
+    "TransTime": "20251001104523",
+    "TransAmount": "10.00",
+    "BusinessShortCode": "112233",
+    "BillRefNumber": "NC-2026-002",
+    "InvoiceNumber": "",
+    "OrgAccountBalance": "25507.00",
+    "ThirdPartyTransID": "",
+    "MSISDN": "256ba4bdab7e75c9fb99cf9af551b2a8c970777a098d61262a137b8ae59d7b99",
+    "FirstName": "FRIDAH"
+}
