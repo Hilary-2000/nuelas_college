@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 28th Mar 2026 12:08:51PM : LAWRENCE ONYANGO with admission number LC-2025-010 has been admitted successfully - {ANN AKOTCH}
 28th Mar 2026 12:06:58PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+=======
+01st Apr 2026 19:07:26PM : Transaction for "John Warikoi" Reg No "NC-2026-002" has been completed successfully! - {ANN AKOTCH}
+01st Apr 2026 18:29:48PM : JAMES GACUCA with admission number LC-2025-011 has been admitted successfully - {ANN AKOTCH}
+01st Apr 2026 14:57:36PM : 1 Message sent to "0743551250"! - {ANN AKOTCH}
+01st Apr 2026 14:29:57PM : ANN AKOTCH successfully logged into the system as Principal - {ANN AKOTCH}
+>>>>>>> 0ae5bf3 (SMS Agent for college)
 27th Mar 2026 19:46:18PM : TERESIA NJERI with admission number LC-2025-009 has been admitted successfully - {ANN AKOTCH}
 27th Mar 2026 19:44:57PM : KELVIN KAMAU with admission number LC-2025-008 has been admitted successfully - {ANN AKOTCH}
 27th Mar 2026 19:43:32PM : PETER MUTUKU with admission number LC-2025-007 has been admitted successfully - {ANN AKOTCH}
