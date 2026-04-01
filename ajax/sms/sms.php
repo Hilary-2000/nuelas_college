@@ -190,34 +190,44 @@
                 }
             }
         }elseif (isset($_GET['send_sms'])) {
-            include("../../sms_apis/sms.php");
+            // check FUP
+            include_once("../../sms_apis/sms.php");
+            include_once("../../connections/conn1.php");
+            $fup_limit = 1000;
+            // if($fup_limit < 0){
+            //     echo "<p class='red_notice'>Your SMS limit for this term is reached, kindly contact your administrator, standard FUP policy applies!</p>";
+            //     exit();
+            // }
             $phone_number = $_GET['phone_no'];
             $message = $_GET['message'];
-            $school = 1;
-            $api_key = getApiKeySms($conn2);
-            //check if the school has its own api keys
-            if ($api_key == 0) {
-                $school = 0;
-                $api_key = getApiKeySms($conn);
+            
+            if(strlen($phone_number) < 10){
+                echo "<p class='red_notice'>Invalid phone number!</p>";
+                exit();
             }
-            //echo $api_key;
-            if ($api_key !== 0) {
-                    if ($school == 0) {
-                        $partnerID = getPatnerIdSms($conn);
-                        $shortcodes = getShortCodeSms($conn);
-                        $send_sms_url = getUrlSms($conn);
-                    }else {
-                        $partnerID = getPatnerIdSms($conn2);
-                        $shortcodes = getShortCodeSms($conn2);
-                        $send_sms_url = getUrlSms($conn2);
-                    }
-                //send sms
-                echo sendSmsToClient($phone_number,$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
 
-                // save sms
-            }else {
-                echo "<p class='red_notice'>Activate your sms account!</p>";
+            // SEND MESSAGE
+            $message_count = "1";
+            $message_undelivered = "0";
+            $message_type = "Broadcast";
+            $message_desc = $message;
+            if (strlen($message) > 45) {
+                $message_desc = substr($message,0,45)."...";
             }
+            $date = date("Y-m-d");
+
+            $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`, `message_status`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            $stmt = $conn2->prepare($insert);
+            $message_status = $fup_limit <= 0 ? "sent" : "pending";
+            $stmt->bind_param("ssssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$phone_number,$message,$phone_number, $message_status);
+            $stmt->execute();
+
+            // TRIGGER SMS AGENT
+            trigger_sms_agent();
+            $log_message = "1 Message sent to \"".$phone_number."\"!";
+            log_SMS($log_message);
+            echo "<p class='green_notice'>Message has been sent successfully!</p>";
+            exit();
         }elseif (isset($_GET['check_delivery'])) {
             include("../../sms_apis/sms.php");
             $message_id = $_GET['message_id'];
@@ -428,17 +438,14 @@
                     }
                 }
             }
-            // echo json_encode($staff_data);
 
-            // already excempted those that are not to get the message
-            // send the message to those who are to be sent the message
-            $email_counts = 0;
-            $email_errors = 0;
+            // settings
             $select = "SELECT * FROM `settings` WHERE `sett` = 'email_setup';";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $stmt->store_result();
             $rnums = $stmt->num_rows;
+            $email_username = "";
             if ($rnums > 0) {
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -453,81 +460,39 @@
                             $email_username = $email_sets->email_username;
                             $email_password = $email_sets->email_password;
                             $tester_mail = $email_sets->tester_mail;
-
-                            // try sending an email
-                            for ($index=0; $index < count($staff_data); $index++) {
-                                try {
-                                    $mail = new PHPMailer(true);
-                                    $staff_email = $staff_data[$index]['email'];
-                                    $mail->isSMTP();
-                                    // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-                                    // $mail->Host = 'smtp.gmail.com';
-                                    $mail->Host = $email_host_addr;
-                                    $mail->SMTPAuth = true;
-                                    // $mail->Username = "hilaryme45@gmail.com";
-                                    // $mail->Password = "cmksnyxqmcgtncxw";
-                                    $mail->Username = $email_username;
-                                    $mail->Password = $email_password;
-                                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
-                                    $mail->Port = 587;
-                                    
-                                    
-                                    
-                                    if (strlen(trim($staff_email)) > 0) {
-                                        // set the email sender
-                                        // echo $staff_email;
-                                        $mail->setFrom($email_username,$sender_name);
-
-                                        // set email recepient
-                                        $mail->addAddress($staff_email);
-
-                                        // bcc and cc settings
-                                        $cc = isset($_GET['email_cc']) ? $_GET['email_cc'] : "";
-                                        $bcc = isset($_GET['email_bcc']) ? $_GET['email_bcc'] : "";
-                                        if(strlen(trim($_GET['email_cc'])) > 0) {
-                                            $mail->addCC($cc);
-                                        }
-                                        if(strlen(trim($_GET['email_bcc'])) > 0) {
-                                            $mail->addBCC($bcc);
-                                        }
-
-                                        // allow HTML
-                                        $mail->isHTML(true);
-
-                                        // SET SUBJECT
-                                        $mail->Subject = $_GET['email_subject'];
-
-                                        // SET BODY
-                                        $mail->Body = $_GET['messages'];
-                                        $mail->send();
-                                        
-                                        $email_counts++;
-                                        
-    
-                                        // save the email details
-                                        // save the email address sent
-                                        $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
-                                        $stmt = $conn2->prepare($insert);
-                                        $dates = date("YmdHis",strtotime("3 hours"));
-                                        $stmt->bind_param("sssssss",$email_username,$staff_email,$bcc,$dates,$_GET['email_subject'],$_GET['messages'],$cc);
-                                        $stmt->execute();
-                                    }else {
-                                        $email_errors++;
-                                    }
-                                } catch (Exception $th) {
-                                    $email_errors++;
-                                    echo "<p class='text-danger p-1 border border-danger'>Error : ". $mail->ErrorInfo."</p>";
-                                }
-                            }
-                            
                         }else{
-                            echo "<p class='text-danger border border-danger p-1'>The Email address has not been set up properly, Delete the current setting and redo the process again!</p>";
+                            echo "<p class='text-danger border border-danger p-2 rounded'>The Email address has not been set up properly, Delete the current setting and redo the process again!</p>";
+                            return;
                         }
                     }
                 }
             }else{
-                echo "<p class='text-danger border border-danger'>The Email address has not been set up properly, Delete the current setting and redo the process again!</p>";
+                echo "<p class='text-danger border border-danger p-2 rounded'>The Email address has not been set up properly, Delete the current setting and redo the process again!</p>";
             }
+            
+            // try sending an email
+            for ($index=0; $index < count($staff_data); $index++) {
+                $staff_email = $staff_data[$index]['email'];
+                if (strlen(trim($staff_email)) > 0) {
+                    // bcc and cc settings
+                    $cc = isset($_GET['email_cc']) ? $_GET['email_cc'] : "";
+                    $bcc = isset($_GET['email_bcc']) ? $_GET['email_bcc'] : "";
+                    $email_counts++;
+                    
+                    // save the email details
+                    $insert = "INSERT INTO `email_address` (`sender_from`, `recipient_to`, `bcc`, `date_time`, `message_subject`, `message`, `cc`) VALUES (?,?,?,?,?,?,?)";
+                    $stmt = $conn2->prepare($insert);
+                    $dates = date("YmdHis");
+                    $stmt->bind_param("sssssss", $email_username, $staff_email, $bcc, $dates, $_GET['email_subject'], $_GET['messages'], $cc);
+                    $stmt->execute();
+                }else {
+                    $email_errors++;
+                }
+            }
+
+            // already excempted those that are not to get the message
+            // send the message to those who are to be sent the message
+            trigger_email_agent();
             echo "<p class='text-success'>Emails sent successfully <br>".$email_counts." Success! <br><span class='text-danger'>".$email_errors." Not Sent!</span></p>";
         }elseif (isset($_GET['tr_ids_excempt'])) {
             // include SMS
@@ -697,228 +662,81 @@
                             $email_password = $email_sets->email_password;
                             $tester_mail = $email_sets->tester_mail;
 
-                            // send email
-                            // get the students parent email address data
-                            for ($index=0; $index < count($students_data); $index++) {
-                                $email_primary = $students_data[$index]['parent_email'];
-                                $secondary_mail = $students_data[$index]['parent_email2'];
-                                // send the email
-                                $messages = $_GET['messages'];
-                                $to_whom = $_GET['to_whom'];
-                                $cc = $_GET['cc'];
-                                $bcc = $_GET['bcc'];
-                                $subject = $_GET['subject'];
-                                try {
-                                    if (strlen(trim($email_primary)) > 0 || strlen(trim($secondary_mail)) > 0) {
-                                        // set the email sender
-                                        // echo $staff_email;
-
-                                        // set email recepient
-                                        if ($to_whom == "primary") {
-                                            $mail = new PHPMailer(true);
-                                            // $staff_email = $staff_data[$index]['email'];
-                                            $mail->isSMTP();
-                                            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-                                            // $mail->Host = 'smtp.gmail.com';
-                                            $mail->Host = $email_host_addr;
-                                            $mail->SMTPAuth = true;
-                                            // $mail->Username = "hilaryme45@gmail.com";
-                                            // $mail->Password = "cmksnyxqmcgtncxw";
-                                            $mail->Username = $email_username;
-                                            $mail->Password = $email_password;
-                                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
-                                            $mail->Port = 587;
-                                            
-                                            $mail->setFrom($email_username,$sender_name);
-
-                                            strlen(trim($email_primary)) > 0 ? $mail->addAddress($email_primary) : "";
-                                            // $mail->addAddress($staff_email);
-    
-                                            // bcc and cc settings
-                                            if(strlen(trim($cc)) > 0) {
-                                                $mail->addCC($cc);
-                                            }
-                                            if(strlen(trim($bcc)) > 0) {
-                                                $mail->addBCC($bcc);
-                                            }
-    
-                                            // allow HTML
-                                            $mail->isHTML(true);
-    
-                                            // SET SUBJECT
-                                            $subject = process_sms($students_data,$subject,$students_data[$index]['adm_no'],$conn2,"primary");
-                                            $mail->Subject = $subject;
-    
-                                            // SET BODY
-                                            $messages = process_sms($students_data,$messages,$students_data[$index]['adm_no'],$conn2,"primary");
-                                            $mail->Body = $messages;
-                                            $mail->send();
-                                        
-                                            $email_counts++;
-                                            
-                                            // save the email address sent
-                                            $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
-                                            $stmt = $conn2->prepare($insert);
-                                            $dates = date("YmdHis",strtotime("3 hours"));
-                                            $stmt->bind_param("sssssss",$email_username,$email_primary,$bcc,$dates,$subject,$messages,$cc);
-                                            $stmt->execute();
-                                        }elseif ($to_whom == "secondary") {
-                                            $mail = new PHPMailer(true);
-                                            // $staff_email = $staff_data[$index]['email'];
-                                            $mail->isSMTP();
-                                            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-                                            // $mail->Host = 'smtp.gmail.com';
-                                            $mail->Host = $email_host_addr;
-                                            $mail->SMTPAuth = true;
-                                            // $mail->Username = "hilaryme45@gmail.com";
-                                            // $mail->Password = "cmksnyxqmcgtncxw";
-                                            $mail->Username = $email_username;
-                                            $mail->Password = $email_password;
-                                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
-                                            $mail->Port = 587;
-                                            
-                                            $mail->setFrom($email_username,$sender_name);
-                                            strlen(trim($secondary_mail)) > 0 ? $mail->addAddress($secondary_mail) : "";
-                                            // bcc and cc settings
-                                            if(strlen(trim($cc)) > 0) {
-                                                $mail->addCC($cc);
-                                            }
-                                            if(strlen(trim($bcc)) > 0) {
-                                                $mail->addBCC($bcc);
-                                            }
-    
-                                            // allow HTML
-                                            $mail->isHTML(true);
-    
-                                            // SET SUBJECT
-                                            $subject = process_sms($students_data,$subject,$students_data[$index]['adm_no'],$conn2,"secondary");
-                                            $mail->Subject = $subject;
-    
-                                            // SET BODY
-                                            $messages = process_sms($students_data,$messages,$students_data[$index]['adm_no'],$conn2,"secondary");
-                                            $mail->Body = $messages;
-                                            $mail->send();
-                                        
-                                            $email_counts++;
-                                            
-                                            // save the email address sent
-                                            $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
-                                            $stmt = $conn2->prepare($insert);
-                                            $dates = date("YmdHis",strtotime("3 hours"));
-                                            $stmt->bind_param("sssssss",$email_username,$secondary_mail,$bcc,$dates,$subject,$messages,$cc);
-                                            $stmt->execute();
-                                        }else{
-                                            $mail = new PHPMailer(true);
-                                            // $staff_email = $staff_data[$index]['email'];
-                                            $mail->isSMTP();
-                                            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-                                            // $mail->Host = 'smtp.gmail.com';
-                                            $mail->Host = $email_host_addr;
-                                            $mail->SMTPAuth = true;
-                                            // $mail->Username = "hilaryme45@gmail.com";
-                                            // $mail->Password = "cmksnyxqmcgtncxw";
-                                            $mail->Username = $email_username;
-                                            $mail->Password = $email_password;
-                                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
-                                            $mail->Port = 587;
-                                            
-                                            $mail->setFrom($email_username,$sender_name);
-                                            $email_messages = $messages;
-                                            // SEND TO PRIMARY PARENT
-                                            strlen(trim($email_primary)) > 0 ? $mail->addAddress($email_primary) : "";
-                                            // bcc and cc settings
-                                            if(strlen(trim($cc)) > 0) {
-                                                $mail->addCC($cc);
-                                            }
-                                            if(strlen(trim($bcc)) > 0) {
-                                                $mail->addBCC($bcc);
-                                            }
-    
-                                            // allow HTML
-                                            $mail->isHTML(true);
-    
-                                            // SET SUBJECT
-                                            $subject = process_sms($students_data,$subject,$students_data[$index]['adm_no'],$conn2,"primary");
-                                            $mail->Subject = $subject;
-    
-                                            // SET BODY
-                                            $messages = process_sms($students_data,$email_messages,$students_data[$index]['adm_no'],$conn2,"primary");
-                                            $mail->Body = $messages;
-                                            $mail->send();
-                                        
-                                            $email_counts++;
-                                            
-                                            // save the email address sent
-                                            $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
-                                            $stmt = $conn2->prepare($insert);
-                                            $dates = date("YmdHis",strtotime("3 hours"));
-                                            $stmt->bind_param("sssssss",$email_username,$email_primary,$bcc,$dates,$subject,$messages,$cc);
-                                            $stmt->execute();
-
-
-                                            // SEND TO SECONDARY PARENT
-                                            $mail2 = new PHPMailer(true);
-                                            // $staff_email = $staff_data[$index]['email'];
-                                            $mail2->isSMTP();
-                                            // $mail2->SMTPDebug = SMTP::DEBUG_SERVER;
-                                            // $mail2->Host = 'smtp.gmail.com';
-                                            $mail2->Host = $email_host_addr;
-                                            $mail2->SMTPAuth = true;
-                                            // $mail2->Username = "hilaryme45@gmail.com";
-                                            // $mail2->Password = "cmksnyxqmcgtncxw";
-                                            $mail2->Username = $email_username;
-                                            $mail2->Password = $email_password;
-                                            $mail2->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
-                                            $mail2->Port = 587;
-                                            
-                                            $mail2->setFrom($email_username,$sender_name);
-                                            strlen(trim($secondary_mail)) > 0 ? $mail2->addAddress($secondary_mail) : "";
-                                            // bcc and cc settings
-                                            if(strlen(trim($cc)) > 0) {
-                                                $mail2->addCC($cc);
-                                            }
-                                            if(strlen(trim($bcc)) > 0) {
-                                                $mail2->addBCC($bcc);
-                                            }
-    
-                                            // allow HTML
-                                            $mail2->isHTML(true);
-    
-                                            // SET SUBJECT
-                                            $subject = process_sms($students_data,$subject,$students_data[$index]['adm_no'],$conn2,"secondary");
-                                            $mail2->Subject = $subject;
-    
-                                            // SET BODY
-                                            $messages = process_sms($students_data,$email_messages,$students_data[$index]['adm_no'],$conn2,"secondary");
-                                            $mail2->Body = $messages;
-                                            $mail2->send();
-                                        
-                                            $email_counts++;
-                                            
-                                            // save the email address sent
-                                            $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
-                                            $stmt = $conn2->prepare($insert);
-                                            $dates = date("YmdHis",strtotime("3 hours"));
-                                            $stmt->bind_param("sssssss",$email_username,$secondary_mail,$bcc,$dates,$subject,$messages,$cc);
-                                            $stmt->execute();
-                                        }
-
-                                    }else {
-                                        $email_errors++;
-                                    }
-                                } catch (Exception $th) {
-                                    $email_errors++;
-                                    echo "<p class='text-danger p-1 border border-danger'>Error : ". $mail->ErrorInfo."</p>";
-                                }
-                            }
                         }else{
-                            echo "<p class='text-danger border border-danger p-1'>The Email address has not been set up properly, Delete the current setting and redo the process again!</p>";
+                            echo "<p class='text-danger border border-danger p-2 rounded'>The Email address has not been set up properly.</p>";
+                            return;
                         }
                     }
                 }
             }else{
-                echo "<p class='text-danger border border-danger'>The Email address has not been set up properly, Delete the current setting and redo the process again!</p>";
+                echo "<p class='text-danger border border-danger p-2 rounded'>The Email address has not been set up properly.</p>";
+                return;
             }
+
+            // send email
+            // get the students parent email address data
+            for ($index=0; $index < count($students_data); $index++) {
+                // email address
+                $email_primary = isset($students_data[$index]['parent_email']) ? $students_data[$index]['parent_email'] : null;
+                $secondary_mail = isset($students_data[$index]['parent_email2']) ? $students_data[$index]['parent_email2'] : null;
+                $student_email = isset($students_data[$index]['student_email']) ? $students_data[$index]['student_email'] : null;
+
+                // send the email
+                $messages = $_GET['messages'];
+                $to_whom = $_GET['to_whom'];
+                $cc = $_GET['cc'];
+                $bcc = $_GET['bcc'];
+                $subject = $_GET['subject'];
+
+                // set email recepient
+                if ($to_whom == "primary" && $to_whom == "all_three" && $to_whom == "both" && $email_primary != null) {
+                    // SET SUBJECT
+                    $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,"primary");
+                    // SET BODY
+                    $messages = process_sms($students_data,$_GET['messages'],$students_data[$index]['adm_no'],$conn2,"primary");
+                    $email_counts++;
+                    
+                    // save the email address sent
+                    $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
+                    $stmt = $conn2->prepare($insert);
+                    $dates = date("YmdHis");
+                    $stmt->bind_param("sssssss",$email_username,$email_primary,$bcc,$dates,$subject,$messages,$cc);
+                    $stmt->execute();
+                }
+
+                if ($to_whom == "secondary" && $to_whom == "all_three" && $to_whom == "both" && $secondary_mail != null) {
+                    // SET SUBJECT
+                    $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,"secondary");
+                    // SET BODY
+                    $messages = process_sms($students_data,$_GET['messages'],$students_data[$index]['adm_no'],$conn2,"secondary");
+                    $email_counts++;
+                    
+                    // save the email address sent
+                    $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
+                    $stmt = $conn2->prepare($insert);
+                    $dates = date("YmdHis",strtotime("3 hours"));
+                    $stmt->bind_param("sssssss",$email_username,$secondary_mail,$bcc,$dates,$subject,$messages,$cc);
+                    $stmt->execute();
+                }
+                
+                if ($to_whom == "student_contact" && $to_whom == "primary" && $student_email != null) {
+                    // SET SUBJECT
+                    $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,"primary");
+                    // SET BODY
+                    $messages = process_sms($students_data,$_GET['messages'],$students_data[$index]['adm_no'],$conn2,"primary");
+                    $email_counts++;
+                    
+                    // save the email address sent
+                    $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
+                    $stmt = $conn2->prepare($insert);
+                    $dates = date("YmdHis",strtotime("3 hours"));
+                    $stmt->bind_param("sssssss",$email_username,$student_email,$bcc,$dates,$subject,$messages,$cc);
+                    $stmt->execute();
+                }
+            }
+
+            // trigger email
+            trigger_email_agent();
             echo "<p class='text-success'>Emails sent successfully <br>".$email_counts." Success! <br><span class='text-danger'>".$email_errors." Not Sent!</span></p>";
         }elseif (isset($_GET['parents_ids_excempt'])) {
             // get all student information excluding those transfered and the alumni
@@ -926,180 +744,85 @@
             // var_dump($student_data);
             $which_parent = $_GET['to_whom'];
             $data = $_GET['parents_ids_excempt'];
-            $xeploded_data = explode(",",$data);
-            $api_key = getApiKeySms($conn2);
-            $connection = $conn2;
-            if ($api_key == 0) {
-                $api_key = getApiKeySms($conn);
-                $connection = $conn;
-            }
-            if ($api_key !== 0){
-                $partnerID = getPatnerIdSms($connection);
-                $shortcodes = getShortCodeSms($connection);
-                $send_sms_url = getUrlSms($connection);
-                $balance = 0;
-                $count = 0;
-                // send my sms
-                include("../../sms_apis/sms.php");
-                include("../finance/financial.php");
-                for ($index=0; $index < count($student_data); $index++) {
-                    $primary_parent = $student_data[$index]['parentContacts'];
-                    $secondary_parent = $student_data[$index]['parent_contact2'];
-                    $student_contact = $student_data[$index]['student_contact'];
-                    $phone_number = null;
-                    $message_count = 0;
-                    $number_collection = [];
-                    if ($which_parent == "both") {
-                        $phone_number = $primary_parent.",".$secondary_parent;
-                        $message_count = 2;
-                        array_push($number_collection,$phone_number);
-                    }elseif ($which_parent == "primary") {
-                        $phone_number = $primary_parent;
-                        array_push($number_collection,$phone_number);
-                        $message_count = 1;
-                    }elseif ($which_parent == "secondary") {
-                        $phone_number = $secondary_parent;
-                        array_push($number_collection,$phone_number);
-                        $message_count = 1;
-                    }elseif ($which_parent == "student_contact") {
-                        $phone_number = $student_contact;
-                        array_push($number_collection,$phone_number);
-                        $message_count = 1;
-                    }elseif ($which_parent == "all_three") {
-                        $phone_number = $primary_parent.",".$secondary_parent.",".$student_contact;
-                        array_push($number_collection,$phone_number);
-                        $message_count = 3;
-                    }else {
-                        $phone_number = $primary_parent;
-                        $message_count = 1;
-                    }
-                    if (checkPresnt($xeploded_data,$student_data[$index]['adm_no']) == 1) {
-                        // process message
-                        $message = $_GET['messages'];
-                        if ($which_parent == "both" || $which_parent == "all_three") {
-                            $phone_number = explode(",",$phone_number);
-                            $message1 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"primary");
-                            $message2 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"secondary");
-                            $phone_number_1_3 = $which_parent == "both" ? $phone_number[0] : $phone_number[0].",".$phone_number[2];
-                            
-                            // SEND MESSAGE TO THE FIRST PARENT
-                            $output_name = sendSmsToClient($phone_number_1_3,$message1,$api_key,$partnerID,$shortcodes, $send_sms_url);
-                            
-                            //echo $output_name;
-                            $json = json_decode($output_name);
-                            if (strlen($output_name) > 0) {
-                                try {
-                                    if (!isset($json->{'response-description'})) {
-                                        if (isset($json->{'responses'}[0]->{'response-description'})) {
-                                            if( $json->{'responses'}[0]->{'response-description'} != null ||  $json->{'responses'}[0]->{'response-description'} == "Sucess"){
-                                                $count++;
-                                            }
-                                        }
-                                    }elseif ($json->{'response-description'} == "Low bulk credits, Balance is 0.00") {
-                                        // $balance++;
-                                    }
-                                } catch (Exception $th) {
-                                    echo "<p class='red_notice'>Not sent</p>";
-                                }
-                                /***
-                                if ($index == 0) {
-                                    //test one
-                                    break;
-                                } */
-                            }
-
-                            // SEND MESSAGE TO THE SECOND PARENT
-                            //send message to the numbers
-                            $output_name = sendSmsToClient($phone_number[1],$message2,$api_key,$partnerID,$shortcodes, $send_sms_url);
-                            $json = json_decode($output_name);
-                            if (strlen($output_name) > 0) {
-                                try {
-                                    if (!isset($json->{'response-description'})) {
-                                        if (isset($json->{'responses'}[0]->{'response-description'})) {
-                                            if( $json->{'responses'}[0]->{'response-description'} != null ||  $json->{'responses'}[0]->{'response-description'} == "Sucess"){
-                                                $count++;
-                                            }
-                                        }
-                                    }elseif ($json->{'response-description'} == "Low bulk credits, Balance is 0.00") {
-                                        // $balance++;
-                                    }
-                                } catch (Exception $th) {
-                                    echo "<p class='red_notice'>Not sent</p>";
-                                }
-                                /***
-                                if ($index == 0) {
-                                    //test one
-                                    break;
-                                } */
-                            }
-
-                            // save the data in the database
-                            $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
-                            $stmt = $conn2->prepare($insert);
-                            $message_undelivered = 0;
-                            $message_type = "Broadcast";
-                            $message_desc = $message."...";
-                            if (strlen($message) > 43) {
-                                $message_desc = substr($message,0,45)."...";
-                            }
-                            $date = date("YmdHis");
-                            $number_collection = json_encode($number_collection);
-                            $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$message_count,$message2,$number_collection);
-                            $stmt->execute();
-                            // break;
-                        }else {
-                            $message = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,$which_parent);
-                            // echo $message;
-                            
-                            //send message to the numbers
-                            $output_name = sendSmsToClient($phone_number, $message, $api_key, $partnerID, $shortcodes, $send_sms_url);
-                            //echo $output_name;
-                            $json = json_decode($output_name);
-                            if (strlen($output_name) > 0) {
-                                try {
-                                    if (!isset($json->{'response-description'})) {
-                                        if (isset($json->{'responses'}[0]->{'response-description'})) {
-                                            if( $json->{'responses'}[0]->{'response-description'} != null ||  $json->{'responses'}[0]->{'response-description'} == "Sucess"){
-                                                $count++;
-                                            }
-                                        }
-                                    }elseif ($json->{'response-description'} == "Low bulk credits, Balance is 0.00") {
-                                        // $balance++;
-                                    }
-                                } catch (Exception $th) {
-                                    echo "<p class='red_notice'>Not sent</p>";
-                                }
-                                /***
-                                if ($index == 0) {
-                                    //test one
-                                    break;
-                                } */
-                            }
-
-                            // save the data in the database
-                            $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
-                            $stmt = $conn2->prepare($insert);
-                            $message_undelivered = 0;
-                            $message_type = "Broadcast";
-                            $message_desc = $message."...";
-                            if (strlen($message) > 43) {
-                                $message_desc = substr($message,0,45)."...";
-                            }
-                            $date = date("YmdHis");
-                            $number_collection = json_encode($number_collection);
-                            $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$message_count,$message,$number_collection);
-                            if($stmt->execute()){
-                                // echo "<p class='green_notice'>Messages sent successfully!</p>";
-                                // $count +=$message_count;
-                            }else {
-                                // echo "<p class='red_notice'>Error!</p>";
-                            }
-                            // break;
+            $exploded_data = explode(",",$data);
+            $count = 0;
+            // send my sms
+            include("../../sms_apis/sms.php");
+            include("../finance/financial.php");
+            for ($index = 0; $index < count($student_data); $index++) {
+                $primary_parent = $student_data[$index]['parentContacts'];
+                $secondary_parent = $student_data[$index]['parent_contact2'];
+                $student_contact = $student_data[$index]['student_contact'];
+                if (checkPresnt($exploded_data, $student_data[$index]['adm_no']) == 1) {
+                    // process message
+                    $message = $_GET['messages'];
+                    $message_status = "pending";
+                    if(($which_parent == "both" || $which_parent == "all_three" || $which_parent == "primary") && (trim($primary_parent) != "none" && trim($primary_parent) != "")){
+                        $message1 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"primary");
+                        
+                        // create message
+                        $message1 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"primary");
+                        
+                        // save the data in the database
+                        $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`, `message_status`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                        $stmt = $conn2->prepare($insert);
+                        $message_undelivered = 0;
+                        $message_type = "Broadcast";
+                        $message_desc = $message1;
+                        if (strlen($message1) > 43) {
+                            $message_desc = substr($message1,0,45)."...";
                         }
+                        $date = date("YmdHis");
+                        $message_count = 1;
+                        $stmt->bind_param("ssssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$primary_parent,$message1,$primary_parent,$message_status);
+                        $stmt->execute();
+                        $count++;
+                    }
+
+                    if(($which_parent == "both" || $which_parent == "all_three" || $which_parent == "secondary") && (trim($secondary_parent) != "none" && trim($secondary_parent) != "")){
+                        // message
+                        $message2 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"secondary");
+                        
+                        // save the data in the database
+                        $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`,`message_status`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                        $stmt = $conn2->prepare($insert);
+                        $message_undelivered = 0;
+                        $message_type = "Broadcast";
+                        $message_desc = $message2;
+                        if (strlen($message2) > 43) {
+                            $message_desc = substr($message2,0,45)."...";
+                        }
+                        $date = date("YmdHis");
+                        $message_count = 1;
+                        $stmt->bind_param("ssssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$secondary_parent,$message2,$secondary_parent, $message_status);
+                        $stmt->execute();
+                        $count++;
+                    }
+
+                    if(($which_parent == "all_three" || $which_parent == "student_contact") && (trim($student_contact) != "none" && trim($student_contact) != "")){
+                        // message3
+                        $message3 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,$which_parent);
+                        // save the data in the database
+                        $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`,`message_status`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                        $stmt = $conn2->prepare($insert);
+                        $message_undelivered = 0;
+                        $message_type = "Broadcast";
+                        $message_desc = $message3;
+                        if (strlen($message3) > 43) {
+                            $message_desc = substr($message3,0,45)."...";
+                        }
+                        $date = date("YmdHis");
+                        $message_count = 1;
+                        $stmt->bind_param("ssssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$student_contact,$message3,$student_contact, $message_status);
+                        $stmt->execute();
+                        $count++;
                     }
                 }
-                echo "<p class='text-success'>You have successfully sent ".$count." message(s)!</p>";
             }
+
+            // trigger sms
+            trigger_sms_agent();
+            echo "<p class='text-success'>You have successfully sent ".$count." message(s)!</p>";
         }elseif (isset($_GET['get_my_trs'])) {
             $select = "SELECT `user_id`, `fullname` FROM `user_tbl` WHERE `school_code` = ? AND  NOT `user_id` = ?";
             $stmt = $conn->prepare($select);
@@ -1211,7 +934,7 @@
                     }
                     $date = date("dS M Y @ H:i:sA",strtotime($row['date_sent']));
                     $row = array_merge($row,array("date_sent2"=> $date));
-                    $sms_recipients = arr_to_string(isJson_report($row['number_collection']) ? json_decode($row['number_collection']) : []);
+                    $sms_recipients = $row['number_collection'];
                     $row = array_merge($row,array("recipients" => $sms_recipients));
                     array_push($sms_data,$row);
                     $totalMessages+= ($row['message_count']*1);
@@ -1576,5 +1299,67 @@
         return ((is_string($string) &&
             (is_object(json_decode($string)) ||
                 is_array(json_decode($string))))) ? true : false;
+    }
+    function trigger_email_agent(){
+        $ch = curl_init("http://192.168.86.15:81/nuelas_college/ajax/sms/email_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_TIMEOUT_MS     => 200,   // return immediately
+            CURLOPT_NOSIGNAL       => 1,
+            CURLOPT_FRESH_CONNECT  => true,
+            CURLOPT_FORBID_REUSE   => true,
+        ]);
+        curl_exec($ch);
+        curl_close($ch);
+    }
+    function trigger_sms_agent(){
+        $ch = curl_init("http://192.168.86.15:81/nuelas_college/ajax/sms/sms_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_TIMEOUT_MS     => 200,   // return immediately
+            CURLOPT_NOSIGNAL       => 1,
+            CURLOPT_FRESH_CONNECT  => true,
+            CURLOPT_FORBID_REUSE   => true,
+        ]);
+        curl_exec($ch);
+        curl_close($ch);
+    }
+    
+    function log_SMS($text){
+        $full_text = date("dS M Y H:i:sA")." : ".$text." - {".$_SESSION['username']."}\n";
+        $file_location = "../../ajax/logs/".$_SESSION['dbname']."/logs.txt";
+        if (file_exists($file_location)) {
+            $content = file_get_contents($file_location);
+
+            // Open the file for writing
+            $file = fopen($file_location, 'w');
+            
+            if ($file) {
+                fwrite($file, $full_text.$content);
+                fclose($file);
+            }else {
+                return "File not found!";
+            }
+        } else {
+            $directory = dirname($file_location);
+            if (!file_exists($directory)) {
+                $pwu_data = posix_getpwuid(posix_geteuid());
+                $username = $pwu_data['name'];
+                mkdir($directory, 0777, true);
+
+                // Change ownership of the directory to daemon
+                chown($directory, $username);
+            }
+    
+            // Open the file for writing
+            $file = fopen($file_location, 'w');
+            
+            if ($file){
+                fwrite($file, $full_text);
+                fclose($file);
+            }else {
+                return "File not found!";
+            }
+        }
     }
 ?>

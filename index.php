@@ -94,7 +94,7 @@
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
                     <li><a class="nav-link scrollto" href="#contact">Get Demo</a></li>
                     <li><a class="getstarted scrollto" href="#about">Get Started</a></li>
-                    <li><a class="getstarted scrollto" href="login.php">L-SIMS</a></li>
+                    <li><a class="getstarted scrollto" href="login.php">Sign-In</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>

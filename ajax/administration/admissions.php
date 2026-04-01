@@ -6639,71 +6639,62 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $res = $statement->get_result();
                         if($res){
                             if($rowed = $res->fetch_assoc()){
+                                // message content
                                 $message_content = $rowed['message_content'];
-                                include("../../connections/conn1.php");
-                                $api_key = getApiKeySms($conn2);
-                                $connection = $conn2;
-                                if($api_key == 0){
-                                    $api_key = getApiKeySms($conn);
-                                    $connection = $conn;
-                                }
-                                if ($api_key !== 0){
-                                    $partnerID = getPatnerIdSms($connection);
-                                    $shortcodes = getShortCodeSms($connection);
-                                    $send_sms_url = getSmsUrlSms($connection);
-                                    include_once("../../sms_apis/sms.php");
 
-                                    // send to parents that have been checked
-                                    if($send_first_parent == "on"){
-                                        if($parentContacts != null && strlen($parentContacts) >= 10){
-                                            // dont send to parents that have not been set
-                                            $which_parent = "primary";
-                                            $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
-                                            sendSmsToClient($row['parentContacts'],$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
+                                // send to parents that have been checked
+                                if($send_first_parent == "on"){
+                                    if($parentContacts != null && strlen($parentContacts) >= 10){
+                                        // dont send to parents that have not been set
+                                        $which_parent = "primary";
+                                        $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
+                                        // sendSmsToClient($row['parentContacts'],$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
 
-                                            //send the information to the database
-                                            $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
-                                            $stmt = $conn2->prepare($insert);
-                                            $message_count = 1;
-                                            $message_undelivered = 0;
-                                            $message_type = "Multicast";
-                                            $message_desc = $message;
-                                            if (strlen($message) > 43) {
-                                                $message_desc = substr($message,0,45)."...";
-                                            }
-                                            $date = date("Y-m-d", strtotime("3 hour"));
-                                            // !st parent
-                                            $recepient = "[\"".$row['parentContacts']."\"]";
-                                            $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$row['parentContacts'],$message,$recepient);
-                                            $stmt->execute();
+                                        //send the information to the database
+                                        $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
+                                        $stmt = $conn2->prepare($insert);
+                                        $message_count = 1;
+                                        $message_undelivered = 0;
+                                        $message_type = "Multicast";
+                                        $message_desc = $message;
+                                        if (strlen($message) > 43) {
+                                            $message_desc = substr($message,0,45)."...";
                                         }
+
+                                        // date
+                                        $date = date("Y-m-d");
+
+                                        // !st parent
+                                        $recepient = $row['parentContacts'];
+                                        $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$recepient,$message,$recepient);
+                                        $stmt->execute();
                                     }
+                                }
 
-                                    // send to parents that have been checked
-                                    if($send_second_parent == "on"){
-                                        $parentContacts = $parent_contact2;
-                                        if($parentContacts != null && strlen($parentContacts) >= 10){
-                                            // dont send to parents that have not been set
-                                            $which_parent = "secondary";
-                                            $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
-                                            sendSmsToClient($row['parent_contact2'],$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
+                                // send to parents that have been checked
+                                if($send_second_parent == "on"){
+                                    $parentContacts = $parent_contact2;
+                                    if($parentContacts != null && strlen($parentContacts) >= 10){
+                                        // dont send to parents that have not been set
+                                        $which_parent = "secondary";
+                                        $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
+                                        // sendSmsToClient($row['parent_contact2'],$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
 
-                                            //send the information to the database
-                                            $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
-                                            $stmt = $conn2->prepare($insert);
-                                            $message_count = 1;
-                                            $message_undelivered = 0;
-                                            $message_type = "Multicast";
-                                            $message_desc = $message;
-                                            if (strlen($message) > 43) {
-                                                $message_desc = substr($message,0,45)."...";
-                                            }
-                                            $date = date("Y-m-d", strtotime("3 hour"));
-                                            // !st parent
-                                            $recepient = "[\"".$row['parent_contact2']."\"]";
-                                            $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$row['parent_contact2'],$message,$recepient);
-                                            $stmt->execute();
+                                        //send the information to the database
+                                        $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
+                                        $stmt = $conn2->prepare($insert);
+                                        $message_count = 1;
+                                        $message_undelivered = 0;
+                                        $message_type = "Multicast";
+                                        $message_desc = $message;
+                                        if (strlen($message) > 43) {
+                                            $message_desc = substr($message,0,45)."...";
                                         }
+                                        $date = date("Y-m-d", strtotime("3 hour"));
+                                        // !st parent
+                                        $recepient = "[\"".$row['parent_contact2']."\"]";
+                                        $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$row['parent_contact2'],$message,$recepient);
+                                        $stmt->execute();
                                     }
                                 }
                             }
@@ -6718,46 +6709,34 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         if($res){
                             if($rowed = $res->fetch_assoc()){
                                 $message_content = $rowed['message_content'];
-                                include("../../connections/conn1.php");
-                                $api_key = getApiKeySms($conn2);
-                                $connection = $conn2;
-                                if($api_key == 0){
-                                    $api_key = getApiKeySms($conn);
-                                    $connection = $conn;
-                                }
-                                if ($api_key !== 0){
-                                    $partnerID = getPatnerIdSms($connection);
-                                    $shortcodes = getShortCodeSms($connection);
-                                    $send_sms_url = getSmsUrlSms($connection);
-                                    include_once("../../sms_apis/sms.php");
+                                // send to parents that have been checked
+                                if($student_contact != null && strlen($student_contact) >= 10){
+                                    // dont send to parents that have not been set
+                                    $which_parent = "primary";
+                                    $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
 
-                                    // send to parents that have been checked
-                                    if($student_contact != null && strlen($student_contact) >= 10){
-                                        // dont send to parents that have not been set
-                                        $which_parent = "primary";
-                                        $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
-                                        sendSmsToClient($student_contact,$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
-
-                                        //send the information to the database
-                                        $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
-                                        $stmt = $conn2->prepare($insert);
-                                        $message_count = 1;
-                                        $message_undelivered = 0;
-                                        $message_type = "Multicast";
-                                        $message_desc = $message;
-                                        if (strlen($message) > 43) {
-                                            $message_desc = substr($message,0,45)."...";
-                                        }
-                                        $date = date("Y-m-d", strtotime("3 hour"));
-                                        // !st parent
-                                        $recepient = "[\"".$student_contact."\"]";
-                                        $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$student_contact,$message,$recepient);
-                                        $stmt->execute();
+                                    //send the information to the database
+                                    $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
+                                    $stmt = $conn2->prepare($insert);
+                                    $message_count = 1;
+                                    $message_undelivered = 0;
+                                    $message_type = "Multicast";
+                                    $message_desc = $message;
+                                    if (strlen($message) > 43) {
+                                        $message_desc = substr($message,0,45)."...";
                                     }
+                                    $date = date("Y-m-d", strtotime("3 hour"));
+                                    // !st parent
+                                    $recepient = "[\"".$student_contact."\"]";
+                                    $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$student_contact,$message,$recepient);
+                                    $stmt->execute();
                                 }
                             }
                         }
                     }
+
+                    // trigger_sms_agent
+                    trigger_sms_agent();
                 }else {
                     echo "Search for the latest students to see their admission number";
                 }
@@ -8424,79 +8403,19 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $message = $_POST['message'];
 
 
-            $select = "SELECT * FROM `settings` WHERE `sett` = 'email_setup'";
-            $stmt = $conn2->prepare($select);
+            // save the email address sent
+            $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
+            $stmt = $conn2->prepare($insert);
+            $dates = date("YmdHis",strtotime("3 hours"));
+            $stmt->bind_param("sssssss",$email_username,$send_mail_to,$bcc,$dates,$email_header,$message,$cc);
             $stmt->execute();
-            $stmt->store_result();
-            $rnums = $stmt->num_rows;
-            if ($rnums > 0) {
-                // contimue to send email
-                $stmt->execute();
-                $result = $stmt->get_result();
-                if ($result) {
-                    if ($row = $result->fetch_assoc()) {
-                        $email_sets = $row['valued'];
-                        $lengths = strlen($email_sets);
-                        
-                        if($lengths > 0){
-                            // send email
-                            $json_mail = json_decode($email_sets);
-                            $sender_name = $json_mail->sender_name;
-                            $email_host_addr = $json_mail->email_host_addr;
-                            $email_username = $json_mail->email_username;
-                            $email_password = $json_mail->email_password;
-                            $tester_mail = $json_mail->tester_mail;
 
-                            // send email
-                            try {
-                                $mail = new PHPMailer(true);
-                        
-                                $mail->isSMTP();
-                                // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-                                // $mail->Host = 'smtp.gmail.com';
-                                $mail->Host = $email_host_addr;
-                                $mail->SMTPAuth = true;
-                                // $mail->Username = "hilaryme45@gmail.com";
-                                // $mail->Password = "cmksnyxqmcgtncxw";
-                                $mail->Username = $email_username;
-                                $mail->Password = $email_password;
-                                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
-                                $mail->Port = 587;
-                                
-                                
-                                $mail->setFrom($email_username,$sender_name);
-                                strlen(trim($_POST['bcc'])) > 1 ?  $mail->addBCC($bcc,$sender_name) : "";
-                                strlen(trim($_POST['cc'])) > 1 ?  $mail->addCC($cc,$sender_name) : "";
-                                $mail->addAddress($send_mail_to);
-                                $mail->isHTML(true);
-                                $mail->Subject = $email_header;
-                                $mail->Body = $message;
-                        
-                                $mail->send();
+            // trigger email agent
+            trigger_email_agent();
 
-                                // save the email address sent
-                                $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
-                                $stmt = $conn2->prepare($insert);
-                                $dates = date("YmdHis",strtotime("3 hours"));
-                                $stmt->bind_param("sssssss",$email_username,$send_mail_to,$bcc,$dates,$email_header,$message,$cc);
-                                $stmt->execute();
-                                // end of saving
-
-                                echo 
-                                "
-                                <p class='text-success border border-success p-1'><b>Note</b>: <br>Email has been sent successfully. Check your sent E-Mails in your email account to read it.</b>.</p>
-                                ";
-                            } catch (Exception $th) {
-                                echo "<p class='text-danger p-1 border border-danger'>Error : ". $mail->ErrorInfo."</p>";
-                            }
-                        }else{
-                            echo "<p class='text-danger'>Your email has not been setup, Kindly setup your email and try again!</p>";
-                        }
-                    }
-                }
-            }else{
-                echo "<p class='text-danger'>Your email has not been setup, Kindly setup your email and try again!</p>";
-            }
+            echo "<p class='text-success border border-success p-1'><b>Note</b>: <br>Email has been sent successfully.</p>";
+            $log_message = "An email has been sent to \"".$send_mail_to."\"!";
+            log_administration($log_message);
         }elseif (isset($_POST['display_students_in_exams'])) {
             $exams_done = $_POST['exams_done'];
             
@@ -14125,5 +14044,29 @@ function isJson_report($string) {
             }
         }
         return 0;
+    }
+    function trigger_email_agent(){
+        $ch = curl_init("http://192.168.86.15:81/nuelas_college/ajax/sms/email_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_TIMEOUT_MS     => 200,   // return immediately
+            CURLOPT_NOSIGNAL       => 1,
+            CURLOPT_FRESH_CONNECT  => true,
+            CURLOPT_FORBID_REUSE   => true,
+        ]);
+        curl_exec($ch);
+        curl_close($ch);
+    }
+    function trigger_sms_agent(){
+        $ch = curl_init("http://192.168.86.15:81/nuelas_college/ajax/sms/sms_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_TIMEOUT_MS     => 200,   // return immediately
+            CURLOPT_NOSIGNAL       => 1,
+            CURLOPT_FRESH_CONNECT  => true,
+            CURLOPT_FORBID_REUSE   => true,
+        ]);
+        curl_exec($ch);
+        curl_close($ch);
     }
 ?>
