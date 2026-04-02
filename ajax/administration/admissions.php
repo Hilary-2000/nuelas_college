@@ -14045,7 +14045,7 @@ function isJson_report($string) {
         return 0;
     }
     function trigger_email_agent(){
-        $ch = curl_init("https://lizola.ladybirdsmis.com/college_sims/ajax//sms/email_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        $ch = curl_init("https://lizola.ladybirdsmis.com/college_sims/ajax/sms/email_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_TIMEOUT_MS     => 200,   // return immediately
@@ -14057,7 +14057,7 @@ function isJson_report($string) {
         curl_close($ch);
     }
     function trigger_sms_agent(){
-        $ch = curl_init("https://lizola.ladybirdsmis.com/college_sims/ajax//sms/sms_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        $ch = curl_init("https://lizola.ladybirdsmis.com/college_sims/ajax/sms/sms_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_TIMEOUT_MS     => 200,   // return immediately
