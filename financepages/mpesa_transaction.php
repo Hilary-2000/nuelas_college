@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-
+        <hr class="w-75 mx-auto my-2">
         <div class="middle1">
             <div class="notice1">
                 <div class="notify">
