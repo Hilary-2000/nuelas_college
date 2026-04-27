@@ -231,18 +231,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
                 }
 
-                // get the student population
-                $select = "SELECT COUNT(*) AS total FROM `student_data` WHERE stud_class = ?";
-                $stmt = $conn2->prepare($select);
-                $stmt->bind_param("s", $classes[$index]);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $student_population = 0;
-                if ($result) {
-                    if ($row = $result->fetch_assoc()) {
-                        $student_population = $row['total']*1;
-                    }
-                }
+                // get the student population — only students with an active course module
+                $student_population = getActiveStudentCount($conn2, $classes[$index]);
 
                 // students absent
                 $students_absent = $student_population - $students_present;
@@ -1444,13 +1434,22 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
             $class = $_GET['daro'];
             $course_id = $_GET['course_id'] ?? "";
-            $select = "SELECT * from `student_data` WHERE `course_done` = ? AND `stud_class` = ? AND `deleted` = 0 and activated =1";
+            $select = "SELECT * from `student_data` WHERE `course_done` = ? AND `stud_class` = ? AND `deleted` = 0";
             $select .= !empty($_GET['branch_name']) ? " AND branch_name = '".$_GET['branch_name']."'" : "";
             $stmt=$conn2->prepare($select);
             $stmt->bind_param("ss", $course_id, $class);
             $stmt->execute();
             $result=$stmt->get_result();
-            createStudentclass($result,$class,$conn2);
+            // filter to only students with an active course module in their course progress
+            $active_students = [];
+            if($result){
+                while($row = $result->fetch_assoc()){
+                    if(isStudentAttendanceActive($row['my_course_list'])){
+                        $active_students[] = $row;
+                    }
+                }
+            }
+            createStudentclass($active_students,$class,$conn2);
         }elseif (isset($_GET['add_club'])) {
             // check if there are other clubnames
             // if the usernames are present add the new array to the list
@@ -4023,20 +4022,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 if ($result) {
                     if ($row = $result->fetch_assoc()) {
                         $total1 = $row['Total'];
-                        $select = "SELECT COUNT(*) AS 'Totals' FROM `student_data` WHERE `stud_class` = ?";
-                        $stmt = $conn2->prepare($select);
-                        $stmt->bind_param("s",$class_taught);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        if ($result) {
-                            if ($row = $result->fetch_assoc()) {
-                                $total2 = $row['Totals'];
-                                $total3 = $total2-$total1;
-                                echo myClassName($class_taught).":<br>".$total3." student(s)";
-                            }
-                        }else {
-                            echo "Err";
-                        }
+                        $total2 = getActiveStudentCount($conn2, $class_taught);
+                        $total3 = $total2-$total1;
+                        echo myClassName($class_taught).":<br>".$total3." student(s)";
                     }else {
                         echo "Err";
                     }
@@ -9239,17 +9227,7 @@ function isJson_report($string) {
     }
 
     function getClassCount($conn2, $classes, $course_done){
-        $select = "SELECT COUNT(*) AS 'Total' FROM `student_data` WHERE `stud_class` = ? AND course_done = ?";
-        $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$classes, $course_done);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result) {
-            if ($row = $result->fetch_assoc()) {
-                return $row['Total'];
-            }
-        }
-        return 0;
+        return getActiveStudentCount($conn2, $classes, $course_done);
     }
     function getClassTaught($conn2){
         $select = "SELECT `class_assigned` FROM `class_teacher_tbl` WHERE `class_teacher_id` = ?";
@@ -9538,10 +9516,10 @@ function isJson_report($string) {
         }
     }
     
-    function createStudentclass($result,$class,$conn2){
+    function createStudentclass($active_students,$class,$conn2){
         $daros = classNameAdms($class);
         $date_used = $_GET['date_used'];
-        if($result){
+        if(is_array($active_students)){
             $xs =0;
             $data="<h6 style='font-size:17px;text-align:center;margin-bottom:5px;'><u>Mark attendance for ".$daros." Members on ".date("D dS M Y", strtotime($date_used)).".</u></h6>";
             $data.="<p>Tick the checkbox "."<input type='checkbox' checked readonly>"." if present or leave blank "."<input type='checkbox' readonly>"." when absent, then <strong>Submit</strong></p>";
@@ -9555,7 +9533,7 @@ function isJson_report($string) {
             $data.="<th>Course Level</th>";
             $data.="<th>Time</th>";
             $data.="<th>Present <input type='checkbox' class='present_all d-none' id='present_all'></th></tr></thead><tbody>";
-            while($row = $result->fetch_assoc()){
+            foreach($active_students as $row){
                 $date_today = presentStudent($conn2,$row['adm_no'],$date_used);
                 $xs++;
                 $data.="<tr><td>".$xs."</td>";
@@ -9573,10 +9551,10 @@ function isJson_report($string) {
             if($xs>0){
                 echo $data;
             }else {
-                echo "<p style='font-size:15px;color:red;'>No students found!.</p>";
+                echo "<p style='font-size:15px;color:red;'>No active students found in this class.</p>";
             }
         }else{
-            echo "<p style='font-size:15px;'>No results after results..</p>";
+            echo "<p style='font-size:15px;color:red;'>No active students found in this class.</p>";
         }
     }
     function presentStatsYear($conn2,$admno,$class_student){
@@ -14068,5 +14046,49 @@ function isJson_report($string) {
         ]);
         curl_exec($ch);
         curl_close($ch);
+    }
+
+    // A student is attendance-active when their course progress contains at least one
+    // course with course_status==1 that has at least one module_term with status=="1".
+    function isStudentAttendanceActive($my_course_list){
+        if (empty($my_course_list) || $my_course_list === '[]') return false;
+        $courses = json_decode($my_course_list, true);
+        if (!is_array($courses)) return false;
+        foreach ($courses as $course) {
+            if (isset($course['course_status']) && $course['course_status'] == 1) {
+                if (!empty($course['module_terms']) && is_array($course['module_terms'])) {
+                    foreach ($course['module_terms'] as $module) {
+                        if (isset($module['status']) && $module['status'] == "1") {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // Count active students in a class (and optionally a course) based on course progress.
+    function getActiveStudentCount($conn2, $stud_class, $course_done = null){
+        if ($course_done !== null) {
+            $select = "SELECT `my_course_list` FROM `student_data` WHERE `stud_class` = ? AND `course_done` = ? AND `deleted` = 0";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss", $stud_class, $course_done);
+        } else {
+            $select = "SELECT `my_course_list` FROM `student_data` WHERE `stud_class` = ? AND `deleted` = 0";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $stud_class);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $count = 0;
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                if (isStudentAttendanceActive($row['my_course_list'])) {
+                    $count++;
+                }
+            }
+        }
+        return $count;
     }
 ?>
