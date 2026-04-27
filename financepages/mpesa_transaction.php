@@ -16,7 +16,7 @@
         <!-- M-Pesa statistics -->
         <div id="mpesa_stats_holder" class="w-75 mx-auto" style="margin:15px 0 20px 0;">
             <p style="font-weight:700;font-size:15px;margin-bottom:12px;">
-                <i class="fas fa-mobile-alt" style="color:cadetblue;"></i>&nbsp; M-Pesa Transaction Overview
+                <i class="fas fa-mobile-alt" style="color:cadetblue;"></i>&nbsp; M-Pesa Transaction Overview (Last 30 days)
             </p>
             <!-- Stat cards -->
             <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
@@ -34,7 +34,7 @@
                 </div>
                 <div style="flex:1;min-width:140px;background:#e8f5e9;border-left:4px solid #00897B;border-radius:8px;padding:14px 16px;">
                     <div style="font-size:1.4rem;font-weight:700;color:#00897B;line-height:1.1;" id="mpesa_total_amount"><img src="images/ajax_clock_small.gif"></div>
-                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-coins"></i>&nbsp;Total Collected (KES)</div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-coins"></i>&nbsp;Last 30 Days (KES)</div>
                 </div>
                 <div style="flex:1;min-width:140px;background:#fffde7;border-left:4px solid #FFC107;border-radius:8px;padding:14px 16px;">
                     <div style="font-size:2rem;font-weight:700;color:#FFC107;line-height:1.1;" id="mpesa_today_count"><img src="images/ajax_clock_small.gif"></div>
@@ -47,6 +47,7 @@
             </div>
             <!-- Progress bars: Assigned & Unassigned -->
             <div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:14px 18px;">
+                <small><b>Last 30 days</b></small>
                 <div style="margin-bottom:10px;">
                     <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:4px;">
                         <span><i class="fas fa-check-circle" style="color:#4CAF50;"></i>&nbsp;Assigned</span>

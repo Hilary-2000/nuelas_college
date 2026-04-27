@@ -4507,16 +4507,17 @@
             }
         }elseif (isset($_GET['get_mpesa_stats'])) {
             $today_prefix = date("Ymd"); // transaction_time is stored as YYYYMMDDHHmmss
-            $select = "SELECT `amount`, `transaction_status`, `transaction_time` FROM `mpesa_transactions`";
+            $last_30_days = date("Ymd", strtotime("-30 days"))."000000";
+            $select = "SELECT `amount`, `transaction_status`, `transaction_time` FROM `mpesa_transactions` WHERE transaction_time > $last_30_days";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            $stats = ["total" => 0, "assigned" => 0, "unassigned" => 0, "total_amount" => 0, "today_count" => 0, "today_amount" => 0];
+            $stats = ["total" => 0, "assigned" => 0, "unassigned" => 0, "last_month" => 0, "today_count" => 0, "today_amount" => 0];
             if ($result) {
                 while ($row = $result->fetch_assoc()) {
                     $amt = (float)$row['amount'];
                     $stats['total']++;
-                    $stats['total_amount'] += $amt;
+                    $stats['last_month'] += $amt;
                     if ($row['transaction_status'] == 1) $stats['assigned']++;
                     else $stats['unassigned']++;
                     if (substr($row['transaction_time'], 0, 8) === $today_prefix) {
