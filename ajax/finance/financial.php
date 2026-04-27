@@ -4505,6 +4505,27 @@
             } else {
                 echo "<p class='red_notice'>No records found because the staff first payment was recorded in " . $firstpay_record . " and the current selected year is " . $curr_year . ".</p>";
             }
+        }elseif (isset($_GET['get_mpesa_stats'])) {
+            $today_prefix = date("Ymd"); // transaction_time is stored as YYYYMMDDHHmmss
+            $select = "SELECT `amount`, `transaction_status`, `transaction_time` FROM `mpesa_transactions`";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $stats = ["total" => 0, "assigned" => 0, "unassigned" => 0, "total_amount" => 0, "today_count" => 0, "today_amount" => 0];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $amt = (float)$row['amount'];
+                    $stats['total']++;
+                    $stats['total_amount'] += $amt;
+                    if ($row['transaction_status'] == 1) $stats['assigned']++;
+                    else $stats['unassigned']++;
+                    if (substr($row['transaction_time'], 0, 8) === $today_prefix) {
+                        $stats['today_count']++;
+                        $stats['today_amount'] += $amt;
+                    }
+                }
+            }
+            echo json_encode($stats);
         }elseif (isset($_GET['mpesaTransaction'])) {
             $select = "SELECT mpesa_transactions.*, CONCAT(student_data.first_name,' ',student_data.second_name) AS 'student_fullname' FROM `mpesa_transactions` LEFT JOIN student_data ON student_data.adm_no = mpesa_transactions.std_adm ORDER BY transaction_id DESC LIMIT 1000;";
             $stmt = $conn2->prepare($select);

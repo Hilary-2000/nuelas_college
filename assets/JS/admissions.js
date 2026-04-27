@@ -225,12 +225,49 @@ if (auth == 1 || auth == 3) {
         cObj("loggers_page").classList.remove("hide");
     }
 }
+function loadManageStudentStats() {
+    fetch("ajax/administration/admissions.php?get_manage_student_stats=true")
+        .then(function(r){ return r.json(); })
+        .then(function(s){
+            var total    = s.total || 0;
+            var actPct   = total > 0 ? Math.round((s.active  / total) * 100) : 0;
+            var malePct  = total > 0 ? Math.round((s.male    / total) * 100) : 0;
+            var femPct   = total > 0 ? Math.round((s.female  / total) * 100) : 0;
+            var inactPct = total > 0 ? (100 - actPct) : 0;
+
+            cObj("mss_total").textContent          = s.total;
+            cObj("mss_active").textContent         = s.active;
+            cObj("mss_inactive").textContent       = s.inactive;
+            cObj("mss_male").textContent           = s.male;
+            cObj("mss_female").textContent         = s.female;
+            cObj("mss_new_this_month").textContent = s.new_this_month;
+
+            cObj("mss_active_pct").textContent   = "(" + actPct   + "%)";
+            cObj("mss_inactive_pct").textContent = "(" + inactPct + "%)";
+            cObj("mss_male_pct").textContent     = "(" + malePct  + "%)";
+            cObj("mss_female_pct").textContent   = "(" + femPct   + "%)";
+
+            cObj("mss_active_pct_bar").textContent = actPct  + "%";
+            cObj("mss_male_pct_bar").textContent   = malePct + "%";
+            cObj("mss_female_pct_bar").textContent = femPct  + "%";
+
+            // delay so CSS transition is visible
+            setTimeout(function(){
+                cObj("mss_active_bar").style.width = actPct  + "%";
+                cObj("mss_male_bar").style.width   = malePct + "%";
+                cObj("mss_female_bar").style.width = femPct  + "%";
+            }, 120);
+        })
+        .catch(function(){ });
+}
+
 cObj("findstudsbtn").onclick = function () {
     hideWindow();
     unselectbtns();
     addselected(this.id);
     cObj("findstudents").classList.remove("hide");
     removesidebar();
+    loadManageStudentStats();
 
     //get the classes from the database for the admissions window
     getClasses("stud_class_find", "selclass", "","course_list_edit_loader");
@@ -709,22 +746,86 @@ cObj("manage_departments").onclick = function () {
     displayDepartments();
 }
 
+function loadAttendanceStats() {
+    fetch("ajax/administration/admissions.php?get_attendance_stats=true")
+        .then(function(r){ return r.json(); })
+        .then(function(s){
+            var total      = s.total || 0;
+            var presentPct = total > 0 ? Math.round((s.present_today / total) * 100) : 0;
+            var absentPct  = total > 0 ? Math.round((s.absent_today  / total) * 100) : 0;
+            var malePct    = total > 0 ? Math.round((s.male          / total) * 100) : 0;
+            var femPct     = total > 0 ? Math.round((s.female        / total) * 100) : 0;
+
+            cObj("att_total").textContent         = s.total;
+            cObj("att_present").textContent       = s.present_today;
+            cObj("att_absent").textContent        = s.absent_today;
+            cObj("att_male").textContent          = s.male;
+            cObj("att_female").textContent        = s.female;
+            cObj("att_classes_today").textContent = s.classes_today;
+
+            cObj("att_present_pct").textContent = "(" + presentPct + "%)";
+            cObj("att_absent_pct").textContent  = "(" + absentPct  + "%)";
+            cObj("att_male_pct").textContent    = "(" + malePct    + "%)";
+            cObj("att_female_pct").textContent  = "(" + femPct     + "%)";
+
+            cObj("att_present_pct_bar").textContent = presentPct + "%";
+            cObj("att_absent_pct_bar").textContent  = absentPct  + "%";
+
+            setTimeout(function(){
+                cObj("att_present_bar").style.width = presentPct + "%";
+                cObj("att_absent_bar").style.width  = absentPct  + "%";
+            }, 120);
+        })
+        .catch(function(){ });
+}
+
 cObj("callregister").onclick = function () {
     hideWindow();
     unselectbtns();
     addselected(this.id);
     cObj("classregister").classList.remove("hide");
     removesidebar();
+    loadAttendanceStats();
     getStudentNameAdmno();
 }
 
 // mpesa tables
+function loadMpesaStats() {
+    fetch("ajax/finance/financial.php?get_mpesa_stats=true")
+        .then(function(r){ return r.json(); })
+        .then(function(s){
+            var total        = s.total || 0;
+            var assignedPct  = total > 0 ? Math.round((s.assigned   / total) * 100) : 0;
+            var unassignedPct = total > 0 ? Math.round((s.unassigned / total) * 100) : 0;
+
+            cObj("mpesa_total").textContent        = s.total;
+            cObj("mpesa_assigned").textContent     = s.assigned;
+            cObj("mpesa_unassigned").textContent   = s.unassigned;
+            cObj("mpesa_total_amount").textContent = "KES " + Number(s.total_amount).toLocaleString();
+            cObj("mpesa_today_count").textContent  = s.today_count;
+            cObj("mpesa_today_amount").textContent = "KES " + Number(s.today_amount).toLocaleString();
+
+            cObj("mpesa_assigned_pct").textContent   = "(" + assignedPct   + "%)";
+            cObj("mpesa_unassigned_pct").textContent = "(" + unassignedPct + "%)";
+
+            cObj("mpesa_assigned_pct_bar").textContent   = assignedPct   + "%";
+            cObj("mpesa_unassigned_pct_bar").textContent = unassignedPct + "%";
+
+            setTimeout(function(){
+                cObj("mpesa_assigned_bar").style.width   = assignedPct   + "%";
+                cObj("mpesa_unassigned_bar").style.width = unassignedPct + "%";
+            }, 120);
+        })
+        .catch(function(){ });
+}
+
 cObj("mpesaTrans").onclick = function () {
     hideWindow();
     unselectbtns();
     addselected(this.id);
     cObj("mpesa_trans").classList.remove("hide");
     removesidebar();
+    loadMpesaStats();
     getMpesaPayments();
 
     // come back to mpesa payment table

@@ -716,6 +716,63 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             echo  "<p>".($student_status == "1" ? $active_students : $inactive_students)." student(s)</p>";
             $stmt->close();
             $conn2->close();
+        }elseif (isset($_GET['get_attendance_stats'])) {
+            $today = date("Y-m-d");
+            // active student totals
+            $select = "SELECT `gender`, `my_course_list` FROM `student_data` WHERE `deleted` = 0 AND `stud_class` != '-1' AND `stud_class` != '-2' AND `stud_class` != '-3'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $stats = ["total" => 0, "male" => 0, "female" => 0];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    if (!isStudentAttendanceActive($row['my_course_list'])) continue;
+                    $stats['total']++;
+                    $g = strtolower($row['gender']);
+                    if ($g === 'male')   $stats['male']++;
+                    elseif ($g === 'female') $stats['female']++;
+                }
+            }
+            // present today (distinct students marked across all classes)
+            $sel2 = "SELECT COUNT(DISTINCT `admission_no`) AS present FROM `attendancetable` WHERE `date` = ?";
+            $stmt2 = $conn2->prepare($sel2);
+            $stmt2->bind_param("s", $today);
+            $stmt2->execute();
+            $res2 = $stmt2->get_result();
+            $present = 0;
+            if ($res2 && $row2 = $res2->fetch_assoc()) $present = (int)$row2['present'];
+            $stats['present_today'] = $present;
+            $stats['absent_today']  = max(0, $stats['total'] - $present);
+            // classes that have called register today
+            $sel3 = "SELECT COUNT(DISTINCT `course_level`) AS classes FROM `attendancetable` WHERE `date` = ?";
+            $stmt3 = $conn2->prepare($sel3);
+            $stmt3->bind_param("s", $today);
+            $stmt3->execute();
+            $res3 = $stmt3->get_result();
+            $stats['classes_today'] = 0;
+            if ($res3 && $row3 = $res3->fetch_assoc()) $stats['classes_today'] = (int)$row3['classes'];
+            echo json_encode($stats);
+        }elseif (isset($_GET['get_manage_student_stats'])) {
+            $this_month_start = date("Y-m-01");
+            $select = "SELECT `gender`, `study_mode`, `my_course_list`, `D_O_A` FROM `student_data` WHERE `deleted` = 0 AND `stud_class` != '-1' AND `stud_class` != '-2' AND `stud_class` != '-3'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $stats = ["total" => 0, "active" => 0, "inactive" => 0, "male" => 0, "female" => 0, "new_this_month" => 0];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $stats['total']++;
+                    if (isStudentAttendanceActive($row['my_course_list'])) {
+                        $stats['active']++;
+                    } else {
+                        $stats['inactive']++;
+                    }
+                    if (strtolower($row['gender']) === 'male') $stats['male']++;
+                    elseif (strtolower($row['gender']) === 'female') $stats['female']++;
+                    if (!empty($row['D_O_A']) && $row['D_O_A'] >= $this_month_start) $stats['new_this_month']++;
+                }
+            }
+            echo json_encode($stats);
         }elseif (isset($_GET['studentscounttoday'])) {
             $date = date("Y-m-d");
             $count = "SELECT COUNT(activated) as 'Total' FROM `student_data` WHERE `activated` = 1 and `deleted` =0 and D_O_A = ?";

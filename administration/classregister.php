@@ -14,6 +14,61 @@
             </div>
             <input type="text"  id="myname" hidden value = <?php if(isset($_SESSION['username'])){ echo $_SESSION['username']; } ?> >
         </div>
+        <!-- Attendance statistics -->
+        <div id="attendance_stats_holder" class="w-75 mx-auto" style="margin:15px 0 20px 0;">
+            <p style="font-weight:700;font-size:15px;margin-bottom:12px;">
+                <i class="fas fa-clipboard-list" style="color:cadetblue;"></i>&nbsp; Today's Attendance Overview
+            </p>
+            <!-- Stat cards -->
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+                <div style="flex:1;min-width:140px;background:#e8f4fd;border-left:4px solid #2196F3;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#2196F3;line-height:1.1;" id="att_total"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-users"></i>&nbsp;Active Students</div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#e8f5e9;border-left:4px solid #4CAF50;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#4CAF50;line-height:1.1;" id="att_present"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-check-circle"></i>&nbsp;Present Today <span id="att_present_pct" style="color:#4CAF50;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#fce4ec;border-left:4px solid #E53935;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#E53935;line-height:1.1;" id="att_absent"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-times-circle"></i>&nbsp;Absent Today <span id="att_absent_pct" style="color:#E53935;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#e3f2fd;border-left:4px solid #1565C0;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#1565C0;line-height:1.1;" id="att_male"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-mars"></i>&nbsp;Male <span id="att_male_pct" style="color:#1565C0;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#f3e5f5;border-left:4px solid #E91E63;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#E91E63;line-height:1.1;" id="att_female"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-venus"></i>&nbsp;Female <span id="att_female_pct" style="color:#E91E63;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#fffde7;border-left:4px solid #FFC107;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#FFC107;line-height:1.1;" id="att_classes_today"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-chalkboard-teacher"></i>&nbsp;Classes Registered</div>
+                </div>
+            </div>
+            <!-- Progress bars: Present & Absent -->
+            <div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:14px 18px;">
+                <div style="margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:4px;">
+                        <span><i class="fas fa-check-circle" style="color:#4CAF50;"></i>&nbsp;Present</span>
+                        <span id="att_present_pct_bar" style="font-weight:600;">0%</span>
+                    </div>
+                    <div style="background:#eee;border-radius:10px;height:8px;overflow:hidden;">
+                        <div id="att_present_bar" style="background:#4CAF50;height:8px;border-radius:10px;width:0%;transition:width 0.7s ease;"></div>
+                    </div>
+                </div>
+                <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:4px;">
+                        <span><i class="fas fa-times-circle" style="color:#E53935;"></i>&nbsp;Absent</span>
+                        <span id="att_absent_pct_bar" style="font-weight:600;">0%</span>
+                    </div>
+                    <div style="background:#eee;border-radius:10px;height:8px;overflow:hidden;">
+                        <div id="att_absent_bar" style="background:#E53935;height:8px;border-radius:10px;width:0%;transition:width 0.7s ease;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="middle1">
             <div class="register" id='mains'>
                 <div class="registerbodytop rounded-lg p-2">

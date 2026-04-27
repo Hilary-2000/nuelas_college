@@ -7,6 +7,73 @@
             <p>Manage student information</p>
             <p class="hide" id="studentinformation" ></p>
         </div>
+
+        <!-- Student statistics -->
+        <div id="manage_student_stats_holder" class="w-75 mx-auto" style="margin:15px 0 20px 0;">
+            <p style="font-weight:700; font-size:15px; margin-bottom:12px;">
+                <i class="fas fa-user-graduate" style="color:cadetblue;"></i>&nbsp; Student Enrolment
+            </p>
+
+            <!-- Stat cards -->
+            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+                <div style="flex:1;min-width:140px;background:#e8f4fd;border-left:4px solid #2196F3;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#2196F3;line-height:1.1;" id="mss_total"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-users"></i>&nbsp;Total Enrolled</div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#e8f5e9;border-left:4px solid #4CAF50;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#4CAF50;line-height:1.1;" id="mss_active"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-check-circle"></i>&nbsp;Active <span id="mss_active_pct" style="color:#4CAF50;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#fff3e0;border-left:4px solid #FF9800;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#FF9800;line-height:1.1;" id="mss_inactive"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-pause-circle"></i>&nbsp;Inactive <span id="mss_inactive_pct" style="color:#FF9800;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#e3f2fd;border-left:4px solid #1565C0;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#1565C0;line-height:1.1;" id="mss_male"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-mars"></i>&nbsp;Male <span id="mss_male_pct" style="color:#1565C0;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#fce4ec;border-left:4px solid #E91E63;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#E91E63;line-height:1.1;" id="mss_female"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-venus"></i>&nbsp;Female <span id="mss_female_pct" style="color:#E91E63;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#fffde7;border-left:4px solid #FFC107;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#FFC107;line-height:1.1;" id="mss_new_this_month"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-calendar-plus"></i>&nbsp;New This Month</div>
+                </div>
+            </div>
+
+            <!-- Progress bars -->
+            <div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:14px 18px;">
+                <div style="margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:4px;">
+                        <span><i class="fas fa-check-circle" style="color:#4CAF50;"></i>&nbsp;Active</span>
+                        <span id="mss_active_pct_bar" style="font-weight:600;">0%</span>
+                    </div>
+                    <div style="background:#eee;border-radius:10px;height:8px;overflow:hidden;">
+                        <div id="mss_active_bar" style="background:#4CAF50;height:8px;border-radius:10px;width:0%;transition:width 0.7s ease;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:4px;">
+                        <span><i class="fas fa-mars" style="color:#1565C0;"></i>&nbsp;Male</span>
+                        <span id="mss_male_pct_bar" style="font-weight:600;">0%</span>
+                    </div>
+                    <div style="background:#eee;border-radius:10px;height:8px;overflow:hidden;">
+                        <div id="mss_male_bar" style="background:#1565C0;height:8px;border-radius:10px;width:0%;transition:width 0.7s ease;"></div>
+                    </div>
+                </div>
+                <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:4px;">
+                        <span><i class="fas fa-venus" style="color:#E91E63;"></i>&nbsp;Female</span>
+                        <span id="mss_female_pct_bar" style="font-weight:600;">0%</span>
+                    </div>
+                    <div style="background:#eee;border-radius:10px;height:8px;overflow:hidden;">
+                        <div id="mss_female_bar" style="background:#E91E63;height:8px;border-radius:10px;width:0%;transition:width 0.7s ease;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="middle1">
             <div class="topsearch">
                 <div class="topsearch1">
