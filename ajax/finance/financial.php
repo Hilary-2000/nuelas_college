@@ -8819,6 +8819,14 @@
         }
         return 0;
     }
+    function Nhif_Shif_Relief($gross_salary, $effect_year) {
+        $nhif_shif_amount = Nhif_Shif_Amount($gross_salary, $effect_year)*1;
+        if ($effect_year >= 202201) {
+            return 0.15 * $nhif_shif_amount > 5000 ? 5000 : 0.15 * $nhif_shif_amount;
+        }else{
+            return 0.15 * $nhif_shif_amount;
+        }
+    }
     function getMySalaryBreakdown($staff_id,$conn2,$date){
         $select = "SELECT * FROM `payroll_information` WHERE `staff_id` = '".$staff_id."';";
         $stmt = $conn2->prepare($select);
