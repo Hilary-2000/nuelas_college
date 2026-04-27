@@ -13,6 +13,61 @@
                 </div>
             </div>
         </div>
+        <!-- M-Pesa statistics -->
+        <div id="mpesa_stats_holder" class="w-75 mx-auto" style="margin:15px 0 20px 0;">
+            <p style="font-weight:700;font-size:15px;margin-bottom:12px;">
+                <i class="fas fa-mobile-alt" style="color:cadetblue;"></i>&nbsp; M-Pesa Transaction Overview
+            </p>
+            <!-- Stat cards -->
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+                <div style="flex:1;min-width:140px;background:#e8f4fd;border-left:4px solid #2196F3;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#2196F3;line-height:1.1;" id="mpesa_total"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-exchange-alt"></i>&nbsp;Total Transactions</div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#e8f5e9;border-left:4px solid #4CAF50;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#4CAF50;line-height:1.1;" id="mpesa_assigned"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-check-circle"></i>&nbsp;Assigned <span id="mpesa_assigned_pct" style="color:#4CAF50;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#fce4ec;border-left:4px solid #E53935;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#E53935;line-height:1.1;" id="mpesa_unassigned"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-exclamation-circle"></i>&nbsp;Unassigned <span id="mpesa_unassigned_pct" style="color:#E53935;font-weight:600;"></span></div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#e8f5e9;border-left:4px solid #00897B;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:1.4rem;font-weight:700;color:#00897B;line-height:1.1;" id="mpesa_total_amount"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-coins"></i>&nbsp;Total Collected (KES)</div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#fffde7;border-left:4px solid #FFC107;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:2rem;font-weight:700;color:#FFC107;line-height:1.1;" id="mpesa_today_count"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-calendar-day"></i>&nbsp;Today's Transactions</div>
+                </div>
+                <div style="flex:1;min-width:140px;background:#fff3e0;border-left:4px solid #FF9800;border-radius:8px;padding:14px 16px;">
+                    <div style="font-size:1.4rem;font-weight:700;color:#FF9800;line-height:1.1;" id="mpesa_today_amount"><img src="images/ajax_clock_small.gif"></div>
+                    <div style="font-size:12px;color:#555;margin-top:4px;"><i class="fas fa-wallet"></i>&nbsp;Today's Amount (KES)</div>
+                </div>
+            </div>
+            <!-- Progress bars: Assigned & Unassigned -->
+            <div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:14px 18px;">
+                <div style="margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:4px;">
+                        <span><i class="fas fa-check-circle" style="color:#4CAF50;"></i>&nbsp;Assigned</span>
+                        <span id="mpesa_assigned_pct_bar" style="font-weight:600;">0%</span>
+                    </div>
+                    <div style="background:#eee;border-radius:10px;height:8px;overflow:hidden;">
+                        <div id="mpesa_assigned_bar" style="background:#4CAF50;height:8px;border-radius:10px;width:0%;transition:width 0.7s ease;"></div>
+                    </div>
+                </div>
+                <div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:4px;">
+                        <span><i class="fas fa-exclamation-circle" style="color:#E53935;"></i>&nbsp;Unassigned</span>
+                        <span id="mpesa_unassigned_pct_bar" style="font-weight:600;">0%</span>
+                    </div>
+                    <div style="background:#eee;border-radius:10px;height:8px;overflow:hidden;">
+                        <div id="mpesa_unassigned_bar" style="background:#E53935;height:8px;border-radius:10px;width:0%;transition:width 0.7s ease;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="middle1">
             <div class="notice1">
                 <div class="notify">
