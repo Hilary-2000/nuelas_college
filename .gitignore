@@ -1,0 +1,28 @@
+# Claude Code context & schema reference
+.claude/
+
+# Composer dependencies — run `composer install` to restore
+vendor/
+
+# Database credentials & connections
+connections/
+
+# Database dumps
+*.sql
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+.env
+.env.*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Uploaded user files (large binary content)
+images/uploads/
