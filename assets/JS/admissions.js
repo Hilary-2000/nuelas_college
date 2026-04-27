@@ -801,7 +801,7 @@ function loadMpesaStats() {
             cObj("mpesa_total").textContent        = s.total;
             cObj("mpesa_assigned").textContent     = s.assigned;
             cObj("mpesa_unassigned").textContent   = s.unassigned;
-            cObj("mpesa_total_amount").textContent = "KES " + Number(s.total_amount).toLocaleString();
+            cObj("mpesa_total_amount").textContent = "KES " + Number(s.last_month).toLocaleString();
             cObj("mpesa_today_count").textContent  = s.today_count;
             cObj("mpesa_today_amount").textContent = "KES " + Number(s.today_amount).toLocaleString();
 
