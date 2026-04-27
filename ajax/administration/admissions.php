@@ -9450,6 +9450,25 @@ function isJson_report($string) {
         }
         return "Null";
     }
+    // A student is attendance-active when their course progress contains at least one
+    // course with course_status==1 that has at least one module_term with status=="1".
+    function isStudentAttendanceActive($my_course_list){
+        if (empty($my_course_list) || $my_course_list === '[]') return false;
+        $courses = json_decode($my_course_list, true);
+        if (!is_array($courses)) return false;
+        foreach ($courses as $course) {
+            if (isset($course['course_status']) && $course['course_status'] == 1) {
+                if (!empty($course['module_terms']) && is_array($course['module_terms'])) {
+                    foreach ($course['module_terms'] as $module) {
+                        if (isset($module['status']) && $module['status'] == "1") {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
     function createStudentn4($conn2,$result,$searchinfor, $student_status = "both"){
         if($result){
             $xs =0;
