@@ -985,6 +985,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($data_array,$row['student_email']);
                         array_push($data_array,$row['study_mode']);
                         array_push($data_array,$row['branch_name']);
+                        array_push($data_array,isset($row['county']) ? $row['county'] : '');
+                        array_push($data_array,isset($row['heard_about_us']) ? $row['heard_about_us'] : '');
+                        array_push($data_array,isset($row['referral_name']) ? $row['referral_name'] : '');
+                        array_push($data_array,isset($row['referral_phone']) ? $row['referral_phone'] : '');
+                        array_push($data_array,isset($row['heard_others_specify']) ? $row['heard_others_specify'] : '');
                     }
                 }
 
@@ -1238,6 +1243,44 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $result = $stmt->get_result();
                 $searh = "Students Registered Between= <span style='color:brown;'>".date("M-dS-Y",strtotime($start_date))." AND ".date("M-dS-Y",strtotime($end_date))."</span>";
                 createStudentn4($conn2,$result,$searh);
+            }elseif (isset($_GET['doa_from'])) {
+                $doa_from = $_GET['doa_from'];
+                $doa_to = $_GET['doa_to'];
+                $select = "SELECT * FROM `student_data` WHERE `D_O_A` BETWEEN ? AND ? AND `deleted` = 0 AND `activated` = 1";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("ss", $doa_from, $doa_to);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $searh = "Admission date between <span style='color:brown;'>".date("M dS Y", strtotime($doa_from))." &mdash; ".date("M dS Y", strtotime($doa_to))."</span>";
+                createStudentn4($conn2, $result, $searh);
+            }elseif (isset($_GET['by_county'])) {
+                $county = $_GET['by_county'];
+                $select = "SELECT * FROM `student_data` WHERE `county` = ? AND `deleted` = 0 AND `activated` = 1";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("s", $county);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $searh = "Students from county: <span style='color:brown;'>".$county."</span>";
+                createStudentn4($conn2, $result, $searh);
+            }elseif (isset($_GET['by_heard'])) {
+                $heard = "%".$_GET['by_heard']."%";
+                $select = "SELECT * FROM `student_data` WHERE `heard_about_us` LIKE ? AND `deleted` = 0 AND `activated` = 1";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("s", $heard);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $searh = "Students who heard via: <span style='color:brown;'>".$_GET['by_heard']."</span>";
+                createStudentn4($conn2, $result, $searh);
+            }elseif (isset($_GET['age_from'])) {
+                $age_from = intval($_GET['age_from']);
+                $age_to = intval($_GET['age_to']);
+                $select = "SELECT * FROM `student_data` WHERE TIMESTAMPDIFF(YEAR, `D_O_B`, CURDATE()) BETWEEN ? AND ? AND `deleted` = 0 AND `activated` = 1";
+                $stmt = $conn2->prepare($select);
+                $stmt->bind_param("ii", $age_from, $age_to);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $searh = "Students aged between <span style='color:brown;'>".$age_from." &mdash; ".$age_to." years</span>";
+                createStudentn4($conn2, $result, $searh);
             }
         }elseif (isset($_GET['delete_staff'])) {
             include("../../connections/conn1.php");
@@ -1328,6 +1371,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $student_contacts = $_GET['student_contacts'];
             $student_email = $_GET['student_email'];
             $college_branch = $_GET['college_branch'];
+            $edit_county = isset($_GET['edit_county']) ? $_GET['edit_county'] : '';
+            $edit_heard_about_us = isset($_GET['edit_heard_about_us']) ? $_GET['edit_heard_about_us'] : '';
+            $edit_referral_name = isset($_GET['edit_referral_name']) ? $_GET['edit_referral_name'] : '';
+            $edit_referral_phone = isset($_GET['edit_referral_phone']) ? $_GET['edit_referral_phone'] : '';
+            $edit_heard_others_specify = isset($_GET['edit_heard_others_specify']) ? $_GET['edit_heard_others_specify'] : '';
             // echo $doas." in null";
 
             // process the student course progress
@@ -1478,9 +1526,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
 
             // echo $previous_schools;
-            $update = "UPDATE `student_data` SET `study_mode` = ?, `branch_name` = ?, `year_of_study` = ?,`stud_class` = ?, `BCNo`= ?,`index_no` = ?,`gender` = ?, `disabled` = ? , `disable_describe` = ? , `address` = ? ,`parentName` = ?,`parentContacts` = ?,`parent_relation` = ?,`parent_email` = ?,`parent_name2` = ?,`parent_contact2` = ?, `parent_relation2` = ?, `parent_email2` = ?, `first_name` = ? ,`surname` = ? ,`second_name` = ? ,`primary_parent_occupation` = ?, `secondary_parent_occupation` = ?, `medical_history` = ?, `clubs_id` = ?, `prev_sch_attended` = ?,`D_O_A` = ?, `transfered_comment` = ?, `course_done` = ?,`intake_year` = ?, `intake_month` = ?, `course_progress_status` = ?, `student_email` = ?, `student_contact` = ? WHERE `adm_no`=?";
+            $update = "UPDATE `student_data` SET `study_mode` = ?, `branch_name` = ?, `year_of_study` = ?,`stud_class` = ?, `BCNo`= ?,`index_no` = ?,`gender` = ?, `disabled` = ? , `disable_describe` = ? , `address` = ? ,`parentName` = ?,`parentContacts` = ?,`parent_relation` = ?,`parent_email` = ?,`parent_name2` = ?,`parent_contact2` = ?, `parent_relation2` = ?, `parent_email2` = ?, `first_name` = ? ,`surname` = ? ,`second_name` = ? ,`primary_parent_occupation` = ?, `secondary_parent_occupation` = ?, `medical_history` = ?, `clubs_id` = ?, `prev_sch_attended` = ?,`D_O_A` = ?, `transfered_comment` = ?, `course_done` = ?,`intake_year` = ?, `intake_month` = ?, `course_progress_status` = ?, `student_email` = ?, `student_contact` = ?, `county` = ?, `heard_about_us` = ?, `referral_name` = ?, `referral_phone` = ?, `heard_others_specify` = ? WHERE `adm_no`=?";
             $stmt = $conn2->prepare($update);
-            $stmt->bind_param("sssssssssssssssssssssssssssssssssss",$study_mode, $college_branch, $newYOS,$class,$bcnos,$index,$genders,$disabled,$describe,$address,$pnamed,$pcontacts,$prelation,$pemail,$parentname2,$parentcontact,$parentrelation,$pemails,$fnamed,$snamed,$lnamed,$occupation1,$occupation2,$medical_history,$clubs_in_sporters,$previous_schools,$doas,$reason_for_leaving,$course_chosen,$intake_year_edit,$intake_month_edit,$course_progress,$student_email,$student_contacts,$adminno);
+            $stmt->bind_param("ssssssssssssssssssssssssssssssssssssssss",$study_mode, $college_branch, $newYOS,$class,$bcnos,$index,$genders,$disabled,$describe,$address,$pnamed,$pcontacts,$prelation,$pemail,$parentname2,$parentcontact,$parentrelation,$pemails,$fnamed,$snamed,$lnamed,$occupation1,$occupation2,$medical_history,$clubs_in_sporters,$previous_schools,$doas,$reason_for_leaving,$course_chosen,$intake_year_edit,$intake_month_edit,$course_progress,$student_email,$student_contacts,$edit_county,$edit_heard_about_us,$edit_referral_name,$edit_referral_phone,$edit_heard_others_specify,$adminno);
             if($stmt->execute()){
                 echo "<p style='color:green;font-size:12px;'>Student  data updated successfully!</p>";
                 $log_text = $fnamed." ".$lnamed." - of Reg No. (".$adminno.") data has been updated successfully!";
@@ -6534,6 +6582,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $intake_year = $_POST['intake_year'];
             $intake_month = $_POST['intake_month'];
             $study_mode = $_POST['study_mode'];
+            $student_county = isset($_POST['student_county']) ? $_POST['student_county'] : '';
+            $heard_about_us = isset($_POST['heard_about_us']) ? $_POST['heard_about_us'] : '';
+            $referral_name = isset($_POST['referral_name']) ? $_POST['referral_name'] : '';
+            $referral_phone = isset($_POST['referral_phone']) ? $_POST['referral_phone'] : '';
+            $heard_others_specify = isset($_POST['heard_others_specify']) ? $_POST['heard_others_specify'] : '';
 
             // get the level id
             $level_id = null;
@@ -6638,9 +6691,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $course_details_string = ($classenrol != "-1" && $classenrol != "-2" && $classenrol != "-3") ? json_encode([$course_detail]) : "[]";
 
             // ----------------END OF SETTING COURSE DETAILS--------------
-            $insert = "INSERT INTO `student_data` (`surname`,`adm_no`,`first_name`,`second_name`,`branch_name`,`student_upi`,`D_O_B`,`gender`,`stud_class`,`D_O_A`,`parentName`,`parentContacts`,`parent_relation`,`parent_email`,`parent_name2`,`parent_contact2`,`parent_relation2`,`parent_email2`,`address`,`BCNo`,`primary_parent_occupation`,`secondary_parent_occupation`,`course_done`,`my_course_list`,`intake_year`,`intake_month`,`student_contact`,`student_email`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            $insert = "INSERT INTO `student_data` (`surname`,`adm_no`,`first_name`,`second_name`,`branch_name`,`student_upi`,`D_O_B`,`gender`,`stud_class`,`D_O_A`,`parentName`,`parentContacts`,`parent_relation`,`parent_email`,`parent_name2`,`parent_contact2`,`parent_relation2`,`parent_email2`,`address`,`BCNo`,`primary_parent_occupation`,`secondary_parent_occupation`,`course_done`,`my_course_list`,`intake_year`,`intake_month`,`student_contact`,`student_email`,`county`,`heard_about_us`,`referral_name`,`referral_phone`,`heard_others_specify`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
-            $stmt->bind_param("ssssssssssssssssssssssssssss",$suname,$admno,$fname,$sname,$college_branch,$upis,$dob,$gender,$classenrol,$doa,$parentname,$parentcontact,$parentrelation,$parentemail,$parentname2,$parentcontact2,$parentrelation2,$pmail2,$address,$bcno,$parent_accupation1,$parent_accupation2,$course_chosen,$course_details_string,$intake_year,$intake_month,$student_contacts,$student_email);
+            $stmt->bind_param("sssssssssssssssssssssssssssssssss",$suname,$admno,$fname,$sname,$college_branch,$upis,$dob,$gender,$classenrol,$doa,$parentname,$parentcontact,$parentrelation,$parentemail,$parentname2,$parentcontact2,$parentrelation2,$pmail2,$address,$bcno,$parent_accupation1,$parent_accupation2,$course_chosen,$course_details_string,$intake_year,$intake_month,$student_contacts,$student_email,$student_county,$heard_about_us,$referral_name,$referral_phone,$heard_others_specify);
             if($stmt->execute()){
                 $data = "<p style ='color:green;font-size:12px;'>".$fname." ".$sname." has been admitted successfully with admission number : ".$admno."<br>Use their admission number to search their information</p>";
                 $data.= "<input type='text' id='admnohold' value=".$admno." hidden> <input type='text' id='namehold' value='".$fname." ".$sname."' hidden>";

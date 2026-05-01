@@ -1654,6 +1654,80 @@ window.onload = function () {
 
     // load dashboard
     load_dash_graphs();
+
+    $('#incident_type_dropdown').select2({
+        placeholder: "Select Incident Type",
+        width: "100%"
+    });
+    $("#include_in_final_exam").select2({
+        placeholder: "Select Option",
+        width: "100%"
+    });
+    $('#incident_category').select2({
+        placeholder: "Select Category",
+        width: "100%"
+    });
+    $('#incident_severity_level').select2({
+        placeholder: "Select Severity Level",
+        width: "100%"
+    });
+    $('#incident_parent_notified').select2({
+        width: "100%"
+    });
+    $('#incident_status').select2({
+        width: "100%"
+    });
+    $('#warning_type').select2({
+        width: "100%"
+    });
+    $('#warning_severity_level').select2({
+        width: "100%"
+    });
+    $('#warning_status').select2({
+        width: "100%"
+    });
+
+    $('#unit_year_of_study').select2({
+        width: '100%'
+    });
+
+    $('#unit_year_of_study_edit').select2({
+        width: '100%'
+    });
+
+    $("#exam_result_options").select2({
+        width: '100%'
+    });
+
+    $("#filter_option").select2({
+        width: '100%'
+    });
+
+    $('#student_county').select2({
+        placeholder: "-- Select County --",
+        allowClear: true,
+        width: '100%'
+    });
+
+    $('#edit_county').select2({
+        placeholder: "-- Select County --",
+        allowClear: true,
+        width: '100%'
+    });
+
+    $('#county_search_filter').select2({
+        placeholder: "-- Select County --",
+        allowClear: true,
+        width: '100%'
+    });
+
+    cObj("exam_result_options").onchange = function () {
+        if(this.value == "exam"){
+            cObj("cat_option_list_window").classList.add("hide");
+        }else{
+            cObj("cat_option_list_window").classList.remove("hide");
+        }
+    }
 }
 
 /*******end of it********/
@@ -2290,91 +2364,46 @@ cObj("staffemail").onblur = function () {
 
 
 cObj("sach").onchange = function () {
+    var allPanels = [
+        "named","admnosd","classenroll","bcnos","course_lists_search_bar",
+        "intake_month_search_win","intake_year_search_win","student_status_window",
+        "student_study_mode_search_win","college_branch_search",
+        "doa_range_win","county_search_win","heard_search_win","age_range_win"
+    ];
+    for (var i = 0; i < allPanels.length; i++) {
+        if (cObj(allPanels[i])) cObj(allPanels[i]).classList.add("hide");
+    }
+    cObj("swindow").classList.add("hide");
+
     if (this.value == "name") {
         cObj("swindow").classList.remove("hide");
         cObj("named").classList.remove("hide");
-        cObj("admnosd").classList.add("hide");
-        cObj("classenroll").classList.add("hide");
-        cObj("bcnos").classList.add("hide");
-        cObj("course_lists_search_bar").classList.add("hide");
-        cObj("intake_month_search_win").classList.add("hide");
-        cObj("intake_year_search_win").classList.add("hide");
-        cObj("student_status_window").classList.add("hide");
-        cObj("student_study_mode_search_win").classList.add("hide");
-        cObj("college_branch_search").classList.add("hide");
     } else if (this.value == "AdmNo") {
         cObj("swindow").classList.remove("hide");
-        cObj("named").classList.add("hide");
         cObj("admnosd").classList.remove("hide");
-        cObj("classenroll").classList.add("hide");
-        cObj("course_lists_search_bar").classList.add("hide");
-        cObj("bcnos").classList.add("hide");
-        cObj("intake_month_search_win").classList.add("hide");
-        cObj("intake_year_search_win").classList.add("hide");
-        cObj("student_status_window").classList.add("hide");
-        cObj("student_study_mode_search_win").classList.add("hide");
-        cObj("college_branch_search").classList.add("hide");
     } else if (this.value == "class") {
         cObj("swindow").classList.remove("hide");
-        cObj("named").classList.add("hide");
-        cObj("admnosd").classList.add("hide");
         cObj("classenroll").classList.remove("hide");
         cObj("course_lists_search_bar").classList.remove("hide");
-        cObj("bcnos").classList.add("hide");
-        cObj("intake_month_search_win").classList.add("hide");
-        cObj("intake_year_search_win").classList.add("hide");
         cObj("student_status_window").classList.remove("hide");
         cObj("student_study_mode_search_win").classList.remove("hide");
         cObj("college_branch_search").classList.remove("hide");
     } else if (this.value == "bcno") {
         cObj("swindow").classList.remove("hide");
-        cObj("named").classList.add("hide");
-        cObj("admnosd").classList.add("hide");
-        cObj("classenroll").classList.add("hide");
-        cObj("course_lists_search_bar").classList.add("hide");
         cObj("bcnos").classList.remove("hide");
-        cObj("intake_month_search_win").classList.add("hide");
-        cObj("intake_year_search_win").classList.add("hide");
-        cObj("student_status_window").classList.add("hide");
-        cObj("student_study_mode_search_win").classList.add("hide");
-        cObj("college_branch_search").classList.add("hide");
-    } else if (this.value == "allstuds") {
-        cObj("swindow").classList.add("hide");
-        cObj("bcnos").classList.add("hide");
-        cObj("named").classList.add("hide");
-        cObj("admnosd").classList.add("hide");
-        cObj("classenroll").classList.add("hide");
-        cObj("course_lists_search_bar").classList.add("hide");
-        cObj("intake_month_search_win").classList.add("hide");
-        cObj("intake_year_search_win").classList.add("hide");
-        cObj("student_status_window").classList.add("hide");
-        cObj("student_study_mode_search_win").classList.add("hide");
-        cObj("college_branch_search").classList.add("hide");
-    } else if (this.value == "regtoday") {
-        cObj("swindow").classList.add("hide");
-        cObj("bcnos").classList.add("hide");
-        cObj("named").classList.add("hide");
-        cObj("admnosd").classList.add("hide");
-        cObj("classenroll").classList.add("hide");
-        cObj("course_lists_search_bar").classList.add("hide");
-        cObj("intake_month_search_win").classList.add("hide");
-        cObj("intake_year_search_win").classList.add("hide");
-        cObj("student_status_window").classList.add("hide");
-        cObj("student_study_mode_search_win").classList.add("hide");
-        cObj("college_branch_search").classList.add("hide");
     } else if (this.value == "registered_in") {
-        cObj("swindow").classList.add("hide");
-        cObj("bcnos").classList.add("hide");
-        cObj("named").classList.add("hide");
-        cObj("admnosd").classList.add("hide");
-        cObj("classenroll").classList.add("hide");
-        cObj("course_lists_search_bar").classList.add("hide");
         cObj("intake_month_search_win").classList.remove("hide");
         cObj("intake_year_search_win").classList.remove("hide");
-        cObj("student_status_window").classList.add("hide");
-        cObj("student_study_mode_search_win").classList.add("hide");
-        cObj("college_branch_search").classList.add("hide");
+    } else if (this.value == "doa_range") {
+        cObj("doa_range_win").classList.remove("hide");
+    } else if (this.value == "by_county") {
+        cObj("county_search_win").classList.remove("hide");
+    } else if (this.value == "by_heard") {
+        cObj("heard_search_win").classList.remove("hide");
+    } else if (this.value == "age_range") {
+        cObj("age_range_win").classList.remove("hide");
     }
+    // allstuds and regtoday need no extra panels
 }
 
 cObj("findingstudents").onclick = function () {
@@ -2440,8 +2469,27 @@ cObj("findingstudents").onclick = function () {
             datapassing += "&intake_month="+valObj("intake_month_search")+"&intake_year="+valObj("intake_year_search");
             erroro += checkBlank("intake_month_search");
             erroro += checkBlank("intake_year_search");
+        } else if (valObj("sach") == "doa_range") {
+            var doa_from = cObj("doa_from").value;
+            var doa_to = cObj("doa_to").value;
+            if (doa_from.length == 0) { redBorder(cObj("doa_from")); erroro++; } else { grayBorder(cObj("doa_from")); }
+            if (doa_to.length == 0) { redBorder(cObj("doa_to")); erroro++; } else { grayBorder(cObj("doa_to")); }
+            datapassing += "&doa_from="+doa_from+"&doa_to="+doa_to;
+        } else if (valObj("sach") == "by_county") {
+            var county_val = cObj("county_search_filter").value;
+            if (county_val.length == 0) { redBorder(cObj("county_search_filter")); erroro++; } else { grayBorder(cObj("county_search_filter")); }
+            datapassing += "&by_county="+encodeURIComponent(county_val);
+        } else if (valObj("sach") == "by_heard") {
+            var heard_val = cObj("heard_search_filter").value;
+            if (heard_val.length == 0) { redBorder(cObj("heard_search_filter")); erroro++; } else { grayBorder(cObj("heard_search_filter")); }
+            datapassing += "&by_heard="+encodeURIComponent(heard_val);
+        } else if (valObj("sach") == "age_range") {
+            var age_from = cObj("age_from").value;
+            var age_to = cObj("age_to").value;
+            if (age_from.length == 0) { redBorder(cObj("age_from")); erroro++; } else { grayBorder(cObj("age_from")); }
+            if (age_to.length == 0) { redBorder(cObj("age_to")); erroro++; } else { grayBorder(cObj("age_to")); }
+            datapassing += "&age_from="+age_from+"&age_to="+age_to;
         }
-
 
         if(cObj("student_status_search") != ""){
             datapassing += "&student_status="+valObj("student_status_search");
@@ -3152,6 +3200,35 @@ function tablebtnlistener() {
                     cObj("edit_student_contacts").value = splitdata[48];
                     cObj("edit_student_email").value = splitdata[49];
                     getBranchesSelect("college_branch_edit_holder","college_branch_edit","college_branch_loader_edit",splitdata[51]);
+
+                    // populate county (index 52)
+                    var edit_county_val = splitdata[52] || "";
+                    $('#edit_county').val(edit_county_val).trigger('change');
+
+                    // populate heard_about_us checkboxes (index 53)
+                    var heard_vals = (splitdata[53] || "").split(",").map(function(s){ return s.trim(); });
+                    var edit_checkboxes = document.querySelectorAll(".edit_heard_about_checkbox");
+                    for (var ci = 0; ci < edit_checkboxes.length; ci++) {
+                        edit_checkboxes[ci].checked = heard_vals.indexOf(edit_checkboxes[ci].value) !== -1;
+                    }
+                    // referral details (index 54, 55)
+                    if (heard_vals.indexOf("Referral") !== -1) {
+                        cObj("edit_referral_details_win").classList.remove("hide");
+                        cObj("edit_referral_name").value = splitdata[54] || "";
+                        cObj("edit_referral_phone").value = splitdata[55] || "";
+                    } else {
+                        cObj("edit_referral_details_win").classList.add("hide");
+                        cObj("edit_referral_name").value = "";
+                        cObj("edit_referral_phone").value = "";
+                    }
+                    // others specify (index 56)
+                    if (heard_vals.indexOf("Others") !== -1) {
+                        cObj("edit_heard_others_win").classList.remove("hide");
+                        cObj("edit_heard_others_specify").value = splitdata[56] || "";
+                    } else {
+                        cObj("edit_heard_others_win").classList.add("hide");
+                        cObj("edit_heard_others_specify").value = "";
+                    }
                 }
                 stopInterval(ids);
             }
@@ -3917,6 +3994,15 @@ cObj("updatestudinfor").onclick = function () {
                 datapass += "&reason_for_leaving=" + reason_for_leaving+"&course_chosen="+course_chosen+"&course_level_hidden="+course_level_hidden+"&course_chosen_level_hidden="+course_chosen_level_hidden+"&existing_course_details="+existing_course;
                 datapass += "&intake_year_edit="+intake_year_edit+"&intake_month_edit="+intake_month_edit+"&course_progress="+course_progress;
                 datapass += "&student_contacts="+edit_student_contacts+"&student_email="+edit_student_email+"&study_mode="+edit_study_mode+"&college_branch="+college_branch;
+
+                var edit_county = $('#edit_county').val() || "";
+                var edit_heard_checked = document.querySelectorAll(".edit_heard_about_checkbox:checked");
+                var edit_heard_about_us = Array.from(edit_heard_checked).map(function(cb){ return cb.value; }).join(",");
+                var edit_referral_name = cObj("edit_heard_referral").checked ? cObj("edit_referral_name").value : "";
+                var edit_referral_phone = cObj("edit_heard_referral").checked ? cObj("edit_referral_phone").value : "";
+                var edit_heard_others_specify = cObj("edit_heard_others").checked ? cObj("edit_heard_others_specify").value : "";
+                datapass += "&edit_county="+encodeURIComponent(edit_county)+"&edit_heard_about_us="+encodeURIComponent(edit_heard_about_us)+"&edit_referral_name="+encodeURIComponent(edit_referral_name)+"&edit_referral_phone="+encodeURIComponent(edit_referral_phone)+"&edit_heard_others_specify="+encodeURIComponent(edit_heard_others_specify);
+
                 cObj("updateerrors").innerHTML = "";
                 sendData1("GET", "administration/admissions.php", datapass, cObj("updateerrors"));
                 setTimeout(() => {
@@ -4295,7 +4381,48 @@ cObj("paymode").onchange = function () {
 
 cObj("resetadmitform").onclick = function () {
     cObj("admitform").reset();
-}
+    $('#student_county').val(null).trigger('change');
+    cObj("referral_details_win").classList.add("hide");
+    cObj("heard_others_win").classList.add("hide");
+};
+
+document.getElementById("heard_referral").addEventListener("change", function () {
+    if (this.checked) {
+        cObj("referral_details_win").classList.remove("hide");
+    } else {
+        cObj("referral_details_win").classList.add("hide");
+        cObj("referral_name").value = "";
+        cObj("referral_phone").value = "";
+    }
+});
+
+document.getElementById("heard_others").addEventListener("change", function () {
+    if (this.checked) {
+        cObj("heard_others_win").classList.remove("hide");
+    } else {
+        cObj("heard_others_win").classList.add("hide");
+        cObj("heard_others_specify").value = "";
+    }
+});
+
+document.getElementById("edit_heard_referral").addEventListener("change", function () {
+    if (this.checked) {
+        cObj("edit_referral_details_win").classList.remove("hide");
+    } else {
+        cObj("edit_referral_details_win").classList.add("hide");
+        cObj("edit_referral_name").value = "";
+        cObj("edit_referral_phone").value = "";
+    }
+});
+
+document.getElementById("edit_heard_others").addEventListener("change", function () {
+    if (this.checked) {
+        cObj("edit_heard_others_win").classList.remove("hide");
+    } else {
+        cObj("edit_heard_others_win").classList.add("hide");
+        cObj("edit_heard_others_specify").value = "";
+    }
+});
 
 // submit the button
 var admit_click = 0;
@@ -4356,6 +4483,13 @@ cObj("submitbtn").onclick = function () {
             var parent_accupation1 = valObj("parent_accupation1").trim().length > 0 ? valObj("parent_accupation1").trim() : "none";
             var parent_accupation2 = valObj("parent_accupation2").trim().length > 0 ? valObj("parent_accupation2").trim() : "none";
 
+            var student_county = $('#student_county').val() || "";
+            var heard_checkboxes = document.querySelectorAll(".heard_about_checkbox:checked");
+            var heard_about_us = Array.from(heard_checkboxes).map(function(cb){ return cb.value; }).join(",");
+            var referral_name = cObj("heard_referral").checked ? valObj("referral_name") : "";
+            var referral_phone = cObj("heard_referral").checked ? valObj("referral_phone") : "";
+            var heard_others_specify = cObj("heard_others").checked ? valObj("heard_others_specify") : "";
+
             var datapass = "admit=true&surname=" + encodeURIComponent(surname) + "&fname=" + encodeURIComponent(fname) + "&sname=" + encodeURIComponent(sname) +"&doa="+ encodeURIComponent(doa) +"&dob=" + encodeURIComponent(dob) + "&gender=" + encodeURIComponent(gender) + "&enrolment=" + encodeURIComponent(errolment) + "&parentname=" + encodeURIComponent(parname) + "&parentconts=" + encodeURIComponent(parconts) + "&upis=" + encodeURIComponent(upis);
             datapass += "&parentrela=" + encodeURIComponent(parrelation) + "&pemail=" + encodeURIComponent(pemail) + "&bcno=" + encodeURIComponent(bcno) + "&address=" + encodeURIComponent(address) + "&admnos=" + encodeURIComponent(admno);
             datapass += "&parentrela2=" + encodeURIComponent(parrelation2) + "&pemail2=" + encodeURIComponent(pemail2) + "&parentname2=" + encodeURIComponent(parname2) + "&parentconts2=" + encodeURIComponent(parconts2);
@@ -4364,6 +4498,7 @@ cObj("submitbtn").onclick = function () {
             datapass += "&student_contacts="+encodeURIComponent(student_contacts)+"&student_email="+encodeURIComponent(student_email)+"&college_branch="+encodeURIComponent(college_branch);
             datapass += "&intake_year="+encodeURIComponent(valObj("intake_year"))+"&intake_month="+encodeURIComponent(valObj("intake_month"))+"&course_module_terms="+encodeURIComponent(course_module_terms);
             datapass += "&study_mode="+encodeURIComponent(module_terms)+"&send_student_message="+(cObj("send_student_parent_sms").checked ? "on" : "off")+"&send_first_parent="+(cObj("send_primary_parent_sms").checked ? "on" : "off")+"&send_second_parent="+(cObj("send_secondary_parent_sms").checked ? "on" : "off")+"";
+            datapass += "&student_county="+encodeURIComponent(student_county)+"&heard_about_us="+encodeURIComponent(heard_about_us)+"&referral_name="+encodeURIComponent(referral_name)+"&referral_phone="+encodeURIComponent(referral_phone)+"&heard_others_specify="+encodeURIComponent(heard_others_specify);
             sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("erroradm"),cObj("loadings"), function () {
                 if (cObj("admnohold") != null) {
                     var admnos = valObj("admnohold");
@@ -4371,7 +4506,10 @@ cObj("submitbtn").onclick = function () {
                     cObj("admissionno").innerText = admno;
                     cObj("studname").innerText = names;
                     cObj("admitform").reset();
-                    
+                    $('#student_county').val(null).trigger('change');
+                    cObj("referral_details_win").classList.add("hide");
+                    cObj("heard_others_win").classList.add("hide");
+
                     //bring the complete admission window
                     hideWindow();
                     cObj("completeadmission").classList.remove("hide");

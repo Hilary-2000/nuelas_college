@@ -168,6 +168,7 @@ cObj("select_student_option").onchange = function () {
 }
 cObj("finance_entity").onchange = function () {
     var my_val = this.value;
+    cObj("level_balance_type_win").classList.add("hide");
     if(my_val == "fees_collection"){
         var student_opt = document.getElementsByClassName("student_opt");
         for (let index = 0; index < student_opt.length; index++) {
@@ -251,6 +252,20 @@ cObj("finance_entity").onchange = function () {
         cObj("time_period").classList.remove("hide");
         var datapass = "getExpenseCategory=true";
         sendDataPost("POST","/college_sims/ajax/administration/admissions.php",datapass,cObj("exp_cat_select_holder"),cObj("expense_cats_loaders"));
+    }else if (my_val == "level_balances") {
+        var student_opt = document.getElementsByClassName("student_opt");
+        for (let index = 0; index < student_opt.length; index++) {
+            const element = student_opt[index];
+            element.classList.add("hide");
+        }
+        cObj("stud_opt_fin").classList.add("hide");
+        cObj("time_period").classList.add("hide");
+        cObj("specific_date").classList.add("hide");
+        cObj("fees_reminder_message").classList.add("hide");
+        cObj("compose_reminder_message").classList.add("hide");
+        cObj("staff_list_windoweds").classList.add("hide");
+        cObj("expense_cats_windows").classList.add("hide");
+        cObj("level_balance_type_win").classList.remove("hide");
     }
 }
 cObj("period_selection").onchange = function () {
