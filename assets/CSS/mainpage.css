@@ -2944,3 +2944,6 @@ select{
     color: #444444 !important;
     border: 1px solid #ccc !important;
 }
+.w-90 {
+    width: 90% !important;
+}

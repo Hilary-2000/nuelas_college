@@ -124,7 +124,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="conts">
+                    <div class="conts w-90">
                         <label for="errolment">Course Level:<span style='color:red;'>*</span><br></label>
                         <div id="class_admission"></div>
                     </div>
@@ -156,10 +156,114 @@
                         <input type="text" name="bcno" id="bcno" placeholder="Enter Id number">
                     </div>
                     <div class="conts">
-                        <label for="address">Student residence: <span class="examples"> eg Kisumu,Kenya or Busia,Kenya</span></label><br>
+                        <label for="address">Town: <span class="examples"> eg Kisumu,Kenya or Busia,Kenya</span></label><br>
                         <input type="text" name="address" id="address" placeholder="Area of residence">
                     </div>
-                    <hr class="p-0">
+                    <div class="conts w-90">
+                        <label for="student_county" class="form-control-label">County:</label>
+                        <select name="student_county" id="student_county" class="form-control">
+                            <option value="">-- Select County --</option>
+                            <option value="Mombasa">Mombasa</option>
+                            <option value="Kwale">Kwale</option>
+                            <option value="Kilifi">Kilifi</option>
+                            <option value="Tana River">Tana River</option>
+                            <option value="Lamu">Lamu</option>
+                            <option value="Taita/Taveta">Taita/Taveta</option>
+                            <option value="Garissa">Garissa</option>
+                            <option value="Wajir">Wajir</option>
+                            <option value="Mandera">Mandera</option>
+                            <option value="Marsabit">Marsabit</option>
+                            <option value="Isiolo">Isiolo</option>
+                            <option value="Meru">Meru</option>
+                            <option value="Tharaka-Nithi">Tharaka-Nithi</option>
+                            <option value="Embu">Embu</option>
+                            <option value="Kitui">Kitui</option>
+                            <option value="Machakos">Machakos</option>
+                            <option value="Makueni">Makueni</option>
+                            <option value="Nyandarua">Nyandarua</option>
+                            <option value="Nyeri">Nyeri</option>
+                            <option value="Kirinyaga">Kirinyaga</option>
+                            <option value="Murang'a">Murang'a</option>
+                            <option value="Kiambu">Kiambu</option>
+                            <option value="Turkana">Turkana</option>
+                            <option value="West Pokot">West Pokot</option>
+                            <option value="Samburu">Samburu</option>
+                            <option value="Trans Nzoia">Trans Nzoia</option>
+                            <option value="Uasin Gishu">Uasin Gishu</option>
+                            <option value="Elgeyo/Marakwet">Elgeyo/Marakwet</option>
+                            <option value="Nandi">Nandi</option>
+                            <option value="Baringo">Baringo</option>
+                            <option value="Laikipia">Laikipia</option>
+                            <option value="Nakuru">Nakuru</option>
+                            <option value="Narok">Narok</option>
+                            <option value="Kajiado">Kajiado</option>
+                            <option value="Kericho">Kericho</option>
+                            <option value="Bomet">Bomet</option>
+                            <option value="Kakamega">Kakamega</option>
+                            <option value="Vihiga">Vihiga</option>
+                            <option value="Bungoma">Bungoma</option>
+                            <option value="Busia">Busia</option>
+                            <option value="Siaya">Siaya</option>
+                            <option value="Kisumu">Kisumu</option>
+                            <option value="Homa Bay">Homa Bay</option>
+                            <option value="Migori">Migori</option>
+                            <option value="Kisii">Kisii</option>
+                            <option value="Nyamira">Nyamira</option>
+                            <option value="Nairobi">Nairobi</option>
+                        </select>
+                    </div>
+                    <div class="conts">
+                        <label class="form-control-label"><strong>How did you hear about us?</strong></label>
+                        <div class="row mt-1">
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input heard_about_checkbox" type="checkbox" id="heard_radio" value="Radio">
+                                    <label class="form-check-label" for="heard_radio">Radio</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input heard_about_checkbox" type="checkbox" id="heard_tv" value="TV">
+                                    <label class="form-check-label" for="heard_tv">TV</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input heard_about_checkbox" type="checkbox" id="heard_facebook" value="Facebook">
+                                    <label class="form-check-label" for="heard_facebook">Facebook</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input heard_about_checkbox" type="checkbox" id="heard_instagram" value="Instagram">
+                                    <label class="form-check-label" for="heard_instagram">Instagram</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input heard_about_checkbox" type="checkbox" id="heard_tiktok" value="Tiktok">
+                                    <label class="form-check-label" for="heard_tiktok">Tiktok</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input heard_about_checkbox" type="checkbox" id="heard_friends" value="Friends">
+                                    <label class="form-check-label" for="heard_friends">Friends</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input heard_about_checkbox" type="checkbox" id="heard_referral" value="Referral">
+                                    <label class="form-check-label" for="heard_referral">Referral</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input heard_about_checkbox" type="checkbox" id="heard_others" value="Others">
+                                    <label class="form-check-label" for="heard_others">Others</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 hide" id="referral_details_win">
+                            <label class="form-control-label text-secondary" style="font-size:12px;">Referral — Indicate name and phone</label>
+                            <input type="text" name="referral_name" id="referral_name" class="form-control mb-1" placeholder="Referral name">
+                            <input type="text" name="referral_phone" id="referral_phone" class="form-control" placeholder="Referral phone number">
+                        </div>
+                        <div class="mt-2 hide" id="heard_others_win">
+                            <label class="form-control-label text-secondary" style="font-size:12px;">Others — Please specify</label>
+                            <input type="text" name="heard_others_specify" id="heard_others_specify" class="form-control" placeholder="Please specify">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
                     <p class="text-danger"><strong>Student Contacts</strong></p>
                     <!-- The first parent -->
                     <p style="color:maroon;font-size:12px;"><u>Student Contact Information</u></p>
@@ -175,8 +279,7 @@
                         <label for="student_email">Student email: <span class="examples"> eg esmond@gmail.com</span></label>
                         <input type="email" name="student_email" id="student_email" placeholder = "Enter email">
                     </div>
-                </div>
-                <div class="col-md-6">
+                    <hr class="p-0 w-75 mx-auto my-2">
                     <p class="text-danger"><strong>Guardian / Parent information</strong></p>
                     <!-- The first parent -->
                     <p style="color:maroon;font-size:12px;"><u>Primary Parent Contact Information</u></p>

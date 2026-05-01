@@ -5572,6 +5572,179 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
             }else{
                 echo "<p style='color:red;'>No expenses recorded between the periods defined!</p>";
             }
+        } elseif ($finance_entity == "level_balances") {
+            include_once("../ajax/finance/financial.php");
+            $level_balance_type = isset($_POST['level_balance_type']) ? $_POST['level_balance_type'] : 'by_level';
+            $term = getTermV2($conn2);
+            $school_classes = getSchoolCLass($conn2);
+            $all_courses = [];
+            $select_c = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+            $stmt_c = $conn2->prepare($select_c);
+            $stmt_c->execute();
+            $res_c = $stmt_c->get_result();
+            if ($res_c && ($rows_c = $res_c->fetch_assoc())) {
+                $all_courses = isJson_report($rows_c['valued']) ? json_decode($rows_c['valued']) : [];
+            }
+            if ($level_balance_type == "by_level") {
+                $report_data = [];
+                $grand_paid = 0;
+                $grand_balance = 0;
+                foreach ($school_classes as $class) {
+                    $students = getStudents($class, $conn2);
+                    $level_paid = 0;
+                    $level_balance = 0;
+                    foreach ($students as $stud) {
+                        $level_paid    += getFeespaidByStudent($stud['adm_no'], $conn2) * 1;
+                        $level_balance += getBalanceReports($stud['adm_no'], $term, $conn2) * 1;
+                    }
+                    $total = $level_paid + $level_balance;
+                    $pct_paid = $total > 0 ? round($level_paid / $total * 100, 1) : 0;
+                    $pct_bal  = $total > 0 ? round($level_balance / $total * 100, 1) : 0;
+                    $report_data[] = [classNameReport($class), number_format($level_paid), number_format($level_balance), $pct_paid."%", $pct_bal."%"];
+                    $grand_paid    += $level_paid;
+                    $grand_balance += $level_balance;
+                }
+                $pdf = new PDF('P', 'mm', 'A4');
+                $pdf->setHeaderPos(200);
+                $tittle = "Fee Balance Summary by Course Level";
+                $pdf->set_document_title($tittle);
+                $pdf->setSchoolLogo("../../" . schoolLogo($conn));
+                $pdf->set_school_name($_SESSION['schname']);
+                $pdf->set_school_po($_SESSION['po_boxs']);
+                $pdf->set_school_box_code($_SESSION['box_codes']);
+                $pdf->set_school_contact($_SESSION['school_contact']);
+                $pdf->SetMargins(5, 5);
+                $pdf->AddPage();
+                $pdf->SetFont('Helvetica', 'B', 9);
+                $pdf->Cell(40, 6, "Statistics", 0, 0, 'L', false);
+                $pdf->Ln();
+                $pdf->SetFont('Times', 'I', 8);
+                $pdf->Cell(35, 5, "Total Paid:", 0, 0, 'L', false);
+                $pdf->Cell(40, 5, "Kes " . number_format($grand_paid), 0, 0, 'L', false);
+                $pdf->Ln();
+                $pdf->Cell(35, 5, "Total Balance:", 0, 0, 'L', false);
+                $pdf->Cell(40, 5, "Kes " . number_format($grand_balance), 0, 0, 'L', false);
+                $pdf->Ln(8);
+                $header = ['Course Level', 'Amt Paid (Kes)', 'Balance (Kes)', '% Paid', 'Balance %'];
+                $w = [60, 45, 45, 25, 25];
+                $pdf->SetFont('Helvetica', 'B', 9);
+                $pdf->SetFillColor(157, 183, 184);
+                $pdf->SetDrawColor(0, 0, 0);
+                $pdf->SetLineWidth(.1);
+                for ($i = 0; $i < count($header); $i++) {
+                    $pdf->Cell($w[$i], 8, $header[$i], 1, 0, 'C', true);
+                }
+                $pdf->Ln();
+                $pdf->SetFont('Helvetica', '', 8);
+                $pdf->SetFillColor(205, 211, 218);
+                $fill = false;
+                foreach ($report_data as $row) {
+                    $pdf->Cell($w[0], 6, $row[0], 1, 0, 'L', $fill);
+                    $pdf->Cell($w[1], 6, $row[1], 1, 0, 'R', $fill);
+                    $pdf->Cell($w[2], 6, $row[2], 1, 0, 'R', $fill);
+                    $pdf->Cell($w[3], 6, $row[3], 1, 0, 'C', $fill);
+                    $pdf->Cell($w[4], 6, $row[4], 1, 0, 'C', $fill);
+                    $pdf->Ln();
+                    $fill = !$fill;
+                }
+                $gt = $grand_paid + $grand_balance;
+                $gt_pct_paid = $gt > 0 ? round($grand_paid / $gt * 100, 1) : 0;
+                $gt_pct_bal  = $gt > 0 ? round($grand_balance / $gt * 100, 1) : 0;
+                $pdf->SetFont('Helvetica', 'BI', 8);
+                $pdf->Cell($w[0], 6, "TOTAL", 1, 0, 'L', true);
+                $pdf->Cell($w[1], 6, number_format($grand_paid), 1, 0, 'R', true);
+                $pdf->Cell($w[2], 6, number_format($grand_balance), 1, 0, 'R', true);
+                $pdf->Cell($w[3], 6, $gt_pct_paid."%", 1, 0, 'C', true);
+                $pdf->Cell($w[4], 6, $gt_pct_bal."%", 1, 0, 'C', true);
+                $pdf->Ln();
+                $pdf->Output("I", str_replace(" ", "_", $pdf->school_document_title) . ".pdf");
+            } else {
+                $report_data = [];
+                $grand_paid = 0;
+                $grand_balance = 0;
+                foreach ($school_classes as $class) {
+                    $students = getStudents($class, $conn2);
+                    $course_groups = [];
+                    foreach ($students as $stud) {
+                        $cid = $stud['course_done'];
+                        if (!isset($course_groups[$cid])) $course_groups[$cid] = [];
+                        $course_groups[$cid][] = $stud;
+                    }
+                    foreach ($course_groups as $cid => $grp_students) {
+                        $level_paid = 0;
+                        $level_balance = 0;
+                        foreach ($grp_students as $stud) {
+                            $level_paid    += getFeespaidByStudent($stud['adm_no'], $conn2) * 1;
+                            $level_balance += getBalanceReports($stud['adm_no'], $term, $conn2) * 1;
+                        }
+                        $total = $level_paid + $level_balance;
+                        $pct_paid = $total > 0 ? round($level_paid / $total * 100, 1) : 0;
+                        $pct_bal  = $total > 0 ? round($level_balance / $total * 100, 1) : 0;
+                        $course_label = strlen((string)$cid) > 0 ? (string)$cid : 'N/A';
+                        foreach ($all_courses as $c) {
+                            if ($c->id == $cid) { $course_label = $c->course_name; break; }
+                        }
+                        $report_data[] = [classNameReport($class), $course_label, number_format($level_paid), number_format($level_balance), $pct_paid."%", $pct_bal."%"];
+                        $grand_paid    += $level_paid;
+                        $grand_balance += $level_balance;
+                    }
+                }
+                $pdf = new PDF('P', 'mm', 'A4');
+                $pdf->setHeaderPos(200);
+                $tittle = "Fee Balance Summary by Course Level and Course";
+                $pdf->set_document_title($tittle);
+                $pdf->setSchoolLogo("../../" . schoolLogo($conn));
+                $pdf->set_school_name($_SESSION['schname']);
+                $pdf->set_school_po($_SESSION['po_boxs']);
+                $pdf->set_school_box_code($_SESSION['box_codes']);
+                $pdf->set_school_contact($_SESSION['school_contact']);
+                $pdf->SetMargins(5, 5);
+                $pdf->AddPage();
+                $pdf->SetFont('Helvetica', 'B', 9);
+                $pdf->Cell(40, 6, "Statistics", 0, 0, 'L', false);
+                $pdf->Ln();
+                $pdf->SetFont('Times', 'I', 8);
+                $pdf->Cell(35, 5, "Total Paid:", 0, 0, 'L', false);
+                $pdf->Cell(40, 5, "Kes " . number_format($grand_paid), 0, 0, 'L', false);
+                $pdf->Ln();
+                $pdf->Cell(35, 5, "Total Balance:", 0, 0, 'L', false);
+                $pdf->Cell(40, 5, "Kes " . number_format($grand_balance), 0, 0, 'L', false);
+                $pdf->Ln(8);
+                $header = ['Course Level', 'Course', 'Amt Paid (Kes)', 'Balance (Kes)', '% Paid', 'Balance %'];
+                $w = [40, 50, 35, 35, 20, 20];
+                $pdf->SetFont('Helvetica', 'B', 9);
+                $pdf->SetFillColor(157, 183, 184);
+                $pdf->SetDrawColor(0, 0, 0);
+                $pdf->SetLineWidth(.1);
+                for ($i = 0; $i < count($header); $i++) {
+                    $pdf->Cell($w[$i], 8, $header[$i], 1, 0, 'C', true);
+                }
+                $pdf->Ln();
+                $pdf->SetFont('Helvetica', '', 8);
+                $pdf->SetFillColor(205, 211, 218);
+                $fill = false;
+                foreach ($report_data as $row) {
+                    $pdf->Cell($w[0], 6, $row[0], 1, 0, 'L', $fill);
+                    $pdf->Cell($w[1], 6, $row[1], 1, 0, 'L', $fill);
+                    $pdf->Cell($w[2], 6, $row[2], 1, 0, 'R', $fill);
+                    $pdf->Cell($w[3], 6, $row[3], 1, 0, 'R', $fill);
+                    $pdf->Cell($w[4], 6, $row[4], 1, 0, 'C', $fill);
+                    $pdf->Cell($w[5], 6, $row[5], 1, 0, 'C', $fill);
+                    $pdf->Ln();
+                    $fill = !$fill;
+                }
+                $gt = $grand_paid + $grand_balance;
+                $gt_pct_paid = $gt > 0 ? round($grand_paid / $gt * 100, 1) : 0;
+                $gt_pct_bal  = $gt > 0 ? round($grand_balance / $gt * 100, 1) : 0;
+                $pdf->SetFont('Helvetica', 'BI', 8);
+                $pdf->Cell($w[0] + $w[1], 6, "TOTAL", 1, 0, 'L', true);
+                $pdf->Cell($w[2], 6, number_format($grand_paid), 1, 0, 'R', true);
+                $pdf->Cell($w[3], 6, number_format($grand_balance), 1, 0, 'R', true);
+                $pdf->Cell($w[4], 6, $gt_pct_paid."%", 1, 0, 'C', true);
+                $pdf->Cell($w[5], 6, $gt_pct_bal."%", 1, 0, 'C', true);
+                $pdf->Ln();
+                $pdf->Output("I", str_replace(" ", "_", $pdf->school_document_title) . ".pdf");
+            }
         }
     }elseif (isset($_POST['finance_entity']) && isset($_POST['xslx'])) {
         include("../connections/conn1.php");
@@ -7124,6 +7297,167 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 exit;
             }else{
                 echo "<p style='color:red;'>No expenses recorded between the periods defined!</p>";
+            }
+        } elseif ($finance_entity == "level_balances") {
+            include_once("../ajax/finance/financial.php");
+            $level_balance_type = isset($_POST['level_balance_type']) ? $_POST['level_balance_type'] : 'by_level';
+            $term = getTermV2($conn2);
+            $school_classes = getSchoolCLass($conn2);
+            $all_courses = [];
+            $select_c = "SELECT * FROM `settings` WHERE `sett` = 'courses'";
+            $stmt_c = $conn2->prepare($select_c);
+            $stmt_c->execute();
+            $res_c = $stmt_c->get_result();
+            if ($res_c && ($rows_c = $res_c->fetch_assoc())) {
+                $all_courses = isJson_report($rows_c['valued']) ? json_decode($rows_c['valued']) : [];
+            }
+            if ($level_balance_type == "by_level") {
+                $report_data = [];
+                $grand_paid = 0;
+                $grand_balance = 0;
+                foreach ($school_classes as $class) {
+                    $students = getStudents($class, $conn2);
+                    $level_paid = 0;
+                    $level_balance = 0;
+                    foreach ($students as $stud) {
+                        $level_paid    += getFeespaidByStudent($stud['adm_no'], $conn2) * 1;
+                        $level_balance += getBalanceReports($stud['adm_no'], $term, $conn2) * 1;
+                    }
+                    $total = $level_paid + $level_balance;
+                    $pct_paid = $total > 0 ? round($level_paid / $total * 100, 1) : 0;
+                    $pct_bal  = $total > 0 ? round($level_balance / $total * 100, 1) : 0;
+                    $report_data[] = [classNameReport($class), $level_paid, $level_balance, $pct_paid."%", $pct_bal."%"];
+                    $grand_paid    += $level_paid;
+                    $grand_balance += $level_balance;
+                }
+                $tittle = "Fee Balance Summary by Course Level";
+                $header = ['Course Level', 'Amt Paid (Kes)', 'Balance (Kes)', '% Paid', 'Balance %'];
+                $spreadsheet = new Spreadsheet();
+                $spreadsheet->getProperties()->setCreator($_SESSION['username'])
+                    ->setLastModifiedBy($_SESSION['username'])
+                    ->setTitle($tittle)
+                    ->setSubject($tittle)
+                    ->setDescription($_SESSION['username']." ".$tittle);
+                $worksheet = $spreadsheet->getActiveSheet();
+                $worksheet->setTitle(substr("Balance by Level",0,31));
+                $worksheet->setCellValue("A1","Statistics");
+                $worksheet->setCellValue("A2","Total Paid");
+                $worksheet->setCellValue("B2",$grand_paid);
+                $worksheet->setCellValue("A3","Total Balance");
+                $worksheet->setCellValue("B3",$grand_balance);
+                for ($i = 0; $i < count($header); $i++) {
+                    $worksheet->setCellValue("".$letters[$i]."5", $header[$i]);
+                }
+                $spreadsheet->getActiveSheet()->getStyle("A5:".$letters[count($header)-1]."5")->applyFromArray($table_style);
+                for ($index=0; $index < count($report_data); $index++) {
+                    for ($index1=0; $index1 < count($report_data[$index]); $index1++) {
+                        $worksheet->setCellValue("".$letters[$index1]."".($index+6), $report_data[$index][$index1]);
+                    }
+                }
+                if (count($report_data) > 0) {
+                    $worksheet->getStyle("A6:".$letters[count($header)-1]."".(count($report_data)+5))->applyFromArray($table_style_2);
+                }
+                $gt = $grand_paid + $grand_balance;
+                $gt_pct_paid = $gt > 0 ? round($grand_paid / $gt * 100, 1) : 0;
+                $gt_pct_bal  = $gt > 0 ? round($grand_balance / $gt * 100, 1) : 0;
+                $totals_row = count($report_data) + 6;
+                $worksheet->setCellValue("A".$totals_row,"TOTAL");
+                $worksheet->setCellValue("B".$totals_row,$grand_paid);
+                $worksheet->setCellValue("C".$totals_row,$grand_balance);
+                $worksheet->setCellValue("D".$totals_row,$gt_pct_paid."%");
+                $worksheet->setCellValue("E".$totals_row,$gt_pct_bal."%");
+                $worksheet->getStyle("A".$totals_row.":E".$totals_row)->applyFromArray($table_style);
+                foreach ($spreadsheet->getWorksheetIterator() as $ws) {
+                    for ($indexing=0; $indexing < count($header); $indexing++) {
+                        $ws->getColumnDimension($letters[$indexing])->setAutoSize(true);
+                    }
+                }
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
+                header('Cache-Control: max-age=0');
+                $writer = new Xls($spreadsheet);
+                $writer->save('php://output');
+                exit;
+            } else {
+                $report_data = [];
+                $grand_paid = 0;
+                $grand_balance = 0;
+                foreach ($school_classes as $class) {
+                    $students = getStudents($class, $conn2);
+                    $course_groups = [];
+                    foreach ($students as $stud) {
+                        $cid = $stud['course_done'];
+                        if (!isset($course_groups[$cid])) $course_groups[$cid] = [];
+                        $course_groups[$cid][] = $stud;
+                    }
+                    foreach ($course_groups as $cid => $grp_students) {
+                        $level_paid = 0;
+                        $level_balance = 0;
+                        foreach ($grp_students as $stud) {
+                            $level_paid    += getFeespaidByStudent($stud['adm_no'], $conn2) * 1;
+                            $level_balance += getBalanceReports($stud['adm_no'], $term, $conn2) * 1;
+                        }
+                        $total = $level_paid + $level_balance;
+                        $pct_paid = $total > 0 ? round($level_paid / $total * 100, 1) : 0;
+                        $pct_bal  = $total > 0 ? round($level_balance / $total * 100, 1) : 0;
+                        $course_label = strlen((string)$cid) > 0 ? (string)$cid : 'N/A';
+                        foreach ($all_courses as $c) {
+                            if ($c->id == $cid) { $course_label = $c->course_name; break; }
+                        }
+                        $report_data[] = [classNameReport($class), $course_label, $level_paid, $level_balance, $pct_paid."%", $pct_bal."%"];
+                        $grand_paid    += $level_paid;
+                        $grand_balance += $level_balance;
+                    }
+                }
+                $tittle = "Fee Balance Summary by Course Level and Course";
+                $header = ['Course Level', 'Course', 'Amt Paid (Kes)', 'Balance (Kes)', '% Paid', 'Balance %'];
+                $spreadsheet = new Spreadsheet();
+                $spreadsheet->getProperties()->setCreator($_SESSION['username'])
+                    ->setLastModifiedBy($_SESSION['username'])
+                    ->setTitle($tittle)
+                    ->setSubject($tittle)
+                    ->setDescription($_SESSION['username']." ".$tittle);
+                $worksheet = $spreadsheet->getActiveSheet();
+                $worksheet->setTitle(substr("Balance by Level and Course",0,31));
+                $worksheet->setCellValue("A1","Statistics");
+                $worksheet->setCellValue("A2","Total Paid");
+                $worksheet->setCellValue("B2",$grand_paid);
+                $worksheet->setCellValue("A3","Total Balance");
+                $worksheet->setCellValue("B3",$grand_balance);
+                for ($i = 0; $i < count($header); $i++) {
+                    $worksheet->setCellValue("".$letters[$i]."5", $header[$i]);
+                }
+                $spreadsheet->getActiveSheet()->getStyle("A5:".$letters[count($header)-1]."5")->applyFromArray($table_style);
+                for ($index=0; $index < count($report_data); $index++) {
+                    for ($index1=0; $index1 < count($report_data[$index]); $index1++) {
+                        $worksheet->setCellValue("".$letters[$index1]."".($index+6), $report_data[$index][$index1]);
+                    }
+                }
+                if (count($report_data) > 0) {
+                    $worksheet->getStyle("A6:".$letters[count($header)-1]."".(count($report_data)+5))->applyFromArray($table_style_2);
+                }
+                $gt = $grand_paid + $grand_balance;
+                $gt_pct_paid = $gt > 0 ? round($grand_paid / $gt * 100, 1) : 0;
+                $gt_pct_bal  = $gt > 0 ? round($grand_balance / $gt * 100, 1) : 0;
+                $totals_row = count($report_data) + 6;
+                $worksheet->setCellValue("A".$totals_row,"TOTAL");
+                $worksheet->setCellValue("B".$totals_row,"");
+                $worksheet->setCellValue("C".$totals_row,$grand_paid);
+                $worksheet->setCellValue("D".$totals_row,$grand_balance);
+                $worksheet->setCellValue("E".$totals_row,$gt_pct_paid."%");
+                $worksheet->setCellValue("F".$totals_row,$gt_pct_bal."%");
+                $worksheet->getStyle("A".$totals_row.":F".$totals_row)->applyFromArray($table_style);
+                foreach ($spreadsheet->getWorksheetIterator() as $ws) {
+                    for ($indexing=0; $indexing < count($header); $indexing++) {
+                        $ws->getColumnDimension($letters[$indexing])->setAutoSize(true);
+                    }
+                }
+                header('Content-Type: application/vnd.ms-excel');
+                header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
+                header('Cache-Control: max-age=0');
+                $writer = new Xls($spreadsheet);
+                $writer->save('php://output');
+                exit;
             }
         }
     }elseif (isset($_POST['fees_payment_receipt'])) {

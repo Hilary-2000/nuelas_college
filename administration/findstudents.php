@@ -95,6 +95,10 @@
                                 <option value="allstuds" id ='alstuds'>All students</option>
                                 <option value="regtoday" id='regtodays'>Registered today</option>
                                 <option value="registered_in" id='registered_in'>Intake</option>
+                                <option value="doa_range">Admission Date Range</option>
+                                <option value="by_county">County</option>
+                                <option value="by_heard">How They Heard About Us</option>
+                                <option value="age_range">Age Range</option>
                             </select>
                         </div>
                         <div class="col-md-3 mx-auto hide" id="named">
@@ -168,6 +172,85 @@
                         <div class="col-md-3 hide" id="college_branch_search">
                             <label for="college_branch_search_student" class="form-control-label">College Branch</label>
                             <span id="get_college_branch_holder"></span>
+                        </div>
+                        <div class="col-md-3 hide" id="doa_range_win">
+                            <label class="form-control-label"><b>Admission Date From</b></label>
+                            <input type="date" id="doa_from" class="form-control mb-1">
+                            <label class="form-control-label"><b>Admission Date To</b></label>
+                            <input type="date" id="doa_to" class="form-control">
+                        </div>
+                        <div class="col-md-3 hide" id="county_search_win">
+                            <label class="form-control-label"><b>Select County</b></label>
+                            <select id="county_search_filter" class="form-control">
+                                <option value="">-- Select County --</option>
+                                <option value="Mombasa">Mombasa</option>
+                                <option value="Kwale">Kwale</option>
+                                <option value="Kilifi">Kilifi</option>
+                                <option value="Tana River">Tana River</option>
+                                <option value="Lamu">Lamu</option>
+                                <option value="Taita/Taveta">Taita/Taveta</option>
+                                <option value="Garissa">Garissa</option>
+                                <option value="Wajir">Wajir</option>
+                                <option value="Mandera">Mandera</option>
+                                <option value="Marsabit">Marsabit</option>
+                                <option value="Isiolo">Isiolo</option>
+                                <option value="Meru">Meru</option>
+                                <option value="Tharaka-Nithi">Tharaka-Nithi</option>
+                                <option value="Embu">Embu</option>
+                                <option value="Kitui">Kitui</option>
+                                <option value="Machakos">Machakos</option>
+                                <option value="Makueni">Makueni</option>
+                                <option value="Nyandarua">Nyandarua</option>
+                                <option value="Nyeri">Nyeri</option>
+                                <option value="Kirinyaga">Kirinyaga</option>
+                                <option value="Murang'a">Murang'a</option>
+                                <option value="Kiambu">Kiambu</option>
+                                <option value="Turkana">Turkana</option>
+                                <option value="West Pokot">West Pokot</option>
+                                <option value="Samburu">Samburu</option>
+                                <option value="Trans Nzoia">Trans Nzoia</option>
+                                <option value="Uasin Gishu">Uasin Gishu</option>
+                                <option value="Elgeyo/Marakwet">Elgeyo/Marakwet</option>
+                                <option value="Nandi">Nandi</option>
+                                <option value="Baringo">Baringo</option>
+                                <option value="Laikipia">Laikipia</option>
+                                <option value="Nakuru">Nakuru</option>
+                                <option value="Narok">Narok</option>
+                                <option value="Kajiado">Kajiado</option>
+                                <option value="Kericho">Kericho</option>
+                                <option value="Bomet">Bomet</option>
+                                <option value="Kakamega">Kakamega</option>
+                                <option value="Vihiga">Vihiga</option>
+                                <option value="Bungoma">Bungoma</option>
+                                <option value="Busia">Busia</option>
+                                <option value="Siaya">Siaya</option>
+                                <option value="Kisumu">Kisumu</option>
+                                <option value="Homa Bay">Homa Bay</option>
+                                <option value="Migori">Migori</option>
+                                <option value="Kisii">Kisii</option>
+                                <option value="Nyamira">Nyamira</option>
+                                <option value="Nairobi">Nairobi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 hide" id="heard_search_win">
+                            <label class="form-control-label"><b>How They Heard About Us</b></label>
+                            <select id="heard_search_filter" class="form-control">
+                                <option value="">-- Select Option --</option>
+                                <option value="Radio">Radio</option>
+                                <option value="TV">TV</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Tiktok">Tiktok</option>
+                                <option value="Friends">Friends</option>
+                                <option value="Referral">Referral</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 hide" id="age_range_win">
+                            <label class="form-control-label"><b>Min Age (years)</b></label>
+                            <input type="number" id="age_from" class="form-control mb-1" placeholder="e.g. 18" min="1" max="100">
+                            <label class="form-control-label"><b>Max Age (years)</b></label>
+                            <input type="number" id="age_to" class="form-control" placeholder="e.g. 30" min="1" max="100">
                         </div>
                         <div class="col-md-3">
                             <span id="findingstudents" class="btn btn-primary btn-sm mt-4 rounded" type="button"><i class="fas fa-search"></i> Search</span>
@@ -403,6 +486,59 @@
                                     <input class="form-control w-100" type="text" autocomplete="off" id="addressed" placeholder="Area of residence">
                                 </div>
                                 <div class="col-md-4">
+                                    <label for="edit_county" class="form-control-label"><b>County</b></label>
+                                    <select id="edit_county" class="form-control w-100">
+                                        <option value="">-- Select County --</option>
+                                        <option value="Mombasa">Mombasa</option>
+                                        <option value="Kwale">Kwale</option>
+                                        <option value="Kilifi">Kilifi</option>
+                                        <option value="Tana River">Tana River</option>
+                                        <option value="Lamu">Lamu</option>
+                                        <option value="Taita/Taveta">Taita/Taveta</option>
+                                        <option value="Garissa">Garissa</option>
+                                        <option value="Wajir">Wajir</option>
+                                        <option value="Mandera">Mandera</option>
+                                        <option value="Marsabit">Marsabit</option>
+                                        <option value="Isiolo">Isiolo</option>
+                                        <option value="Meru">Meru</option>
+                                        <option value="Tharaka-Nithi">Tharaka-Nithi</option>
+                                        <option value="Embu">Embu</option>
+                                        <option value="Kitui">Kitui</option>
+                                        <option value="Machakos">Machakos</option>
+                                        <option value="Makueni">Makueni</option>
+                                        <option value="Nyandarua">Nyandarua</option>
+                                        <option value="Nyeri">Nyeri</option>
+                                        <option value="Kirinyaga">Kirinyaga</option>
+                                        <option value="Murang'a">Murang'a</option>
+                                        <option value="Kiambu">Kiambu</option>
+                                        <option value="Turkana">Turkana</option>
+                                        <option value="West Pokot">West Pokot</option>
+                                        <option value="Samburu">Samburu</option>
+                                        <option value="Trans Nzoia">Trans Nzoia</option>
+                                        <option value="Uasin Gishu">Uasin Gishu</option>
+                                        <option value="Elgeyo/Marakwet">Elgeyo/Marakwet</option>
+                                        <option value="Nandi">Nandi</option>
+                                        <option value="Baringo">Baringo</option>
+                                        <option value="Laikipia">Laikipia</option>
+                                        <option value="Nakuru">Nakuru</option>
+                                        <option value="Narok">Narok</option>
+                                        <option value="Kajiado">Kajiado</option>
+                                        <option value="Kericho">Kericho</option>
+                                        <option value="Bomet">Bomet</option>
+                                        <option value="Kakamega">Kakamega</option>
+                                        <option value="Vihiga">Vihiga</option>
+                                        <option value="Bungoma">Bungoma</option>
+                                        <option value="Busia">Busia</option>
+                                        <option value="Siaya">Siaya</option>
+                                        <option value="Kisumu">Kisumu</option>
+                                        <option value="Homa Bay">Homa Bay</option>
+                                        <option value="Migori">Migori</option>
+                                        <option value="Kisii">Kisii</option>
+                                        <option value="Nyamira">Nyamira</option>
+                                        <option value="Nairobi">Nairobi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
                                     <label for="intake_month_edit" class="form-control-label"><b>Intake Month</b></label>
                                     <select name="intake_month_edit" id="intake_month_edit" class="form-control w-100">
                                         <option value="" hidden>Select an Option</option>
@@ -544,6 +680,56 @@
                                 <div class="col-md-12">
                                     <label for="medical_histry" class="form-control-label"><b>Medical History</b></label>
                                     <textarea class="form-control" name="medical_histry" id="medical_histry" cols="30" rows="5" placeholder="Medical History Appears here"></textarea>
+                                </div>
+                                <div class="col-md-12 my-2">
+                                    <label class="form-control-label"><b>How did you hear about us?</b></label>
+                                    <div class="row mt-1">
+                                        <div class="col-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_radio" value="Radio">
+                                                <label class="form-check-label" for="edit_heard_radio">Radio</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_tv" value="TV">
+                                                <label class="form-check-label" for="edit_heard_tv">TV</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_facebook" value="Facebook">
+                                                <label class="form-check-label" for="edit_heard_facebook">Facebook</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_instagram" value="Instagram">
+                                                <label class="form-check-label" for="edit_heard_instagram">Instagram</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_tiktok" value="Tiktok">
+                                                <label class="form-check-label" for="edit_heard_tiktok">Tiktok</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_friends" value="Friends">
+                                                <label class="form-check-label" for="edit_heard_friends">Friends</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_referral" value="Referral">
+                                                <label class="form-check-label" for="edit_heard_referral">Referral</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_others" value="Others">
+                                                <label class="form-check-label" for="edit_heard_others">Others</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 hide" id="edit_referral_details_win">
+                                        <label class="form-control-label text-secondary" style="font-size:12px;">Referral — Indicate name and phone</label>
+                                        <input type="text" id="edit_referral_name" class="form-control mb-1" placeholder="Referral name">
+                                        <input type="text" id="edit_referral_phone" class="form-control" placeholder="Referral phone number">
+                                    </div>
+                                    <div class="mt-2 hide" id="edit_heard_others_win">
+                                        <label class="form-control-label text-secondary" style="font-size:12px;">Others — Please specify</label>
+                                        <input type="text" id="edit_heard_others_specify" class="form-control" placeholder="Please specify">
+                                    </div>
                                 </div>
                                 <div class="col-md-12 my-2">
                                     <p class="hide" id="previous_school_json"></p>
