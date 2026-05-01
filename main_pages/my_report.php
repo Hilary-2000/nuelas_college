@@ -177,6 +177,15 @@
                             <option value="fees_structure">Fees Structure</option>
                             <option value="payroll_information">Payslip Information</option>
                             <option value="expenses">Expenses</option>
+                            <option value="level_balances">Balance by Course Level</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 hide" id="level_balance_type_win">
+                        <label for="level_balance_type" class="form-label"><b>Report Type</b></label>
+                        <select name="level_balance_type" id="level_balance_type" class="form-control">
+                            <option value="" hidden>Select report type</option>
+                            <option value="by_level">By Course Level</option>
+                            <option value="by_level_course">By Course Level &amp; Course</option>
                         </select>
                     </div>
                     <div class="col-md-4 hide" id="expense_cats_windows">
