@@ -713,7 +713,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
             $inactive_students = $total - $active_students;
-            echo  "<p>".($student_status == "1" ? $active_students : $inactive_students)." student(s)</p>";
+            echo  "<p>".($student_status == "1" ? $active_students : $inactive_students)."</p>";
             $stmt->close();
             $conn2->close();
         }elseif (isset($_GET['get_attendance_stats'])) {
@@ -2287,7 +2287,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $result = $stmt->get_result();
             if($result){
                 if($rows = $result->fetch_assoc()){
-                    echo $rows['Totals']." Student(s)";
+                    echo $rows['Totals']."";
                 }
             }
         }elseif (isset($_GET['activeuser'])) {
@@ -2332,7 +2332,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $result = $stmt->get_result();
             if($result){
                 if($row=$result->fetch_assoc()){
-                    echo $row['totals']." User(s)";
+                    echo $row['totals']."";
                 }
             }
             $stmt->close();
@@ -3226,12 +3226,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $result = $stmt->get_result();
             if ($result) {
                 if ($row = $result->fetch_assoc()) {
-                    echo $row['Total']." Transfered Student(s)";
+                    echo $row['Total']."";
                 }else {
-                    echo "0 Transfered Student(s)";
+                    echo "0";
                 }
             }else {
-                echo "0 Transfered Student(s)";
+                echo "0";
             }
         }elseif (isset($_GET['alumnis_number'])) {
             // get the total number of transfered students
@@ -3241,12 +3241,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $result = $stmt->get_result();
             if ($result) {
                 if ($row = $result->fetch_assoc()) {
-                    echo $row['Total']." Alumni(s)";
+                    echo $row['Total']."";
                 }else {
-                    echo "0 Alumni(s)";
+                    echo "0";
                 }
             }else {
-                echo "0 Alumni(s)";
+                echo "0";
             }
         }elseif(isset($_GET['get_courses'])){
             // get the levels present

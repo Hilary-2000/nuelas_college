@@ -52,22 +52,34 @@ if (auth == '1') {
     }, 900000);
 
     //number of active users
-    var datapass = "?checkactive=true&userid="+cObj("useriddds").value;
-    sendData("GET","administration/admissions.php",datapass,cObj("activeusers"));
-    setInterval(() => {
-        if (!cObj("htdash").classList.contains("hide")){
-            var datapass = "?checkactive=true&userid="+cObj("useriddds").value;
-            sendData("GET","administration/admissions.php",datapass,cObj("activeusers"));
-        }
-    }, 300000);
+    if (cObj("activeusers")) {
+        var datapass = "?checkactive=true&userid="+cObj("useriddds").value;
+        sendData("GET","administration/admissions.php",datapass,cObj("activeusers"));
+        setInterval(() => {
+            if (!cObj("htdash").classList.contains("hide")){
+                var datapass = "?checkactive=true&userid="+cObj("useriddds").value;
+                sendData("GET","administration/admissions.php",datapass,cObj("activeusers"));
+            }
+        }, 300000);
+    }
 
     //number of school fees recieved
-    var datapass = "?schoolfeesrecieved=true";
-    sendData("GET","administration/admissions.php",datapass,cObj("schoolfeesrecieved"));
+    var feesRealValue = "Ksh 0";
+    var feesVisible = false;
+    var _feesSink = document.createElement("span");
+    _feesSink.style.display = "none";
+    document.body.appendChild(_feesSink);
+    cObj("schoolfeesrecieved").innerText = "Ksh xxx";
+    function loadFees() {
+        sendData("GET", "administration/admissions.php", "?schoolfeesrecieved=true", _feesSink, function () {
+            feesRealValue = _feesSink.innerText;
+            cObj("schoolfeesrecieved").innerText = "Ksh xxx";
+        });
+    }
+    loadFees();
     setInterval(() => {
-        if (!cObj("htdash").classList.contains("hide")){
-            var datapass = "?schoolfeesrecieved=true";
-            sendData("GET","administration/admissions.php",datapass,cObj("schoolfeesrecieved"));
+        if (!cObj("htdash").classList.contains("hide")) {
+            loadFees();
         }
     }, 300000);
 
@@ -131,49 +143,49 @@ if (auth == '1') {
         }
     }, 2000);
     //get the active exams
-    var datapass = "?active_exams_lts=true";
-    sendData("GET","academic/academic.php",datapass,cObj("active_examination"));
-    setInterval(() => {
-        if (!cObj("htdash").classList.contains("hide")){
-            var datapass = "?active_exams_lts=true";
-            sendData("GET","academic/academic.php",datapass,cObj("active_examination"));
-        }
-    }, 60000);
+    if (cObj("active_examination")) {
+        var datapass = "?active_exams_lts=true";
+        sendData("GET","academic/academic.php",datapass,cObj("active_examination"));
+        setInterval(() => {
+            if (!cObj("htdash").classList.contains("hide")){
+                var datapass = "?active_exams_lts=true";
+                sendData("GET","academic/academic.php",datapass,cObj("active_examination"));
+            }
+        }, 60000);
+    }
 
     //view active exams
-    cObj("view_active_exams").onclick = function () {
-        cObj("viewexams").click();
-        cObj("all_active").selected = true;
-        cObj("examanagement").click();
-        cObj("displaysubjects").click();
+    if (cObj("view_active_exams")) {
+        cObj("view_active_exams").onclick = function () {
+            cObj("viewexams").click();
+            cObj("all_active").selected = true;
+            cObj("examanagement").click();
+            cObj("displaysubjects").click();
+        }
     }
     //my subjects
-    setInterval(() => {
-        if (!cObj("htdash").classList.contains("hide")){
-            var datapass = "?subs_lists=true";
-            sendData("GET","academic/academic.php",datapass,cObj("my_subjects"));
+    if (cObj("my_subjects")) {
+        setInterval(() => {
+            if (!cObj("htdash").classList.contains("hide")){
+                var datapass = "?subs_lists=true";
+                sendData("GET","academic/academic.php",datapass,cObj("my_subjects"));
+            }
+        }, 900000);
+    }
+    if (cObj("view_my_subs")) {
+        cObj("view_my_subs").onclick = function () {
+            cObj("update_personal_profile").click();
         }
-    }, 900000);
-    cObj("view_my_subs").onclick = function () {
-        cObj("update_personal_profile").click();
     }
     
 cObj("showfees").onclick = function () {
-    cObj("hidefees").classList.toggle("hide");
+    this.disabled = true;
+    setTimeout(() => { this.disabled = false; }, 1000);
 
-    if(!cObj("se_e").classList.contains("hide")){
-
-        cObj("hidefees").classList.add("hide");
-        cObj("se_e").classList.add("hide");
-        cObj("unse_e").classList.remove("hide");
-
-    }else if (!cObj("unse_e").classList.contains("hide")) {
-
-        cObj("hidefees").classList.remove("hide");
-        cObj("se_e").classList.remove("hide");
-        cObj("unse_e").classList.add("hide");
-
-    }
+    feesVisible = !feesVisible;
+    cObj("schoolfeesrecieved").innerText = feesVisible ? feesRealValue : "Ksh xxx";
+    cObj("se_e").classList.toggle("hide", feesVisible);
+    cObj("unse_e").classList.toggle("hide", !feesVisible);
 }
 
 //head teacher dashboard end
