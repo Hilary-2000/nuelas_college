@@ -673,12 +673,12 @@ function create_smsdata_table(student_data) {
         cObj("tot_records_sms").innerText = rows.length;
         //create the display table
         //get the number of pages
-        cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, 50, rowsColStudents_sms);
+        cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, rowsColStudents_sms.length, rowsColStudents_sms);
         view_and_edit_listeners();
-
-        //show the number of pages for each record
-        var counted = rows.length / 50;
-        pagecountTransaction = Math.ceil(counted);
+        if ($.fn && $.fn.DataTable) {
+            if ($.fn.DataTable.isDataTable("#sms_history_dt")) $("#sms_history_dt").DataTable().destroy();
+            $("#sms_history_dt").DataTable({ order: [], pageLength: 25, columnDefs: [{ orderable: false, targets: [6] }] });
+        }
 
     } else {
         cObj("transDataReciever_sms").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! No results found!</p>";
@@ -724,54 +724,58 @@ cObj("close_message_details").onclick = function () {
 }
 
 function displayRecord_sms(start, finish, arrays) {
-    var total = arrays.length;
-    //the finish value
-    var fins = 0;
-    //this is the table header to the start of the tbody
-    var tableData = "<table class='table'><thead><tr><th title='Sort all descending' id='sortall_sms_th'># <span id='sortall_sms'><i class='fas fa-caret-down'></i></span></th><th id='sort_message_type_th' >Recipients <span id='sort_message_type'><i class='fas fa-caret-down'></i></span></th><th id = 'sort_content_th'>Message Content <span id='sort_content'><i class='fas fa-caret-down'></i></span></th><th  title='Sort by date descending'>Date Sent <span id='sortdate_sms'><i class='fas fa-caret-down'></i></span></th><th>Action</th></tr></thead><tbody>";
-    if (finish < total) {
-        fins = finish;
-        //create a table of the 50 records
-        var counter = start + 1;
-        for (let index = start; index < finish; index++) {
-            var charged = "<span class='text-success' title='Charged'><i class='fas fa-coins'></i></span>";
-            if (arrays[index][0] == 0) {
-                charged = "<span class='text-secondary' title='Charged'><i class='fas fa-coins'></i></span>";
-            }
-            tableData += "<tr title =''><td><input hidden value='"+JSON.stringify(arrays[index])+"' id='numbers_value_"+arrays[index][8]+"'>" + (index + 1) + "  " + charged + "</td><td>" + arrays[index][13]+ "</td><td>" + arrays[index][2] + "</td><td>" + arrays[index][11] + "</td><td><span style='font-size:12px;' class='link view_sms_details' id='view_sms_details_"+arrays[index][8]+"'><i class='fa fa-eye'></i> View </span></td></tr>";
-            counter++;
-        }
-    } else {
-        //create a table of the 50 records
-        var counter = start + 1;
-        for (let index = start; index < total; index++) {
-            var charged = "<span class='text-success' title='Charged'><i class='fas fa-coins'></i></span>";
-            if (arrays[index][0] == 0) {
-                charged = "<span class='text-secondary' title='Charged'><i class='fas fa-coins'></i></span>";
-            }
-            tableData += "<tr title =''><td><input hidden value='"+JSON.stringify(arrays[index])+"' id='numbers_value_"+arrays[index][8]+"'>" + (index + 1) + "  " + charged + "</td><td>" + arrays[index][13]+ "</td><td>" + arrays[index][2] + "</td><td>" + arrays[index][11] + "</td><td><span style='font-size:12px;' class='link view_sms_details' id='view_sms_details_"+arrays[index][8]+"'><i class='fa fa-eye'></i> View </span></td></tr>";
-            counter++;
-        }
-        fins = total;
+    var typeColors = {
+        broadcast: '#17a2b8', multicast: '#007bff',
+        parent: '#fd7e14', fee: '#fd7e14', staff: '#6f42c1', absent: '#e74a3b'
+    };
+    function smsTypeColor(t) {
+        t = (t || '').toLowerCase();
+        for (var k in typeColors) { if (t.indexOf(k) !== -1) return typeColors[k]; }
+        return '#6c757d';
+    }
+    function smsStatusBadge(count, delivered, failed) {
+        count = parseInt(count) || 0; delivered = parseInt(delivered) || 0; failed = parseInt(failed) || 0;
+        if (count === 0) return "<span class='badge badge-secondary'>Pending</span>";
+        if (delivered === count) return "<span class='badge badge-success'><i class='fas fa-check-circle'></i> Delivered " + delivered + "/" + count + "</span>";
+        if (delivered > 0) return "<span class='badge badge-warning'><i class='fas fa-exclamation-circle'></i> Partial " + delivered + "/" + count + "</span>";
+        return "<span class='badge badge-danger'><i class='fas fa-times-circle'></i> Failed " + delivered + "/" + count + "</span>";
+    }
+
+    var tableData = "<table id='sms_history_dt' class='table table-sm table-bordered table-hover' style='width:100%;font-size:13px;'>" +
+        "<thead><tr>" +
+        "<th style='background:#f8f9fa;'>#</th>" +
+        "<th style='background:#f8f9fa;'>Type</th>" +
+        "<th style='background:#f8f9fa;'>Message</th>" +
+        "<th style='background:#f8f9fa;'>Sender / Recipients</th>" +
+        "<th style='background:#f8f9fa;'>Status</th>" +
+        "<th style='background:#f8f9fa;'>Date Sent</th>" +
+        "<th style='background:#f8f9fa;'></th>" +
+        "</tr></thead><tbody>";
+
+    for (var i = 0; i < arrays.length; i++) {
+        var a = arrays[i];
+        var charged = a[0] == 1
+            ? "<span class='text-success ml-1' title='Charged'><i class='fas fa-coins'></i></span>"
+            : "<span class='text-muted ml-1' title='Not charged'><i class='fas fa-coins'></i></span>";
+        var tc = smsTypeColor(a[6]);
+        var typeBadge = "<span style='background:" + tc + ";color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;'>" + (a[6] || '—') + "</span>";
+        var statusBadge = smsStatusBadge(a[3], a[5], a[7]);
+        var msg = (a[2] || '');
+        var msgCell = "<span title='" + msg.replace(/'/g, '&#39;') + "' style='display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>" + msg + "</span>";
+        var jsonVal = JSON.stringify(a).replace(/'/g, "&#39;");
+
+        tableData += "<tr>" +
+            "<td>" + (i + 1) + charged + "</td>" +
+            "<td>" + typeBadge + "</td>" +
+            "<td>" + msgCell + "</td>" +
+            "<td style='font-size:12px;'><input hidden value='" + jsonVal + "' id='numbers_value_" + a[8] + "'>" + (a[9] || '—') + "</td>" +
+            "<td>" + statusBadge + "</td>" +
+            "<td style='white-space:nowrap;'>" + (a[11] || '') + "</td>" +
+            "<td><span style='font-size:12px;cursor:pointer;' class='link view_sms_details' id='view_sms_details_" + a[8] + "' title='View details'><i class='fas fa-eye'></i></span></td>" +
+            "</tr>";
     }
 
     tableData += "</tbody></table>";
-    //set the start and the end value
-    cObj("startNo_sms").innerText = start + 1;
-    cObj("finishNo_sms").innerText = fins;
-    //set the page number
-    cObj("pagenumNav_sms").innerText = pagecounttrans;
-    // set tool tip
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    });
-    if (cObj("sort_content_th") != undefined) {
-        sortTable_sms();
-    } else {
-        setTimeout(() => {
-            sortTable_sms();
-        }, 500);
-    }
     return tableData;
 }
 //next record 
@@ -1276,12 +1280,12 @@ function create_email_data_table(email_data) {
         cObj("tot_records_email").innerText = rows.length;
         //create the display table
         //get the number of pages
-        cObj("transDataReciever_email").innerHTML = displayRecord_email(0, 50, rowsColStudents_email);
+        cObj("transDataReciever_email").innerHTML = displayRecord_email(0, rowsColStudents_email.length, rowsColStudents_email);
         viewEmailAddress();
-
-        //show the number of pages for each record
-        var counted = rows.length / 50;
-        pagecountTransaction_emails = Math.ceil(counted);
+        if ($.fn && $.fn.DataTable) {
+            if ($.fn.DataTable.isDataTable("#email_history_dt")) $("#email_history_dt").DataTable().destroy();
+            $("#email_history_dt").DataTable({ order: [], pageLength: 25, columnDefs: [{ orderable: false, targets: [4] }] });
+        }
 
     } else {
         cObj("transDataReciever_email").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! No results found!</p>";
@@ -1302,48 +1306,35 @@ function setDateEmail(email_date) {
 }
 
 function displayRecord_email(start, finish, arrays) {
-    var total = arrays.length;
-    //the finish value
-    var fins = 0;
-    //this is the table header to the start of the tbody
-    var tableData = "<table class='table'><thead><tr><th title='Sort all descending' id='sortall_email_th'># <span id='sortall_email'><i class='fas fa-caret-down'></i></span></th><th id='sort_email_type_th' >Email Sender <span id='sort_email_type'><i class='fas fa-caret-down'></i></span></th><th  title='Sort by date descending'>Email Content <span id='sortdate_email'><i class='fas fa-caret-down'></i></span></th><th>View</th></tr></thead><tbody>";
-    if (finish < total) {
-        fins = finish;
-        //create a table of the 50 records
-        var counter = start + 1;
-        for (let index = start; index < finish; index++) {
+    var tableData = "<table id='email_history_dt' class='table table-sm table-bordered table-hover' style='width:100%;font-size:13px;'>" +
+        "<thead><tr>" +
+        "<th style='background:#f8f9fa;'>#</th>" +
+        "<th style='background:#f8f9fa;'>From</th>" +
+        "<th style='background:#f8f9fa;'>To</th>" +
+        "<th style='background:#f8f9fa;'>Subject / Date</th>" +
+        "<th style='background:#f8f9fa;'></th>" +
+        "</tr></thead><tbody>";
 
-            tableData += "<tr title =''><td>" + (index + 1) + "</td><td>From: " + arrays[index][2] + "<br>To : " + arrays[index][3] + "<br>" + setDateEmail(arrays[index][1]) + "</td><td>" + arrays[index][6] + "</td><td><span id='email_data" + arrays[index][10] + "' class='email_data link'><i class='fas fa-eye'></i> View</span></td></tr>";
-            counter++;
-        }
-    } else {
-        //create a table of the 50 records
-        var counter = start + 1;
-        for (let index = start; index < total; index++) {
+    for (var i = 0; i < arrays.length; i++) {
+        var a = arrays[i];
+        var hasAttach = a[7] && a[7].length > 0 && a[7] !== 'null' && a[7] !== '[]';
+        var attachIcon = hasAttach ? " <i class='fas fa-paperclip text-muted' title='Has attachment'></i>" : '';
+        var dateStr = setDateEmail(a[1]);
+        var subjectCell = "<div style='font-weight:600;font-size:12px;'>" + (a[4] || '(No subject)') + attachIcon + "</div>" +
+                          "<small class='text-muted'>" + dateStr + "</small>";
+        var fromCell = "<span style='font-size:12px;'>" + (a[2] || '—') + "</span>";
+        var toCell   = "<span style='font-size:12px;'>" + (a[3] || '—') + "</span>";
 
-            tableData += "<tr title =''><td>" + (index + 1) + "</td><td>From: " + arrays[index][2] + "<br>To : " + arrays[index][3] + "<br>" + setDateEmail(arrays[index][1]) + "</td><td>" + arrays[index][6] + "</td><td><span id='email_data" + arrays[index][10] + "' class='email_data link'><i class='fas fa-eye'></i> View</span></td></tr>";
-            counter++;
-        }
-        fins = total;
+        tableData += "<tr>" +
+            "<td>" + (i + 1) + "</td>" +
+            "<td>" + fromCell + "</td>" +
+            "<td>" + toCell + "</td>" +
+            "<td>" + subjectCell + "</td>" +
+            "<td><span id='email_data" + a[10] + "' class='email_data link' style='cursor:pointer;' title='View'><i class='fas fa-eye'></i></span></td>" +
+            "</tr>";
     }
 
     tableData += "</tbody></table>";
-    //set the start and the end value
-    cObj("startNo_email").innerText = start + 1;
-    cObj("finishNo_email").innerText = fins;
-    //set the page number
-    cObj("pagenumNav_email").innerText = pagecounttrans_emails;
-    // set tool tip
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    });
-    if (cObj("sort_content_th_email") != undefined) {
-        sortTable_email();
-    } else {
-        setTimeout(() => {
-            sortTable_email();
-        }, 500);
-    }
     return tableData;
 }
 // sort in ascending or descending order
