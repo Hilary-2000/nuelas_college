@@ -220,9 +220,11 @@ cObj("skip").onclick = function () {
 }
 var auth = cObj("authoriti").value;
 if (auth == 1 || auth == 3) {
-    cObj("check_logs").onclick = function () {
-        hideWindow();
-        cObj("loggers_page").classList.remove("hide");
+    if (cObj("check_logs")) {
+        cObj("check_logs").onclick = function () {
+            hideWindow();
+            cObj("loggers_page").classList.remove("hide");
+        }
     }
 }
 function loadManageStudentStats() {
@@ -1504,35 +1506,40 @@ window.onload = function () {
         }, 900000);
 
         //number of active users
-        var datapass = "?checkactive=true&userid=" + cObj("useriddds").value;
-        sendData("GET", "administration/admissions.php", datapass, cObj("activeusers"));
-
-
-        //number of school fees recieved
-        var datapass = "?schoolfeesrecieved=true";
-        sendData("GET", "administration/admissions.php", datapass, cObj("schoolfeesrecieved"));
-
+        if (cObj("activeusers")) {
+            var datapass = "?checkactive=true&userid=" + cObj("useriddds").value;
+            sendData("GET", "administration/admissions.php", datapass, cObj("activeusers"));
+        }
 
         //number of transfered students
-        var datapass = "?transfered_students=true";
-        sendData("GET", "administration/admissions.php", datapass, cObj("transfered_studs"));
+        if (cObj("transfered_studs")) {
+            var datapass = "?transfered_students=true";
+            sendData("GET", "administration/admissions.php", datapass, cObj("transfered_studs"));
+        }
 
         //number of alumnis students
-        var datapass = "?alumnis_number=true";
-        sendData("GET", "administration/admissions.php", datapass, cObj("alumnis_number"));
-
+        if (cObj("alumnis_number")) {
+            var datapass = "?alumnis_number=true";
+            sendData("GET", "administration/admissions.php", datapass, cObj("alumnis_number"));
+        }
 
         //get the logs
-        var datapass = "?get_loggers=true";
-        sendData("GET", "administration/admissions.php", datapass, cObj("loggers_table"));
+        if (cObj("loggers_table")) {
+            var datapass = "?get_loggers=true";
+            sendData("GET", "administration/admissions.php", datapass, cObj("loggers_table"));
+        }
 
         //get the active exams
-        var datapass = "?active_exams_lts=true";
-        sendData("GET", "academic/academic.php", datapass, cObj("active_examination"));
+        if (cObj("active_examination")) {
+            var datapass = "?active_exams_lts=true";
+            sendData("GET", "academic/academic.php", datapass, cObj("active_examination"));
+        }
 
         // subject list
-        var datapass = "?subs_lists=true";
-        sendData("GET", "academic/academic.php", datapass, cObj("my_subjects"));
+        if (cObj("my_subjects")) {
+            var datapass = "?subs_lists=true";
+            sendData("GET", "academic/academic.php", datapass, cObj("my_subjects"));
+        }
 
         // unhide the payment approval button if logged in as the headteacher
         // cObj("approve_payments").classList.remove("hide");
@@ -1720,14 +1727,6 @@ window.onload = function () {
         allowClear: true,
         width: '100%'
     });
-
-    cObj("exam_result_options").onchange = function () {
-        if(this.value == "exam"){
-            cObj("cat_option_list_window").classList.add("hide");
-        }else{
-            cObj("cat_option_list_window").classList.remove("hide");
-        }
-    }
 }
 
 /*******end of it********/
