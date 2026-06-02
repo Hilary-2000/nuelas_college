@@ -1521,7 +1521,7 @@ window.onload = function () {
                 if (present1 != 0) {
                     cObj("absentstuds").innerText = (total1 - present1) + " Student(s)";
                 } else {
-                    cObj("absentstuds").innerText = "Roll call not taken.";
+                    cObj("absentstuds").innerText = "Attendance not taken!.";
                 }
             }
         }, 900000);
