@@ -9636,7 +9636,7 @@
             $payment_purpose = json_decode($payment_purpose, true);
             $data_to_display = "<ul>";
             foreach ($payment_purpose as $key => $value) {
-                $data_to_display .= "<li>".ucwords(strtolower($value["name"]))." - Kes ".number_format($value["amount_paid"])."</li>";
+                $data_to_display .= "<li>".ucwords(strtolower($value["name"]))." - Kes ".number_format((float)$value["amount_paid"])."</li>";
             }
             $data_to_display .= "</ul>";
             return $data_to_display;
