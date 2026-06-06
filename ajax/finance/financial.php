@@ -326,7 +326,7 @@
         }elseif (isset($_GET['findadmno'])) {
             $admnos = $_GET['findadmno'];
             $admnopresent = checkadmno($admnos);
-            if ($admnopresent==1) {
+            if ($admnopresent == 1) {
                 $last_paying = getLastTimePaying($conn2,$admnos);
                 $names = getName($admnos);
                 $term = getTermV2($conn2);
@@ -8107,6 +8107,7 @@
         $my_course_list = isJson($student_data['my_course_list']) ? json_decode($student_data['my_course_list']) : [];
         $start_date = date("Y-m-d");
         $end_date = date("Y-m-d");
+        $my_voteheads = [];
         for ($index=0; $index < count($my_course_list); $index++) { 
             if($my_course_list[$index]->course_status == 1){
                 $module_terms = $my_course_list[$index]->module_terms;
@@ -8114,6 +8115,7 @@
                     if($module_terms[$ind]->status == 1){
                         $start_date = date("Y-m-d", strtotime($module_terms[$ind]->start_date));
                         $end_date = date("Y-m-d", strtotime($module_terms[$ind]->end_date));
+                        $my_voteheads = $module_terms[$ind]->voteheads ?? [];
                         break;
                     }
                 }
@@ -8132,8 +8134,23 @@
                 $payment_for = isJson($row['payment_for']) ? json_decode($row['payment_for'], true) : [];
                 if (count($payment_for) > 0) {
                     foreach ($payment_for as $key => $payment) {
-                        if($payment['roles'] != "provisional"){
-                            $total_amounts += ($payment['amount_paid']*1);
+                        // check if the votehead is to be paid for based of the student selected votehead
+                        $add = false;
+                        if(count($my_voteheads) > 0){
+                            foreach($my_voteheads as $votehead){
+                                if($votehead->votehead == $payment['id'] && $votehead->pay){
+                                    $add = true;
+                                }
+                            }
+                            if($add){
+                                $total_amounts += ($payment['amount_paid']*1);
+                                continue;
+                            }
+                        }else{
+                            // do this if the voteheads defined are not present.
+                            if($payment['roles'] != "provisional"){
+                                $total_amounts += ($payment['amount_paid']*1);
+                            }
                         }
                     }
                 }else{
