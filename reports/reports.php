@@ -3879,6 +3879,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $reminder_message = $_POST['reminder_message'];
         $course_name = isset($_POST['course_name']) ? $_POST['course_name'] : null;
         $expense_category = isset($_POST['expense_category']) ? $_POST['expense_category'] : "All";
+        $student_status = isset($_POST['student_status']) ? $_POST['student_status'] : 'active';
 
         if ($finance_entity == "fees_collection") {
             if (strlen($student_class_fin) > 0 && strlen($period_selection) > 0 && $student_options == "byClass") {
@@ -4261,7 +4262,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 if ($student_class_fin != "all") {
                     // get per class
                     $course_id = strlen($course_name) > 0 ? $course_name : null;
-                    $student_data = getStudents($student_class_fin, $conn2, $course_id);
+                    $student_data = getStudents($student_class_fin, $conn2, $course_id, $student_status);
                     $number = 1;
                     $stud_data = [];
                     $total_fees = 0;
@@ -4432,7 +4433,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         for ($ind = 0; $ind < count($school_classes); $ind++) {
                             // get per class
                             $student_class_fin = $school_classes[$ind];
-                            $student_data = getStudents($student_class_fin, $conn2);
+                            $student_data = getStudents($student_class_fin, $conn2, null, $student_status);
                             $number = 1;
                             $stud_data = [];
                             $total_fees = 0;
@@ -5560,7 +5561,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $grand_paid = 0;
                 $grand_balance = 0;
                 foreach ($school_classes as $class) {
-                    $students = getStudents($class, $conn2);
+                    $students = getStudents($class, $conn2, null, $student_status);
                     $level_paid = 0;
                     $level_balance = 0;
                     foreach ($students as $stud) {
@@ -5633,7 +5634,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $grand_paid = 0;
                 $grand_balance = 0;
                 foreach ($school_classes as $class) {
-                    $students = getStudents($class, $conn2);
+                    $students = getStudents($class, $conn2, null, $student_status);
                     $course_groups = [];
                     foreach ($students as $stud) {
                         $cid = $stud['course_done'];
@@ -5771,6 +5772,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $student_class_fin = $_POST['student_class_fin'];
         $reminder_message = $_POST['reminder_message'];
         $expense_category = isset($_POST['expense_category']) ? $_POST['expense_category'] : "All";
+        $student_status = isset($_POST['student_status']) ? $_POST['student_status'] : 'active';
 
         if ($finance_entity == "fees_collection") {
             if (strlen($student_class_fin) > 0 && strlen($period_selection) > 0 && $student_options == "byClass") {
@@ -6187,7 +6189,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 // display the class balance
                 if ($student_class_fin != "all") {
                     // get per class
-                    $student_data = getStudents($student_class_fin, $conn2);
+                    $student_data = getStudents($student_class_fin, $conn2, null, $student_status);
                     $number = 1;
                     $stud_data = [];
                     $total_fees = 0;
@@ -6311,7 +6313,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         for ($ind = 0; $ind < count($school_classes); $ind++) {
                             // get per class
                             $student_class_fin = $school_classes[$ind];
-                            $student_data = getStudents($student_class_fin, $conn2);
+                            $student_data = getStudents($student_class_fin, $conn2, null, $student_status);
                             $number = 1;
                             $stud_data = [];
                             $total_fees = 0;
@@ -7286,7 +7288,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $grand_paid = 0;
                 $grand_balance = 0;
                 foreach ($school_classes as $class) {
-                    $students = getStudents($class, $conn2);
+                    $students = getStudents($class, $conn2, null, $student_status);
                     $level_paid = 0;
                     $level_balance = 0;
                     foreach ($students as $stud) {
@@ -7353,7 +7355,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $grand_paid = 0;
                 $grand_balance = 0;
                 foreach ($school_classes as $class) {
-                    $students = getStudents($class, $conn2);
+                    $students = getStudents($class, $conn2, null, $student_status);
                     $course_groups = [];
                     foreach ($students as $stud) {
                         $cid = $stud['course_done'];
@@ -18306,11 +18308,22 @@ function getStudDetail($conn2, $stud_id)
     return [];
 }
 // get students data from a specific class
-function getStudents($stud_class, $conn2, $course_id = null)
+function getStudents($stud_class, $conn2, $course_id = null, $status = null)
 {
+    if ($status === 'active') {
+        $status_filter = " AND `activated` = 1 AND `deleted` = 0";
+    } elseif ($status === 'inactive') {
+        $status_filter = " AND `activated` = 0 AND `deleted` = 0";
+    } elseif ($status === 'both') {
+        $status_filter = " AND `deleted` = 0";
+    } else {
+        $status_filter = "";
+    }
     $student_data = [];
     if ($stud_class != "-1") {
-        $select = $course_id == null ? "SELECT * FROM `student_data` WHERE `stud_class` = '" . $stud_class . "'" : "SELECT * FROM `student_data` WHERE `stud_class` = '" . $stud_class . "' AND `course_done` = '".$course_id."'";
+        $select = $course_id == null
+            ? "SELECT * FROM `student_data` WHERE `stud_class` = '" . $stud_class . "'" . $status_filter
+            : "SELECT * FROM `student_data` WHERE `stud_class` = '" . $stud_class . "' AND `course_done` = '".$course_id."'" . $status_filter;
         $stmt = $conn2->prepare($select);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -18321,7 +18334,9 @@ function getStudents($stud_class, $conn2, $course_id = null)
             }
         }
     } else {
-        $select = "SELECT * FROM `student_data`";
+        $select = strlen($status_filter) > 0
+            ? "SELECT * FROM `student_data` WHERE 1=1" . $status_filter
+            : "SELECT * FROM `student_data`";
         $stmt = $conn2->prepare($select);
         $stmt->execute();
         $result = $stmt->get_result();
