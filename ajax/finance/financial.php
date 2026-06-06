@@ -1850,9 +1850,7 @@
             // USES A VIEW THAT HAS JOINED THE TWO TABLES.
             // $select = "SELECT expenses.*, expense_category.expense_name FROM `expenses` LEFT JOIN expense_category ON expenses.exp_category = expense_category.expense_id ORDER BY `expid` DESC LIMIT 1000";
             $select = "SELECT * FROM `all_expenses` ORDER BY expense_date DESC, expid DESC LIMIT 1000;";
-            $stmt = $conn2->prepare($select);
-            $stmt->execute();
-            $result = $stmt->get_result();
+            $result = $conn2->query($select);
             if ($result) {
                 $json_2 = "<p class='hide' id='expenses_data_json'>[";
                 $data_to_display = "<div class='conts'>
