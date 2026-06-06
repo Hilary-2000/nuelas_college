@@ -8,12 +8,12 @@
             {
                 "id": 1,
                 "term_name": "MODULE 1",
-                "status": "1",
-                "start_date": "20260101000000",
-                "end_date": "20260501000000",
-                "fulltime_cost": 7000,
-                "evening_cost": 3000,
-                "weekend_cost": 5678,
+                "status": 1,
+                "start_date": "20260501000000",
+                "end_date": "20260901000000",
+                "fulltime_cost": "7000",
+                "evening_cost": "3000",
+                "weekend_cost": "5678",
                 "voteheads": [
                     {
                         "votehead": "0",
@@ -28,7 +28,7 @@
             {
                 "id": 2,
                 "term_name": "MODULE 2",
-                "status": "0",
+                "status": 0,
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "7000",
@@ -48,7 +48,7 @@
             {
                 "id": 3,
                 "term_name": "MODULE 3",
-                "status": "0",
+                "status": 0,
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "7000",
@@ -68,7 +68,7 @@
             {
                 "id": 4,
                 "term_name": "MODULE 4",
-                "status": "0",
+                "status": 0,
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "7000",
@@ -88,7 +88,7 @@
             {
                 "id": 5,
                 "term_name": "MODULE 5",
-                "status": "0",
+                "status": 0,
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "7000",
@@ -108,7 +108,7 @@
             {
                 "id": 6,
                 "term_name": "MODULE 6",
-                "status": "0",
+                "status": 0,
                 "start_date": "",
                 "end_date": "",
                 "fulltime_cost": "7000",
