@@ -169,6 +169,7 @@ cObj("select_student_option").onchange = function () {
 cObj("finance_entity").onchange = function () {
     var my_val = this.value;
     cObj("level_balance_type_win").classList.add("hide");
+    cObj("stud_status_win").classList.add("hide");
     if(my_val == "fees_collection"){
         var student_opt = document.getElementsByClassName("student_opt");
         for (let index = 0; index < student_opt.length; index++) {
@@ -193,6 +194,7 @@ cObj("finance_entity").onchange = function () {
         cObj("compose_reminder_message").classList.add("hide");
         cObj("staff_list_windoweds").classList.add("hide");
         cObj("expense_cats_windows").classList.add("hide");
+        cObj("stud_status_win").classList.remove("hide");
     }else if (my_val == "fees_reminders") {
         var student_opt = document.getElementsByClassName("student_opt");
         for (let index = 0; index < student_opt.length; index++) {
@@ -266,6 +268,7 @@ cObj("finance_entity").onchange = function () {
         cObj("staff_list_windoweds").classList.add("hide");
         cObj("expense_cats_windows").classList.add("hide");
         cObj("level_balance_type_win").classList.remove("hide");
+        cObj("stud_status_win").classList.remove("hide");
     }
 }
 cObj("period_selection").onchange = function () {

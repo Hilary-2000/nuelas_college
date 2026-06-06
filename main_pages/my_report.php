@@ -188,6 +188,14 @@
                             <option value="by_level_course">By Course Level &amp; Course</option>
                         </select>
                     </div>
+                    <div class="col-md-4 hide" id="stud_status_win">
+                        <label for="student_status" class="form-label"><b>Student Status</b></label>
+                        <select name="student_status" id="student_status" class="form-control">
+                            <option value="active">Active Students</option>
+                            <option value="inactive">Inactive Students</option>
+                            <option value="both">Both (Active &amp; Inactive)</option>
+                        </select>
+                    </div>
                     <div class="col-md-4 hide" id="expense_cats_windows">
                         <label for="expense_categorized" class="form-label"><b>Expense Categories</b><img src="images/ajax_clock_small.gif" id="expense_cats_loaders" class="hide"></label>
                         <p id="exp_cat_select_holder"></p>
