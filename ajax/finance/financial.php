@@ -214,7 +214,6 @@
             $result =  $stmt->get_result();
             if($result){
                 if($row = $result->fetch_assoc()){
-                    $is_boarding = isBoarding($student_id, $conn2);
                     $select = "SELECT * FROM fees_structure WHERE classes = ? AND course = ?";
                     $stmt_2 = $conn2->prepare($select);
                     $stmt_2->bind_param("ss", $row['stud_class'], $row['course_done']);
@@ -254,7 +253,7 @@
                     $data_to_display.= "<tr><td>1. <input type='checkbox' class='edit_course_fees' id='edit_course_fees_0' checked></td><td>Course Fees</td><td><span class='badge bg-primary'>Regular</span></td>";
                     $row['study_mode'] = strtolower($row['study_mode']);
                     foreach($active_course['module_terms'] as $key => $module){
-                        $check_module = checkVotehead($active_course['module_terms'], "0", $module['id'], "regular", $is_boarding);
+                        $check_module = checkVotehead($active_course['module_terms'], "0", $module['id'], "regular");
                         $course_fees = $row['study_mode'] == "weekend" ? ($module['weekend_cost'] ?? 0) : ($row['study_mode'] == "evening" ? ($module['evening_cost'] ?? 0) : ($row['study_mode'] == "fulltime" ? ($module['fulltime_cost'] ?? 0) : ($module['termly_cost'] ?? 0)));
                         $data_to_display.="<td><input type='checkbox' class='edit_course_fees_0' id='edit_module_course_fees_0_".($key+1)."' ".$check_module."> Kes ".number_format($course_fees)."</td>";
                     }
@@ -265,7 +264,7 @@
                         $data_to_display.= "<tr><td>".($key+2).". <input type='checkbox' value='".$votehead['ids']."' class='edit_course_fees' id='edit_course_fees_".$votehead['ids']."' checked></td><td>".$votehead['expenses']."</td><td><span class='badge bg-primary'>".ucwords(strtolower($votehead['roles']))."</span></td>";
                         $row['study_mode'] = strtolower($row['study_mode']);
                         foreach($active_course['module_terms'] as $module){
-                            $check_module = checkVotehead($active_course['module_terms'], $votehead['ids'], $module['id'], $votehead['roles'], $is_boarding);
+                            $check_module = checkVotehead($active_course['module_terms'], $votehead['ids'], $module['id'], $votehead['roles']);
                             $course_fees = $row['study_mode'] == "weekend" ? $votehead['TERM_3'] : ($row['study_mode'] == "evening" ? $votehead['TERM_2'] : ($row['study_mode'] == "fulltime" ? $votehead['TERM_1'] : $votehead['TERM_1']));
                             $data_to_display.="<td><input type='checkbox' class='edit_course_fees_".$votehead['ids']."' id='edit_module_course_fees_".$votehead['ids']."_".$module['id']."' ".$check_module."> Kes ".number_format($course_fees)."</td>";
                         }
@@ -328,10 +327,19 @@
             $admnos = $_GET['findadmno'];
             $admnopresent = checkadmno($admnos);
             if ($admnopresent==1) {
+                $last_paying = getLastTimePaying($conn2,$admnos);
                 $names = getName($admnos);
                 $term = getTermV2($conn2);
                 $classes = explode("^",$names)[1];
+                $added_fees = checkFeesChange($term,$conn2,$classes,$last_paying);
+                $transport_change = changeTransport($conn2,$admnos);
                 $fees_change = "";
+                if (strlen($added_fees) > 0) {
+                    $fees_change = "<hr><span class='text-primary'>We have noticed fees structure has been changed below are the changes:".$added_fees."</span><br>";
+                }
+                if (strlen($transport_change) > 0) {
+                    $fees_change.=$transport_change."<br>";
+                }
                 $name = explode("^",$names)[0];
                 $date = date("Y-m-d");
                 $times = date("H:i:s");
@@ -6027,7 +6035,7 @@
                     if($res){
                         while($row1 = $res->fetch_assoc()){
                             // delete the supplier payment
-                            $delete = "DELETE FROM `supplier_bill_payments` WHERE `payment_for` = '".$row1['bill_id']."'";
+                            $delete = "DELETE FROM `supplier_bill_payments` WHERE `payment_for` = '".$row['bill_id']."'";
                             $stmt = $conn2->prepare($delete);
                             $stmt->execute();
                         }
@@ -6171,7 +6179,7 @@
         }
     }
 
-    function checkVotehead($modules, $votehead_id, $module_id, $votehead_type = "provisional", $is_boarding = false){
+    function checkVotehead($modules, $votehead_id, $module_id, $votehead_type = "provisional"){
         $issetup = false;
         foreach ($modules as $key => $module) {
             if(isset($module['voteheads']) && $module['id'] == $module_id){
@@ -6183,7 +6191,7 @@
                 }
             }
         }
-        if ((!$issetup && strtolower($votehead_type) == "regular") || (!$issetup && strtolower($votehead_type) == "boarding" && $is_boarding)) {
+        if (!$issetup && strtolower($votehead_type) == "regular") {
             return "checked";
         }
         return "";
@@ -7121,7 +7129,7 @@
                     $trans_date = date("dS M Y H:i:s A",strtotime($row['date_of_transaction']."".$row['time_of_transaction']));
                     $trans_date_sort = date("YmdHis",strtotime($row['date_of_transaction']."".$row['time_of_transaction']));
                     $student_name = getName1($row['stud_admin']);
-                    $transaction_data.="{\"stud_admin\":\"".$row['stud_admin']."\",\"amount\":\"".comma($row['amount'])."\",\"date_of_transaction\":\"".$trans_date."\",\"student_name\":\"".ucwords(strtolower($student_name))."\",\"mode_of_pay\":\"".$row['mode_of_pay']."\",\"payment_for\":\"".ucwords(strtolower($row['payment_for']))."\",\"amount_sort\":".$row['amount'].",\"trans_date_sort\":".$trans_date_sort.",\"support_document\":".($row['support_document'] ?? "")."},";
+                    $transaction_data.="{\"stud_admin\":\"".$row['stud_admin']."\",\"amount\":\"".comma($row['amount'])."\",\"date_of_transaction\":\"".$trans_date."\",\"student_name\":\"".ucwords(strtolower($student_name))."\",\"mode_of_pay\":\"".$row['mode_of_pay']."\",\"payment_for\":\"".ucwords(strtolower($row['payment_for']))."\",\"amount_sort\":".$row['amount'].",\"trans_date_sort\":".$trans_date_sort.",\"support_document\":".$row['support_document']."},";
                 }
             }
             $transaction_data = substr($transaction_data,0,-1)."]";
@@ -7862,8 +7870,7 @@
             if ($row = $res->fetch_assoc()) {
                 $fees_to_pay = $row['TOTALS'];
                 if (isBoarding($admno,$conn2)) {
-                    $student_data = students_details($admno, $conn2);
-                    $boarding_fees = getBoardingFees($conn2,$student_data);
+                    $boarding_fees = getBoardingFeesOfTerm($conn2,$classes);
                     $fees_to_pay = $fees_to_pay+$boarding_fees;
                 }
                 // echo isBoarding($admno,$conn2);
@@ -7903,8 +7910,7 @@
                 // echo $fees_to_pay;
 
                 if (isBoarding($admno,$conn2)) {
-                    $student_data = students_details($admno, $conn2);
-                    $boarding_fees = getBoardingFees($conn2,$student_data);
+                    $boarding_fees = getBoardingFees($conn2,$classes);
                     $fees_to_pay = $fees_to_pay+$boarding_fees;
                 }
                 // echo isBoarding($admno,$conn2);
@@ -7937,7 +7943,6 @@
     function getFeesAsFromTermAdmited($current_term,$conn2,$classes,$admno, $include_bcf = true){
         // get the student term they are in
         $student_data = students_details($admno,$conn2);
-        $is_boarding = isBoarding($admno, $conn2);
         
         // GET THE COURSE FEES
         $course_fees = 0;
@@ -7975,7 +7980,6 @@
             }
         }
         // echo json_encode($my_course_list[0]);
-        // echo $course_fees." ".($omit_course_fees ? "true" : "false")."<br>";
 
         // GET THE STUDENT STANDING BALANCE.
         $student_balance = $include_bcf ? $student_data['balance_carry_forward'] : 0;
@@ -7988,9 +7992,8 @@
             $course_enrolled = $student_data['course_done'];
     
             // get the term they are in
-            $is_boarding_filter = $is_boarding ? " (`roles` = 'regular' OR `roles` = 'boarding')" : " `roles` = 'regular'";
             $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
-            $select =  count($other_vh) > 0 && $issetup ? "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE ids IN (".join(',', $other_vh).")" : "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_enrolled."' AND `activated` = 1 AND $is_boarding_filter;";
+            $select =  count($other_vh) > 0 && $issetup ? "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE ids IN (".join(',', $other_vh).")" : "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_enrolled."' AND `activated` = 1  and `roles` = 'regular';";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $res = $stmt->get_result();
@@ -8034,8 +8037,7 @@
             if ($row = $res->fetch_assoc()) {
                 $fees_to_pay = $row['TOTALS'];
                 if (isBoarding($admno,$conn2)) {
-                    $student_data = students_details($admno, $conn2);
-                    $boarding_fees = getBoardingFees($conn2,$student_data);
+                    $boarding_fees = getBoardingFees($conn2,$classes,$term);
                     $fees_to_pay = $fees_to_pay+$boarding_fees;
                 }
                 // echo isBoarding($admno,$conn2);
@@ -8922,24 +8924,27 @@
         }
         return false;
     }
-    function getBoardingFees($conn2,$student_data){
+    function getBoardingFeesOfTerm($conn2,$class,$termed = "null"){
+        $class = "%|".$class."|%";
+        $term = getTermV2($conn2);
         // echo $class;
-        $select = "SELECT SUM(TERM_1) AS 'TERM_1', SUM(TERM_2) AS 'TERM_2', SUM(TERM_3) AS 'TERM_3' FROM `fees_structure` WHERE classes = ? AND course = ?";
+        $select = "";
+        if ($term == "TERM_1" && $termed == "null") {
+            $select = "SELECT sum(`TERM_1`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+        }elseif ($term == "TERM_2" && $termed == "null") {
+            $select = "SELECT sum(`TERM_2`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+        }elseif ($term == "TERM_3" && $termed == "null") {
+            $select = "SELECT sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+        }elseif ($termed != "null") {
+            $select = "SELECT sum(`".$termed."`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+        }
         $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$student_data['stud_class'],$student_data['course_done']);
+        $stmt->bind_param("s",$class);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
             if ($row = $result->fetch_assoc()) {
-                if($student_data['study_mode'] == "fulltime"){
-                    return $row['TERM_1'];
-                }
-                if($student_data['study_mode'] == "evening"){
-                    return $row['TERM_2'];
-                }
-                if($student_data['study_mode'] == "weekend"){
-                    return $row['TERM_3'];
-                }
+                return $row['Total'];
             }
         }
         return 0;
@@ -8976,6 +8981,64 @@
             }
         }
 
+        $stmt = $conn2->prepare($select);
+        $stmt->bind_param("s",$class);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result) {
+            if ($row = $result->fetch_assoc()) {
+                return $row['Total'];
+            }
+        }
+        return 0;
+    }
+    function getBoardingFees($conn2,$class,$admitted_term = "null",$admission_no = ""){
+        $class = "%|".$class."|%";
+        $term = getTermV2($conn2);
+        if (strlen($admission_no) > 0) {
+            $student_data = students_details($admission_no,$conn2);
+            // get the date of registration is in what term
+            $date_of_reg = count($student_data) > 0 ? $student_data['D_O_A'] : date("Y-m-d");
+            $select = "SELECT * FROM `academic_calendar` WHERE `start_time` <= ? AND `end_time` >= ?";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss",$date_of_reg,$date_of_reg);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $admitted_term = "null";
+            if ($result) {
+                if($row = $result->fetch_assoc()){
+                    $admitted_term = $row['term'];
+                }
+            }
+        }
+        
+        if ($admitted_term == "TERM_1" || $admitted_term == "null") {
+            if($term == "TERM_1"){
+                $select = "SELECT sum(`TERM_1`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }elseif($term == "TERM_2"){
+                $select = "SELECT sum(`TERM_1`)+sum(`TERM_2`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }elseif($term == "TERM_3"){
+                $select = "SELECT sum(`TERM_1`)+sum(`TERM_2`)+sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }
+        }elseif($admitted_term == "TERM_2"){
+            if($term == "TERM_2"){
+                $select = "SELECT sum(`TERM_2`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }elseif($term == "TERM_3"){
+                $select = "SELECT sum(`TERM_2`)+sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }
+        }elseif($admitted_term == "TERM_3"){
+            if($term == "TERM_3"){
+                $select = "SELECT sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }
+        }else {
+            if($term == "TERM_1"){
+                $select = "SELECT sum(`TERM_1`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }elseif($term == "TERM_2"){
+                $select = "SELECT sum(`TERM_1`)+sum(`TERM_2`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }elseif($term == "TERM_3"){
+                $select = "SELECT sum(`TERM_1`)+sum(`TERM_2`)+sum(`TERM_3`) AS 'Total' FROM `fees_structure` WHERE `roles` = 'boarding' AND `activated` = 1 AND `classes` like ?";
+            }
+        }
         $stmt = $conn2->prepare($select);
         $stmt->bind_param("s",$class);
         $stmt->execute();
@@ -9573,7 +9636,7 @@
             $payment_purpose = json_decode($payment_purpose, true);
             $data_to_display = "<ul>";
             foreach ($payment_purpose as $key => $value) {
-                $data_to_display .= "<li>".ucwords(strtolower($value["name"]))." - Kes ".number_format($value["amount_paid"])."</li>";
+                $data_to_display .= "<li>".ucwords(strtolower($value["name"]))." - Kes ".number_format((float)$value["amount_paid"])."</li>";
             }
             $data_to_display .= "</ul>";
             return $data_to_display;
@@ -9714,7 +9777,7 @@
         $transaction_id = base64_encode($transaction_id . "");
 
         // transaction link
-        $link = "https://lawrenzo.ladybirdsmis.com/reports/reports.php?receipt=" . $transaction_id . "&p_code=" . base64_encode($_SESSION['databasename']);
+        $link = "https://nuelas.ladybirdsmis.com/reports/reports.php?receipt=" . $transaction_id . "&p_code=" . base64_encode($_SESSION['databasename']);
 
         $curl = curl_init();
         
