@@ -2367,7 +2367,8 @@ cObj("sach").onchange = function () {
         "named","admnosd","classenroll","bcnos","course_lists_search_bar",
         "intake_month_search_win","intake_year_search_win","student_status_window",
         "student_study_mode_search_win","college_branch_search",
-        "doa_range_win","county_search_win","heard_search_win","age_range_win"
+        "doa_range_win","county_search_win","heard_search_win","age_range_win",
+        "module_search_win"
     ];
     for (var i = 0; i < allPanels.length; i++) {
         if (cObj(allPanels[i])) cObj(allPanels[i]).classList.add("hide");
@@ -2387,6 +2388,8 @@ cObj("sach").onchange = function () {
         cObj("student_status_window").classList.remove("hide");
         cObj("student_study_mode_search_win").classList.remove("hide");
         cObj("college_branch_search").classList.remove("hide");
+        cObj("module_search_win").classList.remove("hide");
+        loadModuleOptions();
     } else if (this.value == "bcno") {
         cObj("swindow").classList.remove("hide");
         cObj("bcnos").classList.remove("hide");
@@ -2401,6 +2404,9 @@ cObj("sach").onchange = function () {
         cObj("heard_search_win").classList.remove("hide");
     } else if (this.value == "age_range") {
         cObj("age_range_win").classList.remove("hide");
+    } else if (this.value == "by_module") {
+        cObj("module_search_win").classList.remove("hide");
+        loadModuleOptions();
     }
     // allstuds and regtoday need no extra panels
 }
@@ -2450,6 +2456,11 @@ cObj("findingstudents").onclick = function () {
             } else {
                 erroro++;
             }
+            // optional module filter
+            var mod_filter_val = cObj("module_search_filter") ? cObj("module_search_filter").value : "";
+            if (mod_filter_val.length > 0) {
+                datapassing += "&by_module_filter=" + encodeURIComponent(mod_filter_val);
+            }
         } else if (valObj("sach") == "bcno") {
             if (valObj("bcnosd") > 0) {
                 grayBorder(cObj("bcnosd"));
@@ -2488,6 +2499,10 @@ cObj("findingstudents").onclick = function () {
             if (age_from.length == 0) { redBorder(cObj("age_from")); erroro++; } else { grayBorder(cObj("age_from")); }
             if (age_to.length == 0) { redBorder(cObj("age_to")); erroro++; } else { grayBorder(cObj("age_to")); }
             datapassing += "&age_from="+age_from+"&age_to="+age_to;
+        } else if (valObj("sach") == "by_module") {
+            var mod_val = cObj("module_search_filter").value;
+            if (mod_val.length == 0) { redBorder(cObj("module_search_filter")); erroro++; } else { grayBorder(cObj("module_search_filter")); }
+            datapassing += "&by_module="+encodeURIComponent(mod_val);
         }
 
         if(cObj("student_status_search") != ""){
@@ -2527,6 +2542,32 @@ cObj("findingstudents").onclick = function () {
         redBorder(cObj("sach"));
         cObj("errorSearch").innerHTML = "<p style='color:red;font-size:14px'>Select an option to proceed!</p>";
     }
+}
+
+function loadModuleOptions() {
+    var loader = cObj("module_search_loader");
+    var sel = cObj("module_search_filter");
+    if (loader) loader.classList.remove("hide");
+    sel.innerHTML = "<option value=''>Loading...</option>";
+    var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            if (loader) loader.classList.add("hide");
+            try {
+                var resp = JSON.parse(this.responseText);
+                var max = resp.max || 0;
+                var opts = "<option value=''>-- Select Module --</option>";
+                for (var i = 1; i <= max; i++) {
+                    opts += "<option value='MODULE " + i + "'>Module " + i + "</option>";
+                }
+                sel.innerHTML = opts;
+            } catch(e) {
+                sel.innerHTML = "<option value=''>Error loading modules</option>";
+            }
+        }
+    };
+    xml.open("GET", "ajax/administration/admissions.php?get_max_modules=true", true);
+    xml.send();
 }
 
 function showStudentData() {
