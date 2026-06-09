@@ -1101,7 +1101,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
                     // student_status
                     $student_status = !empty($_GET['student_status']) ? $_GET['student_status'] : "both";
-                    createStudentn4($conn2,$result,$searh, $student_status);//creates table
+                    $filter_module_val = !empty($_GET['by_module_filter']) ? strtoupper(trim($_GET['by_module_filter'])) : "";
+                    createStudentn4($conn2,$result,$searh, $student_status, $filter_module_val);//creates table
                 }else{
                     // get the whole class list
                     $select = "SELECT * FROM `settings` WHERE `sett` = 'class';";
@@ -1281,7 +1282,54 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $result = $stmt->get_result();
                 $searh = "Students aged between <span style='color:brown;'>".$age_from." &mdash; ".$age_to." years</span>";
                 createStudentn4($conn2, $result, $searh);
+            }elseif (isset($_GET['by_module'])) {
+                $filter_module = strtoupper(trim($_GET['by_module']));
+                $select = "SELECT * FROM `student_data` WHERE `deleted` = 0 AND `activated` = 1";
+                $stmt = $conn2->prepare($select);
+                $stmt->execute();
+                $all_result = $stmt->get_result();
+                $matching_adm = [];
+                while ($row = $all_result->fetch_assoc()) {
+                    $course_list = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list']) : [];
+                    foreach ($course_list as $course) {
+                        if ($course->course_status == "1") {
+                            foreach ($course->module_terms as $module_term) {
+                                if ($module_term->status == "1" && strtoupper($module_term->term_name) === $filter_module) {
+                                    $matching_adm[] = $conn2->real_escape_string($row['adm_no']);
+                                    break 2;
+                                }
+                            }
+                        }
+                    }
+                }
+                $searh = "Students currently in <span style='color:brown;'>".ucwords(strtolower($filter_module))."</span>";
+                if (count($matching_adm) > 0) {
+                    $placeholders = implode(",", array_map(function($a){ return "'".$a."'"; }, $matching_adm));
+                    $select2 = "SELECT * FROM `student_data` WHERE `adm_no` IN (".$placeholders.")";
+                    $stmt2 = $conn2->prepare($select2);
+                    $stmt2->execute();
+                    $result = $stmt2->get_result();
+                    createStudentn4($conn2, $result, $searh);
+                } else {
+                    echo "<p style='font-size:15px;color:red;'>No students found in <b>".ucwords(strtolower($filter_module))."</b>.</p>";
+                }
             }
+        }elseif (isset($_GET['get_max_modules'])) {
+            $select = "SELECT `valued` FROM `settings` WHERE `sett` = 'courses'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $max_modules = 0;
+            if ($res && ($row = $res->fetch_assoc())) {
+                $courses = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+                foreach ($courses as $course) {
+                    $n = isset($course->no_of_terms) ? intval($course->no_of_terms) : 0;
+                    if ($n > $max_modules) $max_modules = $n;
+                }
+            }
+            header("Content-Type: application/json");
+            echo json_encode(["max" => $max_modules]);
+            exit;
         }elseif (isset($_GET['delete_staff'])) {
             include("../../connections/conn1.php");
             $staff_ids = $_GET['staff_ids'];
@@ -9522,7 +9570,7 @@ function isJson_report($string) {
         }
         return false;
     }
-    function createStudentn4($conn2,$result,$searchinfor, $student_status = "both"){
+    function createStudentn4($conn2,$result,$searchinfor, $student_status = "both", $filter_module = ""){
         if($result){
             $xs =0;
             $data="<h6 style='font-size:17px;text-align:center;font-weight:500;'>Results for ".$searchinfor."</h6><div class='row'><div class='col-md-6'></div><div class='col-md-6'><input class='form-control border border-primary d-none' placeholder='Search here' id='search_student_tables'></div></div>";
@@ -9568,12 +9616,14 @@ function isJson_report($string) {
                 // check when the course list will be over
                 $course_list = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list']) : [];
                 $course_status = "In-Active";
+                $active_module_name = "";
                 if (count($course_list) > 0) {
                     foreach($course_list as $course){
                         if($course->course_status == "1"){
                             // get the active module
                             foreach($course->module_terms as $module_term){
                                 if($module_term->status == "1"){
+                                    $active_module_name = strtoupper($module_term->term_name);
                                     $course_status = ucfirst(strtolower($module_term->term_name." ".timeUntilCourseCompletion($module_term->end_date)));
                                     break;
                                 }
@@ -9582,8 +9632,11 @@ function isJson_report($string) {
                     }
                 }
 
+                // module filter
+                $module_match = empty($filter_module) || $active_module_name === strtoupper($filter_module);
+
                 // course_status
-                if(($course_status == "In-Active" && $student_status == "0") || ($course_status != "In-Active" && $student_status == "1") || $student_status == "both"){
+                if($module_match && (($course_status == "In-Active" && $student_status == "0") || ($course_status != "In-Active" && $student_status == "1") || $student_status == "both")){
                     // echo json_encode($row);
                     $xs++;
                     $data.="<tr class='search_this_main' id='search_this_main".($xs)."'><td>".($xs)."</td>";
