@@ -99,6 +99,7 @@
                                 <option value="by_county">County</option>
                                 <option value="by_heard">How They Heard About Us</option>
                                 <option value="age_range">Age Range</option>
+                                <option value="by_module">Module</option>
                             </select>
                         </div>
                         <div class="col-md-3 mx-auto hide" id="named">
@@ -251,6 +252,12 @@
                             <input type="number" id="age_from" class="form-control mb-1" placeholder="e.g. 18" min="1" max="100">
                             <label class="form-control-label"><b>Max Age (years)</b></label>
                             <input type="number" id="age_to" class="form-control" placeholder="e.g. 30" min="1" max="100">
+                        </div>
+                        <div class="col-md-3 hide" id="module_search_win">
+                            <label class="form-control-label"><b>Select Module</b> <img src="images/ajax_clock_small.gif" class="hide" id="module_search_loader"></label>
+                            <select id="module_search_filter" class="form-control">
+                                <option value="">-- Select Module --</option>
+                            </select>
                         </div>
                         <div class="col-md-3">
                             <span id="findingstudents" class="btn btn-primary btn-sm mt-4 rounded" type="button"><i class="fas fa-search"></i> Search</span>
