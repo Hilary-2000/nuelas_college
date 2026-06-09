@@ -830,8 +830,8 @@
             $today = date("Y-m-d");
             $time = date("H:i:s");
             $startdate = '';
-            $enddate;
-            $dates;
+            $enddate = '';
+            $dates = '';
             if($period =="today"){
                 $startdate = date("Y-m-d");
                 $dates = "<p>Displaying results of <b>".date("l dS \of M Y")."</b></p>";
@@ -850,7 +850,7 @@
             }
             $select1 = "SELECT * , (SELECT(concat(`first_name`,' ',`second_name`)) FROM `student_data` WHERE `adm_no` = `stud_admin`) AS 'Name' FROM `finance` WHERE date_of_transaction BETWEEN ? and ? OR (date_of_transaction = ? and `time_of_transaction` > ?) ORDER BY `transaction_id` DESC";
             $select2 = "SELECT * ,(SELECT(concat(`first_name`,' ',`second_name`)) FROM `student_data` WHERE `adm_no` = `stud_admin`) AS 'Name' FROM `finance` WHERE date_of_transaction = ? ORDER BY `transaction_id` DESC ";
-            $stmt;
+            $stmt = null;
             if(!isset($enddate)){
                 $stmt = $conn2->prepare($select2);
                 $stmt->bind_param("s",$today);

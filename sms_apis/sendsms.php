@@ -162,22 +162,125 @@
                         </div>-->
                     </div>
                     <div class="conts hide" id="students_parents">
-                        <div class="p-1 border border-success text-success fx-10 my-2 w-50 text-left align-left"><b>Note:</b> <br> - Select the student to whom you want to send message to their parent.</div>
-                        <label>To Student`s parent selected: <br></label>
-                        <p class="text-secondary">(Total Number of Students: <span id="all_parents" >0</span>) <br></p>
-                        <p class="text-secondary">(Selected Students: <span class="red_notice" id="excempt_list">0</span>) <br></p>
-                        <label for="my-class">Select Course Level: <br></label>
-                        <p id="seleceted_class" class = "hide"></p>
-                        <p id="cl_list_msg"></p><!--Select class-->
-                        <label for="course_list_sms">Select Course: <br></label>
-                        <p id="course_list_sms_holder">
-                            <span class="border border-secondary text-secondary text-center p-1 w-25">
-                                Your course list will appear here!
-                            </span>
-                        </p>
-                        <p id="parents_lists_nm">
-                            
-                        </p>
+                        <!-- Hidden holders -->
+                        <p id="seleceted_class" class="hide"></p>
+                        <p id="broadcast_filter_options_holder" class="hide"></p>
+
+                        <!-- Stats bar -->
+                        <div class="d-flex flex-wrap align-items-center gap-3 my-2 p-2 bg-light border rounded" style="font-size:13px;">
+                            <span class="text-secondary">Total Students: <strong id="all_parents">0</strong></span>
+                            <span class="text-muted">|</span>
+                            <span class="text-secondary">Showing after filters: <strong id="filtered_students_count">—</strong></span>
+                            <span class="text-muted">|</span>
+                            <span class="text-secondary">Selected: <strong class="text-primary" id="excempt_list">0</strong></span>
+                        </div>
+
+                        <!-- Filter Panel -->
+                        <div class="border border-primary rounded my-2" id="broadcast_filter_panel">
+                            <div class="bg-primary text-white px-3 py-2 d-flex align-items-center justify-content-between" style="cursor:pointer;border-radius:4px 4px 0 0;" id="filter_panel_toggle">
+                                <span><i class="fas fa-filter mr-2"></i><strong>Filter Students</strong>&nbsp;<span class="badge bg-light text-primary" id="active_filter_count" style="display:none;"></span></span>
+                                <i class="fas fa-chevron-up" id="filter_panel_chevron"></i>
+                            </div>
+                            <div id="filter_panel_body" class="p-3">
+                                <div class="row">
+                                    <!-- Status -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-user-check text-success mr-1"></i> Student Status</label>
+                                        <div class="d-flex mt-1" style="gap:16px;">
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="filter_status" id="fs_all" value="all" checked><label class="form-check-label" for="fs_all">All</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="filter_status" id="fs_active" value="active"><label class="form-check-label" for="fs_active">Active</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="filter_status" id="fs_inactive" value="inactive"><label class="form-check-label" for="fs_inactive">Inactive</label></div>
+                                        </div>
+                                    </div>
+                                    <!-- Gender -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-venus-mars text-info mr-1"></i> Gender</label>
+                                        <div class="d-flex mt-1" style="gap:16px;">
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="filter_gender" id="fg_all" value="all" checked><label class="form-check-label" for="fg_all">All</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="filter_gender" id="fg_male" value="Male"><label class="form-check-label" for="fg_male">Male</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="filter_gender" id="fg_female" value="Female"><label class="form-check-label" for="fg_female">Female</label></div>
+                                        </div>
+                                    </div>
+                                    <!-- Course Level -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-graduation-cap text-primary mr-1"></i> Course Level</label>
+                                        <div id="cl_list_msg" class="mt-1"></div>
+                                    </div>
+                                    <!-- Course -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-book text-warning mr-1"></i> Course / Programme</label>
+                                        <div id="course_list_sms_holder" class="mt-1">
+                                            <select class="form-control form-control-sm w-100" disabled><option>Select a course level first...</option></select>
+                                        </div>
+                                    </div>
+                                    <!-- Branch -->
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-map-marker-alt text-danger mr-1"></i> Branch</label>
+                                        <select class="form-control form-control-sm w-100 mt-1" id="filter_branch">
+                                            <option value="all">All Branches</option>
+                                        </select>
+                                    </div>
+                                    <!-- Intake Year -->
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-calendar-alt text-secondary mr-1"></i> Intake Year</label>
+                                        <select class="form-control form-control-sm w-100 mt-1" id="filter_intake_year">
+                                            <option value="all">All Years</option>
+                                        </select>
+                                    </div>
+                                    <!-- Intake Month -->
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-calendar text-secondary mr-1"></i> Intake Month</label>
+                                        <select class="form-control form-control-sm w-100 mt-1" id="filter_intake_month">
+                                            <option value="all">All Months</option>
+                                        </select>
+                                    </div>
+                                    <!-- Module End Date -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-hourglass-end text-warning mr-1"></i> Module End Date <small class="text-muted font-weight-normal">(exact date)</small></label>
+                                        <input type="date" class="form-control form-control-sm w-100 mt-1" id="filter_module_end_date">
+                                        <small class="text-muted">Selects students whose active module ends exactly on this date.</small>
+                                    </div>
+                                    <!-- Balance Range -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-control-label" style="font-weight:600;font-size:13px;"><i class="fas fa-coins text-success mr-1"></i> Fee Balance Range (KES) <small class="text-muted font-weight-normal">— live filter</small></label>
+                                        <div class="d-flex mt-1" style="gap:8px;">
+                                            <input type="number" class="form-control form-control-sm w-100" id="filter_balance_min" placeholder="Min (e.g. 1000)" min="0">
+                                            <input type="number" class="form-control form-control-sm w-100" id="filter_balance_max" placeholder="Max (e.g. 50000)" min="0">
+                                        </div>
+                                        <small class="text-muted">Filters instantly after students load. Leave blank to ignore.</small>
+                                    </div>
+                                </div>
+                                <!-- Filter actions -->
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-1">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="broadcast_clear_filters">
+                                        <i class="fas fa-times mr-1"></i> Clear All
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-primary" id="broadcast_apply_filters">
+                                        <i class="fas fa-search mr-1"></i> Apply Filters &amp; Load Students
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student List (revealed after Apply Filters) -->
+                        <div id="broadcast_student_list_wrap" class="hide">
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                                <span class="text-primary" style="font-weight:600;font-size:13px;">
+                                    Showing <span id="filtered_students_count2">0</span> students
+                                </span>
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mr-1" id="broadcast_select_all_btn">
+                                        <i class="fas fa-check-square mr-1"></i> Select All
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="broadcast_deselect_all_btn">
+                                        <i class="fas fa-square mr-1"></i> Deselect All
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control form-control-sm mb-2" id="search_student_sms" placeholder="Search by name or admission no...">
+                            <div id="parents_lists_nm"></div>
+                        </div>
                     </div>
                     <div class="conts hide" id="parent_selections">
                         <label for="send_to_whom" class="form-control-label">Send to whom?</label>
