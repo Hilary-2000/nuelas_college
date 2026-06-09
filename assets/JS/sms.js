@@ -844,6 +844,9 @@ function view_and_edit_listeners() {
         const element = view_sms_details[index];
         element.addEventListener("click",viewPhoneNumbers);
     }
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        new bootstrap.Tooltip(el, { trigger: 'hover' });
+    });
 }
 
 function viewPhoneNumbers() {
@@ -913,7 +916,8 @@ function displayRecord_sms(start, finish, arrays) {
         var typeBadge = "<span style='background:" + tc + ";color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;'>" + (a[6] || '—') + "</span>";
         var statusBadge = smsStatusBadge(a[3], a[5], a[7]);
         var msg = (a[2] || '');
-        var msgCell = "<span title='" + msg.replace(/'/g, '&#39;') + "' style='display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>" + msg + "</span>";
+        var msgSafe = msg.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+        var msgCell = "<span data-bs-toggle='tooltip' data-bs-placement='top' data-bs-title='" + msgSafe + "' style='display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:default;'>" + msg + "</span>";
         var jsonVal = JSON.stringify(a).replace(/'/g, "&#39;");
 
         tableData += "<tr>" +
