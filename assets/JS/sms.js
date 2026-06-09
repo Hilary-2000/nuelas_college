@@ -157,112 +157,302 @@ function getStaffLists1() {
     sendData1("GET", "sms/sms.php", datapass, cObj("staff_my_lists"));
 }
 function getStudentsParent() {
-    //get classes lists first
+    // Load course level dropdown
     var datapass = "?parents_lists=true";
-    sendData2("GET", "sms/sms.php", datapass, cObj("cl_list_msg"),cObj("loading_my_sms_here"), function () {
-        //add a listener
+    sendData2("GET", "sms/sms.php", datapass, cObj("cl_list_msg"), cObj("loading_my_sms_here"), function () {
         if (cObj("my-class") != null) {
+            cObj("my-class").classList.add("w-100");
             cObj("my-class").addEventListener("change", getCourseListSMS);
         }
     });
-    datapass = "?all_parents=true";
-    sendData1("GET", "sms/sms.php", datapass, cObj("all_parents"));
+    // Load total student count
+    sendData1("GET", "sms/sms.php", "?all_parents=true", cObj("all_parents"));
+    // Load filter options (branches, intake years/months)
+    sendData1("GET", "sms/sms.php", "?get_broadcast_filter_options=true", cObj("broadcast_filter_options_holder"), function () {
+        var holder = cObj("broadcast_filter_options_holder");
+        if (!holder || !holder.innerText) return;
+        try {
+            var opts = JSON.parse(holder.innerText);
+            var branchSel = cObj("filter_branch");
+            if (branchSel && opts.branches) {
+                opts.branches.forEach(function (b) {
+                    var o = document.createElement("option");
+                    o.value = b.id;
+                    o.text = b.name;
+                    branchSel.appendChild(o);
+                });
+            }
+            var yearSel = cObj("filter_intake_year");
+            if (yearSel && opts.intake_years) {
+                opts.intake_years.forEach(function (y) {
+                    var o = document.createElement("option");
+                    o.value = y; o.text = y;
+                    yearSel.appendChild(o);
+                });
+            }
+            var monthSel = cObj("filter_intake_month");
+            if (monthSel && opts.intake_months) {
+                opts.intake_months.forEach(function (m) {
+                    var o = document.createElement("option");
+                    o.value = m; o.text = m;
+                    monthSel.appendChild(o);
+                });
+            }
+        } catch (e) {}
+    });
+    // Wire filter panel controls
+    initBroadcastFilterPanel();
 }
-function getStudentsSms() {
-    var keyword = this.value.toLowerCase();
-    var students_sms_names = document.getElementsByClassName("students_sms_names");
-    for (let index = 0; index < students_sms_names.length; index++) {
-        const element = students_sms_names[index].innerText.toLowerCase();
-        var our_id = students_sms_names[index].id.substr(3);
-        if (element.includes(keyword)) {
-            cObj("hide_students" + our_id).classList.remove("d-none");
+
+function initBroadcastFilterPanel() {
+    // Panel toggle
+    var toggle = cObj("filter_panel_toggle");
+    if (toggle && !toggle._wired) {
+        toggle._wired = true;
+        toggle.addEventListener("click", function () {
+            var body = cObj("filter_panel_body");
+            var chevron = cObj("filter_panel_chevron");
+            if (body.classList.contains("hide")) {
+                body.classList.remove("hide");
+                chevron.classList.replace("fa-chevron-down", "fa-chevron-up");
+            } else {
+                body.classList.add("hide");
+                chevron.classList.replace("fa-chevron-up", "fa-chevron-down");
+            }
+        });
+    }
+    // Apply Filters button
+    var applyBtn = cObj("broadcast_apply_filters");
+    if (applyBtn && !applyBtn._wired) {
+        applyBtn._wired = true;
+        applyBtn.addEventListener("click", function () {
+            getParentsList();
+        });
+    }
+    // Clear All button
+    var clearBtn = cObj("broadcast_clear_filters");
+    if (clearBtn && !clearBtn._wired) {
+        clearBtn._wired = true;
+        clearBtn.addEventListener("click", function () {
+            clearAllBroadcastFilters();
+        });
+    }
+    // Select All / Deselect All buttons
+    var selAllBtn = cObj("broadcast_select_all_btn");
+    if (selAllBtn && !selAllBtn._wired) {
+        selAllBtn._wired = true;
+        selAllBtn.addEventListener("click", function () { selectVisibleStudents(); });
+    }
+    var deselAllBtn = cObj("broadcast_deselect_all_btn");
+    if (deselAllBtn && !deselAllBtn._wired) {
+        deselAllBtn._wired = true;
+        deselAllBtn.addEventListener("click", function () { deselectVisibleStudents(); });
+    }
+    // Live balance filter
+    ["filter_balance_min", "filter_balance_max"].forEach(function (id) {
+        var el = cObj(id);
+        if (el && !el._wired) {
+            el._wired = true;
+            el.addEventListener("keyup", applyClientFilters);
+            el.addEventListener("change", applyClientFilters);
+        }
+    });
+    // Track active filter count on any filter change
+    document.querySelectorAll('input[name="filter_status"], input[name="filter_gender"]').forEach(function (el) {
+        if (!el._wired) {
+            el._wired = true;
+            el.addEventListener("change", updateActiveFilterCount);
+        }
+    });
+    ["filter_branch","filter_intake_year","filter_intake_month","filter_module_end_date"].forEach(function (id) {
+        var el = cObj(id);
+        if (el && !el._wired) {
+            el._wired = true;
+            el.addEventListener("change", updateActiveFilterCount);
+        }
+    });
+}
+
+function updateActiveFilterCount() {
+    var count = 0;
+    var status = document.querySelector('input[name="filter_status"]:checked');
+    if (status && status.value != 'all') count++;
+    var gender = document.querySelector('input[name="filter_gender"]:checked');
+    if (gender && gender.value != 'all') count++;
+    if (cObj("my-class") && cObj("my-class").value && cObj("my-class").value != '') count++;
+    if (cObj("course_list_sms") && cObj("course_list_sms").value && cObj("course_list_sms").value != '') count++;
+    if (cObj("filter_branch") && cObj("filter_branch").value != 'all') count++;
+    if (cObj("filter_intake_year") && cObj("filter_intake_year").value != 'all') count++;
+    if (cObj("filter_intake_month") && cObj("filter_intake_month").value != 'all') count++;
+    if (cObj("filter_module_end_date") && cObj("filter_module_end_date").value) count++;
+    if (cObj("filter_balance_min") && cObj("filter_balance_min").value) count++;
+    if (cObj("filter_balance_max") && cObj("filter_balance_max").value) count++;
+    var badge = cObj("active_filter_count");
+    if (badge) {
+        if (count > 0) {
+            badge.innerText = count + " active";
+            badge.style.display = '';
         } else {
-            cObj("hide_students" + our_id).classList.add("d-none");
+            badge.style.display = 'none';
         }
     }
 }
+
+function clearAllBroadcastFilters() {
+    var fsAll = cObj("fs_all");
+    if (fsAll) fsAll.checked = true;
+    var fgAll = cObj("fg_all");
+    if (fgAll) fgAll.checked = true;
+    if (cObj("my-class")) cObj("my-class").selectedIndex = 0;
+    cObj("course_list_sms_holder").innerHTML = '<select class="form-control form-control-sm w-100" disabled><option>Select a course level first...</option></select>';
+    if (cObj("filter_branch")) cObj("filter_branch").selectedIndex = 0;
+    if (cObj("filter_intake_year")) cObj("filter_intake_year").selectedIndex = 0;
+    if (cObj("filter_intake_month")) cObj("filter_intake_month").selectedIndex = 0;
+    if (cObj("filter_module_end_date")) cObj("filter_module_end_date").value = "";
+    if (cObj("filter_balance_min")) cObj("filter_balance_min").value = "";
+    if (cObj("filter_balance_max")) cObj("filter_balance_max").value = "";
+    updateActiveFilterCount();
+}
+
+function applyClientFilters() {
+    var keyword = cObj("search_student_sms") ? cObj("search_student_sms").value.toLowerCase() : "";
+    var balMin = (cObj("filter_balance_min") && cObj("filter_balance_min").value !== "") ? parseFloat(cObj("filter_balance_min").value) : null;
+    var balMax = (cObj("filter_balance_max") && cObj("filter_balance_max").value !== "") ? parseFloat(cObj("filter_balance_max").value) : null;
+    var rows = document.getElementsByClassName("hide_students");
+    var visible = 0;
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var nameEl = row.querySelector(".students_sms_names");
+        var nameText = nameEl ? nameEl.innerText.toLowerCase() : "";
+        var balance = parseFloat(row.getAttribute("data-balance")) || 0;
+        var showSearch = keyword.length === 0 || nameText.includes(keyword);
+        var showBalMin = balMin === null || balance >= balMin;
+        var showBalMax = balMax === null || balance <= balMax;
+        if (showSearch && showBalMin && showBalMax) {
+            row.classList.remove("d-none");
+            visible++;
+        } else {
+            row.classList.add("d-none");
+        }
+    }
+    if (cObj("filtered_students_count")) cObj("filtered_students_count").innerText = visible;
+    if (cObj("filtered_students_count2")) cObj("filtered_students_count2").innerText = visible;
+}
+
+function selectVisibleStudents() {
+    var rows = document.getElementsByClassName("hide_students");
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        if (!row.classList.contains("d-none")) {
+            var cb = row.querySelector(".student-class-par");
+            if (cb && !cb.checked) {
+                cb.checked = true;
+                addAdmNo(cb.id.substr(3));
+            }
+        }
+    }
+    updateBroadcastSelectionCount();
+    syncSelectAllCheckbox();
+}
+
+function deselectVisibleStudents() {
+    var rows = document.getElementsByClassName("hide_students");
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        if (!row.classList.contains("d-none")) {
+            var cb = row.querySelector(".student-class-par");
+            if (cb && cb.checked) {
+                cb.checked = false;
+                removeAdmNo(cb.id.substr(3));
+            }
+        }
+    }
+    updateBroadcastSelectionCount();
+    syncSelectAllCheckbox();
+}
+
+function updateBroadcastSelectionCount() {
+    var selected = cObj("seleceted_class") ? cObj("seleceted_class").innerText : "";
+    if (selected && selected.length > 0) {
+        var parts = selected.split(",").filter(function(s) { return s.length > 0; });
+        cObj("excempt_list").innerText = parts.length;
+    } else {
+        cObj("excempt_list").innerText = 0;
+    }
+}
+
+function syncSelectAllCheckbox() {
+    var s123 = cObj("staff123s");
+    if (!s123) return;
+    var cbs = document.getElementsByClassName("student-class-par");
+    var checked = 0;
+    for (var i = 0; i < cbs.length; i++) { if (cbs[i].checked) checked++; }
+    if (checked === 0) { s123.checked = false; s123.indeterminate = false; }
+    else if (checked === cbs.length) { s123.checked = true; s123.indeterminate = false; }
+    else { s123.checked = false; s123.indeterminate = true; }
+}
+
 function getCourseListSMS() {
-    var datapass = "?get_course_list=true&course_level="+this.value+"&object_id=course_list_sms";
-    sendData2("GET", "administration/admissions.php", datapass, cObj("course_list_sms_holder"), cObj("loadings"));
-    setTimeout(() => {
-        var timeout = 0;
-        var id23w = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(id23w);
-            }
-            if (cObj("loadings").classList.contains("hide")) {
-                if (cObj("course_list_sms") != undefined) {
-                    console.log("add event");
-                    cObj("course_list_sms").addEventListener("change", getParentsList);
-                }
-                stopInterval(id23w);
-            }
-        }, 100);
-    }, 200);
+    var datapass = "?get_course_list=true&course_level=" + this.value + "&object_id=course_list_sms";
+    sendData2("GET", "administration/admissions.php", datapass, cObj("course_list_sms_holder"), cObj("loadings"), function () {
+        if (cObj("course_list_sms") != null) {
+            cObj("course_list_sms").classList.add("w-100");
+        }
+    });
+    updateActiveFilterCount();
 }
+
 function getParentsList() {
-    if (this.value.length > 0) {
-        var datapass = "?get_parents_list=" + cObj("my-class").value+"&course_selected="+this.value;
-        sendData2("GET", "sms/sms.php", datapass, cObj("parents_lists_nm"),cObj("loading_my_sms_here"));
-        setTimeout(() => {
-            var timeout = 0;
-            var id23w = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(id23w);
-                }
-                if (cObj("loading_my_sms_here").classList.contains("hide")) {
-                    //add a listener
-                    checkSelected();
-                    if (cObj("staff123s") != "undefined" && cObj("staff123s") != null) {
-                        cObj("staff123s").addEventListener("change", selectAll);
-                    }
-                    var studentslist = document.getElementsByClassName("student-class-par");
-                    for (let index = 0; index < studentslist.length; index++) {
-                        const element = studentslist[index];
-                        element.addEventListener("change", getStudentId);
-                    }
-                    if (cObj("search_student_sms") != null) {
-                        cObj("search_student_sms").addEventListener("keyup", getStudentsSms);
-                    }
+    var classVal  = (cObj("my-class") && cObj("my-class").value) ? cObj("my-class").value : "all";
+    var courseVal = (cObj("course_list_sms") && cObj("course_list_sms").value) ? cObj("course_list_sms").value : "";
+    var status    = document.querySelector('input[name="filter_status"]:checked');
+    var gender    = document.querySelector('input[name="filter_gender"]:checked');
+    var datapass  = "?get_parents_list=" + encodeURIComponent(classVal)
+        + "&course_selected="         + encodeURIComponent(courseVal)
+        + "&filter_status="           + (status ? status.value : "all")
+        + "&filter_gender="           + (gender ? gender.value : "all")
+        + "&filter_branch="           + (cObj("filter_branch") ? cObj("filter_branch").value : "all")
+        + "&filter_intake_year="      + (cObj("filter_intake_year") ? cObj("filter_intake_year").value : "all")
+        + "&filter_intake_month="     + (cObj("filter_intake_month") ? cObj("filter_intake_month").value : "all")
+        + "&filter_module_end_date="  + (cObj("filter_module_end_date") ? cObj("filter_module_end_date").value : "")
+        + "&filter_balance_min="      + (cObj("filter_balance_min") ? cObj("filter_balance_min").value : "")
+        + "&filter_balance_max="      + (cObj("filter_balance_max") ? cObj("filter_balance_max").value : "");
 
-                    // set listener for active students
-                    if(cObj("active_students_check") != undefined){
-                        cObj("active_students_check").addEventListener("change",checkActiveStudents);
-                    }
-                    if (cObj("in_active_students_check") != undefined) {
-                        cObj("in_active_students_check").addEventListener("change",checkInActiveStudents);
-                    }
-                    stopInterval(id23w);
-                }
-            }, 100);
-        }, 200);
-    }
-}
+    sendData2("GET", "sms/sms.php", datapass, cObj("parents_lists_nm"), cObj("loading_my_sms_here"), function () {
+        // Reveal student list wrapper
+        cObj("broadcast_student_list_wrap").classList.remove("hide");
 
-function checkActiveStudents() {
-    // check all active students and add their details in the list
-    var  active_banner = document.getElementsByClassName("active_banner");
-    for (let index = 0; index < active_banner.length; index++) {
-        const element = active_banner[index];
-        var elem_id = "adm"+element.id.substring(14);
-        cObj(elem_id).checked = this.checked;
-        triggerEvent(cObj(elem_id),"change");
-    }
-}
+        // Update filtered count from PHP-embedded hidden element
+        var totEl = cObj("sms_filtered_total");
+        var tot = totEl ? totEl.innerText : "0";
+        if (cObj("filtered_students_count")) cObj("filtered_students_count").innerText = tot;
+        if (cObj("filtered_students_count2")) cObj("filtered_students_count2").innerText = tot;
 
-function checkInActiveStudents() {
-    // check all active students and add their details in the list
-    var  student_class_par = document.getElementsByClassName("student-class-par");
-    for (let index = 0; index < student_class_par.length; index++) {
-        const element = student_class_par[index];
-        var elem_id = element.id;
-        element.checked = !element.classList.contains("activated_banner") ? this.checked : false;
-        triggerEvent(cObj(elem_id),"change");
-    }
+        // Restore previously selected students
+        checkSelected();
+
+        // Wire staff123s select-all checkbox
+        if (cObj("staff123s") != null) {
+            cObj("staff123s").addEventListener("change", selectAll);
+        }
+
+        // Wire individual student checkboxes
+        var studentslist = document.getElementsByClassName("student-class-par");
+        for (var i = 0; i < studentslist.length; i++) {
+            studentslist[i].addEventListener("change", getStudentId);
+        }
+
+        // Wire search + live balance filter
+        var searchEl = cObj("search_student_sms");
+        if (searchEl) {
+            searchEl.removeEventListener("keyup", applyClientFilters);
+            searchEl.addEventListener("keyup", applyClientFilters);
+        }
+
+        // Apply any balance filter values already typed
+        applyClientFilters();
+        syncSelectAllCheckbox();
+    });
 }
 function triggerEvent(element, eventName) {
     // Create a new event
@@ -273,27 +463,23 @@ function triggerEvent(element, eventName) {
 }
 
 function selectAll() {
+    var rows = document.getElementsByClassName("hide_students");
     if (this.checked == true) {
-        var selects = document.getElementsByClassName("student-class-par");
-        for (let index = 0; index < selects.length; index++) {
-            var element = selects[index];
-            element.checked = true;
-            addAdmNo(element.id.substr(3));
+        for (var i = 0; i < rows.length; i++) {
+            if (!rows[i].classList.contains("d-none")) {
+                var cb = rows[i].querySelector(".student-class-par");
+                if (cb) { cb.checked = true; addAdmNo(cb.id.substr(3)); }
+            }
         }
     } else {
-        var selects = document.getElementsByClassName("student-class-par");
-        for (let index = 0; index < selects.length; index++) {
-            var element = selects[index];
-            element.checked = false;
-            removeAdmNo(element.id.substr(3));
+        for (var i = 0; i < rows.length; i++) {
+            if (!rows[i].classList.contains("d-none")) {
+                var cb = rows[i].querySelector(".student-class-par");
+                if (cb) { cb.checked = false; removeAdmNo(cb.id.substr(3)); }
+            }
         }
     }
-    if (cObj("seleceted_class").innerText.length > 0) {
-        var counts = cObj("seleceted_class").innerText.split(",").length;
-        cObj("excempt_list").innerText = counts;
-    } else {
-        cObj("excempt_list").innerText = 0;
-    }
+    updateBroadcastSelectionCount();
 }
 function checkSelected() {
     var selected_class = cObj("seleceted_class").innerText.split(",");
@@ -318,33 +504,8 @@ function getStudentId() {
     } else {
         removeAdmNo(this.id.substr(3));
     }
-    if (cObj("seleceted_class").innerText.length > 0) {
-        var counts = cObj("seleceted_class").innerText.split(",").length;
-        cObj("excempt_list").innerText = counts;
-    } else {
-        cObj("excempt_list").innerText = 0;
-    }
-    //check if all the checkboxes are selected
-    var selects = document.getElementsByClassName("student-class-par");
-    var units = 0;
-    for (let index = 0; index < selects.length; index++) {
-        const element = selects[index];
-        if (element.checked == true) {
-            units++;
-        }
-    }
-    if (units == selects.length) {
-        cObj("staff123s").indeterminate = false;
-        cObj("staff123s").checked = true;
-    } else {
-        if (units > 0) {
-            cObj("staff123s").checked = false;
-            cObj("staff123s").indeterminate = true;
-        }else{
-            cObj("staff123s").checked = false;
-            cObj("staff123s").indeterminate = false;
-        }
-    }
+    updateBroadcastSelectionCount();
+    syncSelectAllCheckbox();
 }
 function addAdmNo(adm_no) {
     var selected_class = cObj("seleceted_class").innerText;
@@ -366,22 +527,13 @@ function addAdmNo(adm_no) {
 function removeAdmNo(adm_no) {
     var seleceted_class = cObj("seleceted_class").innerText;
     if (seleceted_class.length > 0) {
-        //split the string and check if the admno is already added
         var splits = seleceted_class.split(",");
         if (splits.length > 0) {
             var data = "";
             for (let index = 0; index < splits.length; index++) {
                 var elements = splits[index];
-                if (elements == adm_no) {
-                    continue;
-                } else {
-                    data += elements + ",";
-                    var excempt_list = cObj("excempt_list").innerText;
-                    if (excempt_list != 0) {
-                        excempt_list = (excempt_list * 1) - 1;
-                        cObj("excempt_list").innerText = excempt_list;
-                    }
-                }
+                if (elements == adm_no) { continue; }
+                data += elements + ",";
             }
             cObj("seleceted_class").innerText = data.substr(0, data.length - 1);
         }
