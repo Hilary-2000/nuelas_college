@@ -291,12 +291,12 @@
                             array_push($class_list,$valued[$index]->classes);
                         }
                         if (count($class_list) > 0) {
-                            for ($indez=0; $indez < count($class_list); $indez++) { 
+                            for ($indez=0; $indez < count($class_list); $indez++) {
                                 $data_to_display.="<option value='".$class_list[$indez]."'>".majinaDarasa($class_list[$indez])."</option>";
                             }
                             $data_to_display.="<option value='-3'>Student Inquiries</option>";
                             $data_to_display.="<option value='-1'>Alumnis</option>";
-                            // $data_to_display.="<option value='others'>Others</option>";
+                            $data_to_display.="<option value='all'>— All Levels —</option>";
                             $data_to_display.="</select>";
                             echo $data_to_display;
                         }else {
@@ -308,98 +308,141 @@
                 }
             }
         }elseif (isset($_GET['get_parents_list'])) {
-            $get_parents_list = $_GET['get_parents_list'];
-            $course_selected = (isset($_GET['course_selected']) && $get_parents_list != "-3" && $get_parents_list != "-1") ? "AND course_done = '".$_GET['course_selected']."'" : "";
-            $select = "SELECT * FROM `student_data` WHERE `stud_class` = '$get_parents_list' $course_selected";
-            if ($get_parents_list == "others") {
-                // get the whole class list
-                $select = "SELECT * FROM `settings` WHERE `sett` = 'class';";
-                $stmt = $conn2->prepare($select);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $where_clause = "`stud_class` != '-1' AND `stud_class` != '-2'";
-                $select = "SELECT * FROM `student_data` WHERE ";
-                if ($result) {
-                    if ($row = $result->fetch_assoc()) {
-                        $valued = $row['valued'];
-                        $valued = isJson_report($valued) ? json_decode($valued) : [];
-                        for ($index=0; $index < count($valued); $index++) { 
-                            $where_clause.=" AND `stud_class` != '".$valued[$index]->classes."'";
-                        }
-                    }
-                }
-                $select.=$where_clause;
-            }
-            // include financial.php
             include("../../ajax/finance/financial.php");
 
-            // prepared statement
+            $get_parents_list = $_GET['get_parents_list'];
+
+            // PHP-side filter params
+            $filter_status       = isset($_GET['filter_status']) ? $_GET['filter_status'] : 'all';
+            $filter_module_end   = (isset($_GET['filter_module_end_date']) && strlen(trim($_GET['filter_module_end_date'])) > 0) ? trim($_GET['filter_module_end_date']) : null;
+            $filter_bal_min      = (isset($_GET['filter_balance_min']) && strlen(trim($_GET['filter_balance_min'])) > 0) ? (float)$_GET['filter_balance_min'] : null;
+            $filter_bal_max      = (isset($_GET['filter_balance_max']) && strlen(trim($_GET['filter_balance_max'])) > 0) ? (float)$_GET['filter_balance_max'] : null;
+
+            // SQL-side filter conditions
+            $sql_extra = "";
+            if (isset($_GET['filter_gender']) && $_GET['filter_gender'] != 'all' && strlen($_GET['filter_gender']) > 0) {
+                $sql_extra .= " AND `gender` = '" . mysqli_real_escape_string($conn2, $_GET['filter_gender']) . "'";
+            }
+            if (isset($_GET['filter_branch']) && $_GET['filter_branch'] != 'all' && strlen($_GET['filter_branch']) > 0 && is_numeric($_GET['filter_branch'])) {
+                $sql_extra .= " AND `branch_name` = " . (int)$_GET['filter_branch'];
+            }
+            if (isset($_GET['filter_intake_year']) && $_GET['filter_intake_year'] != 'all' && strlen($_GET['filter_intake_year']) > 0) {
+                $sql_extra .= " AND `intake_year` = '" . mysqli_real_escape_string($conn2, $_GET['filter_intake_year']) . "'";
+            }
+            if (isset($_GET['filter_intake_month']) && $_GET['filter_intake_month'] != 'all' && strlen($_GET['filter_intake_month']) > 0) {
+                $sql_extra .= " AND `intake_month` = '" . mysqli_real_escape_string($conn2, $_GET['filter_intake_month']) . "'";
+            }
+
+            // Course/programme condition
+            $course_cond = "";
+            if (isset($_GET['course_selected']) && strlen(trim($_GET['course_selected'])) > 0
+                && $_GET['course_selected'] != 'all'
+                && $get_parents_list != "-3" && $get_parents_list != "-1") {
+                $course_cond = " AND `course_done` = '" . mysqli_real_escape_string($conn2, $_GET['course_selected']) . "'";
+            }
+
+            // Build the base query
+            if ($get_parents_list == 'all') {
+                $select = "SELECT * FROM `student_data` WHERE `stud_class` != '-1' AND `stud_class` != '-2'" . $course_cond . $sql_extra;
+            } elseif ($get_parents_list == "others") {
+                $sel2 = "SELECT `valued` FROM `settings` WHERE `sett` = 'class'";
+                $stmt2 = $conn2->prepare($sel2);
+                $stmt2->execute();
+                $res2 = $stmt2->get_result();
+                $where_clause = "`stud_class` != '-1' AND `stud_class` != '-2'";
+                if ($res2 && ($rw2 = $res2->fetch_assoc())) {
+                    $valued = isJson_report($rw2['valued']) ? json_decode($rw2['valued']) : [];
+                    for ($index = 0; $index < count($valued); $index++) {
+                        $where_clause .= " AND `stud_class` != '" . mysqli_real_escape_string($conn2, $valued[$index]->classes) . "'";
+                    }
+                }
+                $select = "SELECT * FROM `student_data` WHERE " . $where_clause . $sql_extra;
+            } else {
+                $select = "SELECT * FROM `student_data` WHERE `stud_class` = '" . mysqli_real_escape_string($conn2, $get_parents_list) . "'" . $course_cond . $sql_extra;
+            }
+
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
+
             if ($result) {
-                $data_to_display =
-                "<div class='w-75 my-2'>
-                <hr>
-                <h6 class='text-primary text-center'><u>Student to select in ".majinaDarasa($get_parents_list)."</u></h6>
-                <div class='row'>
-                    <div class='col-md-3'>
-                        <label for='active_students_check'>Active</label>
-                        <input type='checkbox' id='active_students_check'>
-                    </div>
-                    <div class='col-md-3'>
-                        <label for='in_active_students_check'>In-Active</label>
-                        <input type='checkbox' id='in_active_students_check'>
-                    </div>
-                    <div class='col-md-6'>
-                        <input type='text' class='form-control w-100' placeholder='Search here...' id='search_student_sms'>
-                    </div>
-                </div>
-                </div>
-                <div class='staff_list w-50'><div class='staff_dets'>
-                <label for='staff123s' style='color:cadetblue;'>Select all</label>
-                <input type='checkbox' name='staff123s' id='staff123s'>
-                </div>";
+                $data_to_display = "<div class='staff_list'>
+                    <div class='staff_dets'>
+                        <label for='staff123s' style='color:cadetblue;'>Select all visible</label>
+                        <input type='checkbox' name='staff123s' id='staff123s'>
+                    </div>";
+
                 $xs = 0;
                 $term = getTerm($conn2);
-                $term_start = getTermStart_sms($conn2,$term);
+                $term_start = getTermStart_sms($conn2, $term);
+
                 while ($row = $result->fetch_assoc()) {
-                    $xs++;
-                    // get the students that are active
                     $my_course_list = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list']) : [];
                     $active = false;
-                    for ($index=0; $index < count($my_course_list); $index++) { 
-                        $courses_list = $my_course_list[$index];
-                        if($courses_list->course_status == 1){
-                            // get if they are active
-                            $module_terms = $courses_list->module_terms;
-                            for ($in=0; $in < count($module_terms); $in++) {
-                                // if the active status is showing this terms period
-                                if ($module_terms[$in]->status == 1) {
-                                    // start time and end time
-                                    $start_date = date("Y-m-d",strtotime($module_terms[$in]->start_date));
-                                    $end_date = date("Y-m-d",strtotime($module_terms[$in]->end_date));
-                                    
-                                    if (date("Y-m-d",strtotime($term_start[0])) == $start_date && $end_date == date("Y-m-d",strtotime($term_start[1]))) {
-                                        $active = true;
+                    $active_module_name = '';
+                    $active_module_end = null;
+
+                    foreach ($my_course_list as $course_item) {
+                        if ($course_item->course_status == 1) {
+                            foreach ($course_item->module_terms as $term_item) {
+                                if ($term_item->status == 1) {
+                                    $t_start = !empty($term_item->start_date) ? date("Y-m-d", strtotime($term_item->start_date)) : '';
+                                    $t_end   = !empty($term_item->end_date)   ? date("Y-m-d", strtotime($term_item->end_date))   : null;
+                                    if ($t_start && $t_end) {
+                                        if (date("Y-m-d", strtotime($term_start[0])) == $t_start && $t_end == date("Y-m-d", strtotime($term_start[1]))) {
+                                            $active = true;
+                                        }
+                                        $active_module_end  = $t_end;
+                                    }
+                                    if (isset($term_item->term_name)) {
+                                        $active_module_name = $term_item->term_name;
                                     }
                                 }
                             }
                         }
                     }
 
-                    // data to display
-                    $data_to_display.="<div class='staff_dets hide_students' id='hide_students".$row['adm_no']."'>
-                                        <label style='font-size:12px;'>".$xs.".</label>
-                                        <label class='text-left students_sms_names text-left' style='font-size:14px;' id='imr".$row['adm_no']."' for='adm".$row['adm_no']."'>".($active ? "<small id='active_banner_".$row['adm_no']."' class='banner active_banner'>Active</small>" : "")." ".ucwords(strtolower($row['first_name']." ".$row['second_name']))." <small style='color:red;'>(".$row['adm_no'].")</small></label>
-                                        <input type='checkbox' class='student-class-par ".($active ? "activated_banner" : "")."' name='adm".$row['adm_no']."' id='adm".$row['adm_no']."'>
-                                    </div>";
+                    // PHP-side filters
+                    if ($filter_status == 'active'   && !$active) continue;
+                    if ($filter_status == 'inactive' &&  $active) continue;
+
+                    if ($filter_module_end !== null) {
+                        if ($active_module_end === null || $active_module_end !== $filter_module_end) continue;
+                    }
+
+                    // Compute balance for display and optional range filter
+                    $balance = (int)getBalance($row['adm_no'], $term, $conn2);
+
+                    if ($filter_bal_min !== null && $balance < $filter_bal_min) continue;
+                    if ($filter_bal_max !== null && $balance > $filter_bal_max) continue;
+
+                    $xs++;
+                    $balance_display = number_format($balance);
+                    $adm = $row['adm_no'];
+                    $name = ucwords(strtolower($row['first_name'] . " " . $row['second_name']));
+                    $status_badge = $active
+                        ? "<small class='banner active_banner' id='active_banner_{$adm}'>Active</small>"
+                        : "<small class='badge bg-secondary text-white' style='font-size:10px;'>Inactive</small>";
+                    $module_info = $active_module_name ? $active_module_name : 'No active module';
+
+                    $data_to_display .= "
+                        <div class='staff_dets hide_students' id='hide_students{$adm}' data-balance='{$balance}'>
+                            <label style='font-size:12px;'>{$xs}.</label>
+                            <label class='text-left students_sms_names' style='font-size:14px;' id='imr{$adm}' for='adm{$adm}'>
+                                {$status_badge}
+                                {$name} <small style='color:red;'>({$adm})</small>
+                                <small class='text-muted'>&nbsp;|&nbsp;{$module_info}&nbsp;|&nbsp;KES {$balance_display}</small>
+                            </label>
+                            <input type='checkbox' class='student-class-par " . ($active ? "activated_banner" : "") . "' name='adm{$adm}' id='adm{$adm}'>
+                        </div>";
                 }
-                $data_to_display.="</div><hr class='w-50'>";
+
+                $data_to_display .= "</div><p class='hide' id='sms_filtered_total'>{$xs}</p>";
+
                 if ($xs > 0) {
                     echo $data_to_display;
-                }else {
-                    echo "<div class='p-1 my-2 text-danger border border-danger w-50'>No students available in ".majinaDarasa($get_parents_list)."</div>";
+                } else {
+                    echo "<div class='p-2 my-2 text-danger border border-danger rounded'>No students found matching your filters. Try adjusting or clearing some filters.</div>";
                 }
             }
         }elseif (isset($_GET['all_parents'])) {
@@ -416,6 +459,40 @@
             }else {
                 echo 0;
             }
+        }elseif (isset($_GET['get_broadcast_filter_options'])) {
+            $options = [];
+
+            // Branches from settings
+            $sel = "SELECT `valued` FROM `settings` WHERE `sett` = 'branches'";
+            $stmt = $conn2->prepare($sel);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $options['branches'] = [];
+            if ($res && ($r = $res->fetch_assoc()) && strlen(trim($r['valued'])) > 0) {
+                $options['branches'] = isJson_report($r['valued']) ? json_decode($r['valued'], true) : [];
+            }
+
+            // Distinct intake years
+            $sel = "SELECT DISTINCT `intake_year` FROM `student_data` WHERE `intake_year` IS NOT NULL AND `intake_year` != '' ORDER BY `intake_year` DESC";
+            $stmt = $conn2->prepare($sel);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $options['intake_years'] = [];
+            while ($res && ($r = $res->fetch_assoc())) {
+                $options['intake_years'][] = $r['intake_year'];
+            }
+
+            // Distinct intake months
+            $sel = "SELECT DISTINCT `intake_month` FROM `student_data` WHERE `intake_month` IS NOT NULL AND `intake_month` != '' ORDER BY `intake_month` ASC";
+            $stmt = $conn2->prepare($sel);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $options['intake_months'] = [];
+            while ($res && ($r = $res->fetch_assoc())) {
+                $options['intake_months'][] = $r['intake_month'];
+            }
+
+            echo json_encode($options);
         }elseif (isset($_GET['teacher_sms_id_group'])) {
             // USER_IDS
             $user_ids = strlen($_GET['teacher_sms_id_group']) > 0 ? explode(",",$_GET['teacher_sms_id_group']) : [];
@@ -1301,7 +1378,7 @@
                 is_array(json_decode($string))))) ? true : false;
     }
     function trigger_email_agent(){
-        $ch = curl_init("https://lizola.ladybirdsmis.com/college_sims/ajax/sms/email_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        $ch = curl_init("https://nuelas.ladybirdsmis.com/ajax//sms/email_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_TIMEOUT_MS     => 200,   // return immediately
@@ -1313,7 +1390,7 @@
         curl_close($ch);
     }
     function trigger_sms_agent(){
-        $ch = curl_init("https://lizola.ladybirdsmis.com/college_sims/ajax//sms/sms_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        $ch = curl_init("https://nuelas.ladybirdsmis.com/ajax//sms/sms_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_TIMEOUT_MS     => 200,   // return immediately
