@@ -1333,14 +1333,18 @@
                 $today = date_create(date("Y-m-d"));
                 $date_diff = date_diff($dob,$today);
                 $date_diff = $date_diff->format("%y Yr(s)");
-                $balance = number_format(getBalance($student_data[$index]['adm_no'],$term,$conn2));
+                $raw_balance = (int) getBalance($student_data[$index]['adm_no'],$term,$conn2);
+                $balance = number_format($raw_balance);
                 $fees_paid = number_format(getFeespaidByStudent($student_data[$index]['adm_no'],$conn2));
                 $fees_to_pay = number_format(getFeesAsPerTermBoarders($term,$conn2,$student_data[$index]['stud_class'],$student_data[$index]['adm_no']));
+                $next_module_cost = getNextModuleFees($student_data[$index],$conn2);
+                $next_module_fees = number_format($raw_balance + $next_module_cost);
                 $final_message = str_replace("{stud_age}",$date_diff,$final_message);
                 $final_message = str_replace("{stud_fees_balance}",$balance,$final_message);
                 $final_message = str_replace("{stud_fees_to_pay}",$fees_to_pay,$final_message);
                 $final_message = str_replace("{stud_adm}",$student_data[$index]['adm_no'],$final_message);
                 $final_message = str_replace("{stud_fees_paid}",$fees_paid,$final_message);
+                $final_message = str_replace("{next_module_fees}",$next_module_fees,$final_message);
                 $final_message = str_replace("{stud_noun}",($student_data[$index]['gender'] == "Female" ?"daughter":"son"),$final_message);
                 if ($which_parent == "primary") {
                     $final_message = str_replace("{par_fullname}",ucwords(strtolower($student_data[$index]['parentName'])),$final_message);
@@ -1358,6 +1362,84 @@
             }
         }
         return $final_message;
+    }
+    function getNextModuleFees($student_row, $conn2) {
+        $my_course_list = isJson_report($student_row['my_course_list']) ? json_decode($student_row['my_course_list']) : [];
+        $next_module_cost = 0;
+
+        foreach ($my_course_list as $course) {
+            if ($course->course_status == 1) {
+                $modules = $course->module_terms;
+                for ($m = 0; $m < count($modules); $m++) {
+                    if ($modules[$m]->status == 1) {
+                        $next = $m + 1;
+                        if ($next >= count($modules)) {
+                            // on last module — no next module cost
+                            break 2;
+                        }
+                        $next_mod = $modules[$next];
+                        $study_mode = strtolower($student_row['study_mode'] ?? '');
+
+                        // Base cost from module definition
+                        $omit_base = false;
+                        $other_vh = [];
+                        $issetup = false;
+                        if (isset($next_mod->voteheads)) {
+                            $issetup = true;
+                            foreach ($next_mod->voteheads as $vh) {
+                                if ($vh->votehead == "0" && !$vh->pay) {
+                                    $omit_base = true;
+                                }
+                                if ($vh->votehead != "0" && $vh->pay) {
+                                    array_push($other_vh, $vh->votehead);
+                                }
+                            }
+                        }
+                        if (!$omit_base) {
+                            $next_module_cost = $study_mode == "weekend"
+                                ? ($next_mod->weekend_cost ?? 0)
+                                : ($study_mode == "evening"
+                                    ? ($next_mod->evening_cost ?? 0)
+                                    : ($study_mode == "fulltime"
+                                        ? ($next_mod->fulltime_cost ?? 0)
+                                        : ($next_mod->termly_cost ?? 0)));
+                        }
+
+                        // Fees structure component
+                        $fs_col = $study_mode == "weekend" ? "sum(`TERM_3`)" : ($study_mode == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
+                        if ($issetup && count($other_vh) > 0) {
+                            $select = "SELECT $fs_col AS 'TOTALS' FROM `fees_structure` WHERE ids IN (" . join(',', $other_vh) . ")";
+                        } elseif (!$issetup) {
+                            $class = $student_row['stud_class'];
+                            $course_done = $student_row['course_done'];
+                            $select = "SELECT $fs_col AS 'TOTALS' FROM `fees_structure` WHERE `classes` = '" . mysqli_real_escape_string($conn2, $class) . "' AND `course` = '" . mysqli_real_escape_string($conn2, $course_done) . "' AND `activated` = 1 AND `roles` = 'regular'";
+                        } else {
+                            $select = null;
+                        }
+                        if ($select) {
+                            $stmt = $conn2->prepare($select);
+                            $stmt->execute();
+                            $res = $stmt->get_result();
+                            if ($res && ($row = $res->fetch_assoc())) {
+                                $next_module_cost += (int)($row['TOTALS'] ?? 0);
+                            }
+                            $stmt->close();
+                        }
+
+                        // Discounts
+                        $discounts = getDiscount($student_row['adm_no'], $conn2);
+                        if ($discounts[0] > 0) {
+                            $next_module_cost = round(($next_module_cost * (100 - $discounts[0])) / 100);
+                        } elseif ($discounts[1] > 0) {
+                            $next_module_cost = $next_module_cost - $discounts[1];
+                        }
+
+                        break 2;
+                    }
+                }
+            }
+        }
+        return $next_module_cost;
     }
     function getTermStart_sms($conn2,$term){
         $select = "SELECT * FROM `academic_calendar` WHERE `term` = '".$term."';";

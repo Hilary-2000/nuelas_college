@@ -1407,7 +1407,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $course_progress = $_GET['course_progress'];
             $student_contacts = $_GET['student_contacts'];
             $student_email = $_GET['student_email'];
-            $college_branch = $_GET['college_branch'];
+            $college_branch = (isset($_GET['college_branch']) && $_GET['college_branch'] !== '') ? $_GET['college_branch'] : null;
             $edit_county = isset($_GET['edit_county']) ? $_GET['edit_county'] : '';
             $edit_heard_about_us = isset($_GET['edit_heard_about_us']) ? $_GET['edit_heard_about_us'] : '';
             $edit_referral_name = isset($_GET['edit_referral_name']) ? $_GET['edit_referral_name'] : '';
