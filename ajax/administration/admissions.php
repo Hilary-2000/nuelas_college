@@ -6077,16 +6077,21 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $student_class = count($student_details) > 0 ? $student_details['stud_class']:"-1";
 
             $full_student_name = count($student_details) > 0 ? $student_details['first_name']." ".$student_details['second_name']:"Null";
-            $data_to_display = "<h4 class'text-center my-2'>".ucwords(strtolower($full_student_name))."`s Attendance for ".date("M Y",strtotime($selected_month))."</h4><div class='table_holders w-100 p-1'><table class='table'>
-            <tr>
-                <th>Mon</th>
-                <th>Tue</th>
-                <th>Wed</th>
-                <th>Thur</th>
-                <th>Fri</th>
-                <th>Sat</th>
-                <th>Sun</th>
-            </tr>";
+
+            // calendar header + legend
+            $data_to_display  = "<h5 style='text-align:center;font-weight:700;color:#333;margin:10px 0 6px;'>".ucwords(strtolower($full_student_name))."&rsquo;s Attendance &mdash; ".date("F Y",strtotime($selected_month))."</h5>";
+            $data_to_display .= "<div style='display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;align-items:center;'>
+                <span style='display:flex;align-items:center;gap:5px;font-size:11px;color:#555;'><span style='width:11px;height:11px;border-radius:3px;background:#e8f5e9;border:1px solid #a5d6a7;display:inline-block;'></span>Present</span>
+                <span style='display:flex;align-items:center;gap:5px;font-size:11px;color:#555;'><span style='width:11px;height:11px;border-radius:3px;background:#fdecea;border:1px solid #ef9a9a;display:inline-block;'></span>Absent (roll call taken)</span>
+                <span style='display:flex;align-items:center;gap:5px;font-size:11px;color:#555;'><span style='width:11px;height:11px;border-radius:3px;background:#f5f5f5;border:1px solid #ddd;display:inline-block;'></span>No roll call</span>
+            </div>";
+            $data_to_display .= "<div style='overflow-x:auto;'><table style='width:100%;border-collapse:separate;border-spacing:3px;table-layout:fixed;'><thead><tr>";
+            foreach(['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] as $_dh){
+                $_hbg = in_array($_dh,['Sat','Sun']) ? '#9e9e9e' : '#3a6b7c';
+                $data_to_display .= "<th style='background:{$_hbg};color:#fff;text-align:center;padding:8px 2px;border-radius:5px;font-size:12px;font-weight:600;'>{$_dh}</th>";
+            }
+            $data_to_display .= "</tr></thead><tbody>";
+
             $roll_call_taken = 0;
             $roll_call_taken_present = 0;
 
@@ -6094,17 +6099,18 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $begin_date = $start_date;
             $data = [];
             for ($index=0; $index < $days; $index++) {
-                $begin_date;
                 $select = "SELECT * FROM `attendancetable` WHERE `admission_no` = '".$student_admno."' AND `date` = '".$begin_date."'";
                 $stmt = $conn2->prepare($select);
                 $stmt->execute();
                 $result = $stmt->get_result();
                 $present = 0;
+                $time_in = "";
                 $class_in = classNameAdms($student_details['stud_class']);
                 if ($result) {
                     if ($row = $result->fetch_assoc()) {
                         $present = 1;
                         $class_in = classNameAdms($row['course_level']);
+                        $time_in = $row['time'];
                     }
                 }
 
@@ -6119,99 +6125,141 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $roll_call_taken++;
                     }
                 }
-                if ($done == 1) {
+                if ($done == 1 && $present == 1) {
                     $roll_call_taken_present++;
                 }
-                // check if they are present in the following days
-                $date_detail = array("date"=>$begin_date, "present" => "$present", "done" => $done, "class" => $class_in);
+
+                $date_detail = array("date"=>$begin_date, "present" => "$present", "done" => $done, "class" => $class_in, "time_in" => $time_in);
                 array_push($data,$date_detail);
 
-                // add one day to the date
                 $date=date_create($begin_date);
                 date_add($date,date_interval_create_from_date_string("1 day"));
                 $begin_date = date_format($date,"Y-m-d");
             }
-            // echo json_encode($data);
 
             $number_weeks = $days%7 > 1 ? round($days/7) + 1 : round($days/7);
-            // echo $number_weeks;
             $week_days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             $counter = 0;
             $proceed = false;
-
             $present_tot = 0;
             $absent_tot = 0;
 
-            for ($index=1; $index <= $number_weeks; $index++) {
-                // echo $start_date . "<br>";
+            $cell_base = "border-radius:6px;padding:7px 8px;vertical-align:top;min-width:70px;";
+            $num_style  = "font-size:19px;font-weight:700;line-height:1;";
+            $lbl_style  = "font-size:9px;font-weight:600;padding:1px 6px;border-radius:10px;display:inline-block;margin-top:5px;";
+            $time_style = "font-size:10px;color:#666;margin-top:4px;line-height:1.7;";
 
-                $data_to_display .="<tr>";
+            for ($index=1; $index <= $number_weeks; $index++) {
+                $data_to_display .= "<tr>";
                 for ($index1=0; $index1 < 7; $index1++) {
                     $day = $week_days[$index1];
                     $start_day = date("D",strtotime($data[0]['date']));
-
-                    // proceed only if the day that starts is the same as the current day if wen it should be web on the day that is starting
                     $proceed = $proceed == false ? (($day == $start_day) ? true : false) : true;
-                    // echo $proceed . " $day $start_day <br>";
 
                     if ($counter < $days && $proceed) {
-                        $done = $data[$counter]['done'] == "1" ? "<span class='text-success'><i class='fas fa-check'></i></span>" : "<span class='text-danger'><i class='fas fa-times'></i></span>";
-                        $class_selected = ($data[$counter]['done'] == "1" && $data[$counter]['present'] == "1") ? "" : "<span class='text-secondary'>(".$data[$counter]['class'].")</span>";
-                        if($data[$counter]['present'] == "1"){
-                            $data_to_display.="<td>
-                                <div class='container my-0 p-1 d-flex flex-column'>
-                                    <div class='container p-0 text-primary'>
-                                        <small>".date("D dS M y",strtotime($start_date))." ".$done."</small>
-                                    </div>
-                                    <hr class='my-1'>
-                                    <div class='container p-1 text-dark'>
-                                        <p class='text-success'>Present <i class='fas fa-user-check'></i> $class_selected</p>
-                                    </div>
+                        $is_roll_call = $data[$counter]['done'] == "1";
+                        $day_num = date("d", strtotime($start_date));
+                        $ti = !empty($data[$counter]['time_in']) ? date("h:i A", strtotime($data[$counter]['time_in'])) : "&mdash;";
+
+                        if ($data[$counter]['present'] == "1") {
+                            $data_to_display .= "<td style='background:#e8f5e9;border:1px solid #a5d6a7;{$cell_base}'>
+                                <div style='display:flex;justify-content:space-between;align-items:flex-start;'>
+                                    <span style='{$num_style}color:#2e7d32;'>{$day_num}</span>
+                                    ".($is_roll_call ? "<span style='font-size:9px;background:#3a6b7c;color:#fff;padding:1px 5px;border-radius:8px;'>Register</span>" : "")."
                                 </div>
+                                <span style='{$lbl_style}background:#28a745;color:#fff;'><i class='fas fa-user-check'></i> Present</span>
+                                <div style='{$time_style}'><i class='fas fa-clock'></i> {$ti}</div>
                             </td>";
-                        $present_tot++;
-                        }else{
-                            $data_to_display.="<td>
-                                <div class='container my-0 p-1 d-flex flex-column'>
-                                    <div class='container p-0 text-primary'>
-                                        <small>".date("D dS M y",strtotime($start_date))." ".$done."</small>
-                                    </div>
-                                    <hr class='my-1'>
-                                    <div class='container p-1 text-dark'>
-                                        <p class='text-danger'>Absent <i class='fas fa-user-times'></i></p>
-                                    </div>
+                            $present_tot++;
+                        } elseif ($is_roll_call) {
+                            $data_to_display .= "<td style='background:#fdecea;border:1px solid #ef9a9a;{$cell_base}'>
+                                <div style='display:flex;justify-content:space-between;align-items:flex-start;'>
+                                    <span style='{$num_style}color:#c62828;'>{$day_num}</span>
+                                    <span style='font-size:9px;background:#3a6b7c;color:#fff;padding:1px 5px;border-radius:8px;'>Register</span>
                                 </div>
+                                <span style='{$lbl_style}background:#dc3545;color:#fff;'><i class='fas fa-user-times'></i> Absent</span>
                             </td>";
-                        $absent_tot++;
+                            $absent_tot++;
+                        } else {
+                            $data_to_display .= "<td style='background:#f5f5f5;border:1px solid #e0e0e0;{$cell_base}opacity:0.75;'>
+                                <span style='{$num_style}color:#bbb;'>{$day_num}</span>
+                                <div style='font-size:10px;color:#ccc;margin-top:4px;'>&mdash;</div>
+                            </td>";
                         }
 
-                    
-                        // add one day to the date
                         $date=date_create($start_date);
                         date_add($date,date_interval_create_from_date_string("1 day"));
                         $start_date = date_format($date,"Y-m-d");
-    
                         $counter++;
-                    }else{
-                        $data_to_display.="<td></td>";
+                    } else {
+                        $data_to_display .= "<td style='background:transparent;border:none;'></td>";
                     }
                 }
                 if ($counter < $days && ($index) == $number_weeks) {
-                    // echo $counter . " " . $days." $index  $number_weeks <br>";
-                    $number_weeks+=1;
+                    $number_weeks += 1;
                 }
-                $data_to_display .="</tr>";
+                $data_to_display .= "</tr>";
             }
-            $data_to_display."</table></div>";
+            $data_to_display .= "</tbody></table></div>";
+
+            // stats cards
+            $attendance_pct = $roll_call_taken > 0 ? round(($roll_call_taken_present / $roll_call_taken) * 100) : 0;
+            $overall_pct    = ($absent_tot + $present_tot) > 0 ? round(($present_tot / ($absent_tot + $present_tot)) * 100) : 0;
+            $att_bar_color  = $attendance_pct >= 80 ? '#28a745' : ($attendance_pct >= 50 ? '#e6a817' : '#dc3545');
+            $ovr_bar_color  = $overall_pct    >= 80 ? '#28a745' : ($overall_pct    >= 50 ? '#e6a817' : '#dc3545');
             $data_to_display .= "
-            <div class='container'>
-                <p><strong><u>Statistics</u></strong></p>
-                <p><b>Present This Month</b> : ".$present_tot." time(s)</p>
-                <p><b>Absent This Month</b> : ".$absent_tot." time(s)</p>
-                <p><b>Present (%)</b> : ".(($absent_tot > 0 && $present_tot > 0) ? round(($present_tot/($absent_tot+$present_tot)) * 100) : 0)." %</p><hr>
-                <p><b>Present when Roll Call taken</b> : ".$roll_call_taken_present." time(s)</p>
-                <p><b>Number of times Roll Call taken</b> : ".$roll_call_taken." time(s)</p>
-                <p><b>Attendance when Roll Call was taken</b> : ".($roll_call_taken>0 ? round(($roll_call_taken_present/$roll_call_taken) * 100):0)."%</p><hr>
+            <div class='container mt-3 mb-3'>
+                <p style='font-weight:700;font-size:15px;color:#333;margin-bottom:12px;'><i class='fas fa-chart-bar' style='color:#3a6b7c;margin-right:6px;'></i>Attendance Summary</p>
+                <div class='row'>
+                    <div class='col-md-3 col-sm-6 mb-3'>
+                        <div style='background:#e8f5e9;border-left:4px solid #28a745;border-radius:7px;padding:14px 16px;height:100%;'>
+                            <div style='font-size:32px;font-weight:700;color:#28a745;line-height:1;'>".$present_tot."</div>
+                            <div style='font-size:12px;color:#555;margin-top:5px;'><i class='fas fa-user-check'></i>&nbsp;Days Present</div>
+                        </div>
+                    </div>
+                    <div class='col-md-3 col-sm-6 mb-3'>
+                        <div style='background:#fdecea;border-left:4px solid #dc3545;border-radius:7px;padding:14px 16px;height:100%;'>
+                            <div style='font-size:32px;font-weight:700;color:#dc3545;line-height:1;'>".$absent_tot."</div>
+                            <div style='font-size:12px;color:#555;margin-top:5px;'><i class='fas fa-user-times'></i>&nbsp;Days Absent</div>
+                        </div>
+                    </div>
+                    <div class='col-md-3 col-sm-6 mb-3'>
+                        <div style='background:#e3f2fd;border-left:4px solid #1976d2;border-radius:7px;padding:14px 16px;height:100%;'>
+                            <div style='font-size:32px;font-weight:700;color:#1976d2;line-height:1;'>".$roll_call_taken."</div>
+                            <div style='font-size:12px;color:#555;margin-top:5px;'><i class='fas fa-calendar-alt'></i>&nbsp;Times Roll Call Taken</div>
+                        </div>
+                    </div>
+                    <div class='col-md-3 col-sm-6 mb-3'>
+                        <div style='background:#fff8e1;border-left:4px solid #e6a817;border-radius:7px;padding:14px 16px;height:100%;'>
+                            <div style='font-size:32px;font-weight:700;color:#e6a817;line-height:1;'>".$roll_call_taken_present."</div>
+                            <div style='font-size:12px;color:#555;margin-top:5px;'><i class='fas fa-clipboard-check'></i>&nbsp;Present at Roll Call</div>
+                        </div>
+                    </div>
+                </div>
+                <div style='background:#fff;border:1px solid #e0e0e0;border-radius:7px;padding:14px 18px;margin-bottom:10px;'>
+                    <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;'>
+                        <span style='font-size:13px;font-weight:600;color:#444;'><i class='fas fa-clipboard-list'></i>&nbsp;Roll Call Attendance Rate</span>
+                        <span style='font-size:20px;font-weight:700;color:".$att_bar_color.";'>".$attendance_pct."%</span>
+                    </div>
+                    <div style='background:#eee;border-radius:20px;height:10px;overflow:hidden;'>
+                        <div style='height:100%;width:".$attendance_pct."%;background:".$att_bar_color.";border-radius:20px;'></div>
+                    </div>
+                    <div style='display:flex;justify-content:space-between;margin-top:3px;'>
+                        <span style='font-size:10px;color:#aaa;'>0%</span><span style='font-size:10px;color:#aaa;'>100%</span>
+                    </div>
+                </div>
+                <div style='background:#fff;border:1px solid #e0e0e0;border-radius:7px;padding:14px 18px;'>
+                    <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;'>
+                        <span style='font-size:13px;font-weight:600;color:#444;'><i class='fas fa-calendar-check'></i>&nbsp;Overall Presence (all days)</span>
+                        <span style='font-size:20px;font-weight:700;color:".$ovr_bar_color.";'>".$overall_pct."%</span>
+                    </div>
+                    <div style='background:#eee;border-radius:20px;height:10px;overflow:hidden;'>
+                        <div style='height:100%;width:".$overall_pct."%;background:".$ovr_bar_color.";border-radius:20px;'></div>
+                    </div>
+                    <div style='display:flex;justify-content:space-between;margin-top:3px;'>
+                        <span style='font-size:10px;color:#aaa;'>0%</span><span style='font-size:10px;color:#aaa;'>100%</span>
+                    </div>
+                </div>
             </div>";
             echo $data_to_display;
 
