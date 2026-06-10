@@ -1327,6 +1327,18 @@ cObj("insert_tag14").onclick = function () {
         html_messageData(CKEDITOR.instances.email_editored.getData());
     }
 }
+cObj("insert_tag15").onclick = function () {
+    var send_options = cObj("send_options").value;
+    if (send_options == "send_sms") {
+        var valued = cObj("text_message2").value.trim();
+        cObj("text_message2").value = valued + " {next_module_fees}";
+        messageData();
+    } else {
+        var valued = CKEDITOR.instances.email_editored.getData();
+        CKEDITOR.instances['email_editored'].setData(valued + " {next_module_fees}");
+        html_messageData(CKEDITOR.instances.email_editored.getData());
+    }
+}
 function process_messages(data) {
     var message = data;
     message = message.replace(/{stud_fullname}/g, "<b class='text-primary'>Esmond Adala</b>");
@@ -1344,6 +1356,7 @@ function process_messages(data) {
     message = message.replace(/{today}/g, "<b class='text-primary'>30th Jun 2022</b>");
     message = message.replace(/{stud_noun}/g, "<b class='text-primary'>Son</b>");
     message = message.replace(/{stud_adm}/g, "<b class='text-primary'>NULLADM</b>");
+    message = message.replace(/{next_module_fees}/g, "<b class='text-primary'>12,000</b>");
     message = message.replace(/{school_name}/g, "<b class='text-primary'>"+sms_school_name+"</b>");
     message = message.replace(/{time}/g, "<b class='text-primary'>10:00AM</b>");
     message = message.replace(/{school_contact}/g, "<b class='text-primary'>"+valObj("school_contacts_sms")+"</b>");
