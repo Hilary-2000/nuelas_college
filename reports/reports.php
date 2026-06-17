@@ -18310,43 +18310,49 @@ function getStudDetail($conn2, $stud_id)
 // get students data from a specific class
 function getStudents($stud_class, $conn2, $course_id = null, $status = null)
 {
-    if ($status === 'active') {
-        $status_filter = " AND `activated` = 1 AND `deleted` = 0";
-    } elseif ($status === 'inactive') {
-        $status_filter = " AND `activated` = 0 AND `deleted` = 0";
-    } elseif ($status === 'both') {
-        $status_filter = " AND `deleted` = 0";
-    } else {
-        $status_filter = "";
-    }
     $student_data = [];
     if ($stud_class != "-1") {
         $select = $course_id == null
-            ? "SELECT * FROM `student_data` WHERE `stud_class` = '" . $stud_class . "'" . $status_filter
-            : "SELECT * FROM `student_data` WHERE `stud_class` = '" . $stud_class . "' AND `course_done` = '".$course_id."'" . $status_filter;
+            ? "SELECT * FROM `student_data` WHERE `stud_class` = '" . $stud_class . "' AND `deleted` = 0"
+            : "SELECT * FROM `student_data` WHERE `stud_class` = '" . $stud_class . "' AND `course_done` = '" . $course_id . "' AND `deleted` = 0";
         $stmt = $conn2->prepare($select);
         $stmt->execute();
         $result = $stmt->get_result();
-        $student_data = [];
         if ($result) {
             while ($row = $result->fetch_assoc()) {
                 array_push($student_data, $row);
             }
         }
     } else {
-        $select = strlen($status_filter) > 0
-            ? "SELECT * FROM `student_data` WHERE 1=1" . $status_filter
-            : "SELECT * FROM `student_data`";
+        $select = "SELECT * FROM `student_data` WHERE `deleted` = 0";
         $stmt = $conn2->prepare($select);
         $stmt->execute();
         $result = $stmt->get_result();
-        $student_data = [];
         if ($result) {
             while ($row = $result->fetch_assoc()) {
                 array_push($student_data, $row);
             }
         }
     }
+
+    if ($status === 'active' || $status === 'inactive') {
+        $student_data = array_values(array_filter($student_data, function ($row) use ($status) {
+            $is_active = false;
+            $course_list = (isset($row['my_course_list']) && isJson_report($row['my_course_list'])) ? json_decode($row['my_course_list']) : [];
+            foreach ($course_list as $course) {
+                if ($course->course_status == 1) {
+                    foreach ($course->module_terms as $module) {
+                        if ($module->status == 1) {
+                            $is_active = true;
+                            break 2;
+                        }
+                    }
+                }
+            }
+            return $status === 'active' ? $is_active : !$is_active;
+        }));
+    }
+
     return $student_data;
 }
 // check if the student is in class 
