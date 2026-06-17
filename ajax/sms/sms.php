@@ -374,7 +374,6 @@
 
                 $xs = 0;
                 $term = getTerm($conn2);
-                $term_start = getTermStart_sms($conn2, $term);
 
                 while ($row = $result->fetch_assoc()) {
                     $my_course_list = isJson_report($row['my_course_list']) ? json_decode($row['my_course_list']) : [];
@@ -386,14 +385,8 @@
                         if ($course_item->course_status == 1) {
                             foreach ($course_item->module_terms as $term_item) {
                                 if ($term_item->status == 1) {
-                                    $t_start = !empty($term_item->start_date) ? date("Y-m-d", strtotime($term_item->start_date)) : '';
-                                    $t_end   = !empty($term_item->end_date)   ? date("Y-m-d", strtotime($term_item->end_date))   : null;
-                                    if ($t_start && $t_end) {
-                                        if (date("Y-m-d", strtotime($term_start[0])) == $t_start && $t_end == date("Y-m-d", strtotime($term_start[1]))) {
-                                            $active = true;
-                                        }
-                                        $active_module_end  = $t_end;
-                                    }
+                                    $active = true;
+                                    $active_module_end = !empty($term_item->end_date) ? date("Y-m-d", strtotime($term_item->end_date)) : null;
                                     if (isset($term_item->term_name)) {
                                         $active_module_name = $term_item->term_name;
                                     }
