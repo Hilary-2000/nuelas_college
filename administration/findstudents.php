@@ -566,6 +566,10 @@
                                         <option value="online">Online Mode</option>
                                     </select>
                                 </div>
+                                <div class="col-md-4 d-none" id="study_mode_cost_holder">
+                                    <label class="form-control-label"><b id="study_mode_cost_label">Module Cost</b></label>
+                                    <p class="form-control bg-light">Kes <span id="study_mode_cost_value">0</span></p>
+                                </div>
                                 <div class="col-md-4">
                                     <label for="course_progress" class="form-control-label"><b>Course Progress</b></label>
                                     <select name="course_progress" id="course_progress" class="form-control w-100">
