@@ -167,6 +167,7 @@
                                 <option value="fulltime">Fulltime Mode</option>
                                 <option value="evening">Hybrid Mode</option>
                                 <option value="weekend">Weekend Mode</option>
+                                <option value="online">Online Mode</option>
                                 <option value="all">All Modes</option>
                             </select>
                         </div>
@@ -562,6 +563,7 @@
                                         <option selected value="fulltime">Fulltime Mode</option>
                                         <option value="evening">Hybrid Mode</option>
                                         <option value="weekend">Weekend Mode</option>
+                                        <option value="online">Online Mode</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">

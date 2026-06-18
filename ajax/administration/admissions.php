@@ -231,18 +231,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
                 }
 
-                // get the student population
-                $select = "SELECT COUNT(*) AS total FROM `student_data` WHERE stud_class = ?";
-                $stmt = $conn2->prepare($select);
-                $stmt->bind_param("s", $classes[$index]);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $student_population = 0;
-                if ($result) {
-                    if ($row = $result->fetch_assoc()) {
-                        $student_population = $row['total']*1;
-                    }
-                }
+                // get the student population — only students with an active course module
+                $student_population = getActiveStudentCount($conn2, $classes[$index]);
 
                 // students absent
                 $students_absent = $student_population - $students_present;
@@ -349,6 +339,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                     $student_course[$key_1]['module_terms'][$key_2]['fulltime_cost'] = $students_course['fulltime_fees'];
                                     $student_course[$key_1]['module_terms'][$key_2]['evening_cost'] = $students_course['evening_fees'];
                                     $student_course[$key_1]['module_terms'][$key_2]['weekend_cost'] = $students_course['weekend_fees'];
+                                    $student_course[$key_1]['module_terms'][$key_2]['online_cost'] = $students_course['online_fees'] ?? 0;
                                 }
                             }
                         }
@@ -1489,6 +1480,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $fulltime_cost = 0;
                         $evening_cost = 0;
                         $weekend_cost = 0;
+                        $online_cost = 0;
                         $select = "SELECT * FROM `settings` WHERE `sett` = 'courses';";
                         $stmt = $conn2->prepare($select);
                         $stmt->execute();
@@ -1503,12 +1495,13 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                         $fulltime_cost = isset($courses[$index]->fulltime_fees) ? $courses[$index]->fulltime_fees : 0;
                                         $evening_cost = isset($courses[$index]->evening_fees) ? $courses[$index]->evening_fees : 0;
                                         $weekend_cost = isset($courses[$index]->weekend_fees) ? $courses[$index]->weekend_fees : 0;
+                                        $online_cost = isset($courses[$index]->online_fees) ? $courses[$index]->online_fees : 0;
                                         break;
                                     }
                                 }
                             }
                         }
-                        
+
                         // ------------------------SET COURSE DETAILS----------------------------
 
                         // get the course name
@@ -1521,7 +1514,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $course_detail->course_status = 1;
                         $course_detail->id = $highest_id+1;
                         $course_detail->module_terms = [];
-                        
+
                         for($index = 0; $index < $module_terms; $index++){
                             $term = new stdClass();
                             $term->id = $index + 1;
@@ -1532,6 +1525,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             $term->fulltime_cost = $fulltime_cost;
                             $term->evening_cost = $evening_cost;
                             $term->weekend_cost = $weekend_cost;
+                            $term->online_cost = $online_cost;
                             array_push($course_detail->module_terms, $term);
                         }
 
@@ -1597,13 +1591,22 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
             $class = $_GET['daro'];
             $course_id = $_GET['course_id'] ?? "";
-            $select = "SELECT * from `student_data` WHERE `course_done` = ? AND `stud_class` = ? AND `deleted` = 0 and activated =1";
+            $select = "SELECT * from `student_data` WHERE `course_done` = ? AND `stud_class` = ? AND `deleted` = 0";
             $select .= !empty($_GET['branch_name']) ? " AND branch_name = '".$_GET['branch_name']."'" : "";
             $stmt=$conn2->prepare($select);
             $stmt->bind_param("ss", $course_id, $class);
             $stmt->execute();
             $result=$stmt->get_result();
-            createStudentclass($result,$class,$conn2);
+            // filter to only students with an active course module in their course progress
+            $active_students = [];
+            if($result){
+                while($row = $result->fetch_assoc()){
+                    if(isStudentAttendanceActive($row['my_course_list'])){
+                        $active_students[] = $row;
+                    }
+                }
+            }
+            createStudentclass($active_students,$class,$conn2);
         }elseif (isset($_GET['add_club'])) {
             // check if there are other clubnames
             // if the usernames are present add the new array to the list
@@ -3533,6 +3536,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $fulltime_fees = $_GET['fulltime_fees'];
             $evening_fees = $_GET['evening_fees'];
             $weekend_fees = $_GET['weekend_fees'];
+            $online_fees = $_GET['online_fees'] ?? 0;
             $term_duration = $_GET['term_duration'];
             $duration_intervals = $_GET['duration_intervals'];
 
@@ -3588,6 +3592,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             $courses[$ind]->fulltime_fees = $fulltime_fees;
                             $courses[$ind]->weekend_fees = $weekend_fees;
                             $courses[$ind]->evening_fees = $evening_fees;
+                            $courses[$ind]->online_fees = $online_fees;
                             $courses[$ind]->term_duration = $term_duration;
                             $courses[$ind]->duration_intervals = $duration_intervals;
                             array_push($new_course_data,$courses[$ind]);
@@ -3622,6 +3627,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                             $course_module->fulltime_cost = $fulltime_fees;
                                             $course_module->evening_cost = $evening_fees;
                                             $course_module->weekend_cost = $weekend_fees;
+                                            $course_module->online_cost = $online_fees;
 
                                             if($course_module->status == 1){
                                                 // extend the time with the new module duration
@@ -3658,7 +3664,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                                 "end_date" => "",
                                                 "fulltime_cost" => $fulltime_fees,
                                                 "evening_cost" => $evening_fees,
-                                                "weekend_cost" => $weekend_fees
+                                                "weekend_cost" => $weekend_fees,
+                                                "online_cost" => $online_fees
                                             );
 
                                             // loop through terms
@@ -3741,6 +3748,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $new_course->fulltime_fees = $_GET['fulltime_fees'];
                     $new_course->evening_fees = $_GET['evening_fees'];
                     $new_course->weekend_fees = $_GET['weekend_fees'];
+                    $new_course->online_fees = $_GET['online_fees'] ?? 0;
                     $new_course->term_duration = $_GET['term_duration'];
                     $new_course->duration_intervals = $_GET['duration_intervals'];
 
@@ -3766,6 +3774,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $new_course->fulltime_fees = $_GET['fulltime_fees'];
                     $new_course->evening_fees = $_GET['evening_fees'];
                     $new_course->weekend_fees = $_GET['weekend_fees'];
+                    $new_course->online_fees = $_GET['online_fees'] ?? 0;
                     $new_course->term_duration = $_GET['term_duration'];
                     $new_course->duration_intervals = $_GET['duration_intervals'];
 
@@ -4176,20 +4185,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 if ($result) {
                     if ($row = $result->fetch_assoc()) {
                         $total1 = $row['Total'];
-                        $select = "SELECT COUNT(*) AS 'Totals' FROM `student_data` WHERE `stud_class` = ?";
-                        $stmt = $conn2->prepare($select);
-                        $stmt->bind_param("s",$class_taught);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        if ($result) {
-                            if ($row = $result->fetch_assoc()) {
-                                $total2 = $row['Totals'];
-                                $total3 = $total2-$total1;
-                                echo myClassName($class_taught).":<br>".$total3." student(s)";
-                            }
-                        }else {
-                            echo "Err";
-                        }
+                        $total2 = getActiveStudentCount($conn2, $class_taught);
+                        $total3 = $total2-$total1;
+                        echo myClassName($class_taught).":<br>".$total3." student(s)";
                     }else {
                         echo "Err";
                     }
@@ -6713,6 +6711,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $evening_cost = 0;
             $course_voteheads = null;
             $weekend_cost = 0;
+            $online_cost = 0;
             $select = "SELECT * FROM `settings` WHERE `sett` = 'courses';";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
@@ -6729,6 +6728,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             $fulltime_cost = isset($courses[$index]->fulltime_fees) ? $courses[$index]->fulltime_fees : 0;
                             $evening_cost = isset($courses[$index]->evening_fees) ? $courses[$index]->evening_fees : 0;
                             $weekend_cost = isset($courses[$index]->weekend_fees) ? $courses[$index]->weekend_fees : 0;
+                            $online_cost = isset($courses[$index]->online_fees) ? $courses[$index]->online_fees : 0;
                             break;
                         }
                     }
@@ -6771,6 +6771,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $term->fulltime_cost = $fulltime_cost;
                 $term->evening_cost = $evening_cost;
                 $term->weekend_cost = $weekend_cost;
+                $term->online_cost = $online_cost;
 
                 // ADD PREEXISTING VOTEHEADS
                 if($course_voteheads != null && $course_update_options == "YES"){
@@ -7924,6 +7925,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $fulltime_cost = 0;
                 $evening_cost = 0;
                 $weekend_cost = 0;
+                $online_cost = 0;
                 foreach($course_list as $key_init => $course){
                     if($course->course_status == 1){
                         $modules = $course->module_terms;
@@ -7935,9 +7937,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                 $fulltime_cost = isset($module->fulltime_cost) ? $module->fulltime_cost : 0;
                                 $evening_cost = isset($module->evening_cost) ? $module->evening_cost : 0;
                                 $weekend_cost = isset($module->weekend_cost) ? $module->weekend_cost : 0;
+                                $online_cost = isset($module->online_cost) ? $module->online_cost : 0;
                             }
                         }
-    
+
                         $term = new stdClass();
                         $term->id = $module_id + 1;
                         $term->term_name = "MODULE ". ($module_index + 1);
@@ -7947,6 +7950,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $term->fulltime_cost = $fulltime_cost;
                         $term->evening_cost = $evening_cost;
                         $term->weekend_cost = $weekend_cost;
+                        $term->online_cost = $online_cost;
     
                         // course list
                         array_push($course_list[$key_init]->module_terms,$term);
@@ -7974,6 +7978,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $fulltime_cost = 0;
                 $evening_cost = 0;
                 $weekend_cost = 0;
+                $online_cost = 0;
                 foreach($courses as $course){
                     if($course->id == $course_chosen){
                         $course_level = $course->course_level;
@@ -7984,6 +7989,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $fulltime_cost = $course->fulltime_fees;
                         $evening_cost = $course->evening_fees;
                         $weekend_cost = $course->weekend_fees;
+                        $online_cost = $course->online_fees ?? 0;
                     }
                 }
                 
@@ -8004,6 +8010,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $new_module_term->fulltime_cost = $fulltime_cost;
                     $new_module_term->evening_cost = $evening_cost;
                     $new_module_term->weekend_cost = $weekend_cost;
+                    $new_module_term->online_cost = $online_cost;
                     array_push($module_terms, $new_module_term);
                 }
 
@@ -8342,6 +8349,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $fulltime_cost = 0;
                     $evening_cost = 0;
                     $weekend_cost = 0;
+                    $online_cost = 0;
                     for($index = 0; $index < count($courses); $index++){
                         if($course_chosen == $courses[$index]->id){
                             $module_terms = isset($courses[$index]->no_of_terms) ? $courses[$index]->no_of_terms : 0;
@@ -8350,10 +8358,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             $fulltime_cost = isset($courses[$index]->fulltime_fees) ? $courses[$index]->fulltime_fees : 0;
                             $evening_cost = isset($courses[$index]->evening_fees) ? $courses[$index]->evening_fees : 0;
                             $weekend_cost = isset($courses[$index]->weekend_fees) ? $courses[$index]->weekend_fees : 0;
+                            $online_cost = isset($courses[$index]->online_fees) ? $courses[$index]->online_fees : 0;
                             break;
                         }
                     }
-                    
+
                     // ------------------------SET COURSE DETAILS----------------------------
                     // set up the course details
                     $course_detail = new stdClass();
@@ -8362,7 +8371,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $course_detail->course_status = 1;
                     $course_detail->id = 1;
                     $course_detail->module_terms = [];
-                    
+
                     for($index = 0; $index < $module_terms; $index++){
                         $term = new stdClass();
                         $term->id = $index + 1;
@@ -8374,6 +8383,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $term->fulltime_cost = $fulltime_cost;
                         $term->evening_cost = $evening_cost;
                         $term->weekend_cost = $weekend_cost;
+                        $term->online_cost = $online_cost;
                         array_push($course_detail->module_terms, $term);
                     }
 
@@ -9445,17 +9455,7 @@ function isJson_report($string) {
     }
 
     function getClassCount($conn2, $classes, $course_done){
-        $select = "SELECT COUNT(*) AS 'Total' FROM `student_data` WHERE `stud_class` = ? AND course_done = ?";
-        $stmt = $conn2->prepare($select);
-        $stmt->bind_param("ss",$classes, $course_done);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result) {
-            if ($row = $result->fetch_assoc()) {
-                return $row['Total'];
-            }
-        }
-        return 0;
+        return getActiveStudentCount($conn2, $classes, $course_done);
     }
     function getClassTaught($conn2){
         $select = "SELECT `class_assigned` FROM `class_teacher_tbl` WHERE `class_teacher_id` = ?";
@@ -9599,25 +9599,6 @@ function isJson_report($string) {
         }
         return "Null";
     }
-    // A student is attendance-active when their course progress contains at least one
-    // course with course_status==1 that has at least one module_term with status=="1".
-    function isStudentAttendanceActive($my_course_list){
-        if (empty($my_course_list) || $my_course_list === '[]') return false;
-        $courses = json_decode($my_course_list, true);
-        if (!is_array($courses)) return false;
-        foreach ($courses as $course) {
-            if (isset($course['course_status']) && $course['course_status'] == 1) {
-                if (!empty($course['module_terms']) && is_array($course['module_terms'])) {
-                    foreach ($course['module_terms'] as $module) {
-                        if (isset($module['status']) && $module['status'] == "1") {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
     function createStudentn4($conn2,$result,$searchinfor, $student_status = "both", $filter_module = ""){
         if($result){
             $xs =0;
@@ -9690,7 +9671,8 @@ function isJson_report($string) {
                     $data.="<tr class='search_this_main' id='search_this_main".($xs)."'><td>".($xs)."</td>";
                     $data.="<td class='search_this' id='one".($xs)."'>".ucwords(strtolower($row['first_name']." ".$row['second_name']))."<br><small>{".$row['adm_no']."}</small></td>";
                     //$data.="<td>".$row['second_name']."</td>";
-                    $data.="<td class='search_this' id='two".($xs)."'>".ucwords(strtolower(strtolower($row['study_mode']) == "evening") ? "Hybrid" : $row['study_mode'])." Mode</td>";
+                    $study_mode_label = strtolower($row['study_mode']) === 'evening' ? 'Hybrid' : (strtolower($row['study_mode']) === 'online' ? 'Online' : ucwords(strtolower($row['study_mode'])));
+                    $data.="<td class='search_this' id='two".($xs)."'>".$study_mode_label." Mode</td>";
                     //$data.="<td>".$row['BCNo']."</td>";
                     $data.="<td class='search_this' id='f_r".($xs)."' >".branch_name($conn2, $row['branch_name'])."</td>";
                     $classes = classNameAdms($row['stud_class']);
@@ -9741,6 +9723,7 @@ function isJson_report($string) {
         // Parse the custom format: YYYYmmddHHiiss
         $target = DateTime::createFromFormat('YmdHis', $rawDate);
         if (!$target) {
+            echo $rawDate." -- <br>";
             return "Invalid date format.";
         }
     
@@ -9767,10 +9750,10 @@ function isJson_report($string) {
         }
     }
     
-    function createStudentclass($result,$class,$conn2){
+    function createStudentclass($active_students,$class,$conn2){
         $daros = classNameAdms($class);
         $date_used = $_GET['date_used'];
-        if($result){
+        if(is_array($active_students)){
             $xs =0;
             $data="<h6 style='font-size:17px;text-align:center;margin-bottom:5px;'><u>Mark attendance for ".$daros." Members on ".date("D dS M Y", strtotime($date_used)).".</u></h6>";
             $data.="<p>Tick the checkbox "."<input type='checkbox' checked readonly>"." if present or leave blank "."<input type='checkbox' readonly>"." when absent, then <strong>Submit</strong></p>";
@@ -9784,7 +9767,7 @@ function isJson_report($string) {
             $data.="<th>Course Level</th>";
             $data.="<th>Time</th>";
             $data.="<th>Present <input type='checkbox' class='present_all d-none' id='present_all'></th></tr></thead><tbody>";
-            while($row = $result->fetch_assoc()){
+            foreach($active_students as $row){
                 $date_today = presentStudent($conn2,$row['adm_no'],$date_used);
                 $xs++;
                 $data.="<tr><td>".$xs."</td>";
@@ -9802,10 +9785,10 @@ function isJson_report($string) {
             if($xs>0){
                 echo $data;
             }else {
-                echo "<p style='font-size:15px;color:red;'>No students found!.</p>";
+                echo "<p style='font-size:15px;color:red;'>No active students found in this class.</p>";
             }
         }else{
-            echo "<p style='font-size:15px;'>No results after results..</p>";
+            echo "<p style='font-size:15px;color:red;'>No active students found in this class.</p>";
         }
     }
     function presentStatsYear($conn2,$admno,$class_student){
@@ -14275,7 +14258,7 @@ function isJson_report($string) {
         return 0;
     }
     function trigger_email_agent(){
-        $ch = curl_init("https://lizola.ladybirdsmis.com/college_sims/ajax/sms/email_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        $ch = curl_init("https://nuelas.ladybirdsmis.com/ajax//sms/email_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_TIMEOUT_MS     => 200,   // return immediately
@@ -14287,7 +14270,7 @@ function isJson_report($string) {
         curl_close($ch);
     }
     function trigger_sms_agent(){
-        $ch = curl_init("https://lizola.ladybirdsmis.com/college_sims/ajax/sms/sms_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
+        $ch = curl_init("https://nuelas.ladybirdsmis.com/ajax//sms/sms_agent.php?database=".$_SESSION['dbname']."&school_code=".$_SESSION['schoolcode']);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_TIMEOUT_MS     => 200,   // return immediately
@@ -14297,5 +14280,49 @@ function isJson_report($string) {
         ]);
         curl_exec($ch);
         curl_close($ch);
+    }
+
+    // A student is attendance-active when their course progress contains at least one
+    // course with course_status==1 that has at least one module_term with status=="1".
+    function isStudentAttendanceActive($my_course_list){
+        if (empty($my_course_list) || $my_course_list === '[]') return false;
+        $courses = json_decode($my_course_list, true);
+        if (!is_array($courses)) return false;
+        foreach ($courses as $course) {
+            if (isset($course['course_status']) && $course['course_status'] == 1) {
+                if (!empty($course['module_terms']) && is_array($course['module_terms'])) {
+                    foreach ($course['module_terms'] as $module) {
+                        if (isset($module['status']) && $module['status'] == "1") {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // Count active students in a class (and optionally a course) based on course progress.
+    function getActiveStudentCount($conn2, $stud_class, $course_done = null){
+        if ($course_done !== null) {
+            $select = "SELECT `my_course_list` FROM `student_data` WHERE `stud_class` = ? AND `course_done` = ? AND `deleted` = 0";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss", $stud_class, $course_done);
+        } else {
+            $select = "SELECT `my_course_list` FROM `student_data` WHERE `stud_class` = ? AND `deleted` = 0";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $stud_class);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $count = 0;
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                if (isStudentAttendanceActive($row['my_course_list'])) {
+                    $count++;
+                }
+            }
+        }
+        return $count;
     }
 ?>
