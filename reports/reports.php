@@ -289,6 +289,7 @@ class PDF extends FPDF
         $term1 = 0;
         $term2 = 0;
         $term3 = 0;
+        $term4 = 0;
         foreach ($data as $row) {
             $this->Cell(5, 6, "", 0, 0, 'C', 0);
             $this->Cell($w[0], 6, $row[0], 1, 0, 'L', $fill);
@@ -296,12 +297,14 @@ class PDF extends FPDF
             $this->Cell($w[2], 6, "Kes " . number_format($row[2]), 1, 0, 'R', $fill);
             $this->Cell($w[3], 6, "Kes " . number_format($row[3]), 1, 0, 'R', $fill);
             $this->Cell($w[4], 6, "Kes " . number_format($row[4]), 1, 0, 'R', $fill);
-            $this->Cell($w[5], 6, $row[5], 1, 0, 'C', $fill);
+            $this->Cell($w[5], 6, "Kes " . number_format($row[5]), 1, 0, 'R', $fill);
+            $this->Cell($w[6], 6, $row[6], 1, 0, 'C', $fill);
             $this->Ln();
             // $fill = !$fill;
             $term1 += $row[2];
             $term2 += $row[3];
             $term3 += $row[4];
+            $term4 += $row[5];
         }
         $this->SetFont('Helvetica', 'B', 9);
         $this->Cell(5, 6, "", 0, 0, 'C', 0);
@@ -310,7 +313,8 @@ class PDF extends FPDF
         $this->Cell($w[2], 6, "Kes " . number_format($term1), 1, 0, 'R', false);
         $this->Cell($w[3], 6, "Kes " . number_format($term2), 1, 0, 'R', false);
         $this->Cell($w[4], 6, "Kes " . number_format($term3), 1, 0, 'R', false);
-        $this->Cell($w[5], 6, "", 1, 0, 'C', false);
+        $this->Cell($w[5], 6, "Kes " . number_format($term4), 1, 0, 'R', false);
+        $this->Cell($w[6], 6, "", 1, 0, 'C', false);
         $this->Ln();
         // Closing line
         // $this->Cell(array_sum($w), 0, '', 'T');
@@ -4831,9 +4835,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $TERM_1 = $row['TERM_1'];
                                 $TERM_2 = $row['TERM_2'];
                                 $TERM_3 = $row['TERM_3'];
+                                $TERM_4 = $row['TERM_4'] ?? 0;
                                 $classes = $row['classes'];
                                 $activated = $row['activated'];
-                                array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $roles));
+                                array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $TERM_4, $roles));
                                 $number++;
                             }
                         }
@@ -4907,8 +4912,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $pdf2->SetFont('', '');
                             $pdf2->SetAuthor($_SESSION['username']);
                             $pdf2->Ln(8);
-                            $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'Role');
-                            $width = array(8, 35, 35, 35, 35, 35);
+                            $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'TERM 4', 'Role');
+                            $width = array(8, 30, 28, 28, 28, 28, 28);
                             $pdf2->feesStructure($header, $data, $width);
                             $pdf2->Ln();
                             $get_height = round($pdf2->GetY());
@@ -4966,7 +4971,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $my_class = $school_classes[$in];
                                 $tittle = "Fees Structure " . classNameReport($my_class).$course_names;
                                 $pdf2->set_document_title($tittle);
-                                $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` = ?";
+                                $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`TERM_4`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` = ?";
                                 $daros = "" . $my_class . "";
                                 $stmt = $conn2->prepare($select);
                                 $stmt->bind_param("s", $daros);
@@ -4981,9 +4986,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                         $TERM_1 = $row['TERM_1'];
                                         $TERM_2 = $row['TERM_2'];
                                         $TERM_3 = $row['TERM_3'];
+                                        $TERM_4 = $row['TERM_4'] ?? 0;
                                         $classes = $row['classes'];
                                         $activated = $row['activated'];
-                                        array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $roles));
+                                        array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $TERM_4, $roles));
                                         $number++;
                                     }
                                 }
@@ -5016,8 +5022,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                     $pdf2->SetFont('', '');
                                     $pdf2->SetAuthor($_SESSION['username']);
                                     $pdf2->Ln(8);
-                                    $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'Role');
-                                    $width = array(8, 35, 35, 35, 35, 35);
+                                    $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'TERM 4', 'Role');
+                                    $width = array(8, 30, 28, 28, 28, 28, 28);
                                     $pdf2->feesStructure($header, $data, $width);
                                     $pdf2->Ln();
 
@@ -5153,7 +5159,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     $pdf->Ln(10);
                     $pdf->SetFont('Arial', '', 8);
                     // get the feestructure depending on the student class and boarding section
-                    $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` LIKE ?";
+                    $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`TERM_4`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` LIKE ?";
                     $daros = "%|" . $stud_class . "|%";
                     $stmt = $conn2->prepare($select);
                     $stmt->bind_param("s", $daros);
@@ -5168,9 +5174,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $TERM_1 = $row['TERM_1'];
                             $TERM_2 = $row['TERM_2'];
                             $TERM_3 = $row['TERM_3'];
+                            $TERM_4 = $row['TERM_4'] ?? 0;
                             $classes = $row['classes'];
                             $activated = $row['activated'];
-                            array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $roles));
+                            array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $TERM_4, $roles));
                             $number++;
                         }
                     }
@@ -5191,13 +5198,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $term_3 = $sub_trans_infor[$ind]->route_price;
                             }
                         }
-                        array_push($fees_data, array($number, "Transport", $term_1, $term_2, $term_3, "Transport"));
+                        array_push($fees_data, array($number, "Transport", $term_1, $term_2, $term_3, 0, "Transport"));
                         $pdf->SetAuthor($_SESSION['username']);
                         $pdf->Ln(8);
                     }
                     $data = $fees_data;
-                    $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'Role');
-                    $width = array(8, 35, 35, 35, 35, 35);
+                    $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'TERM 4', 'Role');
+                    $width = array(8, 30, 28, 28, 28, 28, 28);
                     $pdf->Ln();
                     $pdf->SetFont('Times', 'BU', 10);
                     $pdf->Cell(190, 5, "Fees Structure", 0, 0, 'C', 0);
@@ -6437,7 +6444,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 if (strlen($student_class_fin) > 0) {
                     // get what class it is
                     if ($student_class_fin != "all") {
-                        $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` LIKE ?";
+                        $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`TERM_4`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` LIKE ?";
                         $daros = "%|" . $student_class_fin . "|%";
                         $stmt = $conn2->prepare($select);
                         $stmt->bind_param("s", $daros);
@@ -6452,15 +6459,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $TERM_1 = $row['TERM_1'];
                                 $TERM_2 = $row['TERM_2'];
                                 $TERM_3 = $row['TERM_3'];
+                                $TERM_4 = $row['TERM_4'] ?? 0;
                                 $classes = $row['classes'];
                                 $activated = $row['activated'];
-                                array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $roles));
+                                array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $TERM_4, $roles));
                                 $number++;
                             }
                         }
 
                         // my tittle
-                        $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'Role');
+                        $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'TERM 4', 'Role');
                         $tittle = "Fees Structure " . classNameReport($student_class_fin);
                         $data = $fees_data;
                         // Create new Spreadsheet object
@@ -6521,7 +6529,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         
                             // Set document properties
                             $tittle = "Whole School Fees Structure";
-                            $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'Role');
+                            $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'TERM 4', 'Role');
                             $spreadsheet->getProperties()->setCreator($_SESSION['username'])
                                 ->setLastModifiedBy($_SESSION['username'])
                                 ->setTitle($tittle)
@@ -6532,7 +6540,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             for ($in = 0; $in < count($school_classes); $in++) {
                                 $my_class = $school_classes[$in];
                                 $tittle = "Fees Structure " . classNameReport($my_class);
-                                $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` LIKE ?";
+                                $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`TERM_4`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` LIKE ?";
                                 $daros = "%|" . $my_class . "|%";
                                 $stmt = $conn2->prepare($select);
                                 $stmt->bind_param("s", $daros);
@@ -6547,9 +6555,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                         $TERM_1 = $row['TERM_1'];
                                         $TERM_2 = $row['TERM_2'];
                                         $TERM_3 = $row['TERM_3'];
+                                        $TERM_4 = $row['TERM_4'] ?? 0;
                                         $classes = $row['classes'];
                                         $activated = $row['activated'];
-                                        array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $roles));
+                                        array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $TERM_4, $roles));
                                         $number++;
                                     }
                                 }
@@ -6732,7 +6741,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     $pdf->Ln(10);
                     $pdf->SetFont('Arial', '', 8);
                     // get the feestructure depending on the student class and boarding section
-                    $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` LIKE ?";
+                    $select = "SELECT `expenses`,`roles` ,`TERM_1`,`TERM_2`,`TERM_3`,`TERM_4`,`classes`,`activated`,`ids` FROM fees_structure WHERE `classes` LIKE ?";
                     $daros = "%|" . $stud_class . "|%";
                     $stmt = $conn2->prepare($select);
                     $stmt->bind_param("s", $daros);
@@ -6747,9 +6756,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $TERM_1 = $row['TERM_1'];
                             $TERM_2 = $row['TERM_2'];
                             $TERM_3 = $row['TERM_3'];
+                            $TERM_4 = $row['TERM_4'] ?? 0;
                             $classes = $row['classes'];
                             $activated = $row['activated'];
-                            array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $roles));
+                            array_push($fees_data, array($number, $expenses, $TERM_1, $TERM_2, $TERM_3, $TERM_4, $roles));
                             $number++;
                         }
                     }
@@ -6770,13 +6780,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $term_3 = $sub_trans_infor[$ind]->route_price;
                             }
                         }
-                        array_push($fees_data, array($number, "Transport", $term_1, $term_2, $term_3, "Transport"));
+                        array_push($fees_data, array($number, "Transport", $term_1, $term_2, $term_3, 0, "Transport"));
                         $pdf->SetAuthor($_SESSION['username']);
                         $pdf->Ln(8);
                     }
                     $data = $fees_data;
-                    $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'Role');
-                    $width = array(8, 35, 35, 35, 35, 35);
+                    $header = array('No', 'Votehead', 'TERM 1', 'TERM 2', 'TERM 3', 'TERM 4', 'Role');
+                    $width = array(8, 30, 28, 28, 28, 28, 28);
                     $pdf->Ln();
                     $pdf->SetFont('Times', 'BU', 10);
                     $pdf->Cell(190, 5, "Fees Structure", 0, 0, 'C', 0);
