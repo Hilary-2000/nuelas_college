@@ -68,7 +68,8 @@ foreach ($databases as $database) {
                                     }
 
                                     // add the balance to the student
-                                    $term = "TERM_1";
+                                    $study_mode_val = strtolower($row['study_mode'] ?? 'fulltime');
+                                    $term = $study_mode_val === 'weekend' ? 'TERM_3' : ($study_mode_val === 'evening' ? 'TERM_2' : ($study_mode_val === 'online' ? 'TERM_4' : 'TERM_1'));
                                     $update = "UPDATE student_data SET balance_carry_forward = ?, my_course_list = ? WHERE adm_no = ?";
                                     $stmt = $conn2->prepare($update);
                                     $student_balance = getBalanceReports($row['adm_no'], $term, $conn2);
