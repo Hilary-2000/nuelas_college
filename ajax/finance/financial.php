@@ -1700,9 +1700,10 @@
                 }
             }
         }elseif (isset($_GET['add_expense'])) {
-            $insert = "INSERT INTO `fees_structure` (`expenses`,`TERM_1`,`TERM_2`,`TERM_3`,`classes`,`roles`,`course`) VALUES (?,?,?,?,?,?,?)";
+            $insert = "INSERT INTO `fees_structure` (`expenses`,`TERM_1`,`TERM_2`,`TERM_3`,`TERM_4`,`classes`,`roles`,`course`) VALUES (?,?,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
-            $stmt->bind_param("sssssss",$_GET['expense_name'],$_GET['term_one'],$_GET['term_two'],$_GET['term_three'],$_GET['course_level'],$_GET['roles'],$_GET['course']);
+            $t_four_add = $_GET['term_four'] ?? 0;
+            $stmt->bind_param("ssssssss",$_GET['expense_name'],$_GET['term_one'],$_GET['term_two'],$_GET['term_three'],$t_four_add,$_GET['course_level'],$_GET['roles'],$_GET['course']);
             if($stmt->execute()){
                 // log text
                 $log_message = "Fees structure has been modified. Votehead \"".ucwords(strtolower($_GET['expense_name']))."\" has been added successfully!";
@@ -1764,6 +1765,7 @@
             $t_one = $_GET['t_one'];
             $t_two = $_GET['t_two'];
             $t_three = $_GET['t_three'];
+            $t_four = $_GET['t_four'] ?? 0;
             $fee_ids = $_GET['fee_ids'];
             $course = $_GET['course'];
             $course_level = $_GET['course_level'];
@@ -1786,10 +1788,10 @@
                 }
             }
 
-            $update = "UPDATE `fees_structure` SET `expenses` = ?,`TERM_1` = ? , `TERM_2` = ?, `TERM_3` = ?, `classes` = ?, `course` = ?, `roles` = ? , `date_changed` = ? ,`term_1_old` = ? , `term_2_old` = ?, `term_3_old` = ? WHERE `ids` = ?";
+            $update = "UPDATE `fees_structure` SET `expenses` = ?,`TERM_1` = ? , `TERM_2` = ?, `TERM_3` = ?, `TERM_4` = ?, `classes` = ?, `course` = ?, `roles` = ? , `date_changed` = ? ,`term_1_old` = ? , `term_2_old` = ?, `term_3_old` = ? WHERE `ids` = ?";
             $stmt = $conn2->prepare($update);
             $date_changed = date("Y-m-d",strtotime("3 hours"));
-            $stmt->bind_param("ssssssssssss",$expensename,$t_one,$t_two,$t_three,$course_level,$course,$roles,$date_changed,$term_1_old,$term_2_old,$term_3_old,$fee_ids);
+            $stmt->bind_param("sssssssssssss",$expensename,$t_one,$t_two,$t_three,$t_four,$course_level,$course,$roles,$date_changed,$term_1_old,$term_2_old,$term_3_old,$fee_ids);
             $execute = $stmt->execute();
             if ($execute) {
                 $update = "UPDATE `finance` SET `payment_for` = ? WHERE `payment_for` = ?";

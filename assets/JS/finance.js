@@ -450,6 +450,7 @@ function editFees() {
         cObj("term_one1").value = fees_structure['TERM_1'];
         cObj("term_two1").value = fees_structure['TERM_2'];
         cObj("term_three1").value = fees_structure['TERM_3'];
+        cObj("term_four1").value = fees_structure['TERM_4'] ?? 0;
         cObj("original_exp_name").innerText = fees_structure['expenses'];
         var proles = fees_structure['roles'];
         cObj(proles + "12").selected = true;
@@ -1468,6 +1469,7 @@ cObj("save_add_expense1").onclick = function () {
     err += checkBlank("term_one1");
     err += checkBlank("term_two1");
     err += checkBlank("term_three1");
+    err += checkBlank("term_four1");
     err += checkBlank("boarders1_regular1");
     if (err == 0) {
         cObj("err_handler_101").innerHTML = "";
@@ -1493,11 +1495,12 @@ cObj("save_add_expense1").onclick = function () {
         var term_one1 = cObj("term_one1").value
         var term_two1 = cObj("term_two1").value
         var term_three1 = cObj("term_three1").value
+        var term_four1 = cObj("term_four1").value
         var fees_id = cObj("fee_id_s").innerText
         var roles = cObj("boarders1_regular1").value;
         var courses = valObj("course_chosen_fees_structure");
         var course_level = valObj("fees_structure_edit_level");
-        var datapass = "?update_fees_information=true&fees_name=" + fee_name + "&t_one=" + term_one1 + "&t_two=" + term_two1 + "&t_three=" + term_three1 + "&fee_ids=" + fees_id + "&course=" + courses+"&course_level="+ course_level + "&old_names=" + cObj("original_exp_name").innerText + "&roles=" + roles;
+        var datapass = "?update_fees_information=true&fees_name=" + fee_name + "&t_one=" + term_one1 + "&t_two=" + term_two1 + "&t_three=" + term_three1 + "&t_four=" + term_four1 + "&fee_ids=" + fees_id + "&course=" + courses+"&course_level="+ course_level + "&old_names=" + cObj("original_exp_name").innerText + "&roles=" + roles;
         sendData1("GET", "finance/financial.php", datapass, cObj("err_handler_101"));
         setTimeout(() => {
             var ids = setInterval(() => {
