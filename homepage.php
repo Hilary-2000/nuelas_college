@@ -4185,6 +4185,10 @@ function checkPresnt($array, $string){
                         <input type="number" name="weekend_fees" value="0" id="weekend_fees" class="form-control" placeholder="Weekend Fees(Kes 20,000)">
                     </div>
                     <div class="form-group">
+                        <label for="online_fees" class="form-control-label">Online Fees</label>
+                        <input type="number" name="online_fees" value="0" id="online_fees" class="form-control" placeholder="Online Fees(Kes 20,000)">
+                    </div>
+                    <div class="form-group">
                         <label for="no_of_terms" class="form-control-label">No of Modules</label>
                         <input type="number" name="no_of_terms" id="no_of_terms" class="form-control" placeholder="No of Modules(5 Modules)">
                     </div>
@@ -4246,6 +4250,10 @@ function checkPresnt($array, $string){
                         <div class="form-group">
                             <label for="edit_weekend_fees" class="form-control-label">Weekend Fees</label>
                             <input type="number" name="edit_weekend_fees" value="0" id="edit_weekend_fees" class="form-control" placeholder="Weekend Fees(Kes 20,000)">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_online_fees" class="form-control-label">Online Fees</label>
+                            <input type="number" name="edit_online_fees" value="0" id="edit_online_fees" class="form-control" placeholder="Online Fees(Kes 20,000)">
                         </div>
                         <div class="form-group">
                             <label for="edit_no_of_terms" class="form-control-label">No of Modules</label>
