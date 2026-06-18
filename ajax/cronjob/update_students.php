@@ -27,6 +27,7 @@
             $value->fulltime_fees = 9000;
             $value->evening_fees = 8500;
             $value->weekend_fees = 7500;
+            $value->online_fees = 0;
         }
 
         // update the course list
@@ -50,6 +51,7 @@
                             $module_terms->fulltime_cost = $course_costs['fulltime_fees'] ?? 0;
                             $module_terms->evening_cost = $course_costs['evening_fees'] ?? 0;
                             $module_terms->weekend_cost = $course_costs['weekend_fees'] ?? 0;
+                            $module_terms->online_cost = $course_costs['online_fees'] ?? 0;
                         }
                     }
                 }
@@ -68,7 +70,8 @@
                 return array(
                 "fulltime_fees" => $value->fulltime_fees,
                 "weekend_fees" => $value->weekend_fees,
-                "evening_fees" => $value->evening_fees
+                "evening_fees" => $value->evening_fees,
+                "online_fees" => $value->online_fees ?? 0
                 );
             }
         }

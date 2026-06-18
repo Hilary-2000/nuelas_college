@@ -144,6 +144,7 @@
                             <option selected value="fulltime">Fulltime Mode</option>
                             <option value="evening">Hybrid Mode</option>
                             <option value="weekend">Weekend Mode</option>
+                            <option value="online">Online Mode</option>
                         </select>
                     </div>
                     <div class="conts">
