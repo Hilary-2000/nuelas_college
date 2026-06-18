@@ -2556,25 +2556,28 @@ function feesStructed() {
     var t_ones = document.getElementsByClassName("t-one");
     var t_two = document.getElementsByClassName("t-two");
     var t_three = document.getElementsByClassName("t-three");
+    var t_four = document.getElementsByClassName("t-four");
     var vote_head = document.getElementsByClassName("vote_heads");
     var roles = document.getElementsByClassName("roles_in");
-    //alert three
     //create the table and add the data to the field
-    var table_data = "<table><tr><th>Votehead</th><th>Term One</th><th>Term Two</th><th>Term Three</th><th>Roles</th><th>Total</th></tr>";
+    var table_data = "<table><tr><th>Votehead</th><th>Fulltime</th><th>Hybrid</th><th>Weekend</th><th>Online</th><th>Roles</th><th>Total</th></tr>";
     if (t_ones.length > 0) {
         var grand_total = 0;
         var termone = 0;
         var termtwo = 0;
         var termthree = 0;
+        var termfour = 0;
         for (let index = 0; index < t_two.length; index++) {
-            var total = (t_ones[index].innerText * 1) + (t_two[index].innerText * 1) + (t_three[index].innerText * 1);
+            var t4val = t_four[index] ? t_four[index].innerText * 1 : 0;
+            var total = (t_ones[index].innerText * 1) + (t_two[index].innerText * 1) + (t_three[index].innerText * 1) + t4val;
             grand_total += total;
             termone += t_ones[index].innerText * 1;
             termtwo += t_two[index].innerText * 1;
             termthree += t_three[index].innerText * 1;
-            table_data += "<tr><td>" + vote_head[index].innerText + "</td><td>Kes " + t_ones[index].innerText + "</td><td>Kes " + t_two[index].innerText + "</td><td>Kes " + t_three[index].innerText + "</td><td>" + roles[index].innerText + "</td><td><b>Kes " + total + "</b></td></tr>";
+            termfour += t4val;
+            table_data += "<tr><td>" + vote_head[index].innerText + "</td><td>Kes " + t_ones[index].innerText + "</td><td>Kes " + t_two[index].innerText + "</td><td>Kes " + t_three[index].innerText + "</td><td>Kes " + t4val + "</td><td>" + roles[index].innerText + "</td><td><b>Kes " + total + "</b></td></tr>";
         }
-        table_data += "<tr><td><b>Total</b></td><td><b>Kes " + termone + "</b></td><td><b>Kes " + termtwo + "</b></td><td><b>Kes " + termthree + "</b></td></tr>";
+        table_data += "<tr><td><b>Total</b></td><td><b>Kes " + termone + "</b></td><td><b>Kes " + termtwo + "</b></td><td><b>Kes " + termthree + "</b></td><td><b>Kes " + termfour + "</b></td></tr>";
         table_data += "<tr><td><b>Grand Total</b></td><td><b>Kes " + grand_total + "</b></td></tr>";
         //fill all the fields in that class with the data 
         var dataholder = document.getElementsByClassName("terms_fees");

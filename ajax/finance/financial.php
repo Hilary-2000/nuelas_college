@@ -1527,6 +1527,7 @@
                         <th>Fulltime Amount</th>
                         <th>Hybrid Amount</th>
                         <th>Weekend Amount</th>
+                        <th>Online Amount</th>
                         <th>Role</th>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -1534,15 +1535,18 @@
                         $total1 =0;
                         $total2 =0;
                         $total3 =0;
+                        $total4 =0;
                         $index = 1;
                 while ($row = $res->fetch_assoc()) {
                     $table.="<tr><td><input hidden id='fees_structure_value_".$row['ids']."' value='".json_encode($row)."'>".$index."</td><td class='vote_heads' id = 'expense_name".$row['ids']."'>".ucwords(strtolower($row['expenses']))."</td>";
                     $table.="<td class = 't-one' id = 't_one".$row['ids']."'>".$row['TERM_1']."</td>";
                     $table.="<td class = 't-two' id = 't_two".$row['ids']."'>".$row['TERM_2']."</td>";
                     $table.="<td class = 't-three' id = 't_three".$row['ids']."'>".$row['TERM_3']."</td>";
+                    $table.="<td class = 't-four' id = 't_four".$row['ids']."'>".($row['TERM_4'] ?? 0)."</td>";
                     $total1+=$row['TERM_1'];
                     $total2+=$row['TERM_2'];
                     $total3+=$row['TERM_3'];
+                    $total4+=($row['TERM_4'] ?? 0);
                     $roles = $row['roles'];
                     $table.="<td class='roles_in'>".$roles."</td>";
                     $button = "<p class='link edit_feeser' style='margin:0 auto;font-size:11px;' id='eed".$row['ids']."'><i class='fa fa-pen'></i></p>";
@@ -1551,7 +1555,7 @@
                     $table.="<td>".$button."</td><td>".$button2."</td></tr>";
                     $index++;
                 }
-                $table.="<tr><td colspan='2'><b>Total</b></td><td>Ksh ".number_format($total1)."</td><td class=''>Ksh ".$total2."</td><td class=''>Ksh ".$total3."</td></tr><tr><td colspan='2' ><b>Grand total </b></td><td>Ksh ".number_format($total1)."</td></tr></table></div>";
+                $table.="<tr><td colspan='2'><b>Total</b></td><td>Ksh ".number_format($total1)."</td><td>Ksh ".number_format($total2)."</td><td>Ksh ".number_format($total3)."</td><td>Ksh ".number_format($total4)."</td></tr><tr><td colspan='2'><b>Grand total</b></td><td>Ksh ".number_format($total1)."</td></tr></table></div>";
                 echo $table;
             }
         }elseif(isset($_GET['get_levels_fees_structure'])){
