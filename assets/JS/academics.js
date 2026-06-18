@@ -360,7 +360,7 @@ cObj("academic_super_admin").onchange = function () {
     });
 }
 
-cObj("filter_option").onchange = function () {
+if (cObj("filter_option") != null) cObj("filter_option").onchange = function () {
     cObj("cat_list_option_window").classList.add("d-none");
     cObj("exam_list_option_filter_holder").classList.remove("hide");
     cObj("unit_list_holder_window").classList.remove("d-none");

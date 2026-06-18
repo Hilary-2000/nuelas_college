@@ -1053,14 +1053,16 @@ cObj("managetrnsub").onclick = function () {
     removesidebar();
     allTeachers();
 }
-cObj("course_unit_assignment").onclick = function () {
-    hideWindow();
-    unselectbtns();
-    addselected(this.id);
-    cObj("course_unit_assignment_window").classList.remove("hide");
-    removesidebar();
-    getAllCourses();
-    cObj("back_to_course_list_holder").click();
+if (cObj("course_unit_assignment") != null) {
+    cObj("course_unit_assignment").onclick = function () {
+        hideWindow();
+        unselectbtns();
+        addselected(this.id);
+        cObj("course_unit_assignment_window").classList.remove("hide");
+        removesidebar();
+        getAllCourses();
+        cObj("back_to_course_list_holder").click();
+    }
 }
 cObj("lecture_halls_btn").onclick = function () {
     hideWindow();
