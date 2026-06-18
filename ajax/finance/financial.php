@@ -39,7 +39,7 @@
                             for ($ind=0; $ind < count($module_terms); $ind++) {
                                 if($module_terms[$ind]->status == 1){
                                     $student_data['study_mode'] = strtolower($student_data['study_mode']);
-                                    $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0)));
+                                    $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($student_data['study_mode'] == "online" ? ($module_terms[$ind]->online_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0))));
                                     if(isset($module_terms[$ind]->voteheads) && count($module_terms[$ind]->voteheads) > 0){
                                         $issetup = true;
                                         foreach($module_terms[$ind]->voteheads as $votehead){
@@ -66,7 +66,7 @@
 
                     // STUDENT BALANCE
                     $balance = $student_data['balance_carry_forward'];
-                    $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
+                    $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : ($student_data['study_mode'] == "online" ? "sum(`TERM_4`)" : "sum(`TERM_1`)"));
                     // $select = "SELECT * FROM `fees_structure` WHERE `course` = '".$course_value."' AND `classes` = ? and `activated` = 1";
                     $select = (count($vhs) > 0 && $issetup) ? "SELECT * FROM `fees_structure` WHERE ids IN (".join(',', $vhs).")" : "SELECT * FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_value."' AND `activated` = 1;";
                     $stmt = $conn2->prepare($select);
@@ -76,8 +76,8 @@
                         while ($row = $results->fetch_assoc()) {
                             $a_fee = new stdClass();
                             $a_fee->fees_name = ucwords(strtolower($row['expenses']));
-                            $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
-                            $a_fee->fees_amount = $student_data['study_mode'] == "weekend" ? $row['TERM_3'] : ($student_data['study_mode'] == "evening" ? $row['TERM_2'] : $row['TERM_1']);
+                            $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : ($student_data['study_mode'] == "online" ? "sum(`TERM_4`)" : "sum(`TERM_1`)"));
+                            $a_fee->fees_amount = $student_data['study_mode'] == "weekend" ? $row['TERM_3'] : ($student_data['study_mode'] == "evening" ? $row['TERM_2'] : ($student_data['study_mode'] == "online" ? $row['TERM_4'] : $row['TERM_1']));
                             $a_fee->fees_id = $row['ids'];
                             $a_fee->fees_role = $issetup ? "Compulsory" : ($row['roles'] == "regular" ? "Compulsory" : $row['roles']);
                             array_push($all_course_fees, $a_fee);
@@ -254,7 +254,7 @@
                     $row['study_mode'] = strtolower($row['study_mode']);
                     foreach($active_course['module_terms'] as $key => $module){
                         $check_module = checkVotehead($active_course['module_terms'], "0", $module['id'], "regular");
-                        $course_fees = $row['study_mode'] == "weekend" ? ($module['weekend_cost'] ?? 0) : ($row['study_mode'] == "evening" ? ($module['evening_cost'] ?? 0) : ($row['study_mode'] == "fulltime" ? ($module['fulltime_cost'] ?? 0) : ($module['termly_cost'] ?? 0)));
+                        $course_fees = $row['study_mode'] == "weekend" ? ($module['weekend_cost'] ?? 0) : ($row['study_mode'] == "evening" ? ($module['evening_cost'] ?? 0) : ($row['study_mode'] == "fulltime" ? ($module['fulltime_cost'] ?? 0) : ($row['study_mode'] == "online" ? ($module['online_cost'] ?? 0) : ($module['termly_cost'] ?? 0))));
                         $data_to_display.="<td><input type='checkbox' class='edit_course_fees_0' id='edit_module_course_fees_0_".($key+1)."' ".$check_module."> Kes ".number_format($course_fees)."</td>";
                     }
                     $data_to_display.="</tr>";
@@ -265,7 +265,7 @@
                         $row['study_mode'] = strtolower($row['study_mode']);
                         foreach($active_course['module_terms'] as $module){
                             $check_module = checkVotehead($active_course['module_terms'], $votehead['ids'], $module['id'], $votehead['roles']);
-                            $course_fees = $row['study_mode'] == "weekend" ? $votehead['TERM_3'] : ($row['study_mode'] == "evening" ? $votehead['TERM_2'] : ($row['study_mode'] == "fulltime" ? $votehead['TERM_1'] : $votehead['TERM_1']));
+                            $course_fees = $row['study_mode'] == "weekend" ? $votehead['TERM_3'] : ($row['study_mode'] == "evening" ? $votehead['TERM_2'] : ($row['study_mode'] == "fulltime" ? $votehead['TERM_1'] : ($row['study_mode'] == "online" ? $votehead['TERM_4'] : $votehead['TERM_1'])));
                             $data_to_display.="<td><input type='checkbox' class='edit_course_fees_".$votehead['ids']."' id='edit_module_course_fees_".$votehead['ids']."_".$module['id']."' ".$check_module."> Kes ".number_format($course_fees)."</td>";
                         }
                         $data_to_display.="</tr>";
@@ -7968,7 +7968,7 @@
                             }
                         }
                         if(!$omit_course_fees){
-                            $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0)));
+                            $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($student_data['study_mode'] == "online" ? ($module_terms[$ind]->online_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0))));
                         }
                         // $course_fees = $module_terms[$ind]->termly_cost;
                         $active_course = true;
@@ -7990,7 +7990,7 @@
             $course_enrolled = $student_data['course_done'];
     
             // get the term they are in
-            $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
+            $study_mode = $student_data['study_mode'] == "weekend" ? "sum(`TERM_3`)" : ($student_data['study_mode'] == "evening" ? "sum(`TERM_2`)" : ($student_data['study_mode'] == "online" ? "sum(`TERM_4`)" : "sum(`TERM_1`)"));
             $select =  count($other_vh) > 0 && $issetup ? "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE ids IN (".join(',', $other_vh).")" : "SELECT $study_mode AS 'TOTALS' FROM `fees_structure` WHERE `classes` = '".$class."' AND `course` = '".$course_enrolled."' AND `activated` = 1  and `roles` = 'regular';";
             $stmt = $conn2->prepare($select);
             $stmt->execute();

@@ -348,7 +348,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         foreach ($modules as $module) {
                             if ($module->status == 1) {
                                 $student_data['study_mode'] = strtolower($student_data['study_mode']);
-                                $course_fees = $student_data['study_mode'] == "weekend" ? ($module->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module->fulltime_cost ?? 0) : ($module->termly_cost ?? 0)));
+                                $course_fees = $student_data['study_mode'] == "weekend" ? ($module->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module->fulltime_cost ?? 0) : ($student_data['study_mode'] == "online" ? ($module->online_cost ?? 0) : ($module->termly_cost ?? 0))));
                             }
                             if ($module->status == 1 && isset($module->voteheads)) {
                                 $vhs = $module->voteheads;
@@ -388,7 +388,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         while ($row = $results->fetch_assoc()) {
                             $a_fee = new stdClass();
                             $a_fee->name = ucwords(strtolower($row['expenses']));
-                            $a_fee->amount_paid = $student_data['study_mode'] == "weekend" ? $row['TERM_3'] : ($student_data['study_mode'] == "evening" ? $row['TERM_2'] : $row['TERM_1']);
+                            $a_fee->amount_paid = $student_data['study_mode'] == "weekend" ? $row['TERM_3'] : ($student_data['study_mode'] == "evening" ? $row['TERM_2'] : ($student_data['study_mode'] == "online" ? $row['TERM_4'] : $row['TERM_1']));
                             $a_fee->id = $row['ids'];
                             $a_fee->roles = $issetup ? "Compulsory" : ($row['roles'] == "regular" ? "Compulsory" : $row['roles']);
                             $total+= $a_fee->amount_paid;

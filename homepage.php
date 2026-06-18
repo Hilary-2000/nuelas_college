@@ -6,10 +6,10 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn", "academic_report_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn", "academic_report_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
         $allowed = ["sms_broadcast","update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
@@ -154,11 +154,6 @@ function checkPresnt($array, $string){
     <!-- chartjs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- end chartjs -->
-
-    <!-- select2 -->
-     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 
     
   <!-- Google tag (gtag.js) -->
@@ -445,10 +440,10 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts d-none">
+            <div class="conts">
                 <button class="navButs htbtn">Human Resource<span class="arrow rotate_right"></button>
                 <div class="contsd">
-                    <div class="contsc">
+                    <div class="contsc hide">
                         <button type='button' class="sidebtns <?php echo allowed("payroll"); ?> htbtn" id='payroll_sys'><span><img class="icons" src="images/report.png"></span>Payroll</button>
                         <button type='button' class="sidebtns <?php echo allowed("leave_mgmt"); ?> htbtn" id='humanresource'><span><img class="icons" src="images/managestaff.png"></span>Leave Management</button>
                         <button type='button' class="sidebtns <?php echo allowed("apply_leave_menu"); ?> htbtn" id='apply_leave_menu'><span><img class="icons" src="images/timetable.png"></span>Apply Leave</button>
@@ -456,30 +451,28 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
             </div>
-            <div class="conts">
+            <div class="conts d-none">
                 <button class="navButs">Academic<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc">
-                        <button type='button' class="sidebtns <?php echo allowed("regsub");?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register Units</button>
-                        <button type='button' class="sidebtns <?php echo allowed("managesub");?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Unit Management</button>
-                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub");?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Staff-Unit Assignment</button>
-                        <button type='button' class="sidebtns <?php echo allowed("course_unit_assignment");?> htbtn" id='course_unit_assignment'><span><img class="icons" src="images/managemarks.png"></span>Course-Unit Assignment</button>
-                        <button type='button' class="sidebtns <?php echo allowed("lecture_halls_btn");?> htbtn" id='lecture_halls_btn'><span><img class="icons" src="images/manageteach.png"></span>Lecture Halls</button>
-                        <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn");?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Generate Timetable</button>
-                        <button type='button' class="sidebtns <?php echo allowed("examanagement");?> htbtn" id='examanagement'><span><img class="icons" src="images/addmarks.png"></span>Exam Management</button>
-                        <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn");?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Students Marks Entry</button>
-                        <button type='button' class="sidebtns <?php echo allowed("academic_report_btn");?> " id='academic_report_btn'><span><img class="icons" src="images/analysis.png"></span>Academic Reports</button>
+                        <button type='button' class="sidebtns <?php echo allowed("regsub"); ?> htbtn" id='regsub'><span><img class="icons" src="images/addsub.png"></span>Register subject</button>
+                        <button type='button' class="sidebtns <?php echo allowed("managesub"); ?> htbtn" id='managesub'><span><img class="icons" src="images/managesubs.png"></span>Manage subjects</button>
+                        <button type='button' class="sidebtns <?php echo allowed("managetrnsub"); ?> htbtn" id='managetrnsub'><span><img class="icons" src="images/manageteach.png"></span>Manage teacher</button>
+                        <button type='button' class="sidebtns <?php echo allowed("generate_tt_btn"); ?> " id='generate_tt_btn'><span><img class="icons" src="images/timetable.png"></span>Timetable</button>
+                        <button type='button' class="sidebtns <?php echo allowed("examanagement"); ?> htbtn" id='examanagement'><span><img class="icons" src="images/addmarks.png"></span>Exam Management</button>
+                        <button type='button' class="sidebtns <?php echo allowed("exam_fill_btn"); ?> " id='exam_fill_btn'><span><img class="icons" src="images/managemarks.png"></span>Students Marks Entry</button>
                     </div>
                 </div>
             </div>
-            <div class="conts">
+            <div class="conts d-none">
                 <button class="navButs htbtn">Boarding<span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc">
                         <button type='button' class="sidebtns <?php echo allowed("enroll_boarding_btn"); ?> htbtn" id='enroll_boarding_btn'><span><img class="icons" src="images/enrollboarding.png"></span>Enroll boarding</button>
-                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Manage hostel</button>
-                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='student_boarders'><span><img class="icons" src="images/dormitory.png"></span>Student List</button>
-                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='discipline_incidents_btn'><span><img class="icons" src="images/dormitory.png"></span>Discipline & Incidents</button>
+                        <button type='button' class="sidebtns <?php echo allowed("maanage_dorm"); ?> htbtn" id='maanage_dorm'><span><img class="icons" src="images/dormitory.png"></span>Manage dormitory</button>
+                        <!--<button><span><img class="icons" src="images/information.png"></span>Student information</button>
+                        <button><span><img class="icons" src="images/manageinfor.png"></span>Manage information</button>
+                        <button><span><img class="icons" src="images/boardingpay.png"></span>Boarding payment</button>-->
                     </div>
                 </div>
             </div>
@@ -571,14 +564,9 @@ function checkPresnt($array, $string){
             include("academics/exam_management.php");
             include("academics/exam_filling.php");
             include("academics/timetable.php");
-            include("academics/lecture_hall.php");
-            include("academics/course_unit_assignment.php");
-            include("academics/academic_reports.php");
             include("system_error_pages/inconvinience.php");
-            include("boarding_pages/enroll_boarding.php");
             include("boarding_pages/register_dorm.php");
-            include("boarding_pages/student_list.php");
-            include("boarding_pages/discipline_incident.php");
+            include("boarding_pages/enroll_boarding.php");
             include("main_pages/system_profile.php");
             include("main_pages/personal_profile.php");
             include("main_pages/notification_page.php");
@@ -1224,7 +1212,7 @@ function checkPresnt($array, $string){
                             <input class='finance1' type='checkbox' name='supplier_account' id='supplier_account'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='asset_management'>8. Asset Accounts</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='asset_management'>9. Asset Accounts</label>
                             <input class='finance1' type='checkbox' name='asset_management' id='asset_management'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
@@ -1237,63 +1225,21 @@ function checkPresnt($array, $string){
                             <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check'><b>Human Resource</b></label>
                             <input class='' type='checkbox' name='all_hr_check' id='all_hr_check'>
                         </div>
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_management'>1. Payroll</label>
                             <input class='human_resource_mgmt' type='checkbox' name='payroll_management' id='payroll_management'>
                         </div>
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management'>2. Leave Management</label>
                             <input class='human_resource_mgmt' type='checkbox' name='leave_management' id='leave_management'>
                         </div>
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='apply_leave_main'>3. Apply Leave</label>
                             <input class='human_resource_mgmt' type='checkbox' name='apply_leave_main' id='apply_leave_main'>
                         </div>
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_main'>4. Payslip & Advance</label>
                             <input class='human_resource_mgmt' type='checkbox' name='payroll_and_advance_main' id='payroll_and_advance_main'>
-                        </div>
-                        <hr class="d-none">
-                        <!-- Academic Section -->
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_academic_section'><b>Academic Section</b></label>
-                            <input class='' type='checkbox' name='all_academic_section' id='all_academic_section'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='register_unit_sector'>1. Register Units</label>
-                            <input class='academic_sector' type='checkbox' name='register_unit_sector' id='register_unit_sector'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='unit_management_sector'>2. Unit Management</label>
-                            <input class='academic_sector' type='checkbox' name='unit_management_sector' id='unit_management_sector'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='staff_unit_assignment_sector'>3. Staff-Unit Assignment</label>
-                            <input class='academic_sector' type='checkbox' name='staff_unit_assignment_sector' id='staff_unit_assignment_sector'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='course_unit_assignment_sector'>4. Course-Unit Assignment</label>
-                            <input class='academic_sector' type='checkbox' name='course_unit_assignment_sector' id='course_unit_assignment_sector'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='lecture_hall_sector'>5. Lecture Hall</label>
-                            <input class='academic_sector' type='checkbox' name='lecture_hall_sector' id='lecture_hall_sector'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='generate_timetable_sector'>6. Generate Timetable</label>
-                            <input class='academic_sector' type='checkbox' name='generate_timetable_sector' id='generate_timetable_sector'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='exam_management_sector'>7. Exam Management</label>
-                            <input class='academic_sector' type='checkbox' name='exam_management_sector' id='exam_management_sector'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='student_marks_entry_sector'>8. Student Marks Entry</label>
-                            <input class='academic_sector' type='checkbox' name='student_marks_entry_sector' id='student_marks_entry_sector'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='academic_report_sector'>9. Academic Reports</label>
-                            <input class='academic_sector' type='checkbox' name='academic_report_sector' id='academic_report_sector'>
                         </div>
                         <hr>
                         <!-- staft of sms section -->
@@ -1401,7 +1347,7 @@ function checkPresnt($array, $string){
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='allow_expense_approvals_2'>6. Allow Expense Approvals</label>
-                            <input class='fill_data finance12' type='checkbox' name='allow_expense_approvals_2' id='allow_expense_approvals_2'>
+                            <input class='finance1' type='checkbox' name='allow_expense_approvals_2' id='allow_expense_approvals_2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='supplier_account_2'>7. Supplier Account</label>
@@ -1417,67 +1363,25 @@ function checkPresnt($array, $string){
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_hr_check2'><b>Human Resource</b></label>
                             <input class='' type='checkbox' name='all_hr_check2' id='all_hr_check2'>
                         </div>
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_management2'>1. Payroll</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='payroll_management2' id='payroll_management2'>
                         </div>
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='leave_management2'>2. Leave Management</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='leave_management2' id='leave_management2'>
                         </div>
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='apply_leave_edit'>3. Apply Leave</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='apply_leave_edit' id='apply_leave_edit'>
                         </div>
-                        <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;'>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='payroll_and_advance_edit'>4. Payslip & Advance</label>
                             <input class='human_resource_mgmt_2' type='checkbox' name='payroll_and_advance_edit' id='payroll_and_advance_edit'>
-                        </div>
-                        <hr class="d-none">
-                        <!-- Academic Section -->
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:15px;' for='all_academic_section_2'><b>Academic Section</b></label>
-                            <input class='' type='checkbox' name='all_academic_section_2' id='all_academic_section_2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='register_unit_sector2'>1. Register Units</label>
-                            <input class='academic_sector_2' type='checkbox' name='register_unit_sector2' id='register_unit_sector2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='unit_management_sector2'>2. Unit Management</label>
-                            <input class='academic_sector_2' type='checkbox' name='unit_management_sector2' id='unit_management_sector2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='staff_unit_assignment_sector2'>3. Staff-Unit Assignment</label>
-                            <input class='academic_sector_2' type='checkbox' name='staff_unit_assignment_sector2' id='staff_unit_assignment_sector2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='course_unit_assignment_sector2'>4. Course-Unit Assignment</label>
-                            <input class='academic_sector_2' type='checkbox' name='course_unit_assignment_sector2' id='course_unit_assignment_sector2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='lecture_hall_sector2'>5. Lecture Hall</label>
-                            <input class='academic_sector_2' type='checkbox' name='lecture_hall_sector2' id='lecture_hall_sector2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='generate_timetable_sector2'>6. Generate Timetable</label>
-                            <input class='academic_sector_2' type='checkbox' name='generate_timetable_sector2' id='generate_timetable_sector2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='exam_management_sector2'>7. Exam Management</label>
-                            <input class='academic_sector_2' type='checkbox' name='exam_management_sector2' id='exam_management_sector2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='student_marks_entry_sector2'>8. Student Marks Entry</label>
-                            <input class='academic_sector_2' type='checkbox' name='student_marks_entry_sector2' id='student_marks_entry_sector2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='academic_report_sector2'>9. Academic Reports</label>
-                            <input class='academic_sector_2' type='checkbox' name='academic_report_sector2' id='academic_report_sector2'>
                         </div>
                         <hr>
                         <!-- staft of sms section -->
@@ -1620,27 +1524,18 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id="addteachsubject">
-            <div class="changesubwindow editexams animate">
+            <div class="changesubwindow add_subjects animate">
                 <div class="conts">
                     <p class="funga" id="funga1">&times</p>
-                    <h6>Assign Course Units</h6>
+                    <h6>Add subject</h6>
                 </div>
                 <div class="conts" id='selectsub1'>
                     <div class="conts">
-                        <label class="form-control-label d-none">Teacher id: <span id="trid12">1</span> <br></label>
+                        <label class="form-control-label">Teacher id: <span id="trid12">1</span> <br></label>
                         <label class="form-control-label">Select a subject below:</label>
                     </div>
                     <div class="conts">
-                        <label for="course_level_unit_assignment" class="form-control-label">Course Level</label>
-                        <div id="course_level_unit_assignment_holder"><span class="border border-success p-1 rounded text-success">Couse Level will appear here!</span></div>
-                    </div>
-                    <div class="conts">
-                        <span class="hide" id="course_list_holder_unit_assignment">[]</span>
-                        <label for="course_list_unit_assignment" class="form-control-label">Course List <small id="show_selected_units"></small></label>
-                        <div id="course_list_unit_assignment_holder"><span class="border border-success p-1 rounded text-success">Select course level and course list will appear here!</span></div>
-                    </div>
-                    <div class="conts">
-                        <p>Unit list:</p>
+                        <p>Subject list:</p>
                         <p id='subslist'></p>
                         <!--<div class ='classlist2' style='height:100px;overflow:auto;' name='selectsubs' id='selectsubs'>
                             <div class = 'checkboxholder' style='margin:10px 0;padding:0px 0px;'>
@@ -1678,35 +1573,12 @@ function checkPresnt($array, $string){
                         <p style='color:green;font-size:14px;'>Remember to save. <br> If you go back no data will be saved</p>
                     </div>
                 </div>
-                <div class="conts mt-2">
+                <div class="conts">
                     <p id='geterrors12'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" id='saves1'>Save</button>
+                    <button type="button" class="hide" id='saves1'>Save</button>
                     <button type="button" id="close2">Close</button>
-                </div>
-            </div>
-        </div>
-        <div class="confirmpaymentwindow hide" id="add_module_units">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
-                    <p class="funga" id="close_module_unit_selector_1">&times</p>
-                    <h6 class="text-center">Set Course Units</h6>
-                </div>
-                <div class="conts">
-                    <div class="conts">
-                        <p>Select Units to be added in <b id="module_number_holder">Module 1</b></p>
-                        <small id="selected_module_units"></small>
-                        <p id='course_unit_list'></p>
-                    </div>
-                </div>
-                <div class="conts mt-2">
-                    <p class="hide" id="module_unit_list_holder"></p>
-                    <p id='module_selector_error_list'></p>
-                </div>
-                <div class="btns">
-                    <button type="button" id='save_module_selector'>Save</button>
-                    <button type="button" id="close_module_unit_selector">Close</button>
                 </div>
             </div>
         </div>
@@ -1714,37 +1586,47 @@ function checkPresnt($array, $string){
             <div class="changesubwindow editexams animate">
                 <div class="conts">
                     <p class="funga" id="fungash">&times</p>
-                    <h6 class="text-center"><b id='exam_registration_title'>Register exams</b></h6>
+                    <h5 class="text-center"><b>Register exams</b></h5>
                 </div>
-                <form class="add_expense" id='new_exams_form'>
-                    <div class="conts">
-                        <input type="hidden" name="exam_modal_action" value="add" id="exam_modal_action">
-                        <input type="hidden" value="0" id="exam_id_edit">
-                        <label class="form-control-label" for="examjina">Exam name: <br></label>
-                        <input class="form-control w-100" type="text" name="examjina" id="examjina" placeholder="Exam name">
-                    </div>
-                    <div class="conts">
-                        <label for="course_level_exam_registration" class="form-control-select">Select Course Level</label>
-                        <div id="course_level_list_holder_exam_reg"><span class="border border-success p-1 rounded text-success">Course level list will appear here!</span></div>
-                    </div>
-                    <div class="conts">
-                        <div id="course_list_holder_exam_registration" class="hide">[]</div>
-                        <label for="course_exam_registration" class="form-control-select">Select Course <span id="selected_units_exams_reg"></span></label>
-                        <div id="course_list_holder_exam_reg"><span class="border border-success p-1 rounded text-success">Course list will appear here!</span></div>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="">Select subjects to be done: <br></label>
-                        <p id="subjectslists">
-                            <span class="border border-success p-1 rounded text-success">Course units list will appear here!</span>
-                        </p>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="examstartdate">Start date: <br></label>
-                        <input class="form-control w-100" type="date" name="examstartdate" id="examstartdate">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="examenddate">End Date: <br></label>
-                        <input class="form-control w-100" type="date" name="examenddate" id="examenddate">
+                <form class="formsexams" id='formsexams1'>
+                    <div class="exam_form" id="examform1">
+                        <div class="conts">
+                            <label class="form-control-label" for="examjina">Exam name: <br></label>
+                            <input class="form-control" type="text" name="examjina" id="examjina" placeholder="Exam name">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="">Select subjects to be done: <br></label>
+                            <!--Test subject list
+                            <div class ='classlist' style='height:100px;overflow:auto;' name='selectsubs' id='selectsubs'>
+                                <div class = 'checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                                    <label class="form-control-label" style='margin-right:5px;cursor:pointer;font-size:14px;' for='abc'>Mathematics</label>
+                                    <input class="form-control" class='subjectcls' type='checkbox' name='abc' id='abc'>
+                                </div>
+                            </div>-->
+                            <p id="subjectslists">
+                            <div class="contsload" id="loadings213">
+                                <img src="images/load2.gif" alt="loading..">
+                            </div>
+                            </p>
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="examstartdate">Start date: <br></label>
+                            <input class="form-control" type="date" name="examstartdate" id="examstartdate">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="examenddate">End Date: <br></label>
+                            <input class="form-control" type="date" name="examenddate" id="examenddate">
+                        </div>
+                        <div class="curricullum">
+                            <label class="form-control-label" for="curriculum">Select curricullum: <br></label>
+                            <select class="form-control" title="Choosing the type of curriculum will help the system know the grading method" name="curriculum" id="curriculum">
+                                <option value="" hidden>Select curricullum..</option>
+                                <option value="cbc">C.B.C</option>
+                                <option value="844">8-4-4</option>
+                                <option value="IGCSE">IGCSE</option>
+                                <option value="iPrimary">iPrimary</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="exam_form hide" id="examform2">
                         <div class="conts" style="text-align:center;">
@@ -1782,49 +1664,15 @@ function checkPresnt($array, $string){
                     </div>
                 </form>
                 <p id='errhandlers1203'></p>
-                <div class="nextprevious hide">
+                <div class="nextprevious">
                     <p id="previousexams"> Previous </p>
                     <p id="nextexams"> Next </p>
                 </div>
-                <div class="conts" id="savebuttons">
+                <div class="conts hide" id="savebuttons">
                     <div class="btns">
                         <button type="button" class="" id='saveexams'>Save</button>
                         <button type="button" id="cancelexams">Close</button>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="register_cat_exams_window">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
-                    <p class="funga" id="close_register_cat_exams">&times</p>
-                    <h6 class="text-center"><b id='register_cat_exams_title'>Register C.A.T</b></h6>
-                </div>
-                <form class="add_expense" id='register_cat_exams_form'>
-                    <div class="conts my-2">
-                        <input type="hidden" name="register_cat_exams_action" value="add" id="register_cat_exams_action">
-                        <input type="hidden" value="0" id="register_cat_exams_exam_id">
-                        <input type="hidden" name="edit_cat_id" id="edit_cat_id">
-                        <label class="form-control-label" for="cat_name">CAT name: <br></label>
-                        <input class="form-control w-100" type="text" name="cat_name" id="cat_name" placeholder="CAT ONE, or CAT 1">
-                    </div>
-                    <div class="conts my-2">
-                        <label class="form-control-label" for="cat_maximum_marks">CAT Maximum Marks: <br></label>
-                        <input class="form-control w-100" type="text" name="cat_maximum_marks" id="cat_maximum_marks" placeholder="15 MKs">
-                    </div>
-                    <div class="conts my-2">
-                        <label for="include_in_final_exam" class="form-control-label">Include in Exam</label>
-                        <select name="include_in_final_exam" id="include_in_final_exam" class="form-control">
-                            <option value="">Select Option</option>
-                            <option value="1">Included in exam</option>
-                            <option value="0">Standalone CAT</option>
-                        </select>
-                    </div>
-                </form>
-                <p id='error_cat_register'></p>
-                <div class="btns">
-                    <button type="button" class="" id='register_cat_exams_save_btn'>Save</button>
-                    <button type="button" id="register_cat_exams_close_btn">Close</button>
                 </div>
             </div>
         </div>
@@ -2217,30 +2065,6 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <!--confirm delete-->
-        <div class="confirmpaymentwindow hide" id='confirm_delete_assignment'>
-            <div class="confirmpayment animate">
-                <h6>Confirm Removal</h6>
-                <p>Are you sure you want to remove this unit from the list?</p>
-                <input type="hidden" name="" id="assignment_id_holder">
-                <div class="btns">
-                    <button type='button' id='confirm_yes_remove_assignment'>Yes</button>
-                    <button type='button' id='confirm_no_remove_assignment'>No</button>
-                </div>
-            </div>
-        </div>
-        <!--confirm delete-->
-        <div class="confirmpaymentwindow hide" id='confirm_delete_assignment_module'>
-            <div class="confirmpayment animate">
-                <h6>Remove Unit</h6>
-                <p>Are you sure you want to remove this unit from this module?</p>
-                <input type="hidden" name="" id="assignment_id_holder_unit">
-                <div class="btns">
-                    <button type='button' id='confirm_yes_assignment_id_holder_unit'>Yes</button>
-                    <button type='button' id='confirm_no_assignment_id_holder_unit'>No</button>
-                </div>
-            </div>
-        </div>
-        <!--confirm delete-->
         <div class="confirmpaymentwindow hide" id='confirm_delete'>
             <div class="confirmpayment animate">
                 <h6>Confirm</h6>
@@ -2255,7 +2079,7 @@ function checkPresnt($array, $string){
         <div class="confirmpaymentwindow hide" id='confirm_delete_exams_win'>
             <div class="confirmpayment animate">
                 <input type="hidden" id="exams_ids_delete">
-                <h6>Confirm Exam Delete</h6>
+                <h6>Confirm</h6>
                 <p>Are you sure you want to delete this exam "<b><span id="name_of_students_exams"></span></b>" ? <br> <span class="text-danger">This action is irreversible.</span></p>
                 <div class="btns">
                     <button type='button' id='confirm_del_exams_yes'>Yes</button>
@@ -2321,42 +2145,26 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id="dorm_registrations">
-            <div class="changesubwindow editexams animate">
+            <div class="changesubwindow addsubject animate">
                 <div class="conts">
                     <p class="funga" id="close_dorm_reg">&times</p>
-                    <h6 class="text-center">Register Hostel</h6>
+                    <h6>Register Dormitory</h6>
                 </div>
-                <form class="add_expense" id="reg_dorm_form">
+                <form class="formation" id="reg_dorm_form">
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_name">Hostel Name:<span class="text-danger">*</span><br></label>
-                        <input class="form-control" type="text" name="dorm_name" id="dorm_name" placeholder="Hostel name">
+                        <label class="form-control-label" for="dorm_name">Dormitory Name: <br></label>
+                        <input class="form-control" type="text" name="dorm_name" id="dorm_name" placeholder="Enter dormitory name">
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_capacity">Hostel Capacity:<span class="text-danger">*</span><br></label>
-                        <input class="form-control" type="number" name="dorm_capacity" id="dorm_capacity" placeholder="Hostel Capacity">
+                        <label class="form-control-label" for="dorm_capacity">Dormitory Capacity: <br></label>
+                        <input class="form-control" type="number" name="dorm_capacity" id="dorm_capacity" placeholder="Enter dormitory Capacity">
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_bed_capacity">Hostel Bed Capacity:<br></label>
-                        <input class="form-control" type="number" name="dorm_bed_capacity" id="dorm_bed_capacity" placeholder="Bed Capacity">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="matress_count">Matress Count: <br></label>
-                        <input class="form-control" type="number" name="matress_count" id="matress_count" placeholder="Matress Count">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="dorm_room_count">Rooms/Cubicals Count: <br></label>
-                        <input class="form-control" type="number" name="dorm_room_count" id="dorm_room_count" placeholder="Rooms/Cubicals Count">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="dorm_captain">Hostel Captain: <span class="text-danger">*</span><br></label>
+                        <label class="form-control-label" for="dorm_captain">Dormitory Captain: <br></label>
                         <p id="tr_list"></p>
                         <div class="contsload" id="tr_lists">
                             <img src="images/load2.gif" alt="loading..">
                         </div>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="dorm_room_count">Comment <br></label>
-                        <textarea name="hostel_comment" id="hostel_comment" placeholder="Narative about the hostel" rows="5" class="form-control"></textarea>
                     </div>
                 </form>
                 <div class="conts">
@@ -2368,293 +2176,24 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
-        <div class="confirmpaymentwindow hide" id="new_lecture_hall_window">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
-                    <p class="funga" id="close_new_lecture_hall">&times</p>
-                    <h6 class="text-center" id='new_lecture_hall_title'>Register New Lecture Hall</h6>
-                </div>
-                <form class="add_expense" id="new_lecture_hall_form">
-                    <div class="conts">
-                        <input type="hidden" name="" id="lecture_hall_id" value="0">
-                        <input type="hidden" name="" id="lecture_hall_action_type" value="add">
-                        <label class="form-control-label" for="lecture_hall_name">Lecture Hall Name:<span class="text-danger">*</span><br></label>
-                        <input class="form-control" type="text" name="lecture_hall_name" id="lecture_hall_name" placeholder="Hostel name">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="lecture_hall_capacity">Capacity:<span class="text-danger">*</span><br></label>
-                        <input class="form-control" type="number" name="lecture_hall_capacity" id="lecture_hall_capacity" placeholder="e.g, 10">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="lecture_hall_availability">Availability:<br></label>
-                        <select name="lecture_hall_availability" id="lecture_hall_availability" class="form-control">
-                            <option value="" hidden >Select Availability</option>
-                            <option value="1">Available</option>
-                            <option value="0">Un-Available</option>
-                        </select>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="hall_description">Description <br></label>
-                        <textarea name="hall_description" id="hall_description" placeholder="Narative about the lecture hall" rows="5" class="form-control"></textarea>
-                    </div>
-                </form>
-                <div class="conts">
-                    <p id='new_lecture_hall_err_handler'></p>
-                </div>
-                <div class="btns">
-                    <button type="button" class="" id='add_new_lecture_hall'><i class="fas fa-plus"></i> Add</button>
-                    <button type="button" id="close_new_lecture_hall_2">Close</button>
-                </div>
-            </div>
-        </div>
-        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="record_new_incident_modal">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
-                    <p class="funga" id="close_new_incident_modal_1">&times</p>
-                    <h6 class="text-center"><span id="incident_modal_title">Record New Incident</span> <span class="hide" id="record_new_incident_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span></h6>
-                </div>
-                <form class="add_expense" id="new_incident_form">
-                    <div class="conts">
-                        <input type="hidden" name="edit_incident_id" value="0" id="edit_incident_id">
-                        <input type="hidden" name="incident_action_type" value="0" id="incident_action_type">
-                        <input type="hidden" name="add_from_warning" value="" id="add_from_warning">
-                        <label class="form-control-label" for="incident_type_dropdown">Incident Type:<span class="text-danger">*</span><br></label>
-                        <select id="incident_type_dropdown" class="form-control ml-1">
-                            <option>Select Incident Type</option>
-                            <!-- Behavioral Misconduct -->
-                            <optgroup label="Behavioral Misconduct">
-                                <option value="Misconduct">Misconduct</option>
-                                <option value="Bullying">Bullying</option>
-                                <option value="Fighting">Fighting / Physical Altercation</option>
-                                <option value="Verbal Abuse">Verbal Abuse / Insults</option>
-                                <option value="Disobedience">Disobedience / Defiance</option>
-                                <option value="Noise Making">Noise Making</option>
-                                <option value="Dress Code Violation">Dress Code Violation</option>
-                                <option value="Insubordination">Insubordination to Staff</option>
-                                <option value="Possession of Prohibited Items">Possession of Prohibited Items</option>
-                            </optgroup>
-
-                            <!-- Academic Misconduct -->
-                            <optgroup label="Academic Misconduct">
-                                <option value="Cheating">Cheating / Exam Malpractice</option>
-                                <option value="Plagiarism">Plagiarism</option>
-                                <option value="Exam Irregularity">Exam Irregularity</option>
-                            </optgroup>
-
-                            <!-- Attendance Issues -->
-                            <optgroup label="Attendance Issues">
-                                <option value="Lateness">Lateness</option>
-                                <option value="Truancy">Unauthorized Absence (Truancy)</option>
-                                <option value="Class Skipping">Class Skipping</option>
-                            </optgroup>
-
-                            <!-- Property Related -->
-                            <optgroup label="Property Related">
-                                <option value="Vandalism">Vandalism</option>
-                                <option value="Theft">Theft</option>
-                                <option value="Property Damage">Property Damage</option>
-                            </optgroup>
-
-                            <!-- Health -->
-                            <optgroup label="Health">
-                                <option value="Injury">Injury (Sports/Accident)</option>
-                                <option value="Sickness Episode">Sickness Episode</option>
-                                <option value="Allergic Reaction">Allergic Reaction</option>
-                                <option value="Medical Emergency">Medical Emergency</option>
-                            </optgroup>
-
-                            <!-- Safety & Security -->
-                            <optgroup label="Safety & Security">
-                                <option value="Lost Property">Lost Property</option>
-                                <option value="Security Breach">Security Breach</option>
-                                <option value="Fire Alarm">Fire Alarm Activation</option>
-                                <option value="Equipment Malfunction">Equipment Malfunction</option>
-                            </optgroup>
-
-                            <!-- Boarding Incidents -->
-                            <optgroup label="Boarding">
-                                <option value="Room Conflict">Room Conflict</option>
-                                <option value="Night Noise">Night Noise</option>
-                                <option value="Dormitory Damage">Dormitory Damage</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="incident_category">Incident Category:<span class="text-danger">*</span><br></label>
-                        <select id="incident_category" class="form-control ml-1">
-                            <option>Select Incident Category</option> <!-- for placeholder -->
-                            <option value="Behavioral Misconduct">Behavioral Misconduct</option>
-                            <option value="Academic Misconduct">Academic Misconduct</option>
-                            <option value="Attendance Issues">Attendance Issues</option>
-                            <option value="Property Related">Property Related</option>
-                            <option value="Health">Health</option>
-                            <option value="Safety & Security">Safety & Security</option>
-                            <option value="Boarding">Boarding</option>
-                        </select>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="student_incident_involve">Student(s) Involved: <span class="text-danger">*</span><span class="hide" id="students_involved_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span><br></label>
-                        <p class="ml-1" id="student_incident_list"></p>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="incident_location">Incident Location:<br></label>
-                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="text" name="incident_location" id="incident_location" placeholder="Where it happened..">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="incident_description">Incident Description <br></label>
-                        <textarea name="incident_description" id="incident_description" placeholder="Full detail of what happened" rows="5" class="form-control"></textarea>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="date_incident_reported">Date Reported: <br></label>
-                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="date" name="date_incident_reported" id="date_incident_reported" placeholder="Date Reported">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="incident_action_taken">Action Taken: <br></label>
-                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="text" name="incident_action_taken" id="incident_action_taken" placeholder="first aid, counseling, punishment">
-                    </div>
-                    <div class="conts">
-                        <label for="incident_severity_level" class="form-control-label">Incident Severity Level</label>
-                        <select id="incident_severity_level" class="form-control w-100">
-                            <option>Incident Severity Level</option> <!-- placeholder -->
-                            <option value="Low">Low</option>
-                            <option value="Moderate">Moderate</option>
-                            <option value="High">High</option>
-                            <option value="Critical">Critical</option>
-                        </select>
-                    </div>
-                    <div class="conts">
-                        <label for="incident_parent_notified" class="form-control-label">Parent Notified</label>
-                        <select id="incident_parent_notified" class="form-control text-left w-100">
-                            <option value="">Select Status</option> <!-- placeholder -->
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                    </div>
-                    <div class="conts hide" id="notification_reported_window">
-                        <label class="form-control-label" for="parent_notification_date">Parent Notified on: <br></label>
-                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="date" name="parent_notification_date" id="parent_notification_date" placeholder="Notification reported">
-                    </div>
-                    <div class="conts">
-                        <label for="incident_status" class="form-control-label">Incident Status</label>
-                        <select id="incident_status" class="form-control text-left w-100">
-                            <option value="">Incident Status</option> <!-- placeholder -->
-                            <option value="Pending">Pending</option>
-                            <option value="Under Investigation">Under Investigation</option>
-                            <option value="Action Taken">Action Taken</option>
-                            <option value="Escalated">Escalated</option>
-                            <option value="Resolved">Resolved</option>
-                            <option value="Closed">Closed</option>
-                            <option value="False Report">False Report</option>
-                        </select>
-                    </div>
-                </form>
-                <div class="conts">
-                    <p id='incident_err_display'></p>
-                </div>
-                <div class="btns">
-                    <button type="button" class="" id='add_incident'><i class="fas fa-plus"></i> Add</button>
-                    <button type="button" id="close_new_incident_modal_2">Close</button>
-                </div>
-            </div>
-        </div>
-        <div class="confirmpaymentwindow hide" style="overflow: auto;" id="record_new_warning_modal">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
-                    <p class="funga" id="close_new_warning_modal_1">&times</p>
-                    <h6 class="text-center"><span id="warning_modal_title">Record New Warning</span> <span class="hide" id="record_new_warning_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span></h6>
-                </div>
-                <form class="add_expense" id="new_warning_form">
-                    <div class="conts">
-                        <input type="hidden" name="edit_warning_id" value="0" id="edit_warning_id">
-                        <input type="hidden" name="warning_action_type" value="0" id="warning_action_type">
-                        <label class="form-control-label" for="warning_type">Warning Type:<span class="text-danger">*</span><br></label>
-                        <select id="warning_type" class="form-control ml-1">
-                            <option value="">Select Warning Type</option> 
-                            <option value="verbal">Verbal Warning</option>
-                            <option value="written">Written Warning</option>
-                            <option value="suspension">Suspension</option>
-                            <option value="final">Final Warning</option>
-                        </select>
-                    </div>
-                    <div class="conts my-2">
-                        <label class="form-control-label" for="student_warning_involve">Student(s) Involved: <span class="text-danger">*</span><span class="hide" id="students_warning_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span><br></label>
-                        <p class="ml-1" id="student_warning_list"><span class="text-success border border-success my-1 p-1 rounded">Student list will appear here!</span></p>
-                    </div>
-                    <div class="conts my-2">
-                        <label class="form-control-label" for="student_incident_involved">Incident Involved: <span class="text-danger">*</span><span class="hide" id="incident_involved_list_loader"><img width="30" class="" src="images/load2.gif" alt="loading.."></span><br></label>
-                        <p class="ml-1" id="incident_involved_list"><span class="text-success border border-success my-1 p-1 rounded">Student incident list will be displayed here!</span></p>
-                    </div>
-                    <div class="conts my-2">
-                        <label class="form-control-label" for="warning_description">Warning Reason <br></label>
-                        <textarea name="warning_description" id="warning_description" placeholder="Reason why the warning was issued!" rows="5" class="form-control"></textarea>
-                    </div>
-                    <div class="conts my-2">
-                        <label class="form-control-label" for="date_warning_reported">Date Warned: <br></label>
-                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="date" name="date_warning_reported" id="date_warning_reported" placeholder="Date Reported">
-                    </div>
-                    <div class="conts my-2">
-                        <label class="form-control-label" for="warning_action_taken">Action Taken: <br></label>
-                        <input class="form-control w-100 text-left" style="margin-left: 0px !important;" type="text" name="warning_action_taken" id="warning_action_taken" placeholder="first aid, counseling, punishment">
-                    </div>
-                    <div class="conts my-2">
-                        <label for="warning_severity_level" class="form-control-label">Incident Severity Level</label>
-                        <select id="warning_severity_level" class="form-control w-100">
-                            <option value="">Incident Severity Level</option> <!-- placeholder -->
-                            <option value="Low">Low</option>
-                            <option value="Moderate">Moderate</option>
-                            <option value="High">High</option>
-                            <option value="Critical">Critical</option>
-                        </select>
-                    </div>
-                    <div class="conts-my-2">
-                        <label for="warning_status" class="form-control-label">Warning Status</label>
-                        <select id="warning_status" class="form-control">
-                            <option value="">Warning Status</option>
-                            <option value="Active">Active</option>
-                            <option value="Cleared">Cleared</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                    </div>
-                </form>
-                <div class="conts my-2">
-                    <p id='warning_error_display'></p>
-                </div>
-                <div class="btns">
-                    <button type="button" class="" id='add_warning'><i class="fas fa-plus"></i> Add</button>
-                    <button type="button" id="close_new_warning_modal_2">Close</button>
-                </div>
-            </div>
-        </div>
         <div class="confirmpaymentwindow hide" id="dorm_edits">
-            <div class="changesubwindow editexams animate">
+            <div class="changesubwindow addsubject animate">
                 <div class="conts">
                     <p class="funga" id="close_dorm_edit">&times</p>
-                    <h6 class='text-center'>Edit Hostel</h6>
+                    <h6>Edit Dormitory</h6>
                 </div>
-                <form class="add_expense" id="edit_dorm_form">
+                <form class="formation" id="edit_dorm_form">
                     <div class="conts">
                         <label class="form-control-label">House id: <span style="color:brown;" id="dormitory_id">0</span></label><br>
                         <label class="form-control-label">House Captain <span style="color:brown;" id="cap_name">Hillary Ngige</span></label>
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_name_edit">Hostel Name:<span class="text-danger">*</span><br></label>
-                        <input class="form-control" type="text" name="dorm_name_edit" id="dorm_name_edit" placeholder="Enter hostel name">
+                        <label class="form-control-label" for="dorm_name_edit">Dormitory Name: <br></label>
+                        <input class="form-control" style="color:brown;" type="text" name="dorm_name_edit" id="dorm_name_edit" placeholder="Enter dormitory name">
                     </div>
                     <div class="conts">
-                        <label class="form-control-label" for="dorm_capacity_edit">Hostel Student Capacity:<span class="text-danger">*</span><br></label>
-                        <input class="form-control" type="number" name="dorm_capacity_edit" id="dorm_capacity_edit" placeholder="Enter hostel Capacity">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="dorm_bed_capacity_edit">Hostel Bed Capacity:<br></label>
-                        <input class="form-control" type="number" name="dorm_bed_capacity_edit" id="dorm_bed_capacity_edit" placeholder="Bed Capacity">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="matress_count_edit">Matress Count: <br></label>
-                        <input class="form-control" type="number" name="matress_count_edit" id="matress_count_edit" placeholder="Matress Count">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="dorm_room_count_edit">Rooms/Cubicals Count: <br></label>
-                        <input class="form-control" type="number" name="dorm_room_count_edit" id="dorm_room_count_edit" placeholder="Rooms/Cubicals Count">
+                        <label class="form-control-label" for="dorm_capacity_edit">Dormitory Capacity: <br></label>
+                        <input class="form-control" style="color:brown;" type="number" name="dorm_capacity_edit" id="dorm_capacity_edit" placeholder="Enter dormitory Capacity">
                     </div>
                     <div class="conts">
                         <label class="form-control-label" for="dorm_captain_edit">Change Captain: <br></label>
@@ -2663,10 +2202,6 @@ function checkPresnt($array, $string){
                             <img src="images/load2.gif" alt="loading..">
                         </div>
                         <button type='button' id="un_assign_captain_btn">Un-assign captain</button>
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="hostel_comment_edit">Comment <br></label>
-                        <textarea name="hostel_comment_edit" id="hostel_comment_edit" placeholder="Narative about the hostel" rows="5" class="form-control"></textarea>
                     </div>
                 </form>
                 <div class="conts">
@@ -2678,206 +2213,41 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
-        <div class="confirmpaymentwindow hide" id="show_boarder_profile_modal">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
-                    <p class="funga" id="close_show_boarder_profile_modal">&times</p>
-                    <h6 class='text-center'>Boarder Profile</h6>
-                </div>
-                <form class="add_expense" id="boarder_profile_modal_form">
-                    <div class="name_n_icons mx-auto w-50 d-flex align-center">
-                        <img class="images mx-auto" src="images/dp.png" alt="userimg">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label" for="boarder-fullname">Boarder Fullname:</label>
-                        <input type="text" name="boarder-fullname" id="boarder-fullname" class="form-control" placeholder="Fullname">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label" for="boarder-reg-no">Student Reg No</label><br>
-                        <input type="text" name="boarder-reg-no" id="boarder-reg-no" class="form-control" placeholder="Admission No">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label" for="boarder-hostel-residence">Hostel</label><br>
-                        <input type="text" name="boarder-hostel-residence" id="boarder-hostel-residence" class="form-control" placeholder="Hostel">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label" for="boarder-room-number">Room</label><br>
-                        <input type="text" name="boarder-room-number" id="boarder-room-number" class="form-control" placeholder="Room No">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label" for="boarder-reg-date">Registration Date</label><br>
-                        <input type="text" name="boarder-reg-date" id="boarder-reg-date" class="form-control" placeholder="Registration Date">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label" for="boarder-fees">Boarding Fees</label><br>
-                        <p id="boarding_fees_holder_modal" class="hide"></p>
-                        <input type="text" name="boarder-fees" id="boarder-fees" value="Loading..." class="form-control" placeholder="Boarding Fees">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label" for="boarder-course-level">Course Level</label><br>
-                        <input type="text" name="boarder-course-level" id="boarder-course-level" class="form-control" placeholder="Room No">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label" for="boarder-course-name">Course Name</label><br>
-                        <input type="text" name="boarder-course-name" id="boarder-course-name" class="form-control" placeholder="Registration Date">
-                    </div>
-                </form>
-                <div class="conts">
-                    <p id='boarder_profile_modal_err'></p>
-                </div>
-                <div class="btns">
-                    <!-- <button type="button" class="" id='update_dormitory'>Save Changes</button> -->
-                    <button type="button" id="close_show_boarder_profile_modal_1">Close</button>
-                </div>
-            </div>
-        </div>
-        <div class="confirmpaymentwindow hide" id="add_hostel_room_window">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
-                    <p class="funga" id="close_add_hostel_room_1">&times</p>
-                    <h6 class='text-center'>Add Hostel Room</h6>
-                </div>
-                <input type="hidden" name="hostel_id_room" id="hostel_id_room">
-                <form class="add_expense" id="add_hostel_room_form">
-                    <div class="conts">
-                        <label class="form-control-label" for="room_name">Addition Method:<span class="text-danger">*</span><br></label>
-                        <select name="room_addition_method" id="room_addition_method" class="form-control-select">
-                            <option value="" hidden>Select Addition Method</option>
-                            <option value="multiple">Multiple Room Addition</option>
-                            <option value="singular">Single Room Addition</option>
-                        </select>
-                    </div>
-                    <div class="hide" id="singular_room_addition">
-                        <h6 class="text-center mt-2"><u>Single Room Addition</u></h6>
-                        <div class="conts">
-                            <label class="form-control-label" for="room_name">Room Name:<span class="text-danger">*</span><br></label>
-                            <input class="form-control" type="text" name="room_name" id="room_name" placeholder="Enter hostel name">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="room_capacity">Student Capacity:<span class="text-danger">*</span><br></label>
-                            <input class="form-control" type="number" name="room_capacity" id="room_capacity" placeholder="Enter room Capacity">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="room_comment">Comment <br></label>
-                            <textarea name="room_comment" id="room_comment" placeholder="Narative about the room" rows="5" class="form-control"></textarea>
-                        </div>
-                    </div>
-                    <div class="hide" id="multiple_room_addition">
-                        <h6 class="text-center mt-2"><u>Multiple Room Addition</u></h6>
-                        <div class="conts">
-                            <label class="form-control-label" for="number_of_rooms">Number of rooms:<span class="text-danger">*</span><br></label>
-                            <input class="form-control" type="text" name="number_of_rooms" id="number_of_rooms" placeholder="e,g. 100">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="room_name_prefix">Room Name Prefix<br></label>
-                            <input class="form-control" type="text" name="room_name_prefix" id="room_name_prefix" placeholder="RM">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="room_number">Room Number (<small id="full_room_name"></small> )<span class="text-danger">*</span><br></label>
-                            <input class="form-control" type="number" name="room_number" id="room_number" placeholder="100">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="room_name_sufix">Room Name Sufix<br></label>
-                            <input class="form-control" type="text" name="room_name_sufix" id="room_name_sufix" placeholder="M">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="multiple_room_capacity">Average Room Capacity:<span class="text-danger">*</span><br></label>
-                            <input class="form-control" type="text" name="multiple_room_capacity" id="multiple_room_capacity" placeholder="e.g, 4">
-                        </div>
-                    </div>
-                </form>
-                <div class="conts">
-                    <p id='edit_room_err_handler'></p>
-                </div>
-                <div class="btns">
-                    <button type="button" class="" id='add_rooms_submit'>Save Changes</button>
-                    <button type="button" id="close_add_hostel_room_2">Close</button>
-                </div>
-            </div>
-        </div>
-        <div class="confirmpaymentwindow hide" id="edit_hostel_room_window">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
-                    <p class="funga" id="close_hostel_edit_1">&times</p>
-                    <h6 class='text-center'>Edit Hostel Room</h6>
-                </div>
-                <input type="hidden" name="edit_room_id" id="edit_room_id">
-                <form class="add_expense" id="edit_hostel_room_form">
-                    <div class="conts">
-                        <label class="form-control-label" for="edit_room_name">Room Name:<span class="text-danger">*</span><br></label>
-                        <input class="form-control" type="text" name="edit_room_name" id="edit_room_name" placeholder="Enter hostel name">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="edit_room_capacity">Student Capacity:<span class="text-danger">*</span><br></label>
-                        <input class="form-control" type="number" name="edit_room_capacity" id="edit_room_capacity" placeholder="Enter room Capacity">
-                    </div>
-                    <div class="conts">
-                        <label class="form-control-label" for="edit_room_comment">Comment <br></label>
-                        <textarea name="edit_room_comment" id="edit_room_comment" placeholder="Narative about the room" rows="5" class="form-control"></textarea>
-                    </div>
-                </form>
-                <div class="conts">
-                    <p id='edit_room_details_error'></p>
-                </div>
-                <div class="btns">
-                    <button type="button" class="" id='update_hostel_changes'>Save Changes</button>
-                    <button type="button" id="close_hostel_edit_2">Close</button>
-                </div>
-            </div>
-        </div>
         <div class="confirmpaymentwindow hide" id="change_student_dorm">
-            <div class="changesubwindow editexams animate">
+            <div class="changesubwindow addsubject animate">
                 <div class="conts">
                     <p class="funga" id="change_student_close">&times</p>
-                    <h6 class="text-center">Edit Student Hostel</h6>
+                    <h6>Edit Dormitory</h6>
                 </div>
-                <div class="container border border-secondary rounded p-2 mx-auto" id="">
+                <form class="formation" id="">
                     <div class="conts">
                         <label class="form-control-label">Student id: <span style="color:brown;" id="my_student_id">0</span></label>
-                        <label class="form-control-label d-none">Hostel id: <span style="color:brown;" id="my_dorm_id">0</span></label><br>
+                        <label class="form-control-label" class='hide'>Dormitory id: <span style="color:brown;" id="my_dorm_id">0</span></label><br>
                         <label class="form-control-label">Student Name: <span style="color:brown;" id="my_student_name">Hillary Ngige</span></label>
                     </div>
                     <div class="conts">
-                        <input type="hidden" name="" value="list_1" id="after_request_action">
-                        <label class="form-control-label" for="dorm_list_change">Change Hostel: <br></label>
+                        <label class="form-control-label" for="dorm_list_change">Change dorm: <br></label>
                         <p id="dorms_lists"></p>
-                        <div class="form-group" id="dorm_list_monitor">
+                        <div class="contsload" id="dorm_list_monitor">
                             <img src="images/load2.gif" alt="loading..">
                         </div>
-                        <div class="form-group">
-                            <label for="hostel_rooms_holder_update" class="form-control-label">Hostel Rooms</label>
-                            <p id="hostel_rooms"><span class="text-danger">Select hostel to display rooms!</span></p>
+                        <div class="btns">
+                            <button type="button" class="" id='change_dormitory_btn'>Save Changes</button>
                         </div>
-                        <div class="container row">
-                            <div class="col-md-6">
-                                <button type="button" id="close_dorm_change_btn">Close</button>
-                            </div>
-                            <div class="col-md-6">
-                                <button type="button" class="" id='change_dormitory_btn'>Update</button>
-                            </div>
-                        </div>
-                        <hr class="w-50 my-2 mx-auto">
-                        <span id="more_action_hostels" class="link" style="font-size:12px;"><u><i class="fa fa-hand-point-right"></i> More Action</u></span>
-                        <div class="container border border-secondary rounded p-2 hide" id="more_actions_window">
-                            <h6 class="text-center"><b>More Action</b></h6>
-                            <p id="chage_dorms_err_handlers"></p>
-                            <!-- <p>Click the <b>Un-assign</b> button below to un-assign the boarder a hostel</p>
-                            <p>Click the <b>De-register</b> button below to de-register student as a boarder.</p> -->
-                            <div class="container row mx-auto">
-                                <div class="col-md-6">
-                                    <button type='button' style='margin:0;' id="un_assign_dorm_btn">Un-assign</button>
-                                </div>
-                                <div class="col-md-6">
-                                    <button type='button' style='margin:0;' id="un_assign_boarder_btn">De-register</button>
-                                </div>
-                            </div>
+                        <p id="chage_dorms_err_handlers"></p>
+                        <p>Click the <b>Un-assign</b> button below to un-assign the boarder a dormitory</p>
+                        <p>Click the <b>De-register</b> button below to de-register student as a boarder.</p>
+                        <div class="btns" style='border-bottom:1px dashed black;'>
+                            <button type='button' style='margin:0;' id="un_assign_dorm_btn">Un-assign</button>
+                            <button type='button' style='margin:0;' id="un_assign_boarder_btn">De-register</button>
                         </div>
                     </div>
-                </div>
+                </form>
                 <div class="conts">
                     <p id='change_dorm_err_handler'></p>
                 </div>
                 <div class="btns">
+                    <button type="button" id="close_dorm_change_btn">Close</button>
                 </div>
             </div>
         </div>
@@ -3372,8 +2742,8 @@ function checkPresnt($array, $string){
                             <select class="form-control" name="boarders_regular" id="boarders_regular">
                                 <option value="" hidden>Select..</option>
                                 <option value="regular">Regular</option>
+                                <!-- <option value="boarding">Boarder</option> -->
                                 <option value="provisional">Provisional</option>
-                                <option value="boarding">Boarding</option>
                             </select>
                         </div>
                         <div class="conts">
@@ -3921,8 +3291,8 @@ function checkPresnt($array, $string){
                             <select class="form-control" name="boarders1_regular1" id="boarders1_regular1">
                                 <option value="" hidden>Select..</option>
                                 <option value="regular" id="regular12">Regular</option>
+                                <!-- <option value="boarding" id="boarding12">Boarder</option> -->
                                 <option value="provisional" id="provisional12">Provisional</option>
-                                <option value="boarding" id="boarding12">Boarding</option>
                             </select>
                         </div>
                         <input type="hidden" name="" id="course_id_edit">
@@ -4177,6 +3547,10 @@ function checkPresnt($array, $string){
                         <input type="number" name="weekend_fees" value="0" id="weekend_fees" class="form-control" placeholder="Weekend Fees(Kes 20,000)">
                     </div>
                     <div class="form-group">
+                        <label for="online_fees" class="form-control-label">Online Fees</label>
+                        <input type="number" name="online_fees" value="0" id="online_fees" class="form-control" placeholder="Online Fees(Kes 20,000)">
+                    </div>
+                    <div class="form-group">
                         <label for="no_of_terms" class="form-control-label">No of Modules</label>
                         <input type="number" name="no_of_terms" id="no_of_terms" class="form-control" placeholder="No of Modules(5 Modules)">
                     </div>
@@ -4238,6 +3612,10 @@ function checkPresnt($array, $string){
                         <div class="form-group">
                             <label for="edit_weekend_fees" class="form-control-label">Weekend Fees</label>
                             <input type="number" name="edit_weekend_fees" value="0" id="edit_weekend_fees" class="form-control" placeholder="Weekend Fees(Kes 20,000)">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_online_fees" class="form-control-label">Online Fees</label>
+                            <input type="number" name="edit_online_fees" value="0" id="edit_online_fees" class="form-control" placeholder="Online Fees(Kes 20,000)">
                         </div>
                         <div class="form-group">
                             <label for="edit_no_of_terms" class="form-control-label">No of Modules</label>
@@ -4457,94 +3835,6 @@ function checkPresnt($array, $string){
             </div>
         </div>
     </div>
-    <div class="dialogholder hide" id="delete_warning_modal">
-        <div class="dialogwindow animate2">
-            <h6>Confirm Delete</h6>
-            <div class="message">
-                <p>Are you sure you want to delete this record permanently?</p>
-            </div>
-            <input type="hidden" name="delete_warning_id" id="delete_warning_id">
-            <div class="buttons">
-                <button type='button' id='yes_delete_warning'>Yes</button>
-                <button type='button' id='no_delete_warning'>No</button>
-            </div>
-        </div>
-    </div>
-    <div class="dialogholder hide" id="delete_discipline_incident_modal">
-        <div class="dialogwindow animate2">
-            <h6>Confirm Delete</h6>
-            <div class="message">
-                <p>Are you sure you want to delete this record permanently?</p>
-            </div>
-            <input type="hidden" name="delete_discipline_incident_id" id="delete_discipline_incident_id">
-            <div class="buttons">
-                <button type='button' id='yes_delete_discipline_incident'>Yes</button>
-                <button type='button' id='no_delete_discipline_incident'>No</button>
-            </div>
-        </div>
-    </div>
-    <div class="dialogholder hide" id="delete_cat_window">
-        <div class="dialogwindow animate2">
-            <h6>Confirm Delete</h6>
-            <div class="message">
-                <p>Are you sure you want to delete this record permanently?</p>
-            </div>
-            <input type="hidden" name="delete_cat_id" id="delete_cat_id">
-            <div class="buttons">
-                <button type='button' id='yes_delete_cat'>Yes</button>
-                <button type='button' id='no_delete_cat'>No</button>
-            </div>
-        </div>
-    </div>
-    <div class="dialogholder hide" id="delete_lecture_hall">
-        <div class="dialogwindow animate2">
-            <h6>Delete Lecture Hall</h6>
-            <div class="message" id="message">
-                <p>Are you sure you want to delete this lecture hall permanently ?</p>
-            </div>
-            <input type="hidden" name="lecture_hall_id" id="lecture_hall_id">
-            <div class="buttons">
-                <button type='button' id='yes_delete_lecture_hall'>Yes</button>
-                <button type='button' id='no_delete_lecture_hall'>No</button>
-            </div>
-        </div>
-    </div>
-    <div class="dialogholder hide" id="delete_the_hostel_window">
-        <div class="dialogwindow animate2">
-            <h6>Delete Hostel</h6>
-            <div class="message_contents">
-                <b>Note:</b><br>
-                <p class="text-left">All students in those hostels will be removed and lefts unassigned.</p>
-            </div>
-            <hr class="w-50">
-            <div class="message" id="message">
-                <p>Are you sure you want to delete <b><span id="hostel_name_delete">unknown</span></b> permanently ?</p>
-            </div>
-            <input type="hidden" name="hostel_id_delete" id="hostel_id_delete">
-            <div class="buttons">
-                <button type='button' id='yes_delete_the_hostel'>Yes</button>
-                <button type='button' id='no_delete_the_hostel'>No</button>
-            </div>
-        </div>
-    </div>
-    <div class="dialogholder hide" id="delete_the_hostel_room_window">
-        <div class="dialogwindow animate2">
-            <h6>Delete Hostel Room</h6>
-            <div class="message_contents">
-                <b>Note:</b><br>
-                <p class="text-left">All students in this rooms will be removed and left unassigned.</p>
-            </div>
-            <hr class="w-50">
-            <div class="message">
-                <p>Are you sure you want to delete <b><span id="hostel_room_name_delete">unknown</span></b> permanently ?</p>
-            </div>
-            <input type="hidden" name="hostel_room_id_delete" id="hostel_room_id_delete">
-            <div class="buttons">
-                <button type='button' id='yes_delete_the_hostel_room'>Yes</button>
-                <button type='button' id='no_delete_the_hostel_room'>No</button>
-            </div>
-        </div>
-    </div>
     <div class="dialogholder hide" id="delete_revenue_category">
         <div class="dialogwindow animate2">
             <h6>Confirm</h6>
@@ -4689,7 +3979,7 @@ function checkPresnt($array, $string){
         </div>
     </div>
     <div class="dialogholder hide" id="printer_window">
-        <div class="changesubwindow editexams animate2">
+        <div class="dialogwindow animate2">
             <div class="w-100 row">
                 <div class="col-md-10">
                     <h6 class="text-center">Print Exams : <span id="exsms_name"></span> </h6>
@@ -4701,47 +3991,21 @@ function checkPresnt($array, $string){
             <div class="message" id="mssg_name">
                 <p>Below you will be able to print this exam in different formats.</p>
             </div>
-            <form method="POST" action="reports/reports.php" target="_blank" class="w-100 rounded border border-secondary p-2">
-                <div class="conts">
-                    <input type="hidden" name="exam_ids_printing" id="exam_ids_printing">
-                    <label for="what_to_print" class="form-control-label"><b>Select what to print:</b></label>
-                    <select required name="what_to_print" id="what_to_print" class="form-control">
-                        <option value="" hidden>Select option</option>
-                        <option value="examinees_list">Examinees</option>
-                        <option value="examinees_mark_list">Examinees Exams Sheet</option>
-                        <option value="examinees_cat_mark_list">Examinees C.A.T Sheet</option>
-                        <option value="exams_marks">Examinees Exam Marks Sheet</option>
-                        <option value="exams_cat_marks">Examinees C.A.T Marks Sheet</option>
-                        <option hidden value="student_report_card">Students Results Slip</option>
-                    </select>
-                </div>
-
-                <div class="conts">
-                    <!-- class doing to  -->
-                    <label for="classes_for_exams" class="form-control-label"><b>Select Course Level </b></label>
-                    <span id="all_classes_here"><p class="text-success p-1 my-2 border border-success rounded">Course Level Will appear here!</p></span>
-                </div>
-
-                <div class="conts">
-                    <label for="courses_for_exams" class="form-control-label">Course List</label>
-                    <span id="all_couse_lists_print_holder"><p class="text-success p-1 my-2 border border-success rounded">Course List Will appear here!</p></span>
-                </div>
-                <div class="conts hide" id='corse_module_window'>
-                    <label for="course_modules_for_exams" class="form-control-label">Course Modules</label>
-                    <span id="course_modules_list_holder"><p class="text-success p-1 my-2 border border-success rounded">Course Modules will appear here!</p></span>
-                </div>
-                <div class="conts hide" id='corse_unit_window'>
-                    <label for="course_units_for_exams" class="form-control-label">Course Unit</label>
-                    <span id="course_units_list_holder"><p class="text-success p-1 my-2 border border-success rounded">Course units will appear here!</p></span>
-                </div>
-                <div class="conts hide" id='course_cat_modules_window'>
-                    <label for="course_cats_for_exams" class="form-control-label">Exam C.A.T</label>
-                    <span id="course_cats_list_holder"><p class="text-success p-1 my-2 border border-success rounded">Exam C.A.T will appear here!</p></span>
-                </div>
-                <div class="btns">
-                    <button class="my-2" type="submit">Print <i class="fas fa-print"></i></button>
-                    <button class="my-2 mx-1" id="canc_exam_print" type="button">Cancel</button>
-                </div>
+            <form method="POST" action="reports/reports.php" target="_blank" class="w-100">
+                <input type="hidden" name="exam_ids_printing" id="exam_ids_printing">
+                <label for="what_to_print" class="form-control-label"><b>Select what to print:</b></label>
+                <select required name="what_to_print" id="what_to_print" class="form-control">
+                    <option value="" hidden>Select option</option>
+                    <option value="exams_filling_slip">Exams Recording Slip</option>
+                    <option value="exams_marks">Students Exams Marks</option>
+                    <option value="student_report_card">Students Results Slip</option>
+                </select>
+                
+                <!-- class doing to  -->
+                <label for="classes_for_exams" class="form-control-label"><b>Select classes: </b></label>
+                <span id="all_classes_here"></span>
+                <button class="my-2" type="submit">Print <i class="fas fa-print"></i></button>
+                <button class="my-2 mx-1" id="canc_exam_print" type="button">Cancel</button>
             </form>
         </div>
     </div>
@@ -4812,6 +4076,41 @@ function checkPresnt($array, $string){
     <script src="assets/JS/chartconfig.js"></script>
 
     <script>
+        // tinymce.init({
+        // selector: '#email_messages',
+        // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
+        // toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        // menubar: true,
+        // toolbar: true
+        // });
+        
+        // tinymce.init({
+        //     selector: '#email_editored',
+        //     plugins: ["link","code","media","image","emoticons"],
+        //     // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
+        //     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        //     menubar: true,
+        //     toolbar: true,
+        //     setup : function(ed) {
+        //         ed.on('keyup', function(e) {
+        //             working_onit(ed);
+        //         });
+        //     }
+        // });
+        
+        // tinymce.init({
+        //     selector: '#email_contents_exam_reports',
+        //     plugins: ["link","code","media","image","emoticons"],
+        //     // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
+        //     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        //     menubar: true,
+        //     toolbar: true,
+        //     setup : function(ed) {
+        //         ed.on('keyup', function(e) {
+        //             editSamplesData(ed);
+        //         });
+        //     }
+        // });
 
         // email_messages
         CKEDITOR.replace('email_messages', {
@@ -4860,41 +4159,6 @@ function checkPresnt($array, $string){
             });
         });
     </script>
-    <?php if (date('dm') >= '1512' && date('dm') <= "3105"): ?>
-        <script>
-            // const snowflakes = 20;
-            // const colors = ["#ffffff", "#FDE4F3", "#CFE6F8", "#ECE4F4"]; // preset colors
-
-            // for (let i = 0; i < snowflakes; i++) {
-            //     const snow = document.createElement("div");
-            //     snow.innerHTML = "❄";
-
-            //     // random color from preset list
-            //     snow.style.color = colors[Math.floor(Math.random() * colors.length)];
-
-            //     snow.style.position = "fixed";
-            //     snow.style.top = Math.random() * -100 + "px";
-            //     snow.style.left = Math.random() * window.innerWidth + "px";
-            //     snow.style.fontSize = Math.random() * 20 + 10 + "px";
-            //     snow.style.opacity = Math.random();
-            //     snow.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
-            //     snow.style.pointerEvents = "none";
-            //     snow.style.zIndex = "9999";
-
-            //     document.body.appendChild(snow);
-            // }
-
-            // const style = document.createElement("style");
-            // style.innerHTML = `
-            // @keyframes fall {
-            //     to {
-            //         transform: translateY(110vh);
-            //     }
-            // }
-            // `;
-            // document.head.appendChild(style);
-        </script>
-    <?php endif; ?>
 </body>
 
 </html>

@@ -167,6 +167,7 @@
                                 <option value="fulltime">Fulltime Mode</option>
                                 <option value="evening">Hybrid Mode</option>
                                 <option value="weekend">Weekend Mode</option>
+                                <option value="online">Online Mode</option>
                                 <option value="all">All Modes</option>
                             </select>
                         </div>
@@ -298,28 +299,11 @@
                                 <div class="row my-1">
                                     <div class="col-md-6">
                                         <p id="boarding_status_changer"></p>
-                                        <div class="tableme">
-                                            <table class="table">
-                                                <tr>
-                                                    <td colspan="2"><h6 class="text-center"><b>Quick Actions</b></h6></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Delete Students:</td>
-                                                    <td>
-                                                        <span class="btn btn-sm btn-outline-danger" id="prompt_delete_student"><i class="fas fa-trash"></i> Delete <img class="hide" src="images/ajax_clock_small.gif" id="delete_student_load"></span>
-                                                    </td>
-                                                </tr>
-                                                <tr class="d-none">
-                                                    <td colspan="2"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Boarding Status:</td>
-                                                    <td>
-                                                        <p class="my-2"><span id="boarding_status"> <span style="background-color: green; color:white;" class="rounded p-1 ">Enrolled</span> || <span id="enroll_stud_boarding" class="link">Un - Enroll ?</span></span>
-                                                        <img class="hide" src="images/ajax_clock_small.gif" id="boarding_status_load"></p>
-                                                    </td>
-                                                </tr>
-                                            </table>
+                                        <p style="width: fit-content;" class="link my-2" id="prompt_delete_student"><i class="fas fa-trash"></i> Permanently Delete Student<img class="hide" src="images/ajax_clock_small.gif" id="delete_student_load"></p>
+                                        <hr>
+                                        <div class="hide">
+                                            <p class="my-2">Boarding status: <span id="boarding_status"> <span style="background-color: green; color:white;" class="rounded p-1 ">Enrolled</span> || <span id="enroll_stud_boarding" class="link">Un - Enroll ?</span></span>
+                                            <img class="hide" src="images/ajax_clock_small.gif" id="boarding_status_load"></p>
                                         </div>
                                     </div>
                                     <div class="col-md-6 border-left-0" style="border-left: 1px solid gray;">
@@ -579,6 +563,7 @@
                                         <option selected value="fulltime">Fulltime Mode</option>
                                         <option value="evening">Hybrid Mode</option>
                                         <option value="weekend">Weekend Mode</option>
+                                        <option value="online">Online Mode</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">

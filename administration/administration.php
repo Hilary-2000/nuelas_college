@@ -36,9 +36,9 @@
                     <progress class="form-control my-1 hide" id="upload_new_students" value="0" max="100"></progress>
                     <p id="error_message_holder_new_student"></p>
                     <label for="first_row" class="form-control-label">First Row Number</label>
-                    <input type="number" class="form-control" name="first_row" id="first_row" value="1" placeholder="First Row number">
+                    <input type="number" name="first_row" id="first_row" value="1" placeholder="First Row number">
                     <label for="last_row_number" class="form-control-label">Last Row Number</label>
-                    <input type="number" class="form-control" name="last_row_number" id="last_row_number" placeholder="Last Row number">
+                    <input type="number" name="last_row_number" id="last_row_number" placeholder="Last Row number">
                     <button type="button" id="upload_new_students_button" class="">Upload</button>
                 </div>
             </div>
@@ -144,6 +144,7 @@
                             <option selected value="fulltime">Fulltime Mode</option>
                             <option value="evening">Hybrid Mode</option>
                             <option value="weekend">Weekend Mode</option>
+                            <option value="online">Online Mode</option>
                         </select>
                     </div>
                     <div class="conts">

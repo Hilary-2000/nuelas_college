@@ -1395,11 +1395,13 @@
                                     ? ($next_mod->evening_cost ?? 0)
                                     : ($study_mode == "fulltime"
                                         ? ($next_mod->fulltime_cost ?? 0)
-                                        : ($next_mod->termly_cost ?? 0)));
+                                        : ($study_mode == "online"
+                                            ? ($next_mod->online_cost ?? 0)
+                                            : ($next_mod->termly_cost ?? 0))));
                         }
 
                         // Fees structure component
-                        $fs_col = $study_mode == "weekend" ? "sum(`TERM_3`)" : ($study_mode == "evening" ? "sum(`TERM_2`)" : "sum(`TERM_1`)");
+                        $fs_col = $study_mode == "weekend" ? "sum(`TERM_3`)" : ($study_mode == "evening" ? "sum(`TERM_2`)" : ($study_mode == "online" ? "sum(`TERM_4`)" : "sum(`TERM_1`)"));
                         if ($issetup && count($other_vh) > 0) {
                             $select = "SELECT $fs_col AS 'TOTALS' FROM `fees_structure` WHERE ids IN (" . join(',', $other_vh) . ")";
                         } elseif (!$issetup) {
