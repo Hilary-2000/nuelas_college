@@ -6,7 +6,7 @@ if(session_status()==PHP_SESSION_NONE){
 }
 date_default_timezone_set('Africa/Nairobi');
 $_SERVER['REQUEST_METHOD'] = "";
-$databases = ['nuelas_college', 'lizola_college_new'];
+$databases = ['nuelas_college', 'lizola_college_new', 'lawrenzo_college'];
 foreach ($databases as $database) {
     // $_SESSION['databasename'] = $database;
     include_once("/var/www/html/lizola_college_new/college_sims/ajax/finance/financial.php");
