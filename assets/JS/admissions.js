@@ -3246,6 +3246,36 @@ function tablebtnlistener() {
                     let course_history = splitdata[42];
                     display_course_list_table(course_history, splitdata[43]);
 
+                    // show the active module cost next to the study mode dropdown
+                    var active_module = course_history != null && course_history.module_terms ? course_history.module_terms.find(function(m){ return m.status == 1; }) : null;
+                    function updateStudyModeCostHolder(mode) {
+                        var labels = { fulltime: "Fulltime Module Cost", evening: "Hybrid Module Cost", weekend: "Weekend Module Cost", online: "Online Module Cost" };
+                        var cost = 0;
+                        if (active_module) {
+                            if (mode === "fulltime") cost = active_module.fulltime_cost || 0;
+                            else if (mode === "evening") cost = active_module.evening_cost || 0;
+                            else if (mode === "weekend") cost = active_module.weekend_cost || 0;
+                            else if (mode === "online") cost = active_module.online_cost || 0;
+                        }
+                        if (mode && labels[mode]) {
+                            cObj("study_mode_cost_label").innerText = labels[mode];
+                            cObj("study_mode_cost_value").innerText = cost.toLocaleString();
+                            cObj("study_mode_cost_holder").classList.remove("d-none");
+                        } else {
+                            cObj("study_mode_cost_holder").classList.add("d-none");
+                        }
+                    }
+                    updateStudyModeCostHolder(valObj("edit_study_mode"));
+
+                    cObj("edit_study_mode").onchange = function() {
+                        var mode = this.value;
+                        document.querySelectorAll(".fulltime_cost_selector").forEach(function(el){ el.parentElement.classList.toggle("d-none", mode !== "fulltime"); });
+                        document.querySelectorAll(".hybrid_cost_selector").forEach(function(el){ el.parentElement.classList.toggle("d-none", mode !== "evening"); });
+                        document.querySelectorAll(".weekend_cost_selector").forEach(function(el){ el.parentElement.classList.toggle("d-none", mode !== "weekend"); });
+                        document.querySelectorAll(".online_cost_selector").forEach(function(el){ el.parentElement.classList.toggle("d-none", mode !== "online"); });
+                        updateStudyModeCostHolder(mode);
+                    };
+
                     cObj("lastyr_fees_balance").innerText = "Kes "+splitdata[47];
                     cObj("edit_student_contacts").value = splitdata[48];
                     cObj("edit_student_email").value = splitdata[49];
@@ -3321,7 +3351,8 @@ function display_course_list_table(course_history, json_data) {
         var start_date_end_date = "<div class='row mt-1 "+data_status+"' id='start_date_end_date_window_"+index+"'><div class='col-md-9'><label class='form-control-label' for='start_date_"+index+"'><b>Start Date</b></label><input class='form-control start_date_selector' id='start_date_"+index+"' type='date' value='"+start_date+"'></div><div class='col-md-9 mt-1'><label class='form-control-label' for='end_date_"+index+"' ><b>End Date</b></label><input class='form-control end_date_selector' id='end_date_"+index+"' type='date' value='"+end_date+"'></div>";
         start_date_end_date += "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "fulltime" ? "" : "d-none")+"'><label class='form-control-label' for='fulltime_amount_"+index+"' ><b>Fulltime Cost</b></label><input class='form-control fulltime_cost_selector' id='fulltime_amount_"+index+"' type='number' value='"+course_history.module_terms[index].fulltime_cost+"'></div>";
         start_date_end_date += "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "evening" ? "" : "d-none")+"'><label class='form-control-label' for='hybrid_amount_"+index+"' ><b>Hybrid Cost</b></label><input class='form-control hybrid_cost_selector' id='hybrid_amount_"+index+"' type='number' value='"+course_history.module_terms[index].evening_cost+"'></div>";
-        start_date_end_date+= "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "weekend" ? "" : "d-none")+"'><label class='form-control-label' for='weekend_amount_"+index+"' ><b>Weekend Cost</b></label><input class='form-control weekend_cost_selector' id='weekend_amount_"+index+"' type='number' value='"+course_history.module_terms[index].weekend_cost+"'></div></div>";
+        start_date_end_date+= "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "weekend" ? "" : "d-none")+"'><label class='form-control-label' for='weekend_amount_"+index+"' ><b>Weekend Cost</b></label><input class='form-control weekend_cost_selector' id='weekend_amount_"+index+"' type='number' value='"+course_history.module_terms[index].weekend_cost+"'></div>";
+        start_date_end_date+= "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "online" ? "" : "d-none")+"'><label class='form-control-label' for='online_amount_"+index+"' ><b>Online Cost</b></label><input class='form-control online_cost_selector' id='online_amount_"+index+"' type='number' value='"+(course_history.module_terms[index].online_cost || 0)+"'></div></div>";
         var reset_button = course_history.module_terms[0].status == 1 ? "<span class='btn btn-sm btn-outline-success mt-2' id='reset_course_term_module'><i class='fa fa-cog'></i> Reset</span>" : "";
         var data_to_display = "<h4 class='text-center'>Course Progress <input id='course_level_invalue' hidden value='"+JSON.stringify(course_history)+"'><input id='course_level_value' hidden value='"+JSON.stringify(json_data)+"'></h4><table class='table'><tr><th>Course Level</th><th>Course Name</th><th>Module Terms</th><th>Status</th><th>period</th></tr>";
         data_to_display+="<tr><td rowspan='"+course_history.module_terms.length+"' style='vertical-align: middle;'><b>"+course_history.course_level_name+"</b></td><td rowspan='"+course_history.module_terms.length+"' style='vertical-align: middle;'><b>"+course_history.course_name+"</b></td><td>"+course_history.module_terms[0].term_name+"<br>"+reset_button+"</td><td><label class='form-control-label' for='checked1' >Status : </label> <select class='form-control select_options' id='select_option_0'><option value='' hidden>Select Option</option><option value='0' "+(course_history.module_terms[0].status == 0 ? "selected" : "")+">In-Active</option><option "+(course_history.module_terms[0].status == 1 ? "selected" : "")+" value='1'>Active</option><option "+(course_history.module_terms[0].status == 2 ? "selected" : "")+" value='2'>Completed</option></select>"+start_date_end_date+"</td><td>"+(course_history.module_terms[0].start_date != null && course_history.module_terms[0].start_date.length > 0 ? "Start Date : "+"<b>"+formatDate_1(course_history.module_terms[0].start_date)+"</b>"+"<br>End Date : "+"<b>"+formatDate_1(course_history.module_terms[0].end_date)+"</b>" : "In-Active") +"</td></tr>";
@@ -3335,7 +3366,8 @@ function display_course_list_table(course_history, json_data) {
             var start_date_end_date = "<div class='row mt-1 "+data_status+"' id='start_date_end_date_window_"+index+"'><div class='col-md-9'><label class='form-control-label' for='start_date_"+index+"'><b>Start Date</b></label><input class='form-control start_date_selector' id='start_date_"+index+"' type='date' value='"+start_date+"'></div><div class='col-md-9 mt-1'><label class='form-control-label' for='end_date_"+index+"' ><b>End Date</b></label><input class='form-control end_date_selector' id='end_date_"+index+"' type='date' value='"+end_date+"'></div>";
             start_date_end_date += "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "fulltime" ? "" : "d-none")+"'><label class='form-control-label' for='fulltime_amount_"+index+"' ><b>Fulltime Cost</b></label><input class='form-control fulltime_cost_selector' id='fulltime_amount_"+index+"' type='number' value='"+course_history.module_terms[index].fulltime_cost+"'></div>";
             start_date_end_date += "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "evening" ? "" : "d-none")+"'><label class='form-control-label' for='hybrid_amount_"+index+"' ><b>Hybrid Cost</b></label><input class='form-control hybrid_cost_selector' id='hybrid_amount_"+index+"' type='number' value='"+course_history.module_terms[index].evening_cost+"'></div>";
-            start_date_end_date+= "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "weekend" ? "" : "d-none")+"'><label class='form-control-label' for='weekend_amount_"+index+"' ><b>Weekend Cost</b></label><input class='form-control weekend_cost_selector' id='weekend_amount_"+index+"' type='number' value='"+course_history.module_terms[index].weekend_cost+"'></div></div>";
+            start_date_end_date+= "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "weekend" ? "" : "d-none")+"'><label class='form-control-label' for='weekend_amount_"+index+"' ><b>Weekend Cost</b></label><input class='form-control weekend_cost_selector' id='weekend_amount_"+index+"' type='number' value='"+course_history.module_terms[index].weekend_cost+"'></div>";
+            start_date_end_date+= "<div class='col-md-9 mt-1 "+(valObj("edit_study_mode") == "online" ? "" : "d-none")+"'><label class='form-control-label' for='online_amount_"+index+"' ><b>Online Cost</b></label><input class='form-control online_cost_selector' id='online_amount_"+index+"' type='number' value='"+(course_history.module_terms[index].online_cost || 0)+"'></div></div>";
             let delete_button = (course_history.module_terms.length-1 == index) ? "<span class='btn btn-sm btn-outline-danger' id='delete_course_term_module'><i class='fa fa-trash'></i> Del</span>" : "";
             let resetBtn =  course_history.module_terms[index].status == 1 ? "<span class='btn btn-sm btn-outline-success mt-2' id='reset_course_term_module'><i class='fa fa-cog'></i> Reset</span>" : "";
             data_to_display+="<tr><td>"+course_history.module_terms[index].term_name+"<br>"+delete_button+resetBtn+"</td><td><label class='form-control-label' for='select_option_1' >Status : </label> <select class='form-control select_options' id='select_option_"+index+"'><option value='' hidden>Select Option</option><option value='0' "+(course_history.module_terms[index].status == 0 ? "selected" : "")+">In-Active</option><option "+(course_history.module_terms[index].status == 1 ? "selected" : "")+" value='1'>Active</option><option "+(course_history.module_terms[index].status == 2 ? "selected" : "")+" value='2'>Completed</option></select>"+start_date_end_date+"</td><td>"+(course_history.module_terms[index].start_date!=null && course_history.module_terms[index].start_date.length > 0 ? "Start Date : "+"<b>"+formatDate_1(course_history.module_terms[index].start_date)+"</b>"+"<br>End Date : "+"<b>"+formatDate_1(course_history.module_terms[index].end_date)+"</b>" : "In-Active") +"</td></tr>";
@@ -5138,6 +5170,7 @@ cObj("save_add_expense").onclick = function () {
     err += checkBlank("term_one");
     err += checkBlank("term_two");
     err += checkBlank("term_three");
+    err += checkBlank("term_four");
     err += checkBlank("boarders_regular");
     if (cObj("expe_err").innerText.length > 0) {
         err++;
@@ -5163,12 +5196,13 @@ cObj("save_add_expense").onclick = function () {
             var term_one = valObj("term_one");
             var term_two = valObj("term_two");
             var term_three = valObj("term_three");
+            var term_four = valObj("term_four");
             var roles = valObj("boarders_regular");
             var course = valObj("course_lists_fees_structure");
             var course_level = valObj("course_level_fees_structure");
 
             // send to the server for processing!
-            var datapass = "?add_expense=true&expense_name=" + expense_name + "&term_one=" + term_one + "&term_two=" + term_two + "&term_three=" + term_three + "&course_level=" + course_level + "&roles=" + roles+"&course="+course;
+            var datapass = "?add_expense=true&expense_name=" + expense_name + "&term_one=" + term_one + "&term_two=" + term_two + "&term_three=" + term_three + "&term_four=" + term_four + "&course_level=" + course_level + "&roles=" + roles+"&course="+course;
             sendData1("GET", "finance/financial.php", datapass, cObj("err_handler_10"));
             setTimeout(() => {
                 var ids = setInterval(() => {

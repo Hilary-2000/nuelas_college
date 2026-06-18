@@ -2738,6 +2738,10 @@ function checkPresnt($array, $string){
                             <input class="form-control" value="0" type="number" name="term_three" id="term_three" placeholder="Weekend Amount">
                         </div>
                         <div class="conts">
+                            <label class="form-control-label" for="term_four">Online Amount: <br></label>
+                            <input class="form-control" value="0" type="number" name="term_four" id="term_four" placeholder="Online Amount">
+                        </div>
+                        <div class="conts">
                             <label class="form-control-label" for="boarders_regular">Fees type: <br></label>
                             <select class="form-control" name="boarders_regular" id="boarders_regular">
                                 <option value="" hidden>Select..</option>
@@ -3285,6 +3289,10 @@ function checkPresnt($array, $string){
                         <div class="conts">
                             <label class="form-control-label" for="term_three1">Weekend Amount: <br></label>
                             <input class="form-control" value="0" type="number" name="term_three1" id="term_three1" placeholder="Weekend Amount">
+                        </div>
+                        <div class="conts">
+                            <label class="form-control-label" for="term_four1">Online Amount: <br></label>
+                            <input class="form-control" value="0" type="number" name="term_four1" id="term_four1" placeholder="Online Amount">
                         </div>
                         <div class="conts">
                             <label class="form-control-label" for="boarders1_regular1">Fees type: <br></label>
