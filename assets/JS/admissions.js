@@ -3734,6 +3734,7 @@ cObj("save_course_progress").onclick = function () {
                 course_level_value.module_terms[index].fulltime_cost = !checkBlank("fulltime_amount_"+index) ? valObj("fulltime_amount_"+index)*1 : 0
                 course_level_value.module_terms[index].evening_cost = !checkBlank("hybrid_amount_"+index) ? valObj("hybrid_amount_"+index)*1 : 0
                 course_level_value.module_terms[index].weekend_cost = !checkBlank("weekend_amount_"+index) ? valObj("weekend_amount_"+index)*1 : 0
+                course_level_value.module_terms[index].online_cost = !checkBlank("online_amount_"+index) ? valObj("online_amount_"+index)*1 : 0
             }
         }
 
