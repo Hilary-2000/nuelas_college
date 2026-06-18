@@ -6,9 +6,8 @@ if(session_status()==PHP_SESSION_NONE){
 }
 date_default_timezone_set('Africa/Nairobi');
 
-$_SESSION['databasename'] = 'lizola_college';
-// include("../../connections/conn2.php");
-include("/var/www/html/lizola_college/college_sims/connections/conn2.php");
+$_SESSION['databasename'] = 'nuelas_college';
+include("/opt/lampp/htdocs/nuelas_college/connections/conn2.php");
 if ($conn2) {
     // include("../finance/financial.php");
     // GET ALL COURSE
@@ -57,7 +56,8 @@ if ($conn2) {
                                     $student_course[$key]->module_terms[$key_mod+1]->end_date = date("YmdHis", strtotime($course_duration));
 
                                     // add the balance to the student
-                                    $term = "TERM_1";
+                                    $study_mode_val = strtolower($row['study_mode'] ?? 'fulltime');
+                                    $term = $study_mode_val === 'weekend' ? 'TERM_3' : ($study_mode_val === 'evening' ? 'TERM_2' : ($study_mode_val === 'online' ? 'TERM_4' : 'TERM_1'));
                                     $student_balance = getBalanceReports($row['adm_no'], $term, $conn2);
                                     $update = "UPDATE student_data SET balance_carry_forward = ?, my_course_list = ? WHERE adm_no = ?";
                                     $stmt = $conn2->prepare($update);
@@ -141,8 +141,8 @@ function getFeesAsFromTermAdmited($current_term,$conn2,$classes,$admno){
         $class = "".$classes."";
         $course_enrolled = $student_data['course_done'];
 
-        // get the term they are in
-        $select = "SELECT sum(`TERM_1`) AS 'TOTALS' FROM `fees_structure` WHERE `classes` = ? AND `course` = ? AND `activated` = 1  and `roles` = 'regular';";
+        // get the term they are in — use the TERM column matching the student's study_mode
+        $select = "SELECT sum(`{$current_term}`) AS 'TOTALS' FROM `fees_structure` WHERE `classes` = ? AND `course` = ? AND `activated` = 1  and `roles` = 'regular';";
         $stmt = $conn2->prepare($select);
         $stmt->bind_param("ss",$class,$course_enrolled);
         $stmt->execute();
