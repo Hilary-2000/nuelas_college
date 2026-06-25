@@ -1354,16 +1354,16 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }else{
                 echo "<p class='text-success'>An error occured during update!</p>";
             }
-        }elseif (isset($_GET['updatestudinfor'])) {
-            $class = $_GET['class'];
-            $index = $_GET['index'];
-            $bcnos = $_GET['bcnos'];
-            $course_level_hidden = $_GET['course_level_hidden'];
-            $course_chosen_level_hidden = $_GET['course_chosen_level_hidden'];
-            $yearOfStudy = studentYOS($conn2,$_GET['adminnumber']);
-            $oldYear = withoutLatest($conn2,$_GET['adminnumber']);
+        }elseif (isset($_POST['updatestudinfor'])) {
+            $class = $_POST['class'];
+            $index = $_POST['index'];
+            $bcnos = $_POST['bcnos'];
+            $course_level_hidden = $_POST['course_level_hidden'];
+            $course_chosen_level_hidden = $_POST['course_chosen_level_hidden'];
+            $yearOfStudy = studentYOS($conn2,$_POST['adminnumber']);
+            $oldYear = withoutLatest($conn2,$_POST['adminnumber']);
             $newYOS = explode(":",$yearOfStudy)[0].":".$class;
-            $reason_for_leaving = $_GET['reason_for_leaving'];
+            $reason_for_leaving = $_POST['reason_for_leaving'];
             if (strlen($oldYear) > 0) {
                 $newYOS = $oldYear."|".explode(":",$yearOfStudy)[0].":".$class;
             }else{
@@ -1376,52 +1376,52 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             if ($index == "N/A") {
                 $index = 0;
             }
-            $dob = $_GET['dob'];
-            $genders = $_GET['genders'];
-            $disabled = $_GET['disabled'];
-            $describe = $_GET['describe'];
-            $address = $_GET['address'];
-            $pnamed = $_GET['pnamed'];
-            $pcontacts = $_GET['pcontacts'];
-            $paddress = $_GET['paddress'];
-            $pemail = $_GET['pemail'];
-            $prelation = $_GET['prelation'];
-            $adminno = $_GET['adminnumber'];
-            $snamed = $_GET['snamed'];
-            $fnamed = $_GET['fnamed'];
-            $lnamed = $_GET['lnamed'];
-            $study_mode = $_GET['study_mode'];
-            
-            $parentname2 = $_GET['parentname2'];
-            $parentcontact = $_GET['parentcontact'];
-            $parentrelation = $_GET['parentrelation'];
-            $pemails = $_GET['pemails'];
-            $occupation1 = $_GET['occupation1'];
-            $occupation2 = $_GET['occupation2'];
-            $medical_history = $_GET['medical_history'];
-            $clubs_in_sporters = $_GET['clubs_in_sporters'];
-            $previous_schools = $_GET['previous_schools'];
-            $doas = $_GET['doas'];
-            $course_chosen = $_GET['course_chosen'];
-            $existing_course_details = $_GET['existing_course_details'];
-            $intake_year_edit = $_GET['intake_year_edit'];
-            $intake_month_edit = $_GET['intake_month_edit'];
-            $course_progress = $_GET['course_progress'];
-            $student_contacts = $_GET['student_contacts'];
-            $student_email = $_GET['student_email'];
-            $college_branch = (isset($_GET['college_branch']) && $_GET['college_branch'] !== '') ? $_GET['college_branch'] : null;
-            $edit_county = isset($_GET['edit_county']) ? $_GET['edit_county'] : '';
-            $edit_heard_about_us = isset($_GET['edit_heard_about_us']) ? $_GET['edit_heard_about_us'] : '';
-            $edit_referral_name = isset($_GET['edit_referral_name']) ? $_GET['edit_referral_name'] : '';
-            $edit_referral_phone = isset($_GET['edit_referral_phone']) ? $_GET['edit_referral_phone'] : '';
-            $edit_heard_others_specify = isset($_GET['edit_heard_others_specify']) ? $_GET['edit_heard_others_specify'] : '';
+            $dob = $_POST['dob'];
+            $genders = $_POST['genders'];
+            $disabled = $_POST['disabled'];
+            $describe = $_POST['describe'];
+            $address = $_POST['address'];
+            $pnamed = $_POST['pnamed'];
+            $pcontacts = $_POST['pcontacts'];
+            $paddress = $_POST['paddress'];
+            $pemail = $_POST['pemail'];
+            $prelation = $_POST['prelation'];
+            $adminno = $_POST['adminnumber'];
+            $snamed = $_POST['snamed'];
+            $fnamed = $_POST['fnamed'];
+            $lnamed = $_POST['lnamed'];
+            $study_mode = $_POST['study_mode'];
+
+            $parentname2 = $_POST['parentname2'];
+            $parentcontact = $_POST['parentcontact'];
+            $parentrelation = $_POST['parentrelation'];
+            $pemails = $_POST['pemails'];
+            $occupation1 = $_POST['occupation1'];
+            $occupation2 = $_POST['occupation2'];
+            $medical_history = $_POST['medical_history'];
+            $clubs_in_sporters = $_POST['clubs_in_sporters'];
+            $previous_schools = $_POST['previous_schools'];
+            $doas = $_POST['doas'];
+            $course_chosen = $_POST['course_chosen'];
+            $existing_course_details = $_POST['existing_course_details'];
+            $intake_year_edit = $_POST['intake_year_edit'];
+            $intake_month_edit = $_POST['intake_month_edit'];
+            $course_progress = $_POST['course_progress'];
+            $student_contacts = $_POST['student_contacts'];
+            $student_email = $_POST['student_email'];
+            $college_branch = (isset($_POST['college_branch']) && $_POST['college_branch'] !== '') ? $_POST['college_branch'] : null;
+            $edit_county = isset($_POST['edit_county']) ? $_POST['edit_county'] : '';
+            $edit_heard_about_us = isset($_POST['edit_heard_about_us']) ? $_POST['edit_heard_about_us'] : '';
+            $edit_referral_name = isset($_POST['edit_referral_name']) ? $_POST['edit_referral_name'] : '';
+            $edit_referral_phone = isset($_POST['edit_referral_phone']) ? $_POST['edit_referral_phone'] : '';
+            $edit_heard_others_specify = isset($_POST['edit_heard_others_specify']) ? $_POST['edit_heard_others_specify'] : '';
             // echo $doas." in null";
 
             // process the student course progress
             // if they have changed the course update the new course
             $changed = 0;
-            $course_level_hidden = $_GET['course_level_hidden'];
-            $course_chosen_level_hidden = $_GET['course_chosen_level_hidden'];
+            $course_level_hidden = $_POST['course_level_hidden'];
+            $course_chosen_level_hidden = $_POST['course_chosen_level_hidden'];
             if($course_level_hidden != $class || $course_chosen_level_hidden != $course_chosen){
                 $changed = 1;
             }
@@ -2726,8 +2726,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
         }elseif (isset($_GET['getclass'])) {
             $select = "SELECT * FROM `settings` WHERE `sett` = 'class'";
             $stmt = $conn2->prepare($select);
-            $select_class_id = $_GET['select_class_id'];
-            $value_prefix = $_GET['value_prefix'];
+            $select_class_id = $_GET['select_class_id'] ?? '';
+            $value_prefix = $_GET['value_prefix'] ?? '';
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {

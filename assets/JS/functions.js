@@ -209,8 +209,14 @@ function sendData1(method, file, datapassing, object, callback = null) {
             (object != null && object != undefined) ? object.innerHTML = "<p class='red_notice'>Cannot establish connection to server.<br>Try reloading your page</p>" : "";
         }
     };
-    xml.open(method, "ajax/" + file + datapassing, true);
-    xml.send();
+    if (method.toUpperCase() === "POST") {
+        xml.open("POST", "ajax/" + file, true);
+        xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xml.send(datapassing.replace(/^\?/, ""));
+    } else {
+        xml.open(method, "ajax/" + file + datapassing, true);
+        xml.send();
+    }
 }
 
 function UrlExists(url) {
