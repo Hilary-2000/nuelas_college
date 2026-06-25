@@ -152,7 +152,7 @@
                             </select>
                         </div>
                         <div class="col-md-3 hide" id="student_status_window">
-                            <label class="form-control-label" for="student_status_search"><b>Student Search</b> <br></label>
+                            <label class="form-control-label" for="student_status_search"><b>Student Status</b> <br></label>
                             <select name="" id="student_status_search" class="form-control">
                                 <option value="" hidden>Select student status</option>
                                 <option value="1">Active</option>
