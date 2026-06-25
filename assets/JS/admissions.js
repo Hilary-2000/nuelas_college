@@ -4077,7 +4077,7 @@ cObj("updatestudinfor").onclick = function () {
                 datapass += "&edit_county="+encodeURIComponent(edit_county)+"&edit_heard_about_us="+encodeURIComponent(edit_heard_about_us)+"&edit_referral_name="+encodeURIComponent(edit_referral_name)+"&edit_referral_phone="+encodeURIComponent(edit_referral_phone)+"&edit_heard_others_specify="+encodeURIComponent(edit_heard_others_specify);
 
                 cObj("updateerrors").innerHTML = "";
-                sendData1("GET", "administration/admissions.php", datapass, cObj("updateerrors"));
+                sendData1("POST", "administration/admissions.php", datapass, cObj("updateerrors"));
                 setTimeout(() => {
                     var timeout = 0;
                     var ids = setInterval(() => {
