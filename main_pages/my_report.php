@@ -196,6 +196,26 @@
                             <option value="both">Both (Active &amp; Inactive)</option>
                         </select>
                     </div>
+                    <div class="col-md-4 hide" id="branch_filter_win">
+                        <label for="branch_filter" class="form-label"><b>Filter by Branch</b></label>
+                        <select name="branch_filter" id="branch_filter" class="form-control">
+                            <option value="">All Branches</option>
+                            <?php
+                            $sel_br = "SELECT * FROM `settings` WHERE `sett` = 'branches'";
+                            $stmt_br = $conn2->prepare($sel_br);
+                            $stmt_br->execute();
+                            $res_br = $stmt_br->get_result();
+                            if($res_br && $br_row = $res_br->fetch_assoc()){
+                                $br_list = json_decode($br_row['valued']);
+                                if(is_array($br_list)){
+                                    foreach($br_list as $br){
+                                        echo "<option value='".htmlspecialchars($br->id)."'>".htmlspecialchars($br->name)."</option>";
+                                    }
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
                     <div class="col-md-4 hide" id="expense_cats_windows">
                         <label for="expense_categorized" class="form-label"><b>Expense Categories</b><img src="images/ajax_clock_small.gif" id="expense_cats_loaders" class="hide"></label>
                         <p id="exp_cat_select_holder"></p>
