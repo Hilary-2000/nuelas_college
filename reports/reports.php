@@ -2676,7 +2676,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         }
 
                         
-                        // Redirect output to a client’s web browser (Xls)
+                        // Redirect output to a client's web browser (Xls)
                         header('Content-Type: application/vnd.ms-excel');;
                         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                         header('Cache-Control: max-age=0');
@@ -2835,7 +2835,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                     $worksheet->getColumnDimension($letters[$indexing])->setAutoSize(true);
                                 }
                             }
-                            // Redirect output to a client’s web browser (Xls)
+                            // Redirect output to a client's web browser (Xls)
                             header('Content-Type: application/vnd.ms-excel');;
                             header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                             header('Cache-Control: max-age=0');
@@ -3003,7 +3003,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
     
                             
-                            // Redirect output to a client’s web browser (Xls)
+                            // Redirect output to a client's web browser (Xls)
                             header('Content-Type: application/vnd.ms-excel');;
                             header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                             header('Cache-Control: max-age=0');
@@ -3133,7 +3133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
     
                             
-                            // Redirect output to a client’s web browser (Xls)
+                            // Redirect output to a client's web browser (Xls)
                             header('Content-Type: application/vnd.ms-excel');;
                             header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                             header('Cache-Control: max-age=0');
@@ -3273,7 +3273,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         }
 
                         
-                        // Redirect output to a client’s web browser (Xls)
+                        // Redirect output to a client's web browser (Xls)
                         header('Content-Type: application/vnd.ms-excel');;
                         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                         header('Cache-Control: max-age=0');
@@ -3453,7 +3453,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 }
                             }
                             
-                            // Redirect output to a client’s web browser (Xls)
+                            // Redirect output to a client's web browser (Xls)
                             header('Content-Type: application/vnd.ms-excel');;
                             header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                             header('Cache-Control: max-age=0');
@@ -3562,7 +3562,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     }
                 }
                 
-                // Redirect output to a client’s web browser (Xls)
+                // Redirect output to a client's web browser (Xls)
                 header('Content-Type: application/vnd.ms-excel');;
                 header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                 header('Cache-Control: max-age=0');
@@ -3664,7 +3664,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $worksheet->getColumnDimension($letters[$indexing])->setAutoSize(true);
                         }
                     }
-                    // Redirect output to a client’s web browser (Xls)
+                    // Redirect output to a client's web browser (Xls)
                     header('Content-Type: application/vnd.ms-excel');;
                     header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                     header('Cache-Control: max-age=0');
@@ -3751,7 +3751,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $worksheet->getColumnDimension($letters[$indexing])->setAutoSize(true);
                             }
                         }
-                        // Redirect output to a client’s web browser (Xls)
+                        // Redirect output to a client's web browser (Xls)
                         header('Content-Type: application/vnd.ms-excel');;
                         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                         header('Cache-Control: max-age=0');
@@ -3853,7 +3853,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $worksheet->getColumnDimension($letters[$indexing])->setAutoSize(true);
                         }
                     }
-                    // Redirect output to a client’s web browser (Xls)
+                    // Redirect output to a client's web browser (Xls)
                     header('Content-Type: application/vnd.ms-excel');;
                     header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                     header('Cache-Control: max-age=0');
@@ -3884,6 +3884,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $course_name = isset($_POST['course_name']) ? $_POST['course_name'] : null;
         $expense_category = isset($_POST['expense_category']) ? $_POST['expense_category'] : "All";
         $student_status = isset($_POST['student_status']) ? $_POST['student_status'] : 'active';
+        $branch_filter = isset($_POST['branch_filter']) ? intval($_POST['branch_filter']) : 0;
 
         if ($finance_entity == "fees_collection") {
             if (strlen($student_class_fin) > 0 && strlen($period_selection) > 0 && $student_options == "byClass") {
@@ -4267,6 +4268,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     // get per class
                     $course_id = strlen($course_name) > 0 ? $course_name : null;
                     $student_data = getStudents($student_class_fin, $conn2, $course_id, $student_status);
+                    if($branch_filter > 0){
+                        $student_data = array_values(array_filter($student_data, function($row) use ($branch_filter) {
+                            return $row['branch_name'] == $branch_filter;
+                        }));
+                    }
                     $number = 1;
                     $stud_data = [];
                     $total_fees = 0;
@@ -4279,21 +4285,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $Fullname = ucwords(strtolower($student_data[$index]['first_name'] . " " . $student_data[$index]['second_name']));
                         $gender = $student_data[$index]['gender'] == "Male" ? "M" : "F";
                         $classes = classNameReport($student_class_fin);
-                        
+
                         // get fees to pay by the student
                         $feespaidbystud = getFeespaidByStudent($student_data[$index]['adm_no'], $conn2);
-                        $fees_paid = $feespaidbystud;
+                        $fees_paid = intval(round($feespaidbystud));
                         $balanced = getBalanceReports($student_data[$index]['adm_no'], $term, $conn2);
-                        
+
                         // echo $balanced."<br>";
-                        $balance = ($balanced * 1);
+                        $balance = intval(round($balanced));
                         $total_fees += $balanced + $feespaidbystud;
                         $fees_repo_paid += $feespaidbystud;
                         $total_balances += $balanced;
 
                         // LAST ACADEMIC YEAR BALANCE
                         $last_acad_yr = lastACADyrBal($student_data[$index]['adm_no'], $conn2);
-                        $acad_balance = ($student_data[$index]['balance_carry_forward']);
+                        $acad_balance = intval(round($student_data[$index]['balance_carry_forward']));
                         $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_class_fin, "null", $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                         $transport = isTransport($conn2, $student_data[$index]['adm_no']) ? (transportBalanceSinceAdmission($conn2, $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                         $data = array($number, $Fullname, $student_data[$index]['adm_no'], $classes, $gender, $fees_paid, $balance, $acad_balance);
@@ -4336,7 +4342,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         }
                         $course_names = strlen($course_name) > 0 ? " in ".$courses_name : null;
 
-                        // display the data 
+                        // resolve branch name for title
+                        $branch_label = "";
+                        if($branch_filter > 0){
+                            $sel_br2 = "SELECT * FROM `settings` WHERE `sett` = 'branches'";
+                            $stmt_br2 = $conn2->prepare($sel_br2);
+                            $stmt_br2->execute();
+                            $res_br2 = $stmt_br2->get_result();
+                            if($res_br2 && $br_row2 = $res_br2->fetch_assoc()){
+                                $br_list2 = json_decode($br_row2['valued']);
+                                if(is_array($br_list2)){
+                                    foreach($br_list2 as $br2){
+                                        if($br2->id == $branch_filter){ $branch_label = " - ".$br2->name; break; }
+                                    }
+                                }
+                            }
+                        }
+
+                        // display the data
                         // create the pdf file
                         $pdf = new PDF('P', 'mm', 'A4');
                         $pdf->setHeaderPos(200);
@@ -4344,7 +4367,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $header = array('No', 'Fullname', 'Reg No.', 'Class', 'Sex', 'Fees paid', 'Balance', 'Balance CF');
                         // Data loading
                         // $data = $pdf->LoadData('countries.txt');
-                        $tittle = "Fees list for - " . classNameReport($student_class_fin)." ".$course_names;
+                        $tittle = "Fees list for - " . classNameReport($student_class_fin)." ".$course_names.$branch_label;
                         $data = $stud_data;
                         $pdf->set_document_title($tittle);
                         $pdf->setSchoolLogo("../../" . schoolLogo($conn));
@@ -4364,17 +4387,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $pdf->Ln();
                         $pdf->SetFont('Times', 'I', 10);
                         $pdf->Cell(40, 5, "Fees Paid :", 0, 0, 'L', false);
-                        $pdf->Cell(40, 5, "Kes " . number_format($fees_repo_paid), 0, 0, 'L', false);
+                        $pdf->Cell(40, 5, "Kes " . number_format(round($fees_repo_paid)), 0, 0, 'L', false);
                         $pdf->Ln();
                         $pdf->Cell(40, 5, "Balance :", 0, 0, 'L', false);
-                        $pdf->Cell(40, 5, "Kes " . number_format($total_balances), 0, 0, 'L', false);
+                        $pdf->Cell(40, 5, "Kes " . number_format(round($total_balances)), 0, 0, 'L', false);
                         $pdf->Ln();
                         $pdf->Cell(40, 5, "Fees To be paid :", 0, 0, 'L', false);
-                        $pdf->Cell(40, 5, "Kes " . number_format($total_fees), "T", 0, 'L', false);
+                        $pdf->Cell(40, 5, "Kes " . number_format(round($total_fees)), "T", 0, 'L', false);
                         $pdf->Ln();
                         $pdf->SetFont('Times', 'IU', 12);
                         $pdf->Ln();
-                        $pdf->Cell(200, 8, "Fees Balances for - " . classNameReport($student_class_fin) . " ".$course_names, 0, 0, 'C', false);
+                        $pdf->Cell(200, 8, "Fees Balances for - " . classNameReport($student_class_fin) . " ".$course_names.$branch_label, 0, 0, 'C', false);
                         $pdf->Ln();
                         $pdf->SetFont('Helvetica', 'B', 8);
                         $width = array(8, 33, 18, 15, 8, 38, 38, 38);
@@ -4438,6 +4461,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             // get per class
                             $student_class_fin = $school_classes[$ind];
                             $student_data = getStudents($student_class_fin, $conn2, null, $student_status);
+                            if($branch_filter > 0){
+                                $student_data = array_values(array_filter($student_data, function($row) use ($branch_filter) {
+                                    return $row['branch_name'] == $branch_filter;
+                                }));
+                            }
                             $number = 1;
                             $stud_data = [];
                             $total_fees = 0;
@@ -4452,15 +4480,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $classes = classNameReport($student_class_fin);
                                 // get fees to pay by the student
                                 $feespaidbystud = getFeespaidByStudent($student_data[$index]['adm_no'], $conn2);
-                                $fees_paid = ($feespaidbystud);
+                                $fees_paid = intval(round($feespaidbystud));
                                 $balanced = getBalanceReports($student_data[$index]['adm_no'], $term, $conn2);
-                                $balance = ($balanced * 1);
+                                $balance = intval(round($balanced));
                                 $total_fees += $balanced + $feespaidbystud;
                                 $fees_repo_paid += $feespaidbystud;
                                 $total_balances += $balanced;
                                 // LAST ACADEMIC YEAR BALANCE
                                 $last_acad_yr = lastACADyrBal($student_data[$index]['adm_no'], $conn2);
-                                $acad_balance = ($last_acad_yr);
+                                $acad_balance = intval(round($last_acad_yr));
                                 $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_class_fin) * 1) : "Not-enrolled";
                                 $transport = isTransport($conn2, $student_data[$index]['adm_no']) ? (transportBalanceSinceAdmission($conn2, $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                                 $data = array($number, $Fullname, $student_data[$index]['adm_no'], $classes, $gender, $fees_paid, $balance, $acad_balance);
@@ -4483,17 +4511,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $pdf->Ln();
                                 $pdf->SetFont('Times', 'I', 10);
                                 $pdf->Cell(40, 5, "Fees Paid :", 0, 0, 'L', false);
-                                $pdf->Cell(40, 5, "Kes " . number_format($fees_repo_paid), 0, 0, 'L', false);
+                                $pdf->Cell(40, 5, "Kes " . number_format(round($fees_repo_paid)), 0, 0, 'L', false);
                                 $pdf->Ln();
                                 $pdf->Cell(40, 5, "Balance :", 0, 0, 'L', false);
-                                $pdf->Cell(40, 5, "Kes " . number_format($total_balances), 0, 0, 'L', false);
+                                $pdf->Cell(40, 5, "Kes " . number_format(round($total_balances)), 0, 0, 'L', false);
                                 $pdf->Ln();
                                 $pdf->Cell(40, 5, "Fees To be paid :", 0, 0, 'L', false);
-                                $pdf->Cell(40, 5, "Kes " . number_format($total_fees), "T", 0, 'L', false);
+                                $pdf->Cell(40, 5, "Kes " . number_format(round($total_fees)), "T", 0, 'L', false);
                                 $pdf->Ln();
                                 $pdf->SetFont('Times', 'IU', 12);
                                 $pdf->Ln();
-                                $pdf->Cell(200, 8, "Fees Balances for " . classNameReport($student_class_fin) . "".$course_names, 0, 0, 'C', false);
+                                $pdf->Cell(200, 8, "Fees Balances for " . classNameReport($student_class_fin) . "".$course_names.$branch_label, 0, 0, 'C', false);
                                 $pdf->Ln();
                                 $pdf->SetFont('Helvetica', 'B', 8);
                                 $width = array(8, 33, 18, 15, 8, 38, 38, 38);
@@ -5780,6 +5808,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $reminder_message = $_POST['reminder_message'];
         $expense_category = isset($_POST['expense_category']) ? $_POST['expense_category'] : "All";
         $student_status = isset($_POST['student_status']) ? $_POST['student_status'] : 'active';
+        $branch_filter = isset($_POST['branch_filter']) ? intval($_POST['branch_filter']) : 0;
 
         if ($finance_entity == "fees_collection") {
             if (strlen($student_class_fin) > 0 && strlen($period_selection) > 0 && $student_options == "byClass") {
@@ -5898,7 +5927,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $worksheet->getColumnDimension($letters[$indexing])->setAutoSize(true);
                         }
                     }
-                    // Redirect output to a client’s web browser (Xls)
+                    // Redirect output to a client's web browser (Xls)
                     header('Content-Type: application/vnd.ms-excel');;
                     header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                     header('Cache-Control: max-age=0');
@@ -6030,7 +6059,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $worksheet->getColumnDimension($letters[$indexing])->setAutoSize(true);
                         }
                     }
-                    // Redirect output to a client’s web browser (Xls)
+                    // Redirect output to a client's web browser (Xls)
                     header('Content-Type: application/vnd.ms-excel');;
                     header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                     header('Cache-Control: max-age=0');
@@ -6173,7 +6202,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
                         }
 
-                        // Redirect output to a client’s web browser (Xls)
+                        // Redirect output to a client's web browser (Xls)
                         header('Content-Type: application/vnd.ms-excel');;
                         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                         header('Cache-Control: max-age=0');
@@ -6197,6 +6226,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 if ($student_class_fin != "all") {
                     // get per class
                     $student_data = getStudents($student_class_fin, $conn2, null, $student_status);
+                    if($branch_filter > 0){
+                        $student_data = array_values(array_filter($student_data, function($row) use ($branch_filter) {
+                            return $row['branch_name'] == $branch_filter;
+                        }));
+                    }
                     $number = 1;
                     $stud_data = [];
                     $total_fees = 0;
@@ -6211,15 +6245,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         // get fees to pay by the student
                         $feespaidbystud = getFeespaidByStudent($student_data[$index]['adm_no'], $conn2);
                         // echo $term;
-                        $fees_paid = ($feespaidbystud);
+                        $fees_paid = intval(round($feespaidbystud));
                         $balanced = getBalanceReports($student_data[$index]['adm_no'], $term, $conn2);
-                        $balance = ($balanced * 1);
+                        $balance = intval(round($balanced));
                         $total_fees += $balanced + $feespaidbystud;
                         $fees_repo_paid += $feespaidbystud;
                         $total_balances += $balanced;
                         // LAST ACADEMIC YEAR BALANCE
                         $last_acad_yr = lastACADyrBal($student_data[$index]['adm_no'], $conn2);
-                        $acad_balance = ($last_acad_yr);
+                        $acad_balance = intval(round($last_acad_yr));
                         $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_class_fin, "null", $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                         $transport = isTransport($conn2, $student_data[$index]['adm_no']) ? (transportBalanceSinceAdmission($conn2, $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                         $data = array($number, $Fullname, $student_data[$index]['adm_no'], $classes, $gender, $fees_paid, $balance, $border, $transport, $acad_balance);
@@ -6253,28 +6287,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $worksheet->setCellValue("A2", "Fees Paid");
                         $worksheet->setCellValue("A3", "Balance");
                         $worksheet->setCellValue("A4", "Fees to be paid");
-                        $worksheet->setCellValue("B2", $fees_repo_paid);
-                        $worksheet->setCellValue("B3", $total_balances);
-                        $worksheet->setCellValue("B4", $total_fees);
+                        $worksheet->setCellValue("B2", intval(round($fees_repo_paid)));
+                        $worksheet->setCellValue("B3", intval(round($total_balances)));
+                        $worksheet->setCellValue("B4", intval(round($total_fees)));
                         $worksheet->setCellValue("D7","Fees Balance Table");
-    
+
                         // set the header
                         for ($i = 0; $i < count($header); $i++) {
                             $worksheet->setCellValue("".$letters[$i]."8", $header[$i]);
                         }
                         $spreadsheet->getActiveSheet()->getStyle("A8:".$letters[count($header)-1]."8")->applyFromArray($table_style);
-    
+
                         // set the values for the data
-                        for ($index=0; $index < count($data); $index++) { 
+                        for ($index=0; $index < count($data); $index++) {
                             for($index1=0; $index1 < count($data[$index]); $index1++){
                                 $worksheet->setCellValue("".$letters[$index1]."".($index+9), $data[$index][$index1]);
                             }
                         }
                         $spreadsheet->getActiveSheet()->getStyle("A9:".$letters[count($header)-1]."".(count($data)+8))->applyFromArray($table_style_2);
-    
+
                         // Set active sheet index to the first sheet
                         $spreadsheet->setActiveSheetIndex(0);
-                        
+
                         // set auto width
                         foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
                             // set auto width
@@ -6283,11 +6317,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
                         }
 
-                        // Redirect output to a client’s web browser (Xls)
+                        // Redirect output to a client's web browser (Xls)
                         header('Content-Type: application/vnd.ms-excel');;
                         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                         header('Cache-Control: max-age=0');
-    
+
                         $writer = new Xls($spreadsheet);
                         $writer->save('php://output');
                         exit;
@@ -6321,6 +6355,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             // get per class
                             $student_class_fin = $school_classes[$ind];
                             $student_data = getStudents($student_class_fin, $conn2, null, $student_status);
+                            if($branch_filter > 0){
+                                $student_data = array_values(array_filter($student_data, function($row) use ($branch_filter) {
+                                    return $row['branch_name'] == $branch_filter;
+                                }));
+                            }
                             $number = 1;
                             $stud_data = [];
                             $total_fees = 0;
@@ -6335,15 +6374,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $classes = classNameReport($student_class_fin);
                                 // get fees to pay by the student
                                 $feespaidbystud = getFeespaidByStudent($student_data[$index]['adm_no'], $conn2);
-                                $fees_paid = ($feespaidbystud);
+                                $fees_paid = intval(round($feespaidbystud));
                                 $balanced = getBalanceReports($student_data[$index]['adm_no'], $term, $conn2);
-                                $balance = ($balanced * 1);
+                                $balance = intval(round($balanced));
                                 $total_fees += $balanced + $feespaidbystud;
                                 $fees_repo_paid += $feespaidbystud;
                                 $total_balances += $balanced;
                                 // LAST ACADEMIC YEAR BALANCE
                                 $last_acad_yr = lastACADyrBal($student_data[$index]['adm_no'], $conn2);
-                                $acad_balance = ($last_acad_yr);
+                                $acad_balance = intval(round($last_acad_yr));
                                 $border = isBoarding($student_data[$index]['adm_no'], $conn2) ? (getBoardingFees($conn2, $student_class_fin) * 1) : "Not-enrolled";
                                 $transport = isTransport($conn2, $student_data[$index]['adm_no']) ? (transportBalanceSinceAdmission($conn2, $student_data[$index]['adm_no']) * 1) : "Not-enrolled";
                                 $data = array($number, $Fullname, $student_data[$index]['adm_no'], $classes, $gender, $fees_paid, $balance, $border, $transport, $acad_balance);
@@ -6361,19 +6400,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                     $worksheet->setCellValue("A2", "Fees Paid");
                                     $worksheet->setCellValue("A3", "Balance");
                                     $worksheet->setCellValue("A4", "Fees to be paid");
-                                    $worksheet->setCellValue("B2", $fees_repo_paid);
-                                    $worksheet->setCellValue("B3", $total_balances);
-                                    $worksheet->setCellValue("B4", $total_fees);
+                                    $worksheet->setCellValue("B2", intval(round($fees_repo_paid)));
+                                    $worksheet->setCellValue("B3", intval(round($total_balances)));
+                                    $worksheet->setCellValue("B4", intval(round($total_fees)));
                                     $worksheet->setCellValue("D7","Fees Balance Table");
-                
+
                                     // set the header
                                     for ($i = 0; $i < count($header); $i++) {
                                         $worksheet->setCellValue("".$letters[$i]."8", $header[$i]);
                                     }
                                     $worksheet->getStyle("A8:".$letters[count($header)-1]."8")->applyFromArray($table_style);
-                
+
                                     // set the values for the data
-                                    for ($index=0; $index < count($data); $index++) { 
+                                    for ($index=0; $index < count($data); $index++) {
                                         for($index1=0; $index1 < count($data[$index]); $index1++){
                                             $worksheet->setCellValue("".$letters[$index1]."".($index+9), $data[$index][$index1]);
                                         }
@@ -6389,31 +6428,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                     $worksheet->setCellValue("A2", "Fees Paid");
                                     $worksheet->setCellValue("A3", "Balance");
                                     $worksheet->setCellValue("A4", "Fees to be paid");
-                                    $worksheet->setCellValue("B2", $fees_repo_paid);
-                                    $worksheet->setCellValue("B3", $total_balances);
-                                    $worksheet->setCellValue("B4", $total_fees);
+                                    $worksheet->setCellValue("B2", intval(round($fees_repo_paid)));
+                                    $worksheet->setCellValue("B3", intval(round($total_balances)));
+                                    $worksheet->setCellValue("B4", intval(round($total_fees)));
                                     $worksheet->setCellValue("D7","Fees Balance Table");
-                
+
                                     // set the header
                                     for ($i = 0; $i < count($header); $i++) {
                                         $worksheet->setCellValue("".$letters[$i]."8", $header[$i]);
                                     }
                                     $worksheet->getStyle("A8:".$letters[count($header)-1]."8")->applyFromArray($table_style);
-                
+
                                     // set the values for the data
-                                    for ($index=0; $index < count($data); $index++) { 
+                                    for ($index=0; $index < count($data); $index++) {
                                         for($index1=0; $index1 < count($data[$index]); $index1++){
                                             $worksheet->setCellValue("".$letters[$index1]."".($index+9), $data[$index][$index1]);
                                         }
                                     }
                                     $worksheet->getStyle("A9:".$letters[count($header)-1]."".(count($data)+8))->applyFromArray($table_style_2);
-                        
+
                                 }
                                 $sheet_counter++;
                             }
                         }
 
-                        // Redirect output to a client’s web browser (Xls)
+                        // Redirect output to a client's web browser (Xls)
                         header('Content-Type: application/vnd.ms-excel');;
                         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                         header('Cache-Control: max-age=0');
@@ -6511,7 +6550,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
                         }
 
-                        // Redirect output to a client’s web browser (Xls)
+                        // Redirect output to a client's web browser (Xls)
                         header('Content-Type: application/vnd.ms-excel');;
                         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                         header('Cache-Control: max-age=0');
@@ -6618,7 +6657,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 }
                             }
 
-                            // Redirect output to a client’s web browser (Xls)
+                            // Redirect output to a client's web browser (Xls)
                             $tittle = "Whole School Fees Structure";
                             header('Content-Type: application/vnd.ms-excel');;
                             header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
@@ -6932,7 +6971,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
                         }
 
-                        // Redirect output to a client’s web browser (Xls)
+                        // Redirect output to a client's web browser (Xls)
                         header('Content-Type: application/vnd.ms-excel');;
                         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                         header('Cache-Control: max-age=0');
@@ -7162,7 +7201,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     }
                 }
 
-                // Redirect output to a client’s web browser (Xls)
+                // Redirect output to a client's web browser (Xls)
                 header('Content-Type: application/vnd.ms-excel');;
                 header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                 header('Cache-Control: max-age=0');
@@ -7269,7 +7308,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     }
                 }
 
-                // Redirect output to a client’s web browser (Xls)
+                // Redirect output to a client's web browser (Xls)
                 header('Content-Type: application/vnd.ms-excel');;
                 header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
                 header('Cache-Control: max-age=0');
@@ -14304,7 +14343,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         }
         
 
-        // Redirect output to a client’s web browser (Xls)
+        // Redirect output to a client's web browser (Xls)
         header('Content-Type: application/vnd.ms-excel');;
         header('Content-Disposition: attachment;filename="'.$tittle.' '.date("YmdHis").'.xls"');
         header('Cache-Control: max-age=0');
