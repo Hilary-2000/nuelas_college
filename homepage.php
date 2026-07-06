@@ -6,10 +6,10 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
         $allowed = ["sms_broadcast","update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
@@ -21,7 +21,7 @@ function allowed($id){
         $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "update_personal_profile", "general_reports", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "5") {
-        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "apply_leave_menu", "payroll_advance", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "update_personal_profile","general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "apply_leave_menu", "payroll_advance", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "update_personal_profile","general_reports"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "6") {
         $allowed = ["register_staff", "manage_staff","general_reports", "apply_leave_menu", "payroll_advance"];
@@ -428,6 +428,8 @@ function checkPresnt($array, $string){
                         <button type='button' class="sidebtns <?php echo allowed("supplier_account"); ?> htbtn" id='supplier_btn'><span><img class="icons" src="images/findstud.png"></span> Supplier Accounts</button>
                         <button type='button' class="sidebtns <?php echo allowed("asset_management"); ?> htbtn" id='asset_account_btn'><span><img class="icons" src="images/pay.png"></span> Asset Accounts</button>
                         <button type='button' class="sidebtns <?php echo allowed("finance_report"); ?> htbtn" id='finance_report_btn'><span><img class="icons" src="images/report.png"></span>Financial report</button>
+                        <button type='button' class="sidebtns <?php echo allowed("manage_groups"); ?> htbtn" id='groups_btn'><span><i class="fas fa-users text-dark"></i></span>Groups</button>
+                        <button type='button' class="sidebtns <?php echo allowed("manage_charged_accounts"); ?> htbtn" id='charged_accounts_btn'><span><i class="fas fa-file-invoice-dollar text-dark"></i></span>Charged Accounts</button>
                     </div>
                 </div>
             </div>
@@ -551,6 +553,8 @@ function checkPresnt($array, $string){
             include("financepages/feesstructure.php");
             include("financepages/expenses.php");
             include("financepages/payment_approval.php");
+            include("financepages/groups.php");
+            include("financepages/charged_accounts.php");
             include("financepages/suppliers.php");
             include("financepages/assets.php");
             include("financepages/financial_statements.php");
@@ -4079,6 +4083,8 @@ function checkPresnt($array, $string){
     <script src="assets/JS/academics.js"></script>
     <script src="assets/JS/boarding.js"></script>
     <script src="assets/JS/sms.js"></script>
+    <script src="assets/JS/groups.js"></script>
+    <script src="assets/JS/charged_accounts.js"></script>
     <script src="assets/JS/my_reports.js"></script>
     <script src="assets/JS/chart.min.js"></script>
     <script src="assets/JS/chartconfig.js"></script>

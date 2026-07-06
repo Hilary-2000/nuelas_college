@@ -507,7 +507,7 @@ th{
     border: none;
     margin: auto;
 }
-.add_expense input[type=text],.add_expense input[type=number], .add_expense select, .add_expense input[type=password], 
+.add_expense input[type=text],.add_expense input[type=number], .add_expense select, .add_expense input[type=password],
 .add_expenses input[type=text],.add_expenses input[type=number],
 .add_expenses input[type=date],input[type=date],input[type=number]
 ,input[type=text]{
@@ -518,8 +518,11 @@ th{
     border: 1px solid gray;
     text-align: center;
     font-weight: 600;
-    margin-left: 15px;
+    margin-left: 0;
     font-size: 14px;
+}
+input, textarea, select {
+    margin-left: 0;
 }
 .dates_holder{
     display: flex;

@@ -2983,6 +2983,9 @@ function getStudentNameAdmno() {
                 autocomplete(document.getElementById("student_admno_in"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);
                 autocomplete(document.getElementById("students_admnos_in"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);
                 autocomplete(document.getElementById("student_adm_credit_note"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);
+                if (document.getElementById("charge_admno_input")) {
+                    autocomplete(document.getElementById("charge_admno_input"), stud_fname, sec_name, sur_name, adm_nos, stud_clases);
+                }
                 stopInterval(idfs);
             }
         }, 100);
@@ -3037,6 +3040,8 @@ function autocomplete(inp, arr, arr2, arr3, arr4, arr5) {
                     /**Click the search button when the option is selected */
                     if (inp.id == "studids") {
                         cObj("searchfin1").click();
+                    } else if (inp.id == "charge_admno_input") {
+                        cObj("add_charge_admno_btn").click();
                     }
                     closeAllLists();
                 });

@@ -632,6 +632,14 @@
                             </div>
                             <div class="form-control d-flex flex-wrap my-2 rounded row">
                                 <div class="titles">
+                                    <p>Charged Account</p>
+                                </div>
+                                <input type="hidden" id="charged_account_can_edit" value="<?php echo ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0") ? "1" : "0"; ?>">
+                                <p id="charged_account_holder_raw" class="hide"></p>
+                                <div id="charged_account_student_display" class="w-100"></div>
+                            </div>
+                            <div class="form-control d-flex flex-wrap my-2 rounded row">
+                                <div class="titles">
                                     <p>Numbers</p>
                                 </div>
                                 <div class="col-md-4">
