@@ -342,11 +342,13 @@ if (session_status() === PHP_SESSION_NONE) {
                 $issetup = false;
                 $course_fees = 0;
                 $my_course_list = json_decode($my_course_list);
+                $active_module = null;
                 foreach ($my_course_list as $course) {
                     if ($course->course_status == 1) {
                         $modules = $course->module_terms;
                         foreach ($modules as $module) {
                             if ($module->status == 1) {
+                                $active_module = $module;
                                 $student_data['study_mode'] = strtolower($student_data['study_mode']);
                                 $course_fees = $student_data['study_mode'] == "weekend" ? ($module->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module->fulltime_cost ?? 0) : ($student_data['study_mode'] == "online" ? ($module->online_cost ?? 0) : ($module->termly_cost ?? 0))));
                             }
@@ -356,6 +358,25 @@ if (session_status() === PHP_SESSION_NONE) {
                                 break;
                             }
                         }
+                    }
+                }
+
+                // Charged Account: same synthetic total used by Collect Fees
+                // (payfordetails in financial.php) -- give it its proportional
+                // share of this M-Pesa payment too, same as any other votehead,
+                // unless it's been explicitly unchecked on this module.
+                $charged_account_total = 0;
+                $charged_account_payable = true;
+                if ($active_module && isset($active_module->voteheads)) {
+                    foreach ($active_module->voteheads as $vh) {
+                        if (isset($vh->votehead) && $vh->votehead == "charged_account") {
+                            $charged_account_payable = (bool)$vh->pay;
+                        }
+                    }
+                }
+                if ($charged_account_payable && $active_module && isset($active_module->charged_account->items)) {
+                    foreach ($active_module->charged_account->items as $item) {
+                        $charged_account_total += isset($item->amount) ? (int)$item->amount : 0;
                     }
                 }
 
@@ -396,6 +417,16 @@ if (session_status() === PHP_SESSION_NONE) {
                             $total+= $a_fee->amount_paid;
                             array_push($all_course_fees, $a_fee);
                         }
+                    }
+
+                    if ($charged_account_total > 0) {
+                        $a_fee = new stdClass();
+                        $a_fee->name = "Charged Account";
+                        $a_fee->amount_paid = $charged_account_total;
+                        $a_fee->id = "charged_account";
+                        $a_fee->roles = "Regular";
+                        array_push($all_course_fees, $a_fee);
+                        $total += $charged_account_total;
                     }
                 }else{
                     // is the default course entry
