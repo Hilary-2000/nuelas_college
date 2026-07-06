@@ -3248,6 +3248,11 @@ function tablebtnlistener() {
                     let course_history = splitdata[42];
                     display_course_list_table(course_history, splitdata[43]);
 
+                    // Charged Account: irregular one-off charges on the student's active module
+                    if (typeof loadChargedAccountSection === "function") {
+                        loadChargedAccountSection(splitdata[7]);
+                    }
+
                     // show the active module cost next to the study mode dropdown
                     var active_module = course_history != null && course_history.module_terms ? course_history.module_terms.find(function(m){ return m.status == 1; }) : null;
                     function updateStudyModeCostHolder(mode) {

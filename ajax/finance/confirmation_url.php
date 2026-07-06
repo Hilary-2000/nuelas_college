@@ -364,7 +364,9 @@ if (session_status() === PHP_SESSION_NONE) {
                     $all_votehead = $vhs;
                     $vhs = [];
                     foreach ($all_votehead as $vh) {
-                        if ($vh->pay) {
+                        // "charged_account" is a synthetic id from the Charged Account feature,
+                        // not a real `fees_structure` row -- must never enter this IN (...) query.
+                        if ($vh->pay && $vh->votehead != "charged_account") {
                             array_push($vhs, $vh->votehead);
                         }
                     }
