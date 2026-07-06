@@ -1235,6 +1235,14 @@ function checkPresnt($array, $string){
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section'>9. Financial Reports</label>
                             <input class='finance1' type='checkbox' name='financial_report_section' id='financial_report_section'>
                         </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_groups_sect'>10. Groups</label>
+                            <input class='finance1' type='checkbox' name='manage_groups_sect' id='manage_groups_sect'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_charged_accounts_sect'>11. Charged Accounts</label>
+                            <input class='finance1' type='checkbox' name='manage_charged_accounts_sect' id='manage_charged_accounts_sect'>
+                        </div>
                         <hr>
                         <!-- staft of humanresource section -->
                         <div class='checkboxholder d-none' style='margin:10px 0;padding:0px 0px;display:none;'>
@@ -1418,6 +1426,14 @@ function checkPresnt($array, $string){
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section2'>9. Financial Reports</label>
                             <input class='fill_data finance12' type='checkbox' name='financial_report_section2' id='financial_report_section2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_groups_sect2'>10. Groups</label>
+                            <input class='fill_data finance12' type='checkbox' name='manage_groups_sect2' id='manage_groups_sect2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_charged_accounts_sect2'>11. Charged Accounts</label>
+                            <input class='fill_data finance12' type='checkbox' name='manage_charged_accounts_sect2' id='manage_charged_accounts_sect2'>
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->

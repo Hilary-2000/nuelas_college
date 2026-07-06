@@ -12,7 +12,8 @@
                     <p><strong>What is a Group?</strong></p>
                 </div>
                 <p>- A Group is a saved, named list of students built by applying filters (gender, course, admission date, etc). It spans classes, so it's useful for cohorts like "Hostel students Jan&ndash;April" that a class list can't capture.</p>
-                <p>- Once saved, a Group's membership is fixed. It will not silently change later if a student's details change. Groups can be reused elsewhere, e.g. Charged Accounts.</p>
+                <p>- Groups are how you charge many students at once under Charged Accounts: instead of billing an irregular one-off fee (exam fees, lost uniform, graduation fees) to students one by one, pick a saved Group as the target and the charge is applied to every student in it in a single action.</p>
+                <p>- You can create as many Groups as you need and reuse the same one for future charges. Manage them anytime from "Manage Groups" below: edit the name/description, add or remove members, or delete a Group you no longer need.</p>
             </div>
 
             <div class="d-flex" style="gap:8px;margin-bottom:12px;">
