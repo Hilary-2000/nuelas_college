@@ -6723,6 +6723,14 @@ function getEditedStaffRoles(status = "new"){
                 "Status": status == "edit" ? (cObj("financial_report_section2") != undefined ? (cObj("financial_report_section2").checked ? "yes" : "no") : "no") : (cObj("financial_report_section") != undefined ? (cObj("financial_report_section").checked ? "yes" : "no") : "no")
             },
             {
+                "name": "manage_groups",
+                "Status": status == "edit" ? (cObj("manage_groups_sect2") != undefined ? (cObj("manage_groups_sect2").checked ? "yes" : "no") : "no") : (cObj("manage_groups_sect") != undefined ? (cObj("manage_groups_sect").checked ? "yes" : "no") : "no")
+            },
+            {
+                "name": "manage_charged_accounts",
+                "Status": status == "edit" ? (cObj("manage_charged_accounts_sect2") != undefined ? (cObj("manage_charged_accounts_sect2").checked ? "yes" : "no") : "no") : (cObj("manage_charged_accounts_sect") != undefined ? (cObj("manage_charged_accounts_sect").checked ? "yes" : "no") : "no")
+            },
+            {
                 "name": "sms_broadcast",
                 "Status": status == "edit" ? (cObj("sms_and_broadcast2") != undefined ? (cObj("sms_and_broadcast2").checked ? "yes" : "no") : "no") : (cObj("sms_and_broadcast") != undefined ? (cObj("sms_and_broadcast").checked ? "yes" : "no") : "no")
             },
@@ -7031,7 +7039,23 @@ function checkRoles(roles, edit_status = "new") {
         if(edit_status == "edit"){
             element_id = "financial_report_section2";
         }
-        if(cObj(element_id) != undefined){ 
+        if(cObj(element_id) != undefined){
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "manage_groups"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "manage_groups_sect2";
+        }
+        if(cObj(element_id) != undefined){
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "manage_charged_accounts"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "manage_charged_accounts_sect2";
+        }
+        if(cObj(element_id) != undefined){
             cObj(element_id).checked = roles.Status == "yes";
         }
     }else if(roles.name == "sms_broadcast"){
