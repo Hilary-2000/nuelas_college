@@ -1383,7 +1383,9 @@
                                 if ($vh->votehead == "0" && !$vh->pay) {
                                     $omit_base = true;
                                 }
-                                if ($vh->votehead != "0" && $vh->pay) {
+                                // "charged_account" is a synthetic id from the Charged Account feature,
+                                // not a real `fees_structure` row -- must never enter this IN (...) query.
+                                if ($vh->votehead != "0" && $vh->votehead != "charged_account" && $vh->pay) {
                                     array_push($other_vh, $vh->votehead);
                                 }
                             }

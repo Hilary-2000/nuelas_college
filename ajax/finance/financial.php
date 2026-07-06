@@ -32,18 +32,23 @@
                     $my_course_list = isJson($student_data['my_course_list']) ? json_decode($student_data['my_course_list']) : [];
                     $issetup = false;
                     $vhs = [];
+                    $active_module_term = null;
                     for($index = 0; $index < count($my_course_list); $index++){
                         if($my_course_list[$index]->course_status == 1){
                             // module terms
                             $module_terms = $my_course_list[$index]->module_terms;
                             for ($ind=0; $ind < count($module_terms); $ind++) {
                                 if($module_terms[$ind]->status == 1){
+                                    $active_module_term = $module_terms[$ind];
                                     $student_data['study_mode'] = strtolower($student_data['study_mode']);
                                     $course_fees = $student_data['study_mode'] == "weekend" ? ($module_terms[$ind]->weekend_cost ?? 0) : ($student_data['study_mode'] == "evening" ? ($module_terms[$ind]->evening_cost ?? 0) : ($student_data['study_mode'] == "fulltime" ? ($module_terms[$ind]->fulltime_cost ?? 0) : ($student_data['study_mode'] == "online" ? ($module_terms[$ind]->online_cost ?? 0) : ($module_terms[$ind]->termly_cost ?? 0))));
                                     if(isset($module_terms[$ind]->voteheads) && count($module_terms[$ind]->voteheads) > 0){
                                         $issetup = true;
                                         foreach($module_terms[$ind]->voteheads as $votehead){
-                                            if($votehead->pay){
+                                            // "charged_account" is a synthetic id (handled separately via
+                                            // get_charged_account_total()), not a real `fees_structure` row --
+                                            // it must never be dropped into the WHERE ids IN (...) query below.
+                                            if($votehead->pay && $votehead->votehead != "charged_account"){
                                                 array_push($vhs, $votehead->votehead);
                                             }
                                         }
@@ -86,6 +91,19 @@
                         echo "<p style='color:green;'>There is no payment option set by the administrator</p>";
                     }
 
+                    // Charged Account: irregular one-off charges (lost items, exam fees, etc)
+                    // attached to the student's active module. Shown as a single total line,
+                    // exactly like any other votehead -- the items underneath are for reference only.
+                    $charged_account_total = get_charged_account_total($active_module_term);
+                    if($charged_account_total > 0){
+                        $a_fee = new stdClass();
+                        $a_fee->fees_name = "Charged Account";
+                        $a_fee->fees_amount = $charged_account_total;
+                        $a_fee->fees_id = "charged_account";
+                        $a_fee->fees_role = "Regular";
+                        array_push($all_course_fees, $a_fee);
+                    }
+
                     if(($student_data['balance_carry_forward']*1) > 0){
                         $a_fee = new stdClass();
                         $a_fee->fees_name = "Balance Carry Forward";
@@ -95,7 +113,7 @@
                         array_push($all_course_fees, $a_fee);
                     }
 
-                    if(count($all_course_fees) > 0 && !$issetup || count($vhs) > 0 && $issetup){
+                    if(count($all_course_fees) > 0 && !$issetup || count($vhs) > 0 && $issetup || $charged_account_total > 0){
                         $data_to_display = "<div class='tableme'><input type='hidden' id='payment_for_details' value='[]'><table id='".$object_id."' class='table'><tr><th>No. <input type='checkbox' id='votehead_checks' class='d-none'></th><th>Votehead</th><th>Role</th><th>Total amount to pay</th><th>Amount</th></tr><tbody>";
                         foreach ($all_course_fees as $key => $course_fees) {
                             $data_to_display .= "<tr><td>".($key+1).". <input type='hidden' value='".json_encode($course_fees)."' id='course_details_".($key+1)."'><input type='checkbox' class='votehead_checks' id='votehead_checks_".($key+1)."'></td><td>".$course_fees->fees_name."</td><td><span class='badge bg-primary'>".$course_fees->fees_role."</span></td><td>Kes ".$course_fees->fees_amount."</td><td><input type='number' placeholder='Amount' class='form-control disabled votehead_amounts w-100' disabled='' id='votehead_amounts_".($key+1)."' value='0'></td></tr>";
@@ -270,6 +288,23 @@
                         }
                         $data_to_display.="</tr>";
                     }
+                    // Charged Account: selectable per module like any other votehead. Unset
+                    // (never explicitly toggled) defaults to checked, same "regular" default
+                    // used elsewhere, so existing charges keep being billed until an admin
+                    // actively excludes a module.
+                    $data_to_display.= "<tr><td>".(count($voteheads)+2).". <input type='checkbox' value='charged_account' class='edit_course_fees' id='edit_course_fees_charged_account' checked></td><td>Charged Account</td><td><span class='badge bg-primary'>Regular</span></td>";
+                    foreach($active_course['module_terms'] as $module){
+                        $charged_amount = 0;
+                        if(isset($module['charged_account']['items']) && is_array($module['charged_account']['items'])){
+                            foreach($module['charged_account']['items'] as $item){
+                                $charged_amount += isset($item['amount']) ? (int)$item['amount'] : 0;
+                            }
+                        }
+                        $check_module = checkChargedAccountVotehead($active_course['module_terms'], $module['id']);
+                        $data_to_display.="<td><input type='checkbox' class='edit_course_fees_charged_account' id='edit_module_course_fees_charged_account_".$module['id']."' ".$check_module."> ".($charged_amount > 0 ? "Kes ".number_format($charged_amount) : "-")."</td>";
+                    }
+                    $data_to_display.="</tr>";
+
                     $data_to_display.="</table></div>";
                     echo $data_to_display;
                     return;
@@ -6201,6 +6236,25 @@
         return "";
     }
 
+    // checkVotehead()'s "regular" default only applies when the module has no
+    // voteheads array at all -- but nearly every enrolled student already has one
+    // from course setup, so a brand-new votehead id (like "charged_account") would
+    // always render unchecked there even though nothing was ever explicitly excluded.
+    // This checks purely for an explicit "charged_account" entry and defaults to
+    // checked/payable otherwise, matching is_charged_account_payable()'s semantics.
+    function checkChargedAccountVotehead($modules, $module_id) {
+        foreach ($modules as $module) {
+            if ($module['id'] == $module_id && isset($module['voteheads'])) {
+                foreach ($module['voteheads'] as $votehead) {
+                    if ($votehead['votehead'] == 'charged_account') {
+                        return $votehead['pay'] ? 'checked' : '';
+                    }
+                }
+            }
+        }
+        return 'checked';
+    }
+
     function checkCourseVotehead($course_voteheads, $module_number, $votehead_id, $votehead_type = "provisional"){
         foreach($course_voteheads as $votehead_module){
             if($module_number == $votehead_module['module']){
@@ -7954,12 +8008,14 @@
         $other_vh = [];
         $issetup = false;
         $my_course_list = isJson($student_data['my_course_list']) ? json_decode($student_data['my_course_list']) : [];
+        $active_module_term = null;
         for($index = 0; $index < count($my_course_list); $index++){
             if($my_course_list[$index]->course_status == 1){
                 // module terms
                 $module_terms = $my_course_list[$index]->module_terms;
                 for ($ind=0; $ind < count($module_terms); $ind++) {
                     if($module_terms[$ind]->status == 1){
+                        $active_module_term = $module_terms[$ind];
                         $student_data['study_mode'] = strtolower($student_data['study_mode']);
                         $omit_course_fees = false;
                         if(isset($module_terms[$ind]->voteheads)){
@@ -7968,7 +8024,10 @@
                                 if($valued->votehead == "0" && !$valued->pay){
                                     $omit_course_fees = true;
                                 }
-                                if($valued->votehead != "0" && $valued->pay){
+                                // "charged_account" is a synthetic id (handled separately via
+                                // get_charged_account_total()), not a real `fees_structure` row --
+                                // it must never be dropped into the WHERE ids IN (...) query below.
+                                if($valued->votehead != "0" && $valued->votehead != "charged_account" && $valued->pay){
                                     array_push($other_vh, $valued->votehead);
                                 }
                             }
@@ -8023,9 +8082,12 @@
             }
         }
 
+        // Charged Account: irregular one-off charges owed on the active module
+        $course_fees += get_charged_account_total($active_module_term);
+
         // add student balance carry forward
         $course_fees += $student_balance;
-        
+
         return $course_fees;
     }
 
@@ -9403,6 +9465,44 @@
         return ((is_string($string) &&
                 (is_object(json_decode($string)) ||
                 is_array(json_decode($string))))) ? true : false;
+    }
+
+    // Charged Account: irregular one-off charges (lost items, exam fees, graduation
+    // fees, etc) attached to a student's active module term, stored at
+    // `module_term->charged_account->items[]`. Treated as a single votehead-like
+    // total wherever fee items are shown/paid -- the items are for reference only.
+    function get_charged_account_items($active_module_term) {
+        if (!$active_module_term || !isset($active_module_term->charged_account) || !isset($active_module_term->charged_account->items)) {
+            return [];
+        }
+        return $active_module_term->charged_account->items;
+    }
+
+    // Mirrors the "regular" default in checkVotehead(): if this module's voteheads
+    // array has never had a "charged_account" entry explicitly saved, treat it as
+    // checked/payable (same default shown on the Votehead Status modal). Once an
+    // admin has explicitly toggled it, that saved pay flag is respected.
+    function is_charged_account_payable($active_module_term) {
+        if (!$active_module_term || !isset($active_module_term->voteheads)) {
+            return true;
+        }
+        foreach ($active_module_term->voteheads as $votehead) {
+            if (isset($votehead->votehead) && $votehead->votehead == "charged_account") {
+                return (bool)$votehead->pay;
+            }
+        }
+        return true;
+    }
+
+    function get_charged_account_total($active_module_term) {
+        if (!is_charged_account_payable($active_module_term)) {
+            return 0;
+        }
+        $total = 0;
+        foreach (get_charged_account_items($active_module_term) as $item) {
+            $total += isset($item->amount) ? (int)$item->amount : 0;
+        }
+        return $total;
     }
 
     function log_finance($text){
