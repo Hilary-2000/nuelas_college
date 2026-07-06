@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Ladybird College Management Information System (CMIS)** — a PHP-based college management platform for Kenyan institutions, covering academics, finance, HR, boarding, transport, and SMS notifications.
 
+## Writing Style (Strict)
+
+**Avoid em dashes in content written into the system.** This includes UI labels, descriptions, placeholders, button text, help text, notices, error/success messages, seed or sample data, and any other text that ends up stored or displayed in the application. Only use an em dash when listing items or when stating and defining something (e.g., naming a term and then explaining what it is). Do not use it to join two independent clauses in ordinary prose; use a period, comma, colon, semicolon, or parentheses for that instead.
+
 ## Branch / College Mapping
 
 This repository serves three distinct colleges, each on its own git branch. Each branch may have a different feature set, UI layout, and module limitations tailored to that college.
