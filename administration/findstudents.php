@@ -75,6 +75,16 @@
         </div>
         <hr class="w-75 mx-auto my-2">
         <div class="middle1">
+            <div class="topsearch2" id="alumni_candidates_banner">
+                <div class="cont">
+                    <p id="alumni_candidates_count_raw" class="hide"></p>
+                    <button type="button" class="btn btn-primary btn-sm" id="check_alumni_candidates">Move Completed Students to Alumni <img class="hide" src="images/ajax_clock_small.gif" id="alumni_candidates_loader"></button>
+                    <span id="show_alumni_candidates_notice" class="hide pulse-notice text-success">
+                        <span style="font-size: 20px;"><i class="fas fa-hand-point-left"></i></span>
+                        <span id="alumni_candidates_notice_count">0</span> student(s) ready to move to Alumni
+                    </span>
+                </div>
+            </div>
             <div class="topsearch">
                 <div class="topsearch1">
                     <p><Strong>What you need to know:</Strong></p>
@@ -298,13 +308,21 @@
                             <div class="cont">
                                 <div class="row my-1">
                                     <div class="col-md-6">
-                                        <p id="boarding_status_changer"></p>
-                                        <p style="width: fit-content;" class="link my-2" id="prompt_delete_student"><i class="fas fa-trash"></i> Permanently Delete Student<img class="hide" src="images/ajax_clock_small.gif" id="delete_student_load"></p>
-                                        <hr>
-                                        <div class="hide">
-                                            <p class="my-2">Boarding status: <span id="boarding_status"> <span style="background-color: green; color:white;" class="rounded p-1 ">Enrolled</span> || <span id="enroll_stud_boarding" class="link">Un - Enroll ?</span></span>
-                                            <img class="hide" src="images/ajax_clock_small.gif" id="boarding_status_load"></p>
+                                        <div class="sm-toggle-card mt-1 mb-1" style="max-width:380px;">
+                                            <div>
+                                                <p style="font-weight:700;font-size:14px;margin:0;">Boarding Enrolled</p>
+                                                <p style="font-size:12px;color:#888;margin:0;" id="boarding_toggle_label">Loading…</p>
+                                            </div>
+                                            <label class="sm-switch">
+                                                <input type="checkbox" id="boarding_toggle">
+                                                <span class="sm-slider"></span>
+                                            </label>
                                         </div>
+                                        <span id="boarding_toggle_feedback" style="font-size:12px;min-height:16px;display:block;margin-bottom:6px;color:#555;"></span>
+                                        <p id="boarding_status_changer" style="font-size:12px;"></p>
+                                        <img class="hide" src="images/ajax_clock_small.gif" id="boarding_status_load">
+                                        <span id="boarding_status" class="hide"></span>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" id="prompt_delete_student"><i class="fas fa-trash-alt"></i> Delete Student <img class="hide" src="images/ajax_clock_small.gif" id="delete_student_load"></button>
                                     </div>
                                     <div class="col-md-6 border-left-0" style="border-left: 1px solid gray;">
                                         <div class="cont">
@@ -324,108 +342,47 @@
                             <div class="titlesd">
                                 <p>Student Personal Data</p>
                             </div>
-                            <div class="mx-1 row border border-secondary py-2 bg-light">
-                                <div class="col-md-8 bg-infor">
-                                    <div class="container">
-                                        <h6 class="text-center">Finance Summary</h6>
-                                    </div>
+                            <!-- quick-stats banner (replaces the old Finance Summary / Attendance Statistics grid) -->
+                            <div id="student_detail_stats" class="mb-3"></div>
+                            <!-- hidden elements kept for existing JS writes/reads -->
+                            <span class="hide" id="current_term"></span>
+                            <span class="hide" id="total_amount_to_pay"></span>
+                            <span class="hide" id="fees_paid_this_term"></span>
+                            <span class="hide" id="fees_balances"></span>
+                            <span class="hide" id="total_paid_fees"></span>
+                            <span class="hide" id="transport_enrolled_std_infor"></span>
+                            <span class="hide" id="board_enrolled_std_infor"></span>
+                            <span class="hide" id="attendance_this_term"></span>
+                            <span class="hide" id="attendance_this_year"></span>
+                            <div class="card shadow-sm mb-3" style="border-left:4px solid #00897b;">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title mb-3" style="color:#00695c;"><i class="fas fa-wallet mr-2"></i>Finance & Enrolment Details</h6>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>Total Fees <small class="d-none">as of <span id="current_term"></span></small>:</b></p>
+                                        <div class="col-md-3 mb-2">
+                                            <p class="mb-1"><b>Balance carry forward:</b></p>
+                                            <p class="mb-0"><span id="lastyr_fees_balance">Kes 10,000</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_last_yr_academic_balance"><i class="fas fa-pen-fancy"></i></span></p>
                                         </div>
-                                        <div class="col-md-6">
-                                            <p id="total_amount_to_pay">Kes 10,000</p>
+                                        <div class="col-md-3 mb-2">
+                                            <p class="mb-1"><b>Votehead Status: <i class="fas fa-info-circle" title="This highlights the voteheads the students are paying for!"></i> </b></p>
+                                            <p class="mb-0"><span id="view_votehead_status">10</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_votehead_status"><i class="fas fa-pen-fancy"></i></span></p>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>Balance carry forward:</b></p>
+                                        <div class="col-md-3 mb-2">
+                                            <p class="mb-1"><b>Fees Discount: <i class="fas fa-info-circle" title="This discount only affects the Regular & Boarding Fees only!. Transport fees won`t be affected by this discount"></i> </b></p>
+                                            <p class="mb-0"><span id="fees_discount">10</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_discounts"><i class="fas fa-pen-fancy"></i></span></p>
                                         </div>
-                                        <div class="col-md-6">
-                                            <p><span id="lastyr_fees_balance">Kes 10,000</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_last_yr_academic_balance"><i class="fas fa-pen-fancy"></i></span></p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>Fees Discount: <i class="fas fa-info-circle" title="This discount only affects the Regular & Boarding Fees only!. Transport fees won`t be affected by this discount"></i> </b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p><span id="fees_discount">10</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_discounts"><i class="fas fa-pen-fancy"></i></span></p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>Votehead Status: <i class="fas fa-info-circle" title="This highlights the voteheads the students are paying for!"></i> </b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p><span id="view_votehead_status">10</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_votehead_status"><i class="fas fa-pen-fancy"></i></span></p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>Fees Paid <!--as of <span id="current_term2"></span>-->:</b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p id="fees_paid_this_term">Kes 10,000</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>Fees Balance:</b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p id="fees_balances">Kes 10,000</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>Tot Paid Since Joining:</b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p id="total_paid_fees">Kes 56,000</p>
-                                        </div>
-                                    </div>
-                                    <div class="row d-none">
-                                        <div class="col-md-6">
-                                            <p><b>Transport Enrolled:</b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p id="transport_enrolled_std_infor">Yes</p>
-                                        </div>
-                                    </div>
-                                    <div class="row d-none">
-                                        <div class="col-md-6">
-                                            <p><b>Boarding Enrolled:</b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p id="board_enrolled_std_infor">No</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <h6 class="text-center">Attendance Statistics</h6>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>This Term:</b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p id="attendance_this_term">8/10 (80%)</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p><b>This Academic Year:</b></p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p id="attendance_this_year">80/100 (80%)</p>
+                                        <div class="col-md-3 mb-2">
+                                            <p class="mb-1"><b>Charged Account:</b></p>
+                                            <p class="mb-0"><span id="charged_account_summary">Kes 0 - 0 item(s)</span><span class="link mx-2" id="view_charged_account_btn" title="View / Edit Charged Account"><i class="fas fa-eye"></i></span></p>
+                                            <input type="hidden" id="charged_account_can_edit" value="<?php echo ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0") ? "1" : "0"; ?>">
+                                            <p id="charged_account_holder_raw" class="hide"></p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-control d-flex flex-wrap my-2 rounded form-group row">
-                                <div class="titles">
-                                    <p>Basic information </p>
-                                </div>
+                            <div class="card shadow-sm mb-3" style="border-left:4px solid #1976d2;">
+                                <div class="card-body py-3">
+                                <h6 class="card-title mb-3" style="color:#1976d2;"><i class="fas fa-user mr-2"></i>Basic Information</h6>
+                                <div class="row">
                                 <div class="col-md-4">
                                     <label for="snamed_in" class="form-control-label"><b>Surname: </b><br></label>
                                     <input type="text" class="form-control w-100" autocomplete="off" id="snamed_in"  placeholder ="Surname">
@@ -590,6 +547,8 @@
                                     <label class="form-control-label" for="college_branch_edit"><b>College Branch: </b><img src="images/ajax_clock_small.gif" class="hide" id="college_branch_loader_edit"><br></label>
                                     <div id="college_branch_edit_holder"></div>
                                 </div>
+                                </div>
+                                </div>
                             </div>
                             <div class="form-control d-flex flex-wrap my-2 rounded form-group row">
                                 <div id="course_details_display">
@@ -629,14 +588,6 @@
                                 <br>
                                 <span class="btn btn-secondary btn-sm w-50 mx-auto my-2" id="save_course_progress"><i class="fa fa-save"></i> Save Course Progress <img src="images/ajax_clock_small.gif" class="hide" id="save_course_progress_loader"></span>
                                 <div id="error_handler_course_progress"></div>
-                            </div>
-                            <div class="form-control d-flex flex-wrap my-2 rounded row">
-                                <div class="titles">
-                                    <p>Charged Account</p>
-                                </div>
-                                <input type="hidden" id="charged_account_can_edit" value="<?php echo ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0") ? "1" : "0"; ?>">
-                                <p id="charged_account_holder_raw" class="hide"></p>
-                                <div id="charged_account_student_display" class="w-100"></div>
                             </div>
                             <div class="form-control d-flex flex-wrap my-2 rounded row">
                                 <div class="titles">

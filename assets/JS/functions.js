@@ -440,6 +440,14 @@ function strreverse(str) {
 function cObj(objectid) {
     return document.getElementById(objectid);
 }
+function escHtml(text) {
+    var div = document.createElement("div");
+    div.innerText = text ?? "";
+    return div.innerHTML;
+}
+function stripTags(text) {
+    return String(text ?? "").replace(/<[^>]*>/g, "");
+}
 function valObj(objectid) {
     if (document.getElementById(objectid) == null) {
         return "";

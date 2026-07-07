@@ -3420,6 +3420,96 @@ function checkPresnt($array, $string){
                 </div>
             </div>
         </div>
+
+        <!-- ============== EDIT CHARGE ITEM MODAL ============== -->
+        <div class="confirmpaymentwindow hide" id="edit_charge_item_modal">
+            <div class="confirmpayment animate">
+                <h6 class="text-center">Edit Charge</h6>
+                <input type="hidden" id="edit_charge_adm_no">
+                <input type="hidden" id="edit_charge_id">
+                <div class="mb-2 text-left">
+                    <label class="form-control-label"><b>Description</b></label>
+                    <input type="text" class="form-control" id="edit_charge_description">
+                </div>
+                <div class="mb-2 text-left">
+                    <label class="form-control-label"><b>Amount (Kes)</b></label>
+                    <input type="number" class="form-control" id="edit_charge_amount" min="0">
+                </div>
+                <p id="edit_charge_feedback"></p>
+                <div class="btns">
+                    <button type="button" id="save_edit_charge_btn">Save</button>
+                    <button type="button" id="cancel_edit_charge_btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== DELETE CHARGE ITEM MODAL ============== -->
+        <div class="confirmpaymentwindow hide" id="delete_charge_item_modal">
+            <div class="confirmpayment animate">
+                <h6 class="text-center">Delete Charge</h6>
+                <p>Are you sure you want to delete <b id="delete_charge_description_label"></b>?</p>
+                <input type="hidden" id="delete_charge_adm_no">
+                <input type="hidden" id="delete_charge_id">
+                <div class="btns">
+                    <button type="button" id="confirm_delete_charge_btn">Yes</button>
+                    <button type="button" id="cancel_delete_charge_btn">No</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== VIEW/EDIT STUDENT CHARGED ACCOUNT MODAL ============== -->
+        <div class="confirmpaymentwindow hide" id="view_student_charged_account_modal">
+            <div class="window_lg animate">
+                <div class="conts">
+                    <p class="funga" id="close_view_student_charged_account_modal">&times;</p>
+                    <h5 class="text-center"><b>Charged Account</b></h5>
+                </div>
+                <input type="hidden" id="charged_account_modal_adm_no">
+                <div id="charged_account_modal_items_holder"></div>
+                <div class="border border-secondary rounded p-3 mt-3">
+                    <h6 class="mb-3">Add a Charge</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label class="form-control-label"><b>Description</b></label>
+                            <input type="text" class="form-control form-control-sm" id="charged_account_modal_description" placeholder="e.g. Lost cardigan">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-control-label"><b>Period</b></label>
+                            <input type="text" class="form-control form-control-sm" id="charged_account_modal_period" placeholder="e.g. Term 2 2026">
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <label class="form-control-label"><b>Amount (Kes)</b></label>
+                            <input type="number" class="form-control form-control-sm" id="charged_account_modal_amount" min="1">
+                        </div>
+                        <div class="col-md-2 mb-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-sm btn-success w-100" id="add_charged_account_item_btn"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                    </div>
+                    <p id="charged_account_modal_feedback"></p>
+                </div>
+                <div class="btns">
+                    <button type="button" id="close_view_student_charged_account_btn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== MOVE COMPLETED STUDENTS TO ALUMNI MODAL ============== -->
+        <div class="confirmpaymentwindow hide" style="overflow:auto;" id="alumni_candidates_modal">
+            <div class="window_lg animate">
+                <div class="conts">
+                    <p class="funga" id="close_alumni_candidates_modal">&times;</p>
+                    <h5 class="text-center"><b>Move Completed Students to Alumni</b></h5>
+                </div>
+                <p class="text-secondary" style="font-size:13px;">These students have no active module remaining and have completed their last module. Select the ones you want to move to Alumni.</p>
+                <div id="alumni_candidates_list_holder"></div>
+                <p id="alumni_candidates_feedback"></p>
+                <div class="btns">
+                    <button type="button" id="move_selected_to_alumni_btn">Move Selected to Alumni</button>
+                    <button type="button" id="close_alumni_candidates_btn">Close</button>
+                </div>
+            </div>
+        </div>
+
         <div class="confirmpaymentwindow hide" style="overflow: auto;" id="add_payment_options_window">
             <div class="changesubwindow editexams animate">
                 <div class="container w-100">

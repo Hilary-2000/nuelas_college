@@ -774,6 +774,55 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
             echo json_encode($stats);
+        }elseif (isset($_GET['get_alumni_candidates_count'])) {
+            $select = "SELECT `my_course_list` FROM `student_data` WHERE `deleted` = 0 AND `stud_class` != '-1' AND `stud_class` != '-2' AND `stud_class` != '-3'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $count = 0;
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    if (isStudentCourseCompleted($row['my_course_list'])) {
+                        $count++;
+                    }
+                }
+            }
+            echo json_encode(["count" => $count]);
+        }elseif (isset($_GET['get_alumni_candidates'])) {
+            $course_list = [];
+            $select_courses = "SELECT * FROM `settings` WHERE `sett` = 'courses';";
+            $statement = $conn2->prepare($select_courses);
+            $statement->execute();
+            $course_result = $statement->get_result();
+            if ($course_result && ($course_row = $course_result->fetch_assoc())) {
+                $course_list = isJson_report($course_row['valued']) ? json_decode($course_row['valued']) : [];
+            }
+
+            $select = "SELECT `adm_no`, `first_name`, `second_name`, `surname`, `stud_class`, `course_done`, `my_course_list` FROM `student_data` WHERE `deleted` = 0 AND `stud_class` != '-1' AND `stud_class` != '-2' AND `stud_class` != '-3'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $candidates = [];
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    if (isStudentCourseCompleted($row['my_course_list'])) {
+                        $course_name = "N/A";
+                        foreach ($course_list as $course) {
+                            if ($course->id == $row['course_done']) {
+                                $course_name = $course->course_name;
+                                break;
+                            }
+                        }
+                        $candidates[] = [
+                            "adm_no" => $row['adm_no'],
+                            "name" => ucwords(strtolower($row['first_name']." ".$row['second_name']." ".$row['surname'])),
+                            "course_level" => myClassName($row['stud_class']),
+                            "course" => $course_name
+                        ];
+                    }
+                }
+            }
+            echo json_encode($candidates);
         }elseif (isset($_GET['studentscounttoday'])) {
             $date = date("Y-m-d");
             $count = "SELECT COUNT(activated) as 'Total' FROM `student_data` WHERE `activated` = 1 and `deleted` =0 and D_O_A = ?";
@@ -1090,8 +1139,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         $searh = "<span style='color:brown;'>\"Alumni\"</span>";
                     }
 
-                    // student_status
-                    $student_status = !empty($_GET['student_status']) ? $_GET['student_status'] : "both";
+                    // student_status -- note: use isset()/!== "" here, not empty(). The
+                    // "In-Active" option's value is the string "0", which PHP's empty()
+                    // treats as empty, silently falling back to "both" and ignoring the
+                    // selection entirely.
+                    $student_status = (isset($_GET['student_status']) && $_GET['student_status'] !== "") ? $_GET['student_status'] : "both";
                     $filter_module_val = !empty($_GET['by_module_filter']) ? strtoupper(trim($_GET['by_module_filter'])) : "";
                     createStudentn4($conn2,$result,$searh, $student_status, $filter_module_val);//creates table
                 }else{
@@ -1161,23 +1213,28 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             $males++;
                         }
                             
-                        $counted = false;
-                        if(isJson_report($row['my_course_list'])){
-                            $my_course_list = json_decode($row['my_course_list'], true);
-                            for ($i=0; $i < count($my_course_list); $i++) { 
-                                if($my_course_list[$i]['course_status'] == "1"){
-                                    foreach($my_course_list[$i]['module_terms'] as $module_term){
-                                        if($module_term['status'] == "1"){
-                                            $active++;
-                                            $counted = true;
-                                            break;
+                        // Alumni ('-1'), Transferred ('-2'), and Student Enquiries ('-3') are
+                        // neither Active nor In-Active -- they are excluded from both tallies.
+                        $is_alumni_transferred_or_enquiry = in_array(trim($row['stud_class']), ['-1', '-2', '-3']);
+                        if (!$is_alumni_transferred_or_enquiry) {
+                            $counted = false;
+                            if(isJson_report($row['my_course_list'])){
+                                $my_course_list = json_decode($row['my_course_list'], true);
+                                for ($i=0; $i < count($my_course_list); $i++) {
+                                    if($my_course_list[$i]['course_status'] == "1"){
+                                        foreach($my_course_list[$i]['module_terms'] as $module_term){
+                                            if($module_term['status'] == "1"){
+                                                $active++;
+                                                $counted = true;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        if(!$counted){
-                            $inactive++;
+                            if(!$counted){
+                                $inactive++;
+                            }
                         }
                     }
                     $totaled = 0;
@@ -6364,7 +6421,22 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
     }elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
         include("../../connections/conn1.php");
         include("../../connections/conn2.php");
-        if(isset($_POST['updatestudinfor'])) {
+        if (isset($_POST['move_to_alumni'])) {
+            $selected = isset($_POST['selectedStd']) ? json_decode($_POST['selectedStd'], true) : [];
+            if (!is_array($selected) || count($selected) == 0) {
+                echo json_encode(["status" => "error", "message" => "No students selected."]);
+                exit();
+            }
+            $updated = 0;
+            $update = $conn2->prepare("UPDATE `student_data` SET `stud_class` = '-1' WHERE `adm_no` = ?");
+            foreach ($selected as $adm_no) {
+                $update->bind_param("s", $adm_no);
+                if ($update->execute()) {
+                    $updated++;
+                }
+            }
+            echo json_encode(["status" => "success", "message" => $updated." student(s) moved to Alumni.", "updated" => $updated]);
+        }elseif(isset($_POST['updatestudinfor'])) {
             $class = $_POST['class'];
             $index = $_POST['index'];
             $bcnos = $_POST['bcnos'];
@@ -9658,8 +9730,13 @@ function isJson_report($string) {
                 // module filter
                 $module_match = empty($filter_module) || $active_module_name === strtoupper($filter_module);
 
+                // Alumni ('-1'), Transferred ('-2'), and Student Enquiries ('-3') are neither
+                // Active nor In-Active -- exclude them when a specific status is being filtered on.
+                $is_alumni_transferred_or_enquiry = in_array(trim($row['stud_class']), ['-1', '-2', '-3']);
+                $status_match = ($student_status == "both") || (!$is_alumni_transferred_or_enquiry && (($course_status == "In-Active" && $student_status == "0") || ($course_status != "In-Active" && $student_status == "1")));
+
                 // course_status
-                if($module_match && (($course_status == "In-Active" && $student_status == "0") || ($course_status != "In-Active" && $student_status == "1") || $student_status == "both")){
+                if($module_match && $status_match){
                     // echo json_encode($row);
                     $xs++;
                     $data.="<tr class='search_this_main' id='search_this_main".($xs)."'><td>".($xs)."</td>";
@@ -14291,6 +14368,30 @@ function isJson_report($string) {
                         }
                     }
                 }
+            }
+        }
+        return false;
+    }
+
+    // A student has "completed" their course when their active course track has
+    // no module_terms left active (status==1) and the last module_term is marked
+    // Completed (status==2) -- i.e. there is nothing left for them to progress through.
+    function isStudentCourseCompleted($my_course_list){
+        if (empty($my_course_list) || $my_course_list === '[]') return false;
+        $courses = json_decode($my_course_list, true);
+        if (!is_array($courses)) return false;
+        foreach ($courses as $course) {
+            if (!isset($course['course_status']) || $course['course_status'] != 1) continue;
+            if (empty($course['module_terms']) || !is_array($course['module_terms'])) continue;
+            $modules = $course['module_terms'];
+            foreach ($modules as $module) {
+                if (isset($module['status']) && $module['status'] == "1") {
+                    return false;
+                }
+            }
+            $lastModule = end($modules);
+            if (isset($lastModule['status']) && $lastModule['status'] == "2") {
+                return true;
             }
         }
         return false;
