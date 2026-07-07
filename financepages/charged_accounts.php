@@ -99,39 +99,4 @@
         </div>
     </div>
 
-    <!-- ============== EDIT CHARGE ITEM MODAL ============== -->
-    <div class="confirmpaymentwindow hide" id="edit_charge_item_modal">
-        <div class="confirmpayment animate">
-            <h6 class="text-center">Edit Charge</h6>
-            <input type="hidden" id="edit_charge_adm_no">
-            <input type="hidden" id="edit_charge_id">
-            <div class="mb-2 text-left">
-                <label class="form-control-label"><b>Description</b></label>
-                <input type="text" class="form-control" id="edit_charge_description">
-            </div>
-            <div class="mb-2 text-left">
-                <label class="form-control-label"><b>Amount (Kes)</b></label>
-                <input type="number" class="form-control" id="edit_charge_amount" min="0">
-            </div>
-            <p id="edit_charge_feedback"></p>
-            <div class="btns">
-                <button type="button" id="save_edit_charge_btn">Save</button>
-                <button type="button" id="cancel_edit_charge_btn">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============== DELETE CHARGE ITEM MODAL ============== -->
-    <div class="confirmpaymentwindow hide" id="delete_charge_item_modal">
-        <div class="confirmpayment animate">
-            <h6 class="text-center">Delete Charge</h6>
-            <p>Are you sure you want to delete <b id="delete_charge_description_label"></b>?</p>
-            <input type="hidden" id="delete_charge_adm_no">
-            <input type="hidden" id="delete_charge_id">
-            <div class="btns">
-                <button type="button" id="confirm_delete_charge_btn">Yes</button>
-                <button type="button" id="cancel_delete_charge_btn">No</button>
-            </div>
-        </div>
-    </div>
 </div>
