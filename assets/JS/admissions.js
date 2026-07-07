@@ -3461,6 +3461,11 @@ function tablebtnlistener() {
                         cObj("edit_heard_others_win").classList.add("hide");
                         cObj("edit_heard_others_specify").value = "";
                     }
+
+                    // preferred mode of communication (index 57)
+                    var preferredComm = splitdata[57] || "both_parents";
+                    var preferredCommRadio = document.querySelector('input[name="preferred_communication"][value="' + preferredComm + '"]');
+                    if (preferredCommRadio) preferredCommRadio.checked = true;
                 }
                 stopInterval(ids);
             }
@@ -4217,7 +4222,9 @@ cObj("updatestudinfor").onclick = function () {
                 var edit_referral_name = cObj("edit_heard_referral").checked ? cObj("edit_referral_name").value : "";
                 var edit_referral_phone = cObj("edit_heard_referral").checked ? cObj("edit_referral_phone").value : "";
                 var edit_heard_others_specify = cObj("edit_heard_others").checked ? cObj("edit_heard_others_specify").value : "";
-                datapass += "&edit_county="+encodeURIComponent(edit_county)+"&edit_heard_about_us="+encodeURIComponent(edit_heard_about_us)+"&edit_referral_name="+encodeURIComponent(edit_referral_name)+"&edit_referral_phone="+encodeURIComponent(edit_referral_phone)+"&edit_heard_others_specify="+encodeURIComponent(edit_heard_others_specify);
+                var preferred_communication_checked = document.querySelector('input[name="preferred_communication"]:checked');
+                var preferred_communication = preferred_communication_checked ? preferred_communication_checked.value : "both_parents";
+                datapass += "&edit_county="+encodeURIComponent(edit_county)+"&edit_heard_about_us="+encodeURIComponent(edit_heard_about_us)+"&edit_referral_name="+encodeURIComponent(edit_referral_name)+"&edit_referral_phone="+encodeURIComponent(edit_referral_phone)+"&edit_heard_others_specify="+encodeURIComponent(edit_heard_others_specify)+"&preferred_communication="+encodeURIComponent(preferred_communication);
 
                 cObj("updateerrors").innerHTML = "";
                 sendData1("POST", "administration/admissions.php", datapass, cObj("updateerrors"));

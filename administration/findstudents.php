@@ -766,6 +766,32 @@
                                     </div>
                                 </div>
                             </div>
+                            <hr class="mt-2 mb-2">
+                            <div class="px-1 pb-1">
+                                <p class="mb-2" style="font-size:13px;font-weight:600;color:#555;"><i class="fas fa-comment-dots mr-1"></i> Preferred Mode of Communication</p>
+                                <div class="d-flex flex-wrap" style="gap:12px;">
+                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
+                                        <input type="radio" name="preferred_communication" id="pref_comm_primary" value="primary_parent">
+                                        &nbsp;Primary Parent
+                                    </label>
+                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
+                                        <input type="radio" name="preferred_communication" id="pref_comm_secondary" value="secondary_parent">
+                                        &nbsp;Secondary Parent
+                                    </label>
+                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
+                                        <input type="radio" name="preferred_communication" id="pref_comm_both" value="both_parents" checked>
+                                        &nbsp;Both Parents
+                                    </label>
+                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
+                                        <input type="radio" name="preferred_communication" id="pref_comm_student" value="student">
+                                        &nbsp;Student
+                                    </label>
+                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
+                                        <input type="radio" name="preferred_communication" id="pref_comm_all" value="all_three">
+                                        &nbsp;All Three
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="btns">
