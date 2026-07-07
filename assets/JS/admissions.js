@@ -263,6 +263,104 @@ function loadManageStudentStats() {
         .catch(function(){ });
 }
 
+function loadAlumniCandidatesCount() {
+    fetch("ajax/administration/admissions.php?get_alumni_candidates_count=true")
+        .then(function (r) { return r.json(); })
+        .then(function (s) {
+            var count = s.count || 0;
+            if (count > 0) {
+                cObj("alumni_candidates_notice_count").innerText = count;
+                cObj("show_alumni_candidates_notice").classList.remove("hide");
+            } else {
+                cObj("show_alumni_candidates_notice").classList.add("hide");
+            }
+        })
+        .catch(function () {});
+}
+
+cObj("check_alumni_candidates").onclick = function () {
+    this.disabled = true;
+    setTimeout(() => { this.disabled = false; }, 2000);
+    cObj("alumni_candidates_loader").classList.remove("hide");
+    fetch("ajax/administration/admissions.php?get_alumni_candidates=true")
+        .then(function (r) { return r.json(); })
+        .then(function (list) {
+            cObj("alumni_candidates_loader").classList.add("hide");
+            renderAlumniCandidatesList(list);
+            cObj("alumni_candidates_modal").classList.remove("hide");
+        })
+        .catch(function () {
+            cObj("alumni_candidates_loader").classList.add("hide");
+        });
+};
+
+function renderAlumniCandidatesList(list) {
+    var holder = cObj("alumni_candidates_list_holder");
+    cObj("alumni_candidates_feedback").innerHTML = "";
+    if (list.length == 0) {
+        holder.innerHTML = "<div class='text-center p-4'>"
+            + "<i class='fas fa-check-circle' style='font-size:42px;color:#28a745;'></i>"
+            + "<p class='mt-2 mb-0' style='font-size:15px;color:#555;'><b>All caught up!</b></p>"
+            + "<p class='text-muted mb-0' style='font-size:13px;'>No students are currently ready to move to Alumni.</p>"
+            + "</div>";
+        return;
+    }
+    var html = "<div class='m-3'><table class='table table-sm table-bordered'><thead><tr><th><input type='checkbox' id='alumni_select_all'></th><th>Name</th><th>Adm No</th><th>Course Level</th><th>Course</th></tr></thead><tbody>";
+    list.forEach(function (s) {
+        html += "<tr><td><input type='checkbox' class='alumni_candidate_check' value='" + s.adm_no + "'></td><td>" + escHtml(s.name) + "</td><td>" + escHtml(s.adm_no) + "</td><td>" + escHtml(s.course_level) + "</td><td>" + escHtml(s.course) + "</td></tr>";
+    });
+    html += "</tbody></table></div>";
+    holder.innerHTML = html;
+
+    cObj("alumni_select_all").onchange = function () {
+        var checks = document.getElementsByClassName("alumni_candidate_check");
+        for (let i = 0; i < checks.length; i++) {
+            checks[i].checked = this.checked;
+        }
+    };
+}
+
+cObj("move_selected_to_alumni_btn").onclick = function () {
+    var checks = document.getElementsByClassName("alumni_candidate_check");
+    var selected = [];
+    for (let i = 0; i < checks.length; i++) {
+        if (checks[i].checked) selected.push(checks[i].value);
+    }
+    var feedback = cObj("alumni_candidates_feedback");
+    if (selected.length == 0) {
+        feedback.innerHTML = "<span class='text-danger'>Select at least one student.</span>";
+        return;
+    }
+    feedback.innerHTML = "<span class='text-muted'>Moving...</span>";
+    var xml = new XMLHttpRequest();
+    xml.open("POST", "ajax/administration/admissions.php", true);
+    xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            try {
+                var resp = JSON.parse(this.responseText);
+                if (resp.status == "success") {
+                    feedback.innerHTML = "<span class='text-success'>" + resp.message + "</span>";
+                    loadAlumniCandidatesCount();
+                    cObj("check_alumni_candidates").click();
+                } else {
+                    feedback.innerHTML = "<span class='text-danger'>" + resp.message + "</span>";
+                }
+            } catch (e) {
+                feedback.innerHTML = "<span class='text-danger'>Something went wrong.</span>";
+            }
+        }
+    };
+    xml.send("move_to_alumni=true&selectedStd=" + encodeURIComponent(JSON.stringify(selected)));
+};
+
+cObj("close_alumni_candidates_modal").onclick = function () {
+    cObj("alumni_candidates_modal").classList.add("hide");
+};
+cObj("close_alumni_candidates_btn").onclick = function () {
+    cObj("alumni_candidates_modal").classList.add("hide");
+};
+
 cObj("findstudsbtn").onclick = function () {
     hideWindow();
     unselectbtns();
@@ -270,6 +368,7 @@ cObj("findstudsbtn").onclick = function () {
     cObj("findstudents").classList.remove("hide");
     removesidebar();
     loadManageStudentStats();
+    loadAlumniCandidatesCount();
 
     //get the classes from the database for the admissions window
     getClasses("stud_class_find", "selclass", "","course_list_edit_loader");
@@ -3159,20 +3258,66 @@ function tablebtnlistener() {
                             element.selected = true;
                         }
                     }
-                    // set the boarding data 
-                    if (splitdata[21] != "enrolled" && splitdata[21] != "enroll") {
-                        // the user has not been enrolled in any dormitory
-                        cObj("boarding_status").innerHTML = "<span style='background-color: orange; color:white;' class='rounded p-1 '>Not-enrolled</span> || <span id='enroll_stud_boarding' class='link'>Click me to Enroll</span>";
-                        // set the listener
-                        cObj("enroll_stud_boarding").addEventListener("click", clickEnroll);
-                    } else {
-                        cObj("boarding_status").innerHTML = "<span style='background-color: green; color:white;' class='rounded p-1 '>Enrolled</span> || <span id='unenroll_stud_boarding' class='link' >CLick me to Un-Enroll ?</span>";
-                        cObj("unenroll_stud_boarding").addEventListener("click", clickUnEnroll);
+                    // set the boarding data (toggle switch)
+                    var _boardingEnrolled = (splitdata[21] == "enrolled" || splitdata[21] == "enroll");
+                    var _boardingToggle = cObj("boarding_toggle");
+                    if (_boardingToggle) {
+                        _boardingToggle.checked = _boardingEnrolled;
+                        cObj("boarding_toggle_label").textContent = _boardingEnrolled ? "Student is enrolled in boarding" : "Student is not enrolled in boarding";
+                        cObj("boarding_toggle_feedback").textContent = "";
+                        _boardingToggle.onchange = function () {
+                            if (this.checked) { clickEnroll(); } else { clickUnEnroll(); }
+                        };
                     }
                     cObj("attendance_this_term").innerHTML = splitdata[37];
                     cObj("attendance_this_year").innerHTML = splitdata[38];
                     cObj("reason_for_leaving_desc").value = splitdata[39];
                     cObj("fees_discount").innerHTML = splitdata[40];
+
+                    // quick-stats banner (Finance & Attendance)
+                    var _fullname = (splitdata[1] + (splitdata[2] ? " " + splitdata[2] : "") + " " + splitdata[0]).trim();
+                    var _class = classNameAdms(splitdata[6]);
+                    var _adm = splitdata[7];
+                    var _bal = splitdata[31] || "—";
+                    var _paid = splitdata[28] || "—";
+                    var _totalPaid = splitdata[32] || "—";
+                    var _transport = splitdata[34] || "—";
+                    var _attTerm = splitdata[37] || "—";
+                    var _attYear = splitdata[38] || "—";
+                    var _pctFn = function (s) { var m = String(s || "").match(/(\d+(?:\.\d+)?)\s*%/); return m ? parseFloat(m[1]) : null; };
+                    var _termPct = _pctFn(_attTerm);
+                    var _yearPct = _pctFn(_attYear);
+                    var _barColor = function (p) { return p >= 80 ? '#28a745' : p >= 50 ? '#e6a817' : '#dc3545'; };
+                    var _attCard = function (label, rawStr, pct, icon) {
+                        var cleanStr = escHtml(stripTags(rawStr));
+                        var barHtml = pct !== null
+                            ? "<div style='background:#e0e0e0;border-radius:20px;height:6px;margin-top:6px;overflow:hidden;'><div style='height:100%;width:" + pct + "%;background:" + _barColor(pct) + ";border-radius:20px;'></div></div><div style='font-size:10px;color:#888;margin-top:2px;'>" + cleanStr + "</div>"
+                            : "<div style='font-size:12px;color:#999;margin-top:4px;'>" + cleanStr + "</div>";
+                        var pctDisplay = pct !== null ? pct + "%" : cleanStr;
+                        var color = pct !== null ? _barColor(pct) : '#888';
+                        return "<div style='background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:10px 12px;height:100%;'>" +
+                               "<div style='font-size:20px;font-weight:700;color:" + color + ";'>" + pctDisplay + "</div>" +
+                               "<div style='font-size:11px;color:#555;margin-top:2px;'><i class='" + icon + "'></i>&nbsp;" + label + "</div>" +
+                               barHtml + "</div>";
+                    };
+                    var _transportBg = (_transport == "Yes") ? "#e8f5e9" : "#f5f5f5";
+                    var _transportBdr = (_transport == "Yes") ? "#28a745" : "#bbb";
+                    var _transportClr = (_transport == "Yes") ? "#28a745" : "#888";
+                    var _statsEl = cObj("student_detail_stats");
+                    if (_statsEl) {
+                        _statsEl.innerHTML =
+                            "<div style='background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:12px 16px;margin-bottom:4px;'>" +
+                            "<p style='font-size:17px;font-weight:700;color:#333;margin:0 0 2px;'>" + escHtml(_fullname) + "</p>" +
+                            "<p style='font-size:12px;color:#777;margin:0 0 12px;'>" + escHtml(_class) + " &nbsp;&bull;&nbsp; Adm: " + escHtml(_adm) + "</p>" +
+                            "<div class='row'>" +
+                            "<div class='col-6 col-md-4 mb-2'><div style='background:#fdecea;border-left:4px solid #dc3545;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#dc3545;'>" + escHtml(_bal) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-exclamation-circle'></i>&nbsp;Fee Balance</div></div></div>" +
+                            "<div class='col-6 col-md-4 mb-2'><div style='background:#e8f5e9;border-left:4px solid #28a745;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#28a745;'>" + escHtml(_paid) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-check-circle'></i>&nbsp;Paid This Module</div></div></div>" +
+                            "<div class='col-6 col-md-4 mb-2'><div style='background:#ede7f6;border-left:4px solid #7b1fa2;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#7b1fa2;'>" + escHtml(_totalPaid) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-history'></i>&nbsp;Total Paid Since Joining</div></div></div>" +
+                            "<div class='col-6 col-md-4 mb-2'>" + _attCard("Attendance (Module)", _attTerm, _termPct, "fas fa-calendar-check") + "</div>" +
+                            "<div class='col-6 col-md-4 mb-2'>" + _attCard("Attendance (Year)", _attYear, _yearPct, "fas fa-chart-line") + "</div>" +
+                            "<div class='col-6 col-md-4 mb-2'><div style='background:" + _transportBg + ";border-left:4px solid " + _transportBdr + ";border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:20px;font-weight:700;color:" + _transportClr + ";'>" + escHtml(_transport) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-bus'></i>&nbsp;Transport Enrolled</div></div></div>" +
+                            "</div></div>";
+                    }
                     getDP();
 
                     // get the course being done by the students
@@ -3949,6 +4094,18 @@ cObj("no_delete_students").onclick = function () {
     cObj("delete_studs_perm").classList.add("hide");
 }
 
+function _syncBoardingToggle(enrolled) {
+    var bt = cObj("boarding_toggle");
+    var lbl = cObj("boarding_toggle_label");
+    var fb = cObj("boarding_toggle_feedback");
+    if (bt) bt.checked = enrolled;
+    if (lbl) lbl.textContent = enrolled ? "Student is enrolled in boarding" : "Student is not enrolled in boarding";
+    if (fb) {
+        fb.style.color = enrolled ? "#28a745" : "#888";
+        fb.textContent = enrolled ? "Enrolled successfully" : "Un-enrolled successfully";
+        setTimeout(function () { if (fb) fb.textContent = ""; }, 5000);
+    }
+}
 function clickEnroll() {
     // click enroll
     // get the admission number of the student to enroll
@@ -3969,8 +4126,7 @@ function clickEnroll() {
                     cObj("boarding_status_changer").innerHTML = "";
                 }, 10000);
                 stopInterval(ids);
-                cObj("boarding_status").innerHTML = "<span style='background-color: green; color:white;' class='rounded p-1 '>Enrolled</span> || <span id='unenroll_stud_boarding' class='link' >CLick me to Un-Enroll ?</span>";
-                cObj("unenroll_stud_boarding").addEventListener("click", clickUnEnroll);
+                _syncBoardingToggle(true);
             }
         }, 100);
     }, 200);
@@ -3994,9 +4150,7 @@ function clickUnEnroll() {
                 setTimeout(() => {
                     cObj("boarding_status_changer").innerHTML = "";
                 }, 10000);
-                cObj("boarding_status").innerHTML = "<span style='background-color: orange; color:white;' class='rounded p-1 '>Not-enrolled</span> || <span id='enroll_stud_boarding' class='link'>Click me to Enroll</span>";
-                // set the listener
-                cObj("enroll_stud_boarding").addEventListener("click", clickEnroll);
+                _syncBoardingToggle(false);
                 stopInterval(ids);
             }
         }, 100);
