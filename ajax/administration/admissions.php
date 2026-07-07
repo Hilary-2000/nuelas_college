@@ -3328,43 +3328,51 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
             echo "<span id='school_preferred_comm_temp_holder' class='hide'>".$preferred_comm."</span>";
         }elseif(isset($_GET['update_school_preferred_communication'])){
+            $update_option = $_GET['preferred_communication_value'];
+            $apply_to_all_students = isset($_GET['apply_to_all_students']) && $_GET['apply_to_all_students'] == "true";
+
             $select = "SELECT * FROM settings WHERE sett = 'preferred_communication_default'";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
             $present = false;
+            $saved = false;
             if($result){
                 if($row = $result->fetch_assoc()){
                     $present = true;
-                    $update_option = $_GET['preferred_communication_value'];
                     $update = "UPDATE `settings` SET `valued` = ? WHERE `sett` = ?";
                     $stmt = $conn2->prepare($update);
                     $sett = "preferred_communication_default";
                     $stmt->bind_param("ss",$update_option,$sett);
-                    if($stmt->execute()){
-                        echo "<p class='green_notice'>Preferred mode of communication has been updated successfully!</p>";
-                        $log_text = "School preferred mode of communication has been updated to \"".$update_option."\" successfully!";
-                        log_administration($log_text);
-                    }else{
-                        echo "<p class='red_notice'>An error has occured during update!</p>";
-                    }
+                    $saved = $stmt->execute();
                 }
             }
 
             if(!$present){
                 // insert the entry
-                $update_option = $_GET['preferred_communication_value'];
                 $insert = "INSERT INTO `settings` (`sett`,`valued`) VALUES (?,?)";
                 $stmt = $conn2->prepare($insert);
                 $sett = "preferred_communication_default";
                 $stmt->bind_param("ss",$sett,$update_option);
-                if($stmt->execute()){
-                    echo "<p class='green_notice'>Preferred mode of communication has been updated successfully!</p>";
-                    $log_text = "School preferred mode of communication has been set to \"".$update_option."\" successfully!";
-                    log_administration($log_text);
+                $saved = $stmt->execute();
+            }
+
+            if($saved){
+                $log_text = "School preferred mode of communication has been set to \"".$update_option."\" successfully!";
+                if($apply_to_all_students){
+                    $update_all = "UPDATE `student_data` SET `preferred_communication` = ?";
+                    $stmt = $conn2->prepare($update_all);
+                    $stmt->bind_param("s",$update_option);
+                    $stmt->execute();
+                    $affected = $stmt->affected_rows;
+                    echo "<p class='green_notice'>Preferred mode of communication has been updated successfully, and applied to ".$affected." student(s)!</p>";
+                    $log_text .= " Also applied to ".$affected." student(s).";
                 }else{
-                    echo "<p class='red_notice'>An error has occured during update!</p>";
+                    echo "<p class='green_notice'>Preferred mode of communication has been updated successfully!</p>";
                 }
+                log_administration($log_text);
+            }else{
+                echo "<p class='red_notice'>An error has occured during update!</p>";
             }
         }elseif(isset($_GET['update_course_start_date_option'])){
             $select = "SELECT * FROM settings WHERE sett = 'course_start_date_options'";

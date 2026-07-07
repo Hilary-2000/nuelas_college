@@ -11498,19 +11498,20 @@ function getSchoolPreferredCommunication(){
     });
 }
 
-function saveSchoolPreferredCommunication(value){
-    var datapass = "?update_school_preferred_communication=true&preferred_communication_value=" + encodeURIComponent(value);
+function saveSchoolPreferredCommunication(value, applyToAllStudents){
+    var datapass = "?update_school_preferred_communication=true&preferred_communication_value=" + encodeURIComponent(value) + "&apply_to_all_students=" + (applyToAllStudents ? "true" : "false");
     sendData2("GET", "administration/admissions.php", datapass, cObj("school_preferred_comm_holder"), cObj("school_preferred_comm_loader"), function (){
         setTimeout(() => {
             cObj("school_preferred_comm_holder").innerHTML = "";
-        }, 2000);
+        }, 4000);
     });
 }
 
 var school_preferred_comm_radios = document.getElementsByName("school_preferred_comm_radios");
 for (let index = 0; index < school_preferred_comm_radios.length; index++) {
     school_preferred_comm_radios[index].onclick = function () {
-        saveSchoolPreferredCommunication(this.value);
+        var applyToAllStudents = cObj("school_pref_comm_apply_all") && cObj("school_pref_comm_apply_all").checked;
+        saveSchoolPreferredCommunication(this.value, applyToAllStudents);
     };
 }
 
