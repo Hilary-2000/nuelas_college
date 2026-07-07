@@ -63,4 +63,20 @@
       $curl_response = curl_exec($curl);
       return $curl_response;
   }
+
+  // Maps a student_data.preferred_communication value (or the school-wide
+  // default when the student's own value is "school_default"/empty) onto
+  // the M-Pesa confirmation flow's own send_sms vocabulary (first_parent/
+  // second_parent/both_parent/student_contact/all_three).
+  function mapPreferredCommToMpesaTarget($value, $school_default){
+      $resolved = (!empty($value) && $value != "school_default") ? $value : $school_default;
+      switch ($resolved) {
+          case "primary_parent": return "first_parent";
+          case "secondary_parent": return "second_parent";
+          case "both_parents": return "both_parent";
+          case "student": return "student_contact";
+          case "all_three": return "all_three";
+          default: return "both_parent";
+      }
+  }
 ?>
