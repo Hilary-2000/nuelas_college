@@ -743,7 +743,23 @@
                 return;
             }
 
-            // send email
+            // "Preferred Contact" resolves per-student, based on that student's own
+            // preferred_communication (falling back to the school-wide default when
+            // their value is "school_default" or empty) instead of one uniform choice
+            // applied to every selected student.
+            $to_whom_raw = $_GET['to_whom'];
+            $school_default_pref_email = "both_parents";
+            if($to_whom_raw == "preferred_contact"){
+                $select_pref = "SELECT `valued` FROM `settings` WHERE `sett` = 'preferred_communication_default'";
+                $stmt_pref = $conn2->prepare($select_pref);
+                $stmt_pref->execute();
+                $result_pref = $stmt_pref->get_result();
+                if($result_pref && ($row_pref = $result_pref->fetch_assoc())){
+                    $school_default_pref_email = $row_pref['valued'];
+                }
+            }
+
+            // send my email
             // get the students parent email address data
             for ($index=0; $index < count($students_data); $index++) {
                 // email address
@@ -753,19 +769,21 @@
 
                 // send the email
                 $messages = $_GET['messages'];
-                $to_whom = $_GET['to_whom'];
+                $to_whom = ($to_whom_raw == "preferred_contact")
+                    ? mapPreferredCommToSendTarget($students_data[$index]['preferred_communication'], $school_default_pref_email)
+                    : $to_whom_raw;
                 $cc = $_GET['cc'];
                 $bcc = $_GET['bcc'];
                 $subject = $_GET['subject'];
 
                 // set email recepient
-                if ($to_whom == "primary" && $to_whom == "all_three" && $to_whom == "both" && $email_primary != null) {
+                if (($to_whom == "primary" || $to_whom == "all_three" || $to_whom == "both") && $email_primary != null) {
                     // SET SUBJECT
                     $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,"primary");
                     // SET BODY
                     $messages = process_sms($students_data,$_GET['messages'],$students_data[$index]['adm_no'],$conn2,"primary");
                     $email_counts++;
-                    
+
                     // save the email address sent
                     $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
                     $stmt = $conn2->prepare($insert);
@@ -774,13 +792,13 @@
                     $stmt->execute();
                 }
 
-                if ($to_whom == "secondary" && $to_whom == "all_three" && $to_whom == "both" && $secondary_mail != null) {
+                if (($to_whom == "secondary" || $to_whom == "all_three" || $to_whom == "both") && $secondary_mail != null) {
                     // SET SUBJECT
                     $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,"secondary");
                     // SET BODY
                     $messages = process_sms($students_data,$_GET['messages'],$students_data[$index]['adm_no'],$conn2,"secondary");
                     $email_counts++;
-                    
+
                     // save the email address sent
                     $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
                     $stmt = $conn2->prepare($insert);
@@ -788,14 +806,14 @@
                     $stmt->bind_param("sssssss",$email_username,$secondary_mail,$bcc,$dates,$subject,$messages,$cc);
                     $stmt->execute();
                 }
-                
-                if ($to_whom == "student_contact" && $to_whom == "primary" && $student_email != null) {
+
+                if (($to_whom == "student_contact" || $to_whom == "all_three") && $student_email != null) {
                     // SET SUBJECT
-                    $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,"primary");
+                    $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,$to_whom);
                     // SET BODY
-                    $messages = process_sms($students_data,$_GET['messages'],$students_data[$index]['adm_no'],$conn2,"primary");
+                    $messages = process_sms($students_data,$_GET['messages'],$students_data[$index]['adm_no'],$conn2,$to_whom);
                     $email_counts++;
-                    
+
                     // save the email address sent
                     $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
                     $stmt = $conn2->prepare($insert);
@@ -816,6 +834,22 @@
             $data = $_GET['parents_ids_excempt'];
             $exploded_data = explode(",",$data);
             $count = 0;
+
+            // "Preferred Contact" resolves per-student, based on that student's own
+            // preferred_communication (falling back to the school-wide default when
+            // their value is "school_default" or empty) instead of one uniform choice
+            // applied to every selected student.
+            $school_default_pref = "both_parents";
+            if($which_parent == "preferred_contact"){
+                $select_pref = "SELECT `valued` FROM `settings` WHERE `sett` = 'preferred_communication_default'";
+                $stmt_pref = $conn2->prepare($select_pref);
+                $stmt_pref->execute();
+                $result_pref = $stmt_pref->get_result();
+                if($result_pref && ($row_pref = $result_pref->fetch_assoc())){
+                    $school_default_pref = $row_pref['valued'];
+                }
+            }
+
             // send my sms
             include("../../sms_apis/sms.php");
             include("../finance/financial.php");
@@ -823,11 +857,14 @@
                 $primary_parent = $student_data[$index]['parentContacts'];
                 $secondary_parent = $student_data[$index]['parent_contact2'];
                 $student_contact = $student_data[$index]['student_contact'];
+                $effective_parent = ($which_parent == "preferred_contact")
+                    ? mapPreferredCommToSendTarget($student_data[$index]['preferred_communication'], $school_default_pref)
+                    : $which_parent;
                 if (checkPresnt($exploded_data, $student_data[$index]['adm_no']) == 1) {
                     // process message
                     $message = $_GET['messages'];
                     $message_status = "pending";
-                    if(($which_parent == "both" || $which_parent == "all_three" || $which_parent == "primary") && (trim($primary_parent) != "none" && trim($primary_parent) != "")){
+                    if(($effective_parent == "both" || $effective_parent == "all_three" || $effective_parent == "primary") && (trim($primary_parent) != "none" && trim($primary_parent) != "")){
                         $message1 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"primary");
                         
                         // create message
@@ -849,7 +886,7 @@
                         $count++;
                     }
 
-                    if(($which_parent == "both" || $which_parent == "all_three" || $which_parent == "secondary") && (trim($secondary_parent) != "none" && trim($secondary_parent) != "")){
+                    if(($effective_parent == "both" || $effective_parent == "all_three" || $effective_parent == "secondary") && (trim($secondary_parent) != "none" && trim($secondary_parent) != "")){
                         // message
                         $message2 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"secondary");
                         
@@ -869,9 +906,9 @@
                         $count++;
                     }
 
-                    if(($which_parent == "all_three" || $which_parent == "student_contact") && (trim($student_contact) != "none" && trim($student_contact) != "")){
+                    if(($effective_parent == "all_three" || $effective_parent == "student_contact") && (trim($student_contact) != "none" && trim($student_contact) != "")){
                         // message3
-                        $message3 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,$which_parent);
+                        $message3 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,$effective_parent);
                         // save the data in the database
                         $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`,`message_status`) VALUES (?,?,?,?,?,?,?,?,?,?)";
                         $stmt = $conn2->prepare($insert);
@@ -1296,6 +1333,21 @@
         $stmt->bind_param("ssssss",$messageName,$messagecontent,$sender_ids,$notice_stat,$reciever_id,$reciever_auth);
         if($stmt->execute()){
             
+        }
+    }
+    // Maps a student_data.preferred_communication value (or the school-wide
+    // default when the student's own value is "school_default"/empty) onto
+    // the broadcast's own to_whom vocabulary (primary/secondary/both/
+    // student_contact/all_three).
+    function mapPreferredCommToSendTarget($value, $school_default){
+        $resolved = (!empty($value) && $value != "school_default") ? $value : $school_default;
+        switch ($resolved) {
+            case "primary_parent": return "primary";
+            case "secondary_parent": return "secondary";
+            case "both_parents": return "both";
+            case "student": return "student_contact";
+            case "all_three": return "all_three";
+            default: return "both";
         }
     }
     function getStudentData($conn2){
