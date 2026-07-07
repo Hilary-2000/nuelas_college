@@ -1030,6 +1030,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($data_array,isset($row['referral_name']) ? $row['referral_name'] : '');
                         array_push($data_array,isset($row['referral_phone']) ? $row['referral_phone'] : '');
                         array_push($data_array,isset($row['heard_others_specify']) ? $row['heard_others_specify'] : '');
+                        array_push($data_array,isset($row['preferred_communication']) ? $row['preferred_communication'] : 'both_parents');
                     }
                 }
 
@@ -6496,6 +6497,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $edit_referral_name = isset($_POST['edit_referral_name']) ? $_POST['edit_referral_name'] : '';
             $edit_referral_phone = isset($_POST['edit_referral_phone']) ? $_POST['edit_referral_phone'] : '';
             $edit_heard_others_specify = isset($_POST['edit_heard_others_specify']) ? $_POST['edit_heard_others_specify'] : '';
+            $edit_preferred_communication = isset($_POST['preferred_communication']) ? $_POST['preferred_communication'] : 'both_parents';
 
             // process the student course progress
             // if they have changed the course update the new course
@@ -6645,9 +6647,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
 
-            $update = "UPDATE `student_data` SET `study_mode` = ?, `branch_name` = ?, `year_of_study` = ?,`stud_class` = ?, `BCNo`= ?,`index_no` = ?,`gender` = ?, `disabled` = ? , `disable_describe` = ? , `address` = ? ,`parentName` = ?,`parentContacts` = ?,`parent_relation` = ?,`parent_email` = ?,`parent_name2` = ?,`parent_contact2` = ?, `parent_relation2` = ?, `parent_email2` = ?, `first_name` = ? ,`surname` = ? ,`second_name` = ? ,`primary_parent_occupation` = ?, `secondary_parent_occupation` = ?, `medical_history` = ?, `clubs_id` = ?, `prev_sch_attended` = ?,`D_O_A` = ?, `transfered_comment` = ?, `course_done` = ?,`intake_year` = ?, `intake_month` = ?, `course_progress_status` = ?, `student_email` = ?, `student_contact` = ?, `county` = ?, `heard_about_us` = ?, `referral_name` = ?, `referral_phone` = ?, `heard_others_specify` = ? WHERE `adm_no`=?";
+            $update = "UPDATE `student_data` SET `study_mode` = ?, `branch_name` = ?, `year_of_study` = ?,`stud_class` = ?, `BCNo`= ?,`index_no` = ?,`gender` = ?, `disabled` = ? , `disable_describe` = ? , `address` = ? ,`parentName` = ?,`parentContacts` = ?,`parent_relation` = ?,`parent_email` = ?,`parent_name2` = ?,`parent_contact2` = ?, `parent_relation2` = ?, `parent_email2` = ?, `first_name` = ? ,`surname` = ? ,`second_name` = ? ,`primary_parent_occupation` = ?, `secondary_parent_occupation` = ?, `medical_history` = ?, `clubs_id` = ?, `prev_sch_attended` = ?,`D_O_A` = ?, `transfered_comment` = ?, `course_done` = ?,`intake_year` = ?, `intake_month` = ?, `course_progress_status` = ?, `student_email` = ?, `student_contact` = ?, `county` = ?, `heard_about_us` = ?, `referral_name` = ?, `referral_phone` = ?, `heard_others_specify` = ?, `preferred_communication` = ? WHERE `adm_no`=?";
             $stmt = $conn2->prepare($update);
-            $stmt->bind_param("ssssssssssssssssssssssssssssssssssssssss",$study_mode, $college_branch, $newYOS,$class,$bcnos,$index,$genders,$disabled,$describe,$address,$pnamed,$pcontacts,$prelation,$pemail,$parentname2,$parentcontact,$parentrelation,$pemails,$fnamed,$snamed,$lnamed,$occupation1,$occupation2,$medical_history,$clubs_in_sporters,$previous_schools,$doas,$reason_for_leaving,$course_chosen,$intake_year_edit,$intake_month_edit,$course_progress,$student_email,$student_contacts,$edit_county,$edit_heard_about_us,$edit_referral_name,$edit_referral_phone,$edit_heard_others_specify,$adminno);
+            $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssss",$study_mode, $college_branch, $newYOS,$class,$bcnos,$index,$genders,$disabled,$describe,$address,$pnamed,$pcontacts,$prelation,$pemail,$parentname2,$parentcontact,$parentrelation,$pemails,$fnamed,$snamed,$lnamed,$occupation1,$occupation2,$medical_history,$clubs_in_sporters,$previous_schools,$doas,$reason_for_leaving,$course_chosen,$intake_year_edit,$intake_month_edit,$course_progress,$student_email,$student_contacts,$edit_county,$edit_heard_about_us,$edit_referral_name,$edit_referral_phone,$edit_heard_others_specify,$edit_preferred_communication,$adminno);
             if($stmt->execute()){
                 echo "<p style='color:green;font-size:12px;'>Student  data updated successfully!</p>";
                 $log_text = $fnamed." ".$lnamed." - of Reg No. (".$adminno.") data has been updated successfully!";
