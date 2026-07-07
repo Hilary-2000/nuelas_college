@@ -125,7 +125,19 @@ if (session_status() === PHP_SESSION_NONE) {
                             $fullnames = $jsonMpesaResponse['FirstName'];
                             $trans_status = "1";
                             recordMpesaTrans($conn2,$transactionCode,$TransAmount,$stud_admin,$transaction_id, $jsonMpesaResponse['TransTime'],$jsonMpesaResponse['BusinessShortCode'],$jsonMpesaResponse['MSISDN'],$fullnames,$trans_status);
-                            $send_sms = "student_contact";
+
+                            // resolve the confirmation SMS recipient from the student's own
+                            // preferred_communication, falling back to the school-wide default
+                            // when their value is "school_default" or empty.
+                            $school_default_pref = "both_parents";
+                            $select_pref = "SELECT `valued` FROM `settings` WHERE `sett` = 'preferred_communication_default'";
+                            $stmt_pref = $conn2->prepare($select_pref);
+                            $stmt_pref->execute();
+                            $result_pref = $stmt_pref->get_result();
+                            if($result_pref && ($row_pref = $result_pref->fetch_assoc())){
+                                $school_default_pref = $row_pref['valued'];
+                            }
+                            $send_sms = mapPreferredCommToMpesaTarget($row['preferred_communication'], $school_default_pref);
                             if (isset($send_sms) && $send_sms != "none") {
                                 $phone_number = getPhoneNumber($conn2,$row['adm_no']);
                                 $message_parent_1 = null;
