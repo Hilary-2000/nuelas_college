@@ -1030,7 +1030,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($data_array,isset($row['referral_name']) ? $row['referral_name'] : '');
                         array_push($data_array,isset($row['referral_phone']) ? $row['referral_phone'] : '');
                         array_push($data_array,isset($row['heard_others_specify']) ? $row['heard_others_specify'] : '');
-                        array_push($data_array,isset($row['preferred_communication']) ? $row['preferred_communication'] : 'both_parents');
+                        array_push($data_array,!empty($row['preferred_communication']) ? $row['preferred_communication'] : 'school_default');
                     }
                 }
 
@@ -3310,6 +3310,57 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 if($stmt->execute()){
                     echo "<p class='green_notice'>Course update option has been updated successfully!</p>";
                     $log_text = "Course update option has been updated to \"".$update_option."\" successfully!";
+                    log_administration($log_text);
+                }else{
+                    echo "<p class='red_notice'>An error has occured during update!</p>";
+                }
+            }
+        }elseif(isset($_GET['get_school_preferred_communication'])){
+            $select = "SELECT * FROM settings WHERE sett = 'preferred_communication_default'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $preferred_comm = "both_parents";
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $preferred_comm = $row['valued'];
+                }
+            }
+            echo "<span id='school_preferred_comm_temp_holder' class='hide'>".$preferred_comm."</span>";
+        }elseif(isset($_GET['update_school_preferred_communication'])){
+            $select = "SELECT * FROM settings WHERE sett = 'preferred_communication_default'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $present = false;
+            if($result){
+                if($row = $result->fetch_assoc()){
+                    $present = true;
+                    $update_option = $_GET['preferred_communication_value'];
+                    $update = "UPDATE `settings` SET `valued` = ? WHERE `sett` = ?";
+                    $stmt = $conn2->prepare($update);
+                    $sett = "preferred_communication_default";
+                    $stmt->bind_param("ss",$update_option,$sett);
+                    if($stmt->execute()){
+                        echo "<p class='green_notice'>Preferred mode of communication has been updated successfully!</p>";
+                        $log_text = "School preferred mode of communication has been updated to \"".$update_option."\" successfully!";
+                        log_administration($log_text);
+                    }else{
+                        echo "<p class='red_notice'>An error has occured during update!</p>";
+                    }
+                }
+            }
+
+            if(!$present){
+                // insert the entry
+                $update_option = $_GET['preferred_communication_value'];
+                $insert = "INSERT INTO `settings` (`sett`,`valued`) VALUES (?,?)";
+                $stmt = $conn2->prepare($insert);
+                $sett = "preferred_communication_default";
+                $stmt->bind_param("ss",$sett,$update_option);
+                if($stmt->execute()){
+                    echo "<p class='green_notice'>Preferred mode of communication has been updated successfully!</p>";
+                    $log_text = "School preferred mode of communication has been set to \"".$update_option."\" successfully!";
                     log_administration($log_text);
                 }else{
                     echo "<p class='red_notice'>An error has occured during update!</p>";
@@ -6497,7 +6548,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $edit_referral_name = isset($_POST['edit_referral_name']) ? $_POST['edit_referral_name'] : '';
             $edit_referral_phone = isset($_POST['edit_referral_phone']) ? $_POST['edit_referral_phone'] : '';
             $edit_heard_others_specify = isset($_POST['edit_heard_others_specify']) ? $_POST['edit_heard_others_specify'] : '';
-            $edit_preferred_communication = isset($_POST['preferred_communication']) ? $_POST['preferred_communication'] : 'both_parents';
+            $edit_preferred_communication = !empty($_POST['preferred_communication']) ? $_POST['preferred_communication'] : 'school_default';
 
             // process the student course progress
             // if they have changed the course update the new course

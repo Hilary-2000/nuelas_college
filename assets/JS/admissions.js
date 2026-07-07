@@ -985,6 +985,7 @@ cObj("set_btns").onclick = function () {
     getBranches();
     getCourseUpdateOptions();
     getCourseStartDateOptions();
+    getSchoolPreferredCommunication();
 }
 
 if (typeof (cObj("callrollcall")) != 'undefined' && cObj("callrollcall") != null) {
@@ -3463,7 +3464,7 @@ function tablebtnlistener() {
                     }
 
                     // preferred mode of communication (index 57)
-                    var preferredComm = splitdata[57] || "both_parents";
+                    var preferredComm = splitdata[57] || "school_default";
                     var preferredCommRadio = document.querySelector('input[name="preferred_communication"][value="' + preferredComm + '"]');
                     if (preferredCommRadio) preferredCommRadio.checked = true;
                 }
@@ -4223,7 +4224,7 @@ cObj("updatestudinfor").onclick = function () {
                 var edit_referral_phone = cObj("edit_heard_referral").checked ? cObj("edit_referral_phone").value : "";
                 var edit_heard_others_specify = cObj("edit_heard_others").checked ? cObj("edit_heard_others_specify").value : "";
                 var preferred_communication_checked = document.querySelector('input[name="preferred_communication"]:checked');
-                var preferred_communication = preferred_communication_checked ? preferred_communication_checked.value : "both_parents";
+                var preferred_communication = preferred_communication_checked ? preferred_communication_checked.value : "school_default";
                 datapass += "&edit_county="+encodeURIComponent(edit_county)+"&edit_heard_about_us="+encodeURIComponent(edit_heard_about_us)+"&edit_referral_name="+encodeURIComponent(edit_referral_name)+"&edit_referral_phone="+encodeURIComponent(edit_referral_phone)+"&edit_heard_others_specify="+encodeURIComponent(edit_heard_others_specify)+"&preferred_communication="+encodeURIComponent(preferred_communication);
 
                 cObj("updateerrors").innerHTML = "";
@@ -11602,6 +11603,31 @@ function getCourseStartDateOptions(){
             cObj("on_term_start_date").checked = true;
         }
     });
+}
+
+function getSchoolPreferredCommunication(){
+    var datapass = "?get_school_preferred_communication=true";
+    sendData2("GET", "administration/admissions.php", datapass, cObj("school_preferred_comm_holder"), cObj("school_preferred_comm_loader"), function (){
+        var savedValue = (cObj("school_preferred_comm_temp_holder") != undefined) ? cObj("school_preferred_comm_temp_holder").innerText.trim() : "both_parents";
+        var radio = document.querySelector('input[name="school_preferred_comm_radios"][value="' + savedValue + '"]');
+        if (radio) radio.checked = true;
+    });
+}
+
+function saveSchoolPreferredCommunication(value){
+    var datapass = "?update_school_preferred_communication=true&preferred_communication_value=" + encodeURIComponent(value);
+    sendData2("GET", "administration/admissions.php", datapass, cObj("school_preferred_comm_holder"), cObj("school_preferred_comm_loader"), function (){
+        setTimeout(() => {
+            cObj("school_preferred_comm_holder").innerHTML = "";
+        }, 2000);
+    });
+}
+
+var school_preferred_comm_radios = document.getElementsByName("school_preferred_comm_radios");
+for (let index = 0; index < school_preferred_comm_radios.length; index++) {
+    school_preferred_comm_radios[index].onclick = function () {
+        saveSchoolPreferredCommunication(this.value);
+    };
 }
 
 cObj("course_update_yes").onclick = function (){
