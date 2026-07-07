@@ -137,6 +137,38 @@
             </div>
             <div class="setting_s">
                 <div class="bg-secondary mt-0">
+                    <p class="text-center text-white">Preferred Mode of Communication</p>
+                </div>
+                <div class="conts p-1 m-1">
+                    <img src="images/ajax_clock_small.gif" class="hide" id="school_preferred_comm_loader">
+                    <p id="school_preferred_comm_holder"></p>
+                    <p>Set the school-wide default recipient for student communications. A student without their own preference set under Manage Student will use this default.</p>
+                    <div class="d-flex flex-wrap" style="gap:12px;">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="school_preferred_comm_radios" id="school_pref_comm_primary" value="primary_parent">
+                            <label class="form-check-label" for="school_pref_comm_primary">Primary Parent</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="school_preferred_comm_radios" id="school_pref_comm_secondary" value="secondary_parent">
+                            <label class="form-check-label" for="school_pref_comm_secondary">Secondary Parent</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" checked type="radio" name="school_preferred_comm_radios" id="school_pref_comm_both" value="both_parents">
+                            <label class="form-check-label" for="school_pref_comm_both">Both Parents</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="school_preferred_comm_radios" id="school_pref_comm_student" value="student">
+                            <label class="form-check-label" for="school_pref_comm_student">Student</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="school_preferred_comm_radios" id="school_pref_comm_all" value="all_three">
+                            <label class="form-check-label" for="school_pref_comm_all">All Three</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting_s">
+                <div class="bg-secondary mt-0">
                     <p class="text-center text-white">Admission Number Prefix</p>
                 </div>
                 <div class="conts p-1 m-1">
