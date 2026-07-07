@@ -3471,7 +3471,7 @@ function checkPresnt($array, $string){
                 </div>
                 <div id="charged_account_modal_items_holder"></div>
                 <div class="border border-secondary rounded p-3 mt-3">
-                    <h6 class="mb-3">Add a Charge</h6>
+                    <h6 class="mb-3">Add a Charge (Current Term)</h6>
                     <div class="row">
                         <div class="col-md-4 mb-2">
                             <label class="form-control-label"><b>Description</b></label>
