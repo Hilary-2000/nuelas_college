@@ -3465,6 +3465,10 @@ function checkPresnt($array, $string){
                     <h5 class="text-center"><b>Charged Account</b></h5>
                 </div>
                 <input type="hidden" id="charged_account_modal_adm_no">
+                <div class="mb-2 d-flex align-items-center" style="gap:8px;">
+                    <label class="form-control-label mb-0" for="charged_account_module_select"><b>Module:</b></label>
+                    <select class="form-control form-control-sm w-auto" id="charged_account_module_select"></select>
+                </div>
                 <div id="charged_account_modal_items_holder"></div>
                 <div class="border border-secondary rounded p-3 mt-3">
                     <h6 class="mb-3">Add a Charge</h6>
