@@ -3282,7 +3282,6 @@ function tablebtnlistener() {
                     var _bal = splitdata[31] || "—";
                     var _paid = splitdata[28] || "—";
                     var _totalPaid = splitdata[32] || "—";
-                    var _transport = splitdata[34] || "—";
                     var _attTerm = splitdata[37] || "—";
                     var _attYear = splitdata[38] || "—";
                     var _pctFn = function (s) { var m = String(s || "").match(/(\d+(?:\.\d+)?)\s*%/); return m ? parseFloat(m[1]) : null; };
@@ -3301,9 +3300,6 @@ function tablebtnlistener() {
                                "<div style='font-size:11px;color:#555;margin-top:2px;'><i class='" + icon + "'></i>&nbsp;" + label + "</div>" +
                                barHtml + "</div>";
                     };
-                    var _transportBg = (_transport == "Yes") ? "#e8f5e9" : "#f5f5f5";
-                    var _transportBdr = (_transport == "Yes") ? "#28a745" : "#bbb";
-                    var _transportClr = (_transport == "Yes") ? "#28a745" : "#888";
                     var _statsEl = cObj("student_detail_stats");
                     if (_statsEl) {
                         _statsEl.innerHTML =
@@ -3316,7 +3312,6 @@ function tablebtnlistener() {
                             "<div class='col-6 col-md-4 mb-2'><div style='background:#ede7f6;border-left:4px solid #7b1fa2;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#7b1fa2;'>" + escHtml(_totalPaid) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-history'></i>&nbsp;Total Paid Since Joining</div></div></div>" +
                             "<div class='col-6 col-md-4 mb-2'>" + _attCard("Attendance (Module)", _attTerm, _termPct, "fas fa-calendar-check") + "</div>" +
                             "<div class='col-6 col-md-4 mb-2'>" + _attCard("Attendance (Year)", _attYear, _yearPct, "fas fa-chart-line") + "</div>" +
-                            "<div class='col-6 col-md-4 mb-2'><div style='background:" + _transportBg + ";border-left:4px solid " + _transportBdr + ";border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:20px;font-weight:700;color:" + _transportClr + ";'>" + escHtml(_transport) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-bus'></i>&nbsp;Transport Enrolled</div></div></div>" +
                             "</div></div>";
                     }
                     getDP();
