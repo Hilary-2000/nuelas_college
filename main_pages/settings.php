@@ -165,6 +165,10 @@
                             <label class="form-check-label" for="school_pref_comm_all">All Three</label>
                         </div>
                     </div>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="school_pref_comm_apply_all">
+                        <label class="form-check-label" for="school_pref_comm_apply_all">Also update every student's individual preferred mode of communication to this</label>
+                    </div>
                 </div>
             </div>
             <div class="setting_s">
