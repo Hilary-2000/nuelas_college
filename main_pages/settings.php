@@ -44,7 +44,7 @@
             </div>
             <div class="setting_s">
                 <div class="bg-secondary mt-0">
-                    <p class="text-center text-white">Course Levels</p>
+                    <p class="text-center text-white">Courses List</p>
                 </div>
                 <div class="conts p-1 m-1">
                     <p>Add or remove courses that the system recognizes!</p>
