@@ -30,6 +30,9 @@ cObj("charged_account_modal_items_holder").addEventListener("click", function (e
         openDeleteChargeItem(deleteBtn.getAttribute("data-adm-no"), deleteBtn.getAttribute("data-charge-id"), deleteBtn.getAttribute("data-description"));
     }
 });
+cObj("charged_account_module_select").onchange = function () {
+    renderChargedAccountItemsTable(_chargedAccountAdmNo, parseInt(this.value, 10));
+};
 
 cObj("view_charged_account_btn").onclick = function () {
     cObj("charged_account_modal_adm_no").value = valObj("adminnos");
@@ -149,12 +152,22 @@ function wireChargedAccountsPanel() {
 
 /* ---------------- Student profile: Charged Account section ---------------- */
 
-function loadChargedAccountSection(admNo) {
+var _chargedAccountAdmNo = null;
+var _chargedAccountModules = [];
+
+function loadChargedAccountSection(admNo, keepModuleName) {
     sendData1("GET", "finance/charged_accounts.php", "?get_charged_account=" + encodeURIComponent(admNo), cObj("charged_account_holder_raw"), function () {
         try {
             var resp = JSON.parse(cObj("charged_account_holder_raw").innerText);
+            _chargedAccountAdmNo = admNo;
+            _chargedAccountModules = resp.modules || [];
             renderChargedAccountSummary(resp.items || [], resp.total || 0);
-            renderChargedAccountItemsTable(admNo, resp.items || [], resp.total || 0);
+            renderChargedAccountModuleSelect();
+            var restoreIndex = keepModuleName ? _chargedAccountModules.findIndex(function (m) { return m.term_name === keepModuleName; }) : -1;
+            var activeIndex = _chargedAccountModules.findIndex(function (m) { return m.is_active; });
+            var selectedIndex = restoreIndex >= 0 ? restoreIndex : (activeIndex >= 0 ? activeIndex : 0);
+            if (cObj("charged_account_module_select")) cObj("charged_account_module_select").value = selectedIndex;
+            renderChargedAccountItemsTable(admNo, selectedIndex);
         } catch (e) {
             cObj("charged_account_summary").innerText = "Could not load";
         }
@@ -167,13 +180,30 @@ function renderChargedAccountSummary(items, total) {
     el.innerText = items.length == 0 ? "No charges" : ("Kes " + Number(total).toLocaleString() + " - " + items.length + " item(s)");
 }
 
-function renderChargedAccountItemsTable(admNo, items, total) {
+function renderChargedAccountModuleSelect() {
+    var select = cObj("charged_account_module_select");
+    if (!select) return;
+    var html = "";
+    _chargedAccountModules.forEach(function (m, index) {
+        html += "<option value='" + index + "'" + (m.is_active ? " selected" : "") + ">" + escHtml(m.term_name) + (m.is_active ? " (Current)" : "") + "</option>";
+    });
+    select.innerHTML = html;
+}
+
+function renderChargedAccountItemsTable(admNo, moduleIndex) {
+    var mod = _chargedAccountModules[moduleIndex];
+    var items = mod ? mod.items : [];
+    var total = mod ? mod.total : 0;
     var canEdit = cObj("charged_account_can_edit") && cObj("charged_account_can_edit").value == "1";
     var holder = cObj("charged_account_modal_items_holder");
     if (!holder) return;
 
     if (items.length == 0) {
-        holder.innerHTML = "<p class='text-muted' style='font-size:13px;'>No charges on this student's active module.</p>";
+        holder.innerHTML = "<div class='text-center p-4'>"
+            + "<i class='fas fa-receipt' style='font-size:36px;color:#adb5bd;'></i>"
+            + "<p class='mt-2 mb-0' style='font-size:14px;color:#555;'><b>No charges here</b></p>"
+            + "<p class='text-muted mb-0' style='font-size:13px;'>" + (mod ? escHtml(mod.term_name) : "This module") + " has no charged items.</p>"
+            + "</div>";
         return;
     }
 
@@ -261,7 +291,8 @@ function saveEditChargeItem() {
         if (resp.status == "success") {
             cObj("edit_charge_item_modal").classList.add("hide");
             cObj("view_student_charged_account_modal").classList.remove("hide");
-            loadChargedAccountSection(admNo);
+            var currentModule = _chargedAccountModules[parseInt(valObj("charged_account_module_select"), 10)];
+            loadChargedAccountSection(admNo, currentModule ? currentModule.term_name : null);
         } else {
             feedback.innerHTML = "<span class='text-danger'>" + resp.message + "</span>";
         }
@@ -286,7 +317,8 @@ function confirmDeleteChargeItem() {
         + "&charge_id=" + encodeURIComponent(chargeId), function (resp) {
         cObj("delete_charge_item_modal").classList.add("hide");
         cObj("view_student_charged_account_modal").classList.remove("hide");
-        loadChargedAccountSection(admNo);
+        var currentModule = _chargedAccountModules[parseInt(valObj("charged_account_module_select"), 10)];
+        loadChargedAccountSection(admNo, currentModule ? currentModule.term_name : null);
     });
 }
 

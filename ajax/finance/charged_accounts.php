@@ -41,15 +41,17 @@
             $stmt->execute();
             $res = $stmt->get_result();
             $items = [];
+            $modules = [];
             if ($res && ($row = $res->fetch_assoc())) {
                 $active_term = find_active_module_term($row['my_course_list']);
                 $items = get_charged_account_items_arr($active_term);
+                $modules = get_charged_account_modules_arr($row['my_course_list']);
             }
             $total = 0;
             foreach ($items as $item) {
                 $total += isset($item['amount']) ? (int)$item['amount'] : 0;
             }
-            echo json_encode(["items" => $items, "total" => $total]);
+            echo json_encode(["items" => $items, "total" => $total, "modules" => $modules]);
 
         } elseif (isset($_GET['list_charge_batches'])) {
             $select = "SELECT cb.*, g.`group_name` FROM `charge_batches` cb LEFT JOIN `student_groups` g ON g.`group_id` = cb.`group_id` ORDER BY cb.`date_created` DESC";
@@ -354,6 +356,35 @@
             return [];
         }
         return $active_module_term['charged_account']['items'];
+    }
+
+    // Returns every module_term of the student's active course (course_status==1),
+    // each with its own charged items, a total, and whether it's the currently
+    // active module -- so the UI can let the user browse charges per module.
+    function get_charged_account_modules_arr($my_course_list_json) {
+        $course_list = isJson_charge($my_course_list_json) ? json_decode($my_course_list_json, true) : [];
+        if (!is_array($course_list)) return [];
+        $modules = [];
+        foreach ($course_list as $course) {
+            if (!is_array($course) || !isset($course['course_status']) || $course['course_status'] != 1) continue;
+            if (!isset($course['module_terms']) || !is_array($course['module_terms'])) continue;
+            foreach ($course['module_terms'] as $index => $term) {
+                if (!is_array($term)) continue;
+                $term_items = (isset($term['charged_account']['items']) && is_array($term['charged_account']['items']))
+                    ? $term['charged_account']['items'] : [];
+                $term_total = 0;
+                foreach ($term_items as $item) {
+                    $term_total += isset($item['amount']) ? (int)$item['amount'] : 0;
+                }
+                $modules[] = [
+                    "term_name" => isset($term['term_name']) ? $term['term_name'] : ("MODULE " . ($index + 1)),
+                    "is_active" => isset($term['status']) && ($term['status'] == 1 || $term['status'] === "1"),
+                    "items" => $term_items,
+                    "total" => $term_total
+                ];
+            }
+        }
+        return $modules;
     }
 
     function get_user_fullname($conn, $user_id) {
