@@ -427,9 +427,9 @@ function checkPresnt($array, $string){
                         <button type='button' class="sidebtns <?php echo allowed("expenses"); ?> htbtn" id='expenses_btn'><span><img class="icons" src="images/feestructure.png"></span>Expenses & Approvals</button>
                         <button type='button' class="sidebtns <?php echo allowed("supplier_account"); ?> htbtn" id='supplier_btn'><span><img class="icons" src="images/findstud.png"></span> Supplier Accounts</button>
                         <button type='button' class="sidebtns <?php echo allowed("asset_management"); ?> htbtn" id='asset_account_btn'><span><img class="icons" src="images/pay.png"></span> Asset Accounts</button>
-                        <button type='button' class="sidebtns <?php echo allowed("finance_report"); ?> htbtn" id='finance_report_btn'><span><img class="icons" src="images/report.png"></span>Financial report</button>
                         <button type='button' class="sidebtns <?php echo allowed("manage_groups"); ?> htbtn" id='groups_btn'><span><i class="fas fa-users text-dark"></i></span>Groups</button>
                         <button type='button' class="sidebtns <?php echo allowed("manage_charged_accounts"); ?> htbtn" id='charged_accounts_btn'><span><i class="fas fa-file-invoice-dollar text-dark"></i></span>Charged Accounts</button>
+                        <button type='button' class="sidebtns <?php echo allowed("finance_report"); ?> htbtn" id='finance_report_btn'><span><img class="icons" src="images/report.png"></span>Financial report</button>
                     </div>
                 </div>
             </div>
@@ -1220,16 +1220,16 @@ function checkPresnt($array, $string){
                             <input class='finance1' type='checkbox' name='asset_management' id='asset_management'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section'>9. Financial Reports</label>
-                            <input class='finance1' type='checkbox' name='financial_report_section' id='financial_report_section'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_groups_sect'>10. Groups</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_groups_sect'>9. Groups</label>
                             <input class='finance1' type='checkbox' name='manage_groups_sect' id='manage_groups_sect'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_charged_accounts_sect'>11. Charged Accounts</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_charged_accounts_sect'>10. Charged Accounts</label>
                             <input class='finance1' type='checkbox' name='manage_charged_accounts_sect' id='manage_charged_accounts_sect'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section'>11. Financial Reports</label>
+                            <input class='finance1' type='checkbox' name='financial_report_section' id='financial_report_section'>
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->
@@ -1370,16 +1370,16 @@ function checkPresnt($array, $string){
                             <input class='fill_data finance12' type='checkbox' name='asset_management2' id='asset_management2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section2'>9. Financial Reports</label>
-                            <input class='fill_data finance12' type='checkbox' name='financial_report_section2' id='financial_report_section2'>
-                        </div>
-                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_groups_sect2'>10. Groups</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_groups_sect2'>9. Groups</label>
                             <input class='fill_data finance12' type='checkbox' name='manage_groups_sect2' id='manage_groups_sect2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_charged_accounts_sect2'>11. Charged Accounts</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='manage_charged_accounts_sect2'>10. Charged Accounts</label>
                             <input class='fill_data finance12' type='checkbox' name='manage_charged_accounts_sect2' id='manage_charged_accounts_sect2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='financial_report_section2'>11. Financial Reports</label>
+                            <input class='fill_data finance12' type='checkbox' name='financial_report_section2' id='financial_report_section2'>
                         </div>
                         <hr>
                         <!-- staft of humanresource section -->
