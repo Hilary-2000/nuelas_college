@@ -264,7 +264,7 @@
                 $search_key = strtolower($name . " " . $row['adm_no']);
                 $data .= "<li class='list-group-item d-flex justify-content-between align-items-center mm_current_member_row' data-adm-no='" . e($row['adm_no']) . "' data-search='" . e($search_key) . "'>
                     <span>{$xs}. {$name} <small style='color:red;'>({$row['adm_no']})</small> <small class='text-muted'>| " . e($course_name) . "</small></span>
-                    <button type='button' class='btn btn-sm btn-outline-danger remove_member_btn' data-adm-no='" . e($row['adm_no']) . "' data-group-id='{$group_id}'><i class='fas fa-times'></i></button>
+                    <span class='link text-danger remove_member_btn' data-adm-no='" . e($row['adm_no']) . "' data-group-id='{$group_id}'><i class='fas fa-times'></i></span>
                 </li>";
             }
             $data .= "</ul><p class='hide' id='manage_members_total_count'>{$xs}</p>";
