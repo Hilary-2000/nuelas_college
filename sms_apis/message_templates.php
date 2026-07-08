@@ -82,6 +82,11 @@
                             <div class="col-md-3 d-none"><p><b>Parent Children: </b></p></div>
                             <div class="col-md-3 d-none"><span><i class="text-danger">{children}</i></span></div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-3"><p><b>Next Module Fees</b></p></div>
+                            <div class="col-md-3"><span><i class="text-danger">{next_module_fees}</i></span></div>
+                            <div class="col-md-6"><small class="text-muted">Current fee balance plus the cost of the module the student is being moved into.</small></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,6 +169,27 @@
                         </div>
                         <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_parent_confirmation_message"><i class="fas fa-save"></i> Save</span>
                         <p id="parent_confirmation_message_template_holder"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="setting_s">
+                <div class="bg-secondary mt-0 rounded">
+                    <p class="text-center text-white">Module Progression Message</p>
+                </div>
+                <div class="conts p-2">
+                    <p>- This message is sent to parents when the system automatically moves their child to the next module!</p>
+                    <p><small class="text-muted">- Only these tags work here: {stud_fullname}, {stud_first_name}, {stud_class}, {stud_age}, {stud_adm}, {stud_noun}, {stud_fees_balance}, {stud_fees_to_pay}, {stud_fees_paid}, {next_module_fees}, {par_fullname}, {par_first_name}, {title_1}, {title_2}, {today}. School name/contact/email and receipt tags are not available for this message.</small></p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><b class="text-primary">Compose Message</b></p>
+                            <textarea name="module_progression_message_editor" id="module_progression_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your module progression message here!'>Dear {title_1} {par_fullname}, {stud_fullname} ({stud_adm}) has now been moved to the next module. Their new fee balance is Kes {stud_fees_balance}. Thank you.</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b class="text-primary">Sample Message</b></p>
+                            <small id="module_progression_message_viewer">Message Sample will appear here</small>
+                        </div>
+                        <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_module_progression_message"><i class="fas fa-save"></i> Save</span>
+                        <p id="module_progression_message_template_holder"></p>
                     </div>
                 </div>
             </div>
