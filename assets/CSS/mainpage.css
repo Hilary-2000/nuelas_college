@@ -1291,6 +1291,217 @@ table tr:last-of-type{
     background-color: rgb(128, 190, 192);
     font-weight: 700;
 }
+#change_last_academic_windows .balance-cf-modal{
+    padding: 15px 18px;
+}
+#change_last_academic_windows h5{
+    font-weight: 600;
+    color: rgb(40, 40, 40);
+    margin-bottom: 12px;
+}
+#change_last_academic_windows .balance-cf-icon{
+    color: rgb(201, 155, 0);
+    margin-right: 4px;
+}
+#change_last_academic_windows label{
+    color: rgb(90, 90, 90);
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+#change_last_academic_windows input#new_last_acad_bal{
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 6px;
+    transition: .2s;
+}
+#change_last_academic_windows input#new_last_acad_bal:focus{
+    border-color: cadetblue;
+    box-shadow: 0 0 0 2px rgba(95, 158, 160, 0.25);
+    outline: none;
+}
+#change_last_academic_windows #men_in_out{
+    text-align: center;
+    font-size: 13px;
+    margin: 6px 0 0;
+}
+#change_last_academic_windows .btns button{
+    width: 40%;
+    padding: 6px 5px;
+    border-radius: 30px;
+    cursor: pointer;
+    outline: none;
+    font-weight: 600;
+    transition: .2s;
+}
+#change_last_academic_windows .balance-cf-save{
+    border: none;
+    background-color: cadetblue;
+    color: white;
+}
+#change_last_academic_windows .balance-cf-save:hover{
+    background-color: rgb(70, 130, 132);
+}
+#change_last_academic_windows .balance-cf-cancel{
+    border: 1px solid rgb(190, 190, 190);
+    background-color: white;
+    color: rgb(80, 80, 80);
+}
+#change_last_academic_windows .balance-cf-cancel:hover{
+    background-color: rgb(240, 240, 240);
+}
+
+/* Fee discount modal */
+#edit_discounts_window .fee-discount-modal{
+    padding: 15px 18px;
+}
+#edit_discounts_window h5{
+    font-weight: 600;
+    color: rgb(40, 40, 40);
+    margin-bottom: 12px;
+}
+#edit_discounts_window .fee-discount-icon{
+    color: rgb(160, 90, 200);
+    margin-right: 4px;
+}
+#edit_discounts_window label{
+    color: rgb(90, 90, 90);
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+#edit_discounts_window select,
+#edit_discounts_window input{
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 6px;
+    transition: .2s;
+}
+#edit_discounts_window select:focus,
+#edit_discounts_window input:focus{
+    border-color: cadetblue;
+    box-shadow: 0 0 0 2px rgba(95, 158, 160, 0.25);
+    outline: none;
+}
+#edit_discounts_window #new_discount_error{
+    text-align: center;
+    font-size: 13px;
+    margin: 6px 0 0;
+}
+#edit_discounts_window .btns button{
+    width: 40%;
+    padding: 6px 5px;
+    border-radius: 30px;
+    cursor: pointer;
+    outline: none;
+    font-weight: 600;
+    transition: .2s;
+}
+#edit_discounts_window .fee-discount-save{
+    border: none;
+    background-color: cadetblue;
+    color: white;
+}
+#edit_discounts_window .fee-discount-save:hover{
+    background-color: rgb(70, 130, 132);
+}
+#edit_discounts_window .fee-discount-cancel{
+    border: 1px solid rgb(190, 190, 190);
+    background-color: white;
+    color: rgb(80, 80, 80);
+}
+#edit_discounts_window .fee-discount-cancel:hover{
+    background-color: rgb(240, 240, 240);
+}
+
+/* Charged account modal */
+#view_student_charged_account_modal .charged-account-icon{
+    color: rgb(40, 130, 100);
+    margin-right: 4px;
+}
+#view_student_charged_account_modal .charged-account-module-row{
+    background-color: rgb(247, 247, 247);
+    border-radius: 6px;
+    padding: 8px 10px;
+}
+#view_student_charged_account_modal .charged-account-module-row select:focus{
+    border-color: cadetblue;
+    box-shadow: 0 0 0 2px rgba(95, 158, 160, 0.25);
+    outline: none;
+}
+#view_student_charged_account_modal .charged-account-add-box{
+    background-color: rgb(252, 252, 250);
+    border-color: rgb(210, 210, 210) !important;
+}
+#view_student_charged_account_modal .charged-account-add-box h6{
+    color: rgb(40, 40, 40);
+    font-weight: 600;
+}
+#view_student_charged_account_modal .charged-account-add-box h6 i{
+    color: rgb(40, 130, 100);
+}
+#view_student_charged_account_modal .charged-account-add-box input:focus{
+    border-color: cadetblue;
+    box-shadow: 0 0 0 2px rgba(95, 158, 160, 0.25);
+    outline: none;
+}
+#view_student_charged_account_modal #charged_account_modal_feedback{
+    font-size: 13px;
+    margin: 8px 0 0;
+}
+#view_student_charged_account_modal .table thead{
+    background-color: rgb(240, 244, 244);
+}
+
+/* Edit / delete charge sub-modals */
+#edit_charge_item_modal .edit-charge-icon,
+#delete_charge_item_modal .delete-charge-icon{
+    margin-right: 4px;
+}
+#edit_charge_item_modal .edit-charge-icon{
+    color: rgb(70, 130, 180);
+}
+#delete_charge_item_modal .delete-charge-icon{
+    color: rgb(200, 60, 60);
+}
+#edit_charge_item_modal input:focus{
+    border-color: cadetblue;
+    box-shadow: 0 0 0 2px rgba(95, 158, 160, 0.25);
+    outline: none;
+}
+#edit_charge_item_modal .btns button,
+#delete_charge_item_modal .btns button{
+    width: 40%;
+    padding: 6px 5px;
+    border-radius: 30px;
+    cursor: pointer;
+    outline: none;
+    font-weight: 600;
+    transition: .2s;
+}
+#edit_charge_item_modal .edit-charge-save{
+    border: none;
+    background-color: cadetblue;
+    color: white;
+}
+#edit_charge_item_modal .edit-charge-save:hover{
+    background-color: rgb(70, 130, 132);
+}
+#edit_charge_item_modal .edit-charge-cancel,
+#delete_charge_item_modal .delete-charge-cancel{
+    border: 1px solid rgb(190, 190, 190);
+    background-color: white;
+    color: rgb(80, 80, 80);
+}
+#edit_charge_item_modal .edit-charge-cancel:hover,
+#delete_charge_item_modal .delete-charge-cancel:hover{
+    background-color: rgb(240, 240, 240);
+}
+#delete_charge_item_modal .delete-charge-confirm{
+    border: none;
+    background-color: rgb(200, 60, 60);
+    color: white;
+}
+#delete_charge_item_modal .delete-charge-confirm:hover{
+    background-color: rgb(170, 45, 45);
+}
+
 .passwindows{
 	transition: .5s;
     display: flex;

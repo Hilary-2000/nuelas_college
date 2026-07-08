@@ -2303,40 +2303,44 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id='change_last_academic_windows'>
-            <div class="confirmpayment animate">
-                <h5 class="text-center">Change Balance Carry Forward <img src="images/ajax_clock_small.gif" class="hide" id="change_balance_loaders"></h5>
+            <div class="confirmpayment animate balance-cf-modal">
+                <h5 class="text-center"><i class="fas fa-coins balance-cf-icon"></i> Change Balance Carry Forward <img src="images/ajax_clock_small.gif" class="hide" id="change_balance_loaders"></h5>
                 <input type="hidden" name="students_admission_number" id="students_admission_number">
-                <label for="new_last_acad_bal" class="form-control-label text-bold">New balance</label>
-                <input type="number" class="form-control" id="new_last_acad_bal" placeholder="New Balance Carry Forward">
+                <div class="form-group my-2">
+                    <label for="new_last_acad_bal" class="form-control-label text-bold">New balance</label>
+                    <input type="number" class="form-control" id="new_last_acad_bal" placeholder="New Balance Carry Forward">
+                </div>
                 <p id="men_in_out"></p>
                 <div class="btns">
-                    <button type='button' id='accept_last_yr_acad_bal'>Save</button>
-                    <button type='button' id='cancel_last_yr_acad_bal'>Cancel</button>
+                    <button type='button' id='accept_last_yr_acad_bal' class="balance-cf-save">Save</button>
+                    <button type='button' id='cancel_last_yr_acad_bal' class="balance-cf-cancel">Cancel</button>
                 </div>
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id='edit_discounts_window'>
-            <div class="confirmpayment animate">
-                <h5 class="text-center">Edit Discounts <img src="images/ajax_clock_small.gif" class="hide" id="edit_discounts_loader"></h5>
+            <div class="confirmpayment animate fee-discount-modal">
+                <h5 class="text-center"><i class="fas fa-tags fee-discount-icon"></i> Edit Discounts <img src="images/ajax_clock_small.gif" class="hide" id="edit_discounts_loader"></h5>
                 <input type="hidden" name="stud_admin_discounts" id="stud_admin_discounts">
-                <label for="discount_option" class="form-control-label">Discount Option</label>
-                <select name="discount_option" id="discount_option" class="form-control">
-                    <option value="" hidden>Select an option</option>
-                    <option value="value">Discount Amount</option>
-                    <option selected value="percentage">Discount Percentage</option>
-                </select>
+                <div class="form-group my-2">
+                    <label for="discount_option" class="form-control-label">Discount Option</label>
+                    <select name="discount_option" id="discount_option" class="form-control">
+                        <option value="" hidden>Select an option</option>
+                        <option value="value">Discount Amount</option>
+                        <option selected value="percentage">Discount Percentage</option>
+                    </select>
+                </div>
                 <div class="container p-0 hide" id="discount_value_window">
                     <label for="new_discount_value" class="form-control-label text-bold">New Discount Value <small>e.g 10000</small></label>
-                    <input type="number" class="form-control" value="0" id="new_discount_value" min="0" placeholder="Discount Value">
+                    <input type="number" class="form-control w-100" value="0" id="new_discount_value" min="0" placeholder="Discount Value">
                 </div>
                 <div class="container p-0" id="discount_percentage_window">
                     <label for="new_discount_percentage" class="form-control-label text-bold">New Discount Percentage <small>e.g 35% <span class="text-danger">Dont include <b>%</b></span></small></label>
-                    <input type="number" class="form-control" value="0" id="new_discount_percentage" min="0" max="100" placeholder="New Discount Value">
+                    <input type="number" class="form-control w-100" value="0" id="new_discount_percentage" min="0" max="100" placeholder="New Discount Value">
                 </div>
                 <p id="new_discount_error"></p>
                 <div class="btns">
-                    <button type='button' id='accept_new_discount_val'>Save</button>
-                    <button type='button' id='cancel_new_discount_val'>Cancel</button>
+                    <button type='button' id='accept_new_discount_val' class="fee-discount-save">Save</button>
+                    <button type='button' id='cancel_new_discount_val' class="fee-discount-cancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -3423,8 +3427,8 @@ function checkPresnt($array, $string){
 
         <!-- ============== EDIT CHARGE ITEM MODAL ============== -->
         <div class="confirmpaymentwindow hide" id="edit_charge_item_modal">
-            <div class="confirmpayment animate">
-                <h6 class="text-center">Edit Charge</h6>
+            <div class="confirmpayment animate edit-charge-modal">
+                <h6 class="text-center"><i class="fas fa-pen edit-charge-icon"></i> Edit Charge</h6>
                 <input type="hidden" id="edit_charge_adm_no">
                 <input type="hidden" id="edit_charge_id">
                 <div class="mb-2 text-left">
@@ -3437,53 +3441,53 @@ function checkPresnt($array, $string){
                 </div>
                 <p id="edit_charge_feedback"></p>
                 <div class="btns">
-                    <button type="button" id="save_edit_charge_btn">Save</button>
-                    <button type="button" id="cancel_edit_charge_btn">Cancel</button>
+                    <button type="button" id="save_edit_charge_btn" class="edit-charge-save">Save</button>
+                    <button type="button" id="cancel_edit_charge_btn" class="edit-charge-cancel">Cancel</button>
                 </div>
             </div>
         </div>
 
         <!-- ============== DELETE CHARGE ITEM MODAL ============== -->
         <div class="confirmpaymentwindow hide" id="delete_charge_item_modal">
-            <div class="confirmpayment animate">
-                <h6 class="text-center">Delete Charge</h6>
+            <div class="confirmpayment animate delete-charge-modal">
+                <h6 class="text-center"><i class="fas fa-trash delete-charge-icon"></i> Delete Charge</h6>
                 <p>Are you sure you want to delete <b id="delete_charge_description_label"></b>?</p>
                 <input type="hidden" id="delete_charge_adm_no">
                 <input type="hidden" id="delete_charge_id">
                 <div class="btns">
-                    <button type="button" id="confirm_delete_charge_btn">Yes</button>
-                    <button type="button" id="cancel_delete_charge_btn">No</button>
+                    <button type="button" id="confirm_delete_charge_btn" class="delete-charge-confirm">Yes</button>
+                    <button type="button" id="cancel_delete_charge_btn" class="delete-charge-cancel">No</button>
                 </div>
             </div>
         </div>
 
         <!-- ============== VIEW/EDIT STUDENT CHARGED ACCOUNT MODAL ============== -->
         <div class="confirmpaymentwindow hide" id="view_student_charged_account_modal">
-            <div class="window_lg animate">
+            <div class="window_lg animate charged-account-modal">
                 <div class="conts">
                     <p class="funga" id="close_view_student_charged_account_modal">&times;</p>
-                    <h5 class="text-center"><b>Charged Account</b></h5>
+                    <h5 class="text-center"><i class="fas fa-file-invoice-dollar charged-account-icon"></i> <b>Charged Account</b></h5>
                 </div>
                 <input type="hidden" id="charged_account_modal_adm_no">
-                <div class="mb-2 d-flex align-items-center" style="gap:8px;">
+                <div class="mb-2 d-flex align-items-center charged-account-module-row" style="gap:8px;">
                     <label class="form-control-label mb-0" for="charged_account_module_select"><b>Module:</b></label>
                     <select class="form-control form-control-sm w-auto" id="charged_account_module_select"></select>
                 </div>
                 <div id="charged_account_modal_items_holder"></div>
-                <div class="border border-secondary rounded p-3 mt-3">
-                    <h6 class="mb-3">Add a Charge (Current)</h6>
+                <div class="border rounded p-3 mt-3 charged-account-add-box">
+                    <h6 class="mb-3"><i class="fas fa-plus-circle"></i> Add a Charge (Current)</h6>
                     <div class="row">
                         <div class="col-md-4 mb-2">
                             <label class="form-control-label"><b>Description</b></label>
-                            <input type="text" class="form-control form-control-sm" id="charged_account_modal_description" placeholder="e.g. Lost cardigan">
+                            <input type="text" class="form-control form-control-sm w-100" id="charged_account_modal_description" placeholder="e.g. Lost cardigan">
                         </div>
                         <div class="col-md-3 mb-2">
                             <label class="form-control-label"><b>Period</b></label>
-                            <input type="text" class="form-control form-control-sm" id="charged_account_modal_period" placeholder="e.g. Term 2 2026">
+                            <input type="text" class="form-control form-control-sm w-100" id="charged_account_modal_period" placeholder="e.g. Term 2 2026">
                         </div>
                         <div class="col-md-3 mb-2">
                             <label class="form-control-label"><b>Amount (Kes)</b></label>
-                            <input type="number" class="form-control form-control-sm" id="charged_account_modal_amount" min="1">
+                            <input type="number" class="form-control form-control-sm w-100" id="charged_account_modal_amount" min="1" placeholder="e.g. 500">
                         </div>
                         <div class="col-md-2 mb-2 d-flex align-items-end">
                             <button type="button" class="btn btn-sm btn-success w-100" id="add_charged_account_item_btn"><i class="fas fa-plus"></i> Add</button>

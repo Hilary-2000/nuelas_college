@@ -507,10 +507,21 @@ th{
     border: none;
     margin: auto;
 }
-.add_expense input[type=text],.add_expense input[type=number], .add_expense select, .add_expense input[type=password],
+.add_expense input[type=text],.add_expense input[type=number], .add_expense select,
 .add_expenses input[type=text],.add_expenses input[type=number],
 .add_expenses input[type=date],input[type=date],input[type=number]
 ,input[type=text]{
+    position: relative;
+    width: 70%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    text-align: left;
+    font-weight: 600;
+    margin-left: 0;
+    font-size: 14px;
+}
+.add_expense input[type=password]{
     position: relative;
     width: 70%;
     padding: 5px;
@@ -523,6 +534,12 @@ th{
 }
 input, textarea, select {
     margin-left: 0;
+}
+/* Left-align all text-entry fields app-wide; login page and password fields keep their own styling */
+input:not([type=password]):not([type=button]):not([type=submit]):not([type=checkbox]):not([type=radio]),
+select,
+textarea{
+    text-align: left !important;
 }
 .dates_holder{
     display: flex;
