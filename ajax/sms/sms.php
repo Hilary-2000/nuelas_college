@@ -1,12 +1,14 @@
 <?php
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\SMTP;
     use PHPMailer\PHPMailer\Exception;
 
-    require '../administration/phpmailer/src/Exception.php';
-    require '../administration/phpmailer/src/PHPMailer.php';
-    require '../administration/phpmailer/src/SMTP.php';
+    require __DIR__ . '/../administration/phpmailer/src/Exception.php';
+    require __DIR__ . '/../administration/phpmailer/src/PHPMailer.php';
+    require __DIR__ . '/../administration/phpmailer/src/SMTP.php';
     date_default_timezone_set('Africa/Nairobi');
     if ($_SERVER['REQUEST_METHOD'] =='GET') {
         include("../../connections/conn1.php");
@@ -165,6 +167,37 @@
                 $message_type = "parent_account_confirmation_message";
                 $date_today = date("YmdHis");
                 $stmt->bind_param("ssss",$message_type,$parent_account_msg,$date_today,$date_today);
+                $stmt->execute();
+                echo "<p class='text-success'>Message template saved successfully!.</p>";
+            }
+        }elseif (isset($_GET["save_module_progression_message"])) {
+            $module_progression_message = $_GET['module_progression_message'];
+            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'module_progression_message';";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $stmt->store_result();
+            $num_rows = $stmt->num_rows;
+
+            if ($num_rows > 0) {
+                // update the module progression message
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if($row = $result->fetch_assoc()){
+                    $message_id = $row['message_id'];
+                    $update = "UPDATE `template_messages` SET `message_content` = ? WHERE `message_id` = ?";
+                    $stmt = $conn2->prepare($update);
+                    $stmt->bind_param("ss",$module_progression_message, $message_id);
+                    $stmt->execute();
+                    echo "<p class='text-success'>Message template saved successfully!.</p>";
+                }else{
+                    echo "<p class='text-danger'>Error has occured! Try again later.</p>";
+                }
+            }else{
+                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`) VALUES (?,?,?,?)";
+                $stmt = $conn2->prepare($insert);
+                $message_type = "module_progression_message";
+                $date_today = date("YmdHis");
+                $stmt->bind_param("ssss",$message_type,$module_progression_message,$date_today,$date_today);
                 $stmt->execute();
                 echo "<p class='text-success'>Message template saved successfully!.</p>";
             }
@@ -1368,7 +1401,10 @@
         if ($adm_no == "0") {
             return $final_message;
         }
-        $term = getTerm($conn2);
+        // getTerm() ignores $conn2 and reconnects via a session-dependent relative
+        // include, which only works when a browser session is already active.
+        // getTermV2($conn2) uses the connection we already have, safe for any caller.
+        $term = getTermV2($conn2);
         for ($index=0; $index < count($student_data); $index++) { 
             if ($student_data[$index]['adm_no'] == $adm_no) {
                 $final_message = str_replace("{stud_fullname}",ucwords(strtolower($student_data[$index]['first_name']." ".$student_data[$index]['second_name'])),$final_message);
