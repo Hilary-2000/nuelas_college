@@ -182,7 +182,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p><b class="text-primary">Compose Message</b></p>
-                            <textarea name="module_progression_message_editor" id="module_progression_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your module progression message here!'>Dear {title_1} {par_fullname}, {stud_fullname} ({stud_adm}) has now been moved to the next module. Their new fee balance is Kes {stud_fees_balance}. Thank you.</textarea>
+                            <textarea name="module_progression_message_editor" id="module_progression_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your module progression message here!'>Dear {title_1} {par_fullname}, {stud_fullname} ({stud_adm}) has now been moved to the next module. Their new fee balance is Kes {next_module_fees}. Thank you.</textarea>
                         </div>
                         <div class="col-md-6">
                             <p><b class="text-primary">Sample Message</b></p>
