@@ -3,8 +3,36 @@ session_start();
 date_default_timezone_set('Africa/Nairobi');
 
 require("../../assets/encrypt/functions.php");
+require("../../connections/turnstile_config.php");
+
+function verifyTurnstile($token) {
+    if (strlen($token) == 0) {
+        return false;
+    }
+    $curl = curl_init();
+    curl_setopt_array($curl, [
+        CURLOPT_URL => "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => http_build_query([
+            'secret' => TURNSTILE_SECRET_KEY,
+            'response' => $token,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+        ]),
+    ]);
+    $response = curl_exec($curl);
+    curl_close($curl);
+    $result = json_decode($response, true);
+    return isset($result['success']) && $result['success'] === true;
+}
+
     if($_SERVER['REQUEST_METHOD'] == 'GET'){
         if(isset($_GET['log'])){
+            if (!verifyTurnstile($_GET['cf_token'] ?? '')) {
+                echo "<p class='data' style='color:rgb(121, 19, 19);text-align:center;'>Verification failed. Please try again.</p>";
+                exit();
+            }
             $username = $_GET['username'];
             $_SESSION['unames'] = $username;
             include ("../../connections/conn1.php");
