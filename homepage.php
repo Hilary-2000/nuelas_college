@@ -2308,7 +2308,7 @@ function checkPresnt($array, $string){
                 <input type="hidden" name="students_admission_number" id="students_admission_number">
                 <div class="form-group my-2">
                     <label for="new_last_acad_bal" class="form-control-label text-bold">New balance</label>
-                    <input type="number" class="form-control" id="new_last_acad_bal" placeholder="New Balance Carry Forward">
+                    <input type="number" class="form-control w-100" id="new_last_acad_bal" placeholder="New Balance Carry Forward">
                 </div>
                 <p id="men_in_out"></p>
                 <div class="btns">
