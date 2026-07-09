@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require("connections/turnstile_config.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +12,7 @@
     <link rel="stylesheet" href="assets/CSS/mainpage.css">
     <link rel="shortcut icon" href="images/ladybird.png" type="image/x-icon">
     <title>Ladybird SMIS</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <!-- Google tag (gtag.js) -->
     <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-243578000-1"></script> -->
     <!-- <script>
@@ -70,6 +72,9 @@
                             <input type="text" style="background-color: white;" name="username" id="username" placeholder="Enter username" required>
                         </div>
                         <div class="conts">
+                            <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars(TURNSTILE_SITE_KEY); ?>"></div>
+                        </div>
+                        <div class="conts">
                             <button id="submitUname" type = "button">Submit</button>
                             <p>Don`t have an account ? <a href="#">Learn more</a></p>
                         </div>
@@ -90,10 +95,15 @@
     <script>
         cObj("submitUname").onclick = function () {
             let username = valObj("username");
+            let turnstileToken = document.querySelector('[name="cf-turnstile-response"]') ? document.querySelector('[name="cf-turnstile-response"]').value : "";
+            if(username.length>1 && turnstileToken.length==0){
+                cObj("err").innerHTML = "<p class='data' style='color:rgb(121, 19, 19);text-align:center;'>Please complete the verification checkbox to proceed!</p>"
+                return;
+            }
             if(username.length>1){
                 grayBorder(cObj("username"));
                 cObj("err").innerHTML = "<p class='data' style='color:green;text-align:center;'></p>"
-                let datapass = "?log=true&username="+valObj("username")+"&domain="+(document.domain);
+                let datapass = "?log=true&username="+valObj("username")+"&domain="+(document.domain)+"&cf_token="+encodeURIComponent(turnstileToken);
                 sendData1('GET','login/login.php',datapass,cObj("err"));
                  setTimeout(() => {
                      var timeout = 0;
