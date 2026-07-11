@@ -1,6 +1,8 @@
 <?php
     session_start();
     require("connections/turnstile_config.php");
+
+    $turnstile_bypassed = (TURNSTILE_BYPASS_IP !== '' && ($_SERVER['REMOTE_ADDR'] ?? '') === TURNSTILE_BYPASS_IP);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +14,9 @@
     <link rel="stylesheet" href="assets/CSS/mainpage.css">
     <link rel="shortcut icon" href="images/ladybird.png" type="image/x-icon">
     <title>Ladybird SMIS</title>
+    <?php if (!$turnstile_bypassed): ?>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <?php endif; ?>
     <!-- Google tag (gtag.js) -->
     <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-243578000-1"></script> -->
     <!-- <script>
@@ -71,9 +75,11 @@
                         <div class="conts">
                             <input type="text" style="background-color: white;" name="username" id="username" placeholder="Enter username" required>
                         </div>
+                        <?php if (!$turnstile_bypassed): ?>
                         <div class="conts">
                             <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars(TURNSTILE_SITE_KEY); ?>"></div>
                         </div>
+                        <?php endif; ?>
                         <div class="conts">
                             <button id="submitUname" type = "button">Submit</button>
                             <p>Don`t have an account ? <a href="#">Learn more</a></p>
@@ -93,10 +99,11 @@
     </div>
     <script src="assets/JS/functions.js"></script>
     <script>
+        const turnstileBypassed = <?php echo $turnstile_bypassed ? 'true' : 'false'; ?>;
         cObj("submitUname").onclick = function () {
             let username = valObj("username");
             let turnstileToken = document.querySelector('[name="cf-turnstile-response"]') ? document.querySelector('[name="cf-turnstile-response"]').value : "";
-            if(username.length>1 && turnstileToken.length==0){
+            if(username.length>1 && !turnstileBypassed && turnstileToken.length==0){
                 cObj("err").innerHTML = "<p class='data' style='color:rgb(121, 19, 19);text-align:center;'>Please complete the verification checkbox to proceed!</p>"
                 return;
             }

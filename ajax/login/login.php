@@ -5,6 +5,10 @@ date_default_timezone_set('Africa/Nairobi');
 require("../../assets/encrypt/functions.php");
 require("../../connections/turnstile_config.php");
 
+function isTurnstileBypassed() {
+    return TURNSTILE_BYPASS_IP !== '' && ($_SERVER['REMOTE_ADDR'] ?? '') === TURNSTILE_BYPASS_IP;
+}
+
 function verifyTurnstile($token) {
     if (strlen($token) == 0) {
         return false;
@@ -29,7 +33,7 @@ function verifyTurnstile($token) {
 
     if($_SERVER['REQUEST_METHOD'] == 'GET'){
         if(isset($_GET['log'])){
-            if (!verifyTurnstile($_GET['cf_token'] ?? '')) {
+            if (!isTurnstileBypassed() && !verifyTurnstile($_GET['cf_token'] ?? '')) {
                 echo "<p class='data' style='color:rgb(121, 19, 19);text-align:center;'>Verification failed. Please try again.</p>";
                 exit();
             }
