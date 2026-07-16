@@ -46,7 +46,7 @@
                 <div class="col-md-6">
                     <p class="titled_sections"><strong> Student information </strong></p>
                     <div class="conts">
-                        <label for="surname">Enter surname:<span style = 'color:blue;'>*</span> <span class="examples">eg: Onyango or Kamau </span> <br> </label>
+                        <label for="surname">Enter surname: <span class="examples">eg: Onyango or Kamau </span> <br> </label>
                         <input type="text" class="effect-8" name="surname" id="surname" placeholder="Enter Surname">
                     </div>
                     <div class="conts">
