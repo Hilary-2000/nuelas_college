@@ -164,7 +164,6 @@ if (session_status() === PHP_SESSION_NONE) {
                                         $message_category = "parent_account_confirmation_message";
                                         $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "first_parent", $transaction_id);
                                         $message_parent_2 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "second_parent", $transaction_id);
-                                        $phone_number = explode(",",$phone_number)[1].",".explode(",",$phone_number)[2];
                                         $phone_parent_1 = validateKenyanNumber(explode(",",$phone_number)[1]);
                                         $phone_parent_2 = validateKenyanNumber(explode(",",$phone_number)[2]);
                                     }elseif ($send_sms == "all_three") {
