@@ -9898,7 +9898,7 @@
         $transaction_id = base64_encode($transaction_id . "");
 
         // transaction link
-        $link = "https://nuelas.ladybirdsmis.com/reports/reports.php?receipt=" . $transaction_id . "&p_code=" . base64_encode($_SESSION['databasename']);
+        $link = "https://lawrenzo.ladybirdsmis.com/reports/reports.php?receipt=" . $transaction_id . "&p_code=" . base64_encode($_SESSION['databasename']);
 
         $curl = curl_init();
         
