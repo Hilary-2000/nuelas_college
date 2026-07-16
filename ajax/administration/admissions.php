@@ -4340,7 +4340,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $data_to_display = "<input type='hidden' id='theClass' value='".$className."'><button class='btn btn-secondary btn-sm my-2' id='goBack3'><i class='fas fa-arrow-left'></i> Back</button><table class='table'><tr><th>No.</th><th>Fullnames</th><th>Date Of Admissions</th><th>Student Class</th><th>Gender</th><th>Select All <input type='checkbox' id='promoSelect'></th></tr>";
                 $counter = 1;
                 while ($row = $result->fetch_assoc()) {
-                    $data_to_display.="<tr><td>".$counter."</td><td>".ucwords(strtolower($row['surname']." ".$row['first_name']." ".$row['second_name']))." - {".$row['adm_no']."}</td>";
+                    $data_to_display.="<tr><td>".$counter."</td><td>".ucwords(strtolower($row['first_name']." ".$row['second_name']." ".$row['surname']))." - {".$row['adm_no']."}</td>";
                     $data_to_display.="<td>".$row['D_O_A']."</td>";
                     $data_to_display.="<td>".myClassName($row['stud_class'])."</td>";
                     $data_to_display.="<td>".$row['gender']."</td>";
@@ -7670,7 +7670,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 if ($result) {
                     if($row = $result->fetch_assoc()){
                         $classname = myClassName($row['stud_class']);
-                        $data_to_display.=$row['surname']." ".$row['first_name']." ".$row['second_name']."|".$row['address']."|".$classname;
+                        $data_to_display.=$row['first_name']." ".$row['second_name']." ".$row['surname']."|".$row['address']."|".$classname;
                     }
                 }
                 echo $data_to_display;

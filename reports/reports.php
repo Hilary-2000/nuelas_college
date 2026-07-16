@@ -1533,7 +1533,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $boys = 0;
                                 $girls = 0;
                                 while ($row = $result->fetch_assoc()) {
-                                    $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                    $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                     $adm_no = $row['adm_no'];
                                     $gender = $row['gender'];
                                     if ($gender == "Male") {
@@ -1711,7 +1711,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
 
                             while ($row = $result->fetch_assoc()) {
-                                $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                 $adm_no = $row['adm_no'];
                                 $gender = $row['gender'];
                                 if ($gender == "Male") {
@@ -1841,7 +1841,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
 
                             while ($row = $result->fetch_assoc()) {
-                                $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                 $adm_no = $row['adm_no'];
                                 $gender = $row['gender'];
                                 if ($gender == "Male") {
@@ -1956,7 +1956,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $number = 0;
                         if ($result) {
                             while ($row = $result->fetch_assoc()) {
-                                $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                 $adm_no = $row['adm_no'];
                                 $gender = $row['gender'];
                                 $stud_class = classNameReport($row['stud_class']);
@@ -2059,7 +2059,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $number = 0;
                                 if ($result) {
                                     while ($row = $result->fetch_assoc()) {
-                                        $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                        $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                         $adm_no = $row['adm_no'];
                                         $gender = $row['gender'];
                                         $stud_class = classNameReport($row['stud_class']);
@@ -2170,7 +2170,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 }
 
                 while ($row = $result->fetch_assoc()) {
-                    $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                    $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                     $adm_no = $row['adm_no'];
                     $gender = $row['gender'];
                     if ($gender == "Male") {
@@ -2577,7 +2577,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $tittle = $select_report_class != "all" ? "List for " . classNameReport($select_report_class) . " $course_title" : "Student List for Whole School";
 
                         while ($row = $result->fetch_assoc()) {
-                            $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                            $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                             $adm_no = $row['adm_no'];
                             $gender = $row['gender'];
                             if ($gender == "Male") {
@@ -2722,7 +2722,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $boys = 0;
                                 $girls = 0;
                                 while ($row = $result->fetch_assoc()) {
-                                    $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                    $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                     $adm_no = $row['adm_no'];
                                     $gender = $row['gender'];
                                     if ($gender == "Male") {
@@ -2894,7 +2894,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $girls = 0;
                         if ($result) {
                             while ($row = $result->fetch_assoc()) {
-                                $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                 $adm_no = $row['adm_no'];
                                 $gender = $row['gender'];
                                 if ($gender == "Male") {
@@ -3033,7 +3033,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $girls = 0;
                         if ($result) {
                             while ($row = $result->fetch_assoc()) {
-                                $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                 $adm_no = $row['adm_no'];
                                 $gender = $row['gender'];
                                 if ($gender == "Male") {
@@ -3173,7 +3173,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $number = 0;
                         if ($result) {
                             while ($row = $result->fetch_assoc()) {
-                                $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                 $adm_no = $row['adm_no'];
                                 $gender = $row['gender'];
                                 $stud_class = classNameReport($row['stud_class']);
@@ -3317,7 +3317,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                                 $number = 0;
                                 if ($result) {
                                     while ($row = $result->fetch_assoc()) {
-                                        $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                                        $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                                         $adm_no = $row['adm_no'];
                                         $gender = $row['gender'];
                                         $stud_class = classNameReport($row['stud_class']);
@@ -3478,7 +3478,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $boys = 0;
                 $girls = 0;
                 while ($row = $result->fetch_assoc()) {
-                    $student_name = ucwords(strtolower($row['surname'] . " " . $row['first_name'] . " " . $row['second_name']));
+                    $student_name = ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname']));
                     $adm_no = $row['adm_no'];
                     $gender = $row['gender'];
                     if ($gender == "Male") {
@@ -8676,7 +8676,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $result = $stmt->get_result();
                         if ($result) {
                             if ($row = $result->fetch_assoc()) {
-                                $student_names = $row['first_name'] . " " . $row['second_name'];
+                                $student_names = $row['first_name'] . " " . $row['second_name'] . " " . $row['surname'];
                                 $adm = $row['adm_no'];
                                 array_push($student_data, $student_names);
                                 array_push($admno, $adm);
@@ -8799,7 +8799,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $result = $stmt->get_result();
                         if ($result) {
                             if ($row = $result->fetch_assoc()) {
-                                $student_names = $row['first_name'] . " " . $row['second_name'];
+                                $student_names = $row['first_name'] . " " . $row['second_name'] . " " . $row['surname'];
                                 $adm = $row['adm_no'];
                                 array_push($student_data, $student_names);
                                 array_push($admno, $adm);
@@ -8948,7 +8948,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $result = $stmt->get_result();
                         if ($result) {
                             if ($row = $result->fetch_assoc()) {
-                                $student_names = $row['first_name'] . " " . $row['second_name'];
+                                $student_names = $row['first_name'] . " " . $row['second_name'] . " " . $row['surname'];
                                 $adm = $row['adm_no'];
                                 array_push($student_data, $student_names);
                                 array_push($admno, $adm);
