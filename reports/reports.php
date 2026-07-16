@@ -8991,7 +8991,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             $pdf->AddPage();
                             // getting student report cards
                             $admission = $our_students[$index]['adm_no'];
-                            $full_name = $our_students[$index]['surname'] . " " . $our_students[$index]['first_name'] . " " . $our_students[$index]['second_name'];
+                            $full_name = $our_students[$index]['first_name'] . " " . $our_students[$index]['second_name'] . " " . $our_students[$index]['surname'];
                             $gender = $our_students[$index]['gender'];
                             $student_class = className_exam($our_students[$index]['stud_class']);
                             $student_gender = $our_students[$index]['gender'];
@@ -9139,7 +9139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     }
 
                     $invoice_number = date("YmdHis") . "#" . $stud_ids[$index];
-                    $student_name = $student_data['surname'] . " " . $student_data['first_name'] . " " . $student_data['second_name'];
+                    $student_name = $student_data['first_name'] . " " . $student_data['second_name'] . " " . $student_data['surname'];
                     $admission_number = $stud_ids[$index];
                     $student_class = className_exam($student_data['stud_class']);
 
@@ -9471,7 +9471,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     }
 
                     $invoice_number = date("YmdHis") . "#" . $stud_ids[$index];
-                    $student_name = $student_data['surname'] . " " . $student_data['first_name'] . " " . $student_data['second_name'];
+                    $student_name = $student_data['first_name'] . " " . $student_data['second_name'] . " " . $student_data['surname'];
                     $admission_number = $stud_ids[$index];
                     $student_class = className_exam($student_data['stud_class']);
 
@@ -10139,7 +10139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     $pdf->Ln();
                     $pdf->Cell(15, 7, "Name:", 1, 0, 'R', true);
                     $pdf->SetFont("Times", "", 12);
-                    $pdf->Cell(70, 7, ucwords(strtolower($student_details['surname'] . " " . $student_details['first_name'] . " " . $student_details['second_name'])), 1, 0, 'L', false);
+                    $pdf->Cell(70, 7, ucwords(strtolower($student_details['first_name'] . " " . $student_details['second_name'] . " " . $student_details['surname'])), 1, 0, 'L', false);
 
 
                     $pdf->SetFont("Times", "B", 12);
@@ -11043,7 +11043,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     $pdf->Ln();
                     $pdf->Cell(15, 7, "Name:", 1, 0, 'R', true);
                     $pdf->SetFont("Times", "", 12);
-                    $pdf->Cell(70, 7, ucwords(strtolower($student_details['surname'] . " " . $student_details['first_name'] . " " . $student_details['second_name'])), 1, 0, 'L', false);
+                    $pdf->Cell(70, 7, ucwords(strtolower($student_details['first_name'] . " " . $student_details['second_name'] . " " . $student_details['surname'])), 1, 0, 'L', false);
 
 
                     $pdf->SetFont("Times", "B", 12);
@@ -17159,7 +17159,7 @@ function sortByKey($array, $key, $ascending = true) {
 
 function editComments($comments, $student_details)
 {
-    $comments = str_replace("{fullname}", ucwords(strtolower($student_details['surname'] . " " . $student_details['first_name'] . " " . $student_details['second_name'])), $comments);
+    $comments = str_replace("{fullname}", ucwords(strtolower($student_details['first_name'] . " " . $student_details['second_name'] . " " . $student_details['surname'])), $comments);
     $comments = str_replace("{firstname}", $student_details['first_name'], $comments);
     $comments = str_replace("{noun1}", ($student_details['gender'] == "Male" ? "son" : "daughter"), $comments);
     $comments = str_replace("{noun2}", ($student_details['gender'] == "Male" ? "boy" : "girl"), $comments);
