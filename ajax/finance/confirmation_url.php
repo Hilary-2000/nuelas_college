@@ -63,6 +63,7 @@ if (session_status() === PHP_SESSION_NONE) {
         
 
         if (isset($jsonMpesaResponse['TransID'])) {
+        try {
         //  check if the paybill used is present in the database
             $select = "SELECT * FROM `school_information` WHERE `paybill` = ?";
             $stmt = $conn->prepare($select);
@@ -329,8 +330,28 @@ if (session_status() === PHP_SESSION_NONE) {
             }else {
             //  echo "Database connected to that paybill is not found";
             }
+        } catch (\Throwable $e) {
+            // A payment must never vanish silently: if anything above throws
+            // (a DB error, a malformed course/votehead record, etc.), record
+            // enough detail to find and fix it instead of losing the payment
+            // with zero trace, and still ack Safaricom so it isn't retried
+            // indefinitely for something a retry won't fix on its own.
+            $errorLog = __DIR__ . "/M_PESAConfirmationErrors.log";
+            $errorDetails = "[" . date("Y-m-d H:i:s") . "] "
+                . "TransID: " . ($jsonMpesaResponse['TransID'] ?? "unknown") . ", "
+                . "BillRefNumber: " . ($jsonMpesaResponse['BillRefNumber'] ?? "unknown") . ", "
+                . get_class($e) . ": " . $e->getMessage()
+                . " in " . $e->getFile() . ":" . $e->getLine()
+                . PHP_EOL . $e->getTraceAsString() . PHP_EOL;
+            file_put_contents($errorLog, $errorDetails, FILE_APPEND);
+
+            echo '{
+                "ResultCode":0,
+                "ResultDesc": "Confirmation Recieved Successfully"
+                }';
         }
-         
+        }
+
         function recordMpesaTrans($conn2,$mpesa_id,$TransAmount,$std_adm,$transaction_id, $trans_time,$shortcode,$MSIND,$fullnames,$trans_status){
         // RECORD MPESA TRANSACTION
             $insert = "INSERT INTO `mpesa_transactions` (`mpesa_id`,`amount`,`std_adm`,`assigned_transaction`,`transaction_time`,`short_code`,`payment_number`,`fullname`,`transaction_status`) VALUES (?,?,?,?,?,?,?,?,?)";
