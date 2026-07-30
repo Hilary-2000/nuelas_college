@@ -3238,7 +3238,7 @@ function tablebtnlistener() {
                     }
                     previous_schools += "</table>";
                     if (counters > 0) {
-                        cObj("prev_sch_list").innerHTML = previous_schools + "<br><p class='block_btn' id='edit_prev_school_btn'>Add Previous Schools</p>";
+                        cObj("prev_sch_list").innerHTML = previous_schools + "<br><p class='block_btn' id='edit_prev_school_btn'><i class='fas fa-plus'></i> Add Previous Schools</p>";
                         cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
                         // remove 
                         var rm_prev_sch = document.getElementsByClassName("rm_prev_sch");
@@ -3247,7 +3247,7 @@ function tablebtnlistener() {
                             element.addEventListener("click", remove_school);
                         }
                     } else {
-                        cObj("prev_sch_list").innerHTML = "<p class='block_btn'  id='edit_prev_school_btn'>Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
+                        cObj("prev_sch_list").innerHTML = "<p class='block_btn'  id='edit_prev_school_btn'><i class='fas fa-plus'></i> Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
                         cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
                     }
 
@@ -3956,7 +3956,7 @@ cObj("add_prev_sch_btn_edit").onclick = function () {
             }
             previous_schools += "</table>";
             if (counters > 0) {
-                cObj("prev_sch_list").innerHTML = previous_schools + "<br><p class='block_btn' id='edit_prev_school_btn'>Add Previous Schools</p>";
+                cObj("prev_sch_list").innerHTML = previous_schools + "<br><p class='block_btn' id='edit_prev_school_btn'><i class='fas fa-plus'></i> Add Previous Schools</p>";
                 cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
                 // remove 
                 var rm_prev_sch = document.getElementsByClassName("rm_prev_sch");
@@ -3965,12 +3965,12 @@ cObj("add_prev_sch_btn_edit").onclick = function () {
                     element.addEventListener("click", remove_school);
                 }
             } else {
-                cObj("prev_sch_list").innerHTML = "<p class='block_btn'  id='edit_prev_school_btn'>Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
+                cObj("prev_sch_list").innerHTML = "<p class='block_btn'  id='edit_prev_school_btn'><i class='fas fa-plus'></i> Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
                 cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
             }
         } else {
             cObj("previous_school_json").innerText = text;
-            cObj("prev_sch_list").innerHTML = "<p class='block_btn'  id='edit_prev_school_btn'>Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
+            cObj("prev_sch_list").innerHTML = "<p class='block_btn'  id='edit_prev_school_btn'><i class='fas fa-plus'></i> Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
             cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
 
             var prev_schools = JSON.parse(text);
@@ -3983,7 +3983,7 @@ cObj("add_prev_sch_btn_edit").onclick = function () {
             }
             previous_schools += "</table>";
             if (counters > 0) {
-                cObj("prev_sch_list").innerHTML = previous_schools + "<br><p class='block_btn' id='edit_prev_school_btn'>Add Previous Schools</p>";
+                cObj("prev_sch_list").innerHTML = previous_schools + "<br><p class='block_btn' id='edit_prev_school_btn'><i class='fas fa-plus'></i> Add Previous Schools</p>";
                 cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
                 // remove 
                 var rm_prev_sch = document.getElementsByClassName("rm_prev_sch");
@@ -3992,7 +3992,7 @@ cObj("add_prev_sch_btn_edit").onclick = function () {
                     element.addEventListener("click", remove_school);
                 }
             } else {
-                cObj("prev_sch_list").innerHTML = "<p class='block_btn'  id='edit_prev_school_btn'>Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
+                cObj("prev_sch_list").innerHTML = "<p class='block_btn'  id='edit_prev_school_btn'><i class='fas fa-plus'></i> Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
                 cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
             }
         }
@@ -4030,7 +4030,7 @@ function remove_school() {
         }
         previous_schools += "</table>";
 
-        cObj("prev_sch_list").innerHTML = previous_schools + "<br><p class='block_btn' id='edit_prev_school_btn'>Add Previous Schools</p>";
+        cObj("prev_sch_list").innerHTML = previous_schools + "<br><p class='block_btn' id='edit_prev_school_btn'><i class='fas fa-plus'></i> Add Previous Schools</p>";
         cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
         // remove 
         var rm_prev_sch = document.getElementsByClassName("rm_prev_sch");
@@ -4040,7 +4040,7 @@ function remove_school() {
         }
         cObj("previous_school_json").innerText = datapass;
     } else {
-        cObj("prev_sch_list").innerHTML = "<p class='text-danger'><small>Please save before leaving this window</small></p><p class='block_btn'  id='edit_prev_school_btn' >Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
+        cObj("prev_sch_list").innerHTML = "<p class='text-danger'><small>Please save before leaving this window</small></p><p class='block_btn'  id='edit_prev_school_btn' ><i class='fas fa-plus'></i> Add Previous Schools</p><br><p class='text-danger'>No previous schools attended by the student has been recorded</p>";
         cObj("edit_prev_school_btn").addEventListener("click", edit_prev_school);
         cObj("previous_school_json").innerText = "";
     }

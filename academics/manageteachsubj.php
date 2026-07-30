@@ -39,7 +39,7 @@
                                     <input type="number" class="form-control" name="idnumbers" id="idnumbers" placeholder = "Enter I`d number">
                                 </div>
                                 <div class="btns">
-                                    <button type='button' id='findersd' >Search</button>
+                                    <button type='button' id='findersd' ><i class="fas fa-search"></i> Search</button>
                                 </div>
                             </div>
                         </form>

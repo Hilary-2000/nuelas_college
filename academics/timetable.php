@@ -229,7 +229,7 @@
                                 <label for="specific_tr_tt" class="form-control-label">What Timetable is generated</label>
                                 <span class="" id="specific_tr_tt_lists_select"></span>
                             </div>
-                            <button type="submit" class="btn btn-secondary">Print Timetable</button>
+                            <button type="submit" class="btn btn-secondary"><i class="fas fa-print"></i> Print Timetable</button>
                         </form>
                     </div>
                         <hr>

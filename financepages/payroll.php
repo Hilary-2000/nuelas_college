@@ -385,7 +385,7 @@
                         <div class="left">
                             <div class="conts">
                                 <h6 style='text-align:center;margin-bottom:10px;'>Pay Staff</h6>
-                                <button type="button" id="refresh_paydets">Refresh</button>
+                                <button type="button" id="refresh_paydets"><i class="fas fa-sync"></i> Refresh</button>
                             </div>
                             <div class="conts border border-primary p-2 rounded my-2">
                                 <p>Last paid : <span class="color_brown" id="last_paid_time">unknown</span><br> Latest Month: <span class="color_brown"><?php echo date("M-Y", strtotime("-1 month")); ?></span><br> Balance: <span class="color_brown" id="salary_balances">unknown</span><br></p>
@@ -424,7 +424,7 @@
                                 </select>
                             </div> -->
                             <div class="conts hide" id="sal_pay_btns">
-                                <button type="button" id="salary_pays_btns">Process Payment</button>
+                                <button type="button" id="salary_pays_btns"><i class="fas fa-save"></i> Process Payment</button>
                                 <p id="err_handler_in"></p>
                             </div>
                             <div class="conts my-2">
@@ -455,8 +455,8 @@
                                 <p class="hide" id="old_salo"></p>
                                 <div class="conts">
                                     <p id="err_handler_F"></p>
-                                    <button type="button" id="changes_salary_btn">Update</button>
-                                    <button type="button" id="unenroll_staff_salary">Un-enroll</button>
+                                    <button type="button" id="changes_salary_btn"><i class="fas fa-upload"></i> Update</button>
+                                    <button type="button" id="unenroll_staff_salary"><i class="fas fa-trash"></i> Un-enroll</button>
                                 </div>
                             </div>
                             <div class="col-md-8">

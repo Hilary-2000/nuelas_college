@@ -10,7 +10,7 @@
             <div class="conts">
                 <div class="school_logo">
                     <img src="images/dp.png" id="dpimage-sett" alt="">
-                    <button type="button" id="change_dp_btns">Change</button>
+                    <button type="button" id="change_dp_btns"><i class="fas fa-pen-fancy"></i> Change</button>
                     <p id="dp_err_handler"></p>
                 </div>
                 <div class="conts" style="text-align:center;border-bottom:1px dashed black;">
@@ -76,7 +76,7 @@
                         <p id="update_my_infor"></p>
                     </div>
                     <div class="btns">
-                        <button type='button' id="change_my_information">Change Information</button>
+                        <button type='button' id="change_my_information"><i class="fas fa-pen-fancy"></i> Change Information</button>
                     </div>
                 <div class="administrator_contact">
                     <div class="titles">
@@ -99,7 +99,7 @@
                     <p id="update_credential_infor"></p>
                 </div>
                 <div class="btns">
-                    <button type='button' id="change_my_pass">Change Credentials</button>
+                    <button type='button' id="change_my_pass"><i class="fas fa-pen-fancy"></i> Change Credentials</button>
                 </div>
             </div>
         </div>

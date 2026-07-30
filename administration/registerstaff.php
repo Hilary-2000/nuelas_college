@@ -135,7 +135,7 @@
                 </form>
                 <div class="row">
                     <div class="col-md-6">
-                        <button class="btn btn-primary btn-sm text-xxs" type="button" id="resetstaffdatas">Reset form</button>
+                        <button class="btn btn-primary btn-sm text-xxs" type="button" id="resetstaffdatas"><i class="fas fa-undo-alt"></i> Reset form</button>
                     </div>
                     <div class="col-md-6">
                         <button type="button" class="btn btn-primary btn-sm text-xxs" id="registerstaff"><i class="fas fa-pen-fancy"></i> Register Staff</button>

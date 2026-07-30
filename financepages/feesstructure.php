@@ -24,7 +24,7 @@
                     <div id='fees_struct_class'></div>
                     <label for="search_fees_course_list"><b>Select course</b> <img class="hide" src="images/ajax_clock_small.gif" id="show_course_list_loader"></label>
                     <div id="search_fees_window_course"><small class="text-secondary">If course level is selected, course list will appear here!</small></div>
-                    <button id='showfeesstructure'>Show fees structure</button>
+                    <button id='showfeesstructure'><i class="fas fa-search"></i> Show fees structure</button>
                     <div class="conted">
                         <button id='add_expense'><i class='fa fa-plus'></i> Add Fees</button>
                         <button id="print_structure" class="hide" type='button'><i class="fa fa-print"></i> Print</button>

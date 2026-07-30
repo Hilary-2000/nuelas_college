@@ -42,7 +42,7 @@
                             <p id="subjClass"><img src="images/load2.gif" alt="loading"></p>
                         </div>
                         <div class="btns">
-                            <button type='button' id='finder' >Find</button>
+                            <button type='button' id='finder' ><i class="fas fa-search"></i> Find</button>
                         </div>
                         <div class="conts" id="seachsubd">
                             <p id='errorhand'></p>
@@ -116,11 +116,11 @@
                         <hr>
                         <div class="conts my-3">
                             <p class="hide" id="subjects_grades_hidden"></p>
-                            <label for="grading_lists" class="form-control-label"><b>Grading Lists</b><span id="edit_grading_subject" class="block_btn mx-2" style="padding:2px;border-radius: 3px;"><small>Edit Grades</small></span></label>
+                            <label for="grading_lists" class="form-control-label"><b>Grading Lists</b><span id="edit_grading_subject" class="block_btn mx-2" style="padding:2px;border-radius: 3px;"><small><i class="fas fa-pen-fancy"></i> Edit Grades</small></span></label>
                             <p id="my_grade_lists_subject"></p>
                         </div>
                         <div class="btns">
-                            <button type='button' id='updatesubs'>Update</button>
+                            <button type='button' id='updatesubs'><i class="fas fa-upload"></i> Update</button>
                             <button type='button' id='cancelsubs'><i class="fa fa-undo-alt"></i> Back</button>
                         </div>
                         <div class="conts">

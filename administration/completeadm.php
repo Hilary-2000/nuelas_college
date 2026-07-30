@@ -150,7 +150,7 @@
                 </div>
                 <div class="bot">
                     <p id="skip"><u>Skip</u> and complete later</p>
-                    <button id="completeadmbtn" type ="button">Complete admission</button>
+                    <button id="completeadmbtn" type ="button"><i class="fas fa-save"></i> Complete admission</button>
                 </div>
             </form>
         </div>

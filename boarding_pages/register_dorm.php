@@ -14,8 +14,8 @@
                 </div>
                 <div class="conts">
                     <p>Start by doing either of the following:</p>
-                    <button type="button" id="register_exams" >Register New Hostel</button>
-                    <button type="button" id="refresh_dorm_list" >Refresh</button>
+                    <button type="button" id="register_exams" ><i class="fas fa-save"></i> Register New Hostel</button>
+                    <button type="button" id="refresh_dorm_list" ><i class="fas fa-sync"></i> Refresh</button>
                     <!--<p><a href="tel://+254713620727">Call me ?</a></p>
                     <p><a href="mailto://hilaryme45@gmail.com">Mail me.</a></p>-->
                 </div>
