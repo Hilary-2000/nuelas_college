@@ -262,7 +262,7 @@ h4{
 
 .paywindow{
     position: relative;
-    width: 70%;
+    width: 100%;
     border: .5px solid rgb(136, 136, 136);
     margin: 10px auto;
     padding: 10px 20px;
@@ -291,6 +291,79 @@ h4{
 .paywindow label, .paywindow .conts p, .middle1 .body3 label , .body4 label{
     font-size: 14px; /**changed from 12px**/
     cursor: pointer;
+}
+
+/* ===== Pay Fees: Student Account window ===== */
+#payfeesd .paywindow{
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    padding: 18px 24px 22px;
+}
+#payfeesd .paywindow .title{
+    border-bottom: 2px solid #e3e7ea;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+}
+#payfeesd .paywindow h3{
+    color: rgb(3,131,135);
+    font-weight: 700;
+    letter-spacing: .2px;
+    font-size: 18px;
+}
+#payfeesd .paywindow h4{
+    color: rgb(3,131,135);
+    font-weight: 700;
+    letter-spacing: .2px;
+    font-size: 15px;
+}
+#payfeesd .paywindow h3 i,
+#payfeesd .paywindow h4 i{
+    margin-right: 8px;
+}
+#payfeesd .paywindow .search_students_finance{
+    height: auto;
+    border-bottom: none;
+    background: #f8fafb;
+    border: 1px solid #eef1f2;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 6px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 10px;
+}
+#payfeesd .paywindow .search_students_finance button{
+    margin-left: 0;
+}
+#payfeesd .paywindow .contsfd{
+    margin-top: 14px;
+}
+#payfeesd .paywindow label{
+    font-weight: 600;
+    color: #3d4a4e;
+}
+#payfeesd .paywindow select,
+#payfeesd .paywindow input{
+    border: 1px solid #dce3e5;
+    border-radius: 6px;
+    padding: 6px 10px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+#payfeesd .paywindow select:focus,
+#payfeesd .paywindow input:focus{
+    border-color: rgb(3,131,135);
+    box-shadow: 0 0 0 3px rgba(3,131,135,0.12);
+    outline: none;
+}
+#payfeesd .paywindow .payments{
+    background: #f8fafb;
+    border: 1px solid #e3e7ea;
+}
+#payfeesd .contsbtn{
+    margin-top: 12px;
 }
 .sidebars .contsc{
     position: relative;
@@ -1252,19 +1325,31 @@ table tr:last-of-type{
     text-decoration: underline;
 }
 .block_btn{
-    background-color: cadetblue;
-    color: black;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(24,158,163));
+    color: #fff;
     font-family: Arial, Helvetica, sans-serif;
     cursor: pointer;
     font-size: 14px; /**changed from 12px**/
+    font-weight: 400;
+    letter-spacing: .2px;
     display: inline-block;
-    padding: 10px;
-    /* font-weight: 600; */
-    margin: 5px 0;
+    padding: 9px 18px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(3,131,135,0.3);
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    margin: 5px 4px 5px 0;
+}
+.block_btn i{
+    margin-right: 6px;
 }
 .block_btn:hover{
-    color: white;
-    box-shadow: 2px 2px 5px rgb(77, 77, 77);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(3,131,135,0.4);
+}
+.block_btn:active{
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(3,131,135,0.3);
 }
 .boddy3 label{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -1960,7 +2045,7 @@ select option:hover{
 .exam_form input[type=number],.exam_form select, 
 .formation3 select,.formation3 input[type=number],
 .formation input[type=text],.formation input[type=number],
-.formation select,input[type=number],input[type=text]
+.formation select
 {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
     position: relative;
@@ -3196,4 +3281,100 @@ select{
 }
 .w-90 {
     width: 90% !important;
+}
+
+/* ==================== Global form control design system ==================== */
+/* Unifies every text-like input, select and textarea to the rounded, soft-bordered
+   look introduced on the auth screens, and every button to a teal gradient. Layout
+   properties (width/padding/margin) are left to each component's existing rules;
+   only the shared "skin" is standardized here. The persistent navigation chrome
+   (left dashboard menu, slide-out sidebar, and the administration quick-menu) keeps
+   its own original look, since it isn't a form or a popup window and the glass/
+   transparent nav styling doesn't work with this skin. */
+input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=reset]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden]):not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *),
+select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *),
+textarea:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *) {
+    border: 1px solid #9a9a9a !important;
+    border-radius: 5px !important;
+    background-color: #fff !important;
+    color: #2b3a3a !important;
+    font-weight: 400 !important;
+    box-shadow: none !important;
+    transition: border-color .15s ease, box-shadow .15s ease !important;
+}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=reset]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden]):not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):focus,
+select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):focus,
+textarea:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):focus {
+    border-color: rgb(3, 131, 135) !important;
+    box-shadow: 0 0 0 3px rgba(3,131,135,0.15) !important;
+    outline: none !important;
+}
+input:not(.left_dash *):not(.sidebars *):not(.administrationwindow *)::placeholder,
+textarea:not(.left_dash *):not(.sidebars *):not(.administrationwindow *)::placeholder {
+    color: #9aa8a8;
+    opacity: 1;
+}
+
+button:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *),
+input[type=submit]:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *),
+input[type=button]:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *) {
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(24,158,163)) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 5px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    letter-spacing: .3px;
+    box-shadow: 0 3px 8px rgba(3,131,135,0.3) !important;
+    transition: transform .15s ease, box-shadow .15s ease !important;
+    cursor: pointer;
+}
+button:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):hover,
+input[type=submit]:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):hover,
+input[type=button]:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(3,131,135,0.4) !important;
+}
+button:disabled:not(.left_dash *):not(.sidebars *):not(.administrationwindow *),
+input[type=submit]:disabled:not(.left_dash *):not(.sidebars *):not(.administrationwindow *),
+input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrationwindow *) {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ===== Autocomplete suggestion dropdown (student/parent search fields) ===== */
+.autocomplete{
+    position: relative;
+}
+.autocomplete-items{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    max-height: 240px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    margin-top: 4px;
+    padding: 4px;
+}
+.autocomplete-items div{
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #3d4a4e;
+    transition: background .15s ease;
+}
+.autocomplete-items div:hover{
+    background: rgba(3,131,135,0.1);
+    color: rgb(3,131,135);
+}
+.autocomplete-items div.autocomplete-active{
+    background: rgb(3,131,135);
+    color: #fff;
 }
