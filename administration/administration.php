@@ -39,7 +39,7 @@
                     <input type="number" name="first_row" id="first_row" value="1" placeholder="First Row number">
                     <label for="last_row_number" class="form-control-label">Last Row Number</label>
                     <input type="number" name="last_row_number" id="last_row_number" placeholder="Last Row number">
-                    <button type="button" id="upload_new_students_button" class="">Upload</button>
+                    <button type="button" id="upload_new_students_button" class=""><i class="fas fa-upload"></i> Upload</button>
                 </div>
             </div>
             <form class="body row" id="admitform">
@@ -355,8 +355,8 @@
                 </div>
             </form>
             <div class="bottom">
-                <button type="button" id="submitbtn">Submit</button>
-                <button type="button" id="resetadmitform">Reset</button>
+                <button type="button" id="submitbtn"><i class="fas fa-save"></i> Submit</button>
+                <button type="button" id="resetadmitform"><i class="fas fa-undo-alt"></i> Reset</button>
             </div>
         </div>
         <div class="bottom1">

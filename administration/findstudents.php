@@ -78,7 +78,7 @@
             <div class="topsearch2" id="alumni_candidates_banner">
                 <div class="cont">
                     <p id="alumni_candidates_count_raw" class="hide"></p>
-                    <button type="button" class="btn btn-primary btn-sm" id="check_alumni_candidates">Move Completed Students to Alumni <img class="hide" src="images/ajax_clock_small.gif" id="alumni_candidates_loader"></button>
+                    <button type="button" class="btn btn-primary btn-sm" id="check_alumni_candidates"><i class="fas fa-graduation-cap"></i> Move Completed Students to Alumni <img class="hide" src="images/ajax_clock_small.gif" id="alumni_candidates_loader"></button>
                     <span id="show_alumni_candidates_notice" class="hide pulse-notice text-success">
                         <span style="font-size: 20px;"><i class="fas fa-hand-point-left"></i></span>
                         <span id="alumni_candidates_notice_count">0</span> student(s) ready to move to Alumni
@@ -282,7 +282,7 @@
                         <div class="conts" id="">
                             <label for="class_assigned_tr">Class assigned: <br></label>
                             <input type="text" style="max-width:200px" name="class_assigned_tr" id="class_assigned_tr" placeholder="Class assigned" Readonly>
-                            <button type="button" id="display_my_students">Display my students</button>
+                            <button type="button" id="display_my_students"><i class="fas fa-search"></i> Display my students</button>
                         </div>
                 </div>
             </div>
@@ -290,7 +290,7 @@
                 <div class="otherbtn hide" id="resultsbody">
                 </div>
                     <div class="back_button animate hide" id="back_btns" title="Click to dismis">
-                        <button class = "my_back_button"  type="button" id="go_back_1" ><img src="images/back.png" alt="back"></button>
+                        <button class = "my_back_button"  type="button" id="go_back_1" ><i class="fas fa-arrow-left"></i></button>
                     </div>
                 <div class="staffinformed form-group rounded hide" id="viewinformation" >
                     <div class="conts">
@@ -800,7 +800,7 @@
                     </div>
                     <div class="btns">
                         <!--<button type="button">Delete Student</button>-->
-                        <button type="button" id='updatestudinfor'>Update student information</button>
+                        <button type="button" id='updatestudinfor'><i class="fas fa-upload"></i> Update student information</button>
                         <p class = "link" id="returnfind">&laquo; Go back to student list</p>
                     </div>
                     <p id="coppy_cat_err"></p>

@@ -148,7 +148,7 @@
                     <p id="school_information_err_handler"></p>
                 </div>
                 <div class="btns">
-                    <button type='button' id='update_school_in4'>Update</button>
+                    <button type='button' id='update_school_in4'><i class="fas fa-upload"></i> Update</button>
                 </div>
             </div>
         </div>

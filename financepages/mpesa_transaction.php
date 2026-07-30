@@ -139,7 +139,7 @@
                                 <div class="autocomplete">
                                     <input type="text" name="stud_admission_no" id="stud_admission_no" class="" placeholder="Admission No">
                                 </div>
-                                <button class="btn btn-primary btn-sm" id="find_student_assign">Search</button>
+                                <button class="btn btn-primary btn-sm" id="find_student_assign"><i class="fas fa-search"></i> Search</button>
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
                         <div class="bg-white p-1">
                             <p class="text-bolder">By clicking Assign Payment you are confirming transfer of MPESA ID: <strong id="mpesa_idds">PHJHJHBHN</strong> of Ksh <strong id="amount_to_transfer">1000</strong> to <strong id="stud_name">Student name</strong>.</p>
                         </div>
-                        <button class="btn btn-primary " id="assigne_payment_btn">Assign Payment</button>
+                        <button class="btn btn-primary " id="assigne_payment_btn"><i class="fas fa-check"></i> Assign Payment</button>
                         <p id="error_handled"></p>
                     </div>
                 </div>

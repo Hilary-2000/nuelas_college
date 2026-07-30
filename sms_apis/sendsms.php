@@ -35,10 +35,10 @@
                 </div>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="btn btn-sm btn-primary active" id="rather_send_sms_btn" data-bs-toggle="tab" data-bs-target="#send_sms_window" type="button" role="tab" aria-controls="send_sms_window" aria-selected="true">Send SMS</button>
+                        <button class="btn btn-sm btn-primary active" id="rather_send_sms_btn" data-bs-toggle="tab" data-bs-target="#send_sms_window" type="button" role="tab" aria-controls="send_sms_window" aria-selected="true"><i class="fas fa-paper-plane"></i> Send SMS</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="btn btn-sm btn-primary" id="rather_send_email_btn" data-bs-toggle="tab" data-bs-target="#send_email_window" type="button" role="tab" aria-controls="send_email_window" aria-selected="false">Send Email</button>
+                        <button class="btn btn-sm btn-primary" id="rather_send_email_btn" data-bs-toggle="tab" data-bs-target="#send_email_window" type="button" role="tab" aria-controls="send_email_window" aria-selected="false"><i class="fas fa-paper-plane"></i> Send Email</button>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
@@ -358,7 +358,7 @@
                         </div>
                     </div>
                     <p id="err_hands_error"></p>
-                    <button type='button' id="send_msg_btns">Send message <span class="hide" id="load_bulk_emails_sending"><img src="images/ajax_clock_small.gif"></span></button>
+                    <button type='button' id="send_msg_btns"><i class="fas fa-paper-plane"></i> Send message <span class="hide" id="load_bulk_emails_sending"><img src="images/ajax_clock_small.gif"></span></button>
                     <p id="out_put"></p>
                 </div>
             </div>
@@ -377,7 +377,7 @@
                     <p style="color:gray;font-size:12px;" ><span id="chr_counts_in1">0</span>/160 characters</p>
                     <textarea name="type_notice_here" id="type_notice_here" cols="30" rows="10" maxlength="160" placeholder = "Type your message here" ></textarea><br>
                     <p id='notice_errors'></p>
-                    <button type='button' id="send_post" >Send Notice</button>
+                    <button type='button' id="send_post" ><i class="fas fa-paper-plane"></i> Send Notice</button>
                 </div>
             </div>
             <div class="setting_s">
@@ -386,10 +386,10 @@
                 </div>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="btn btn-sm btn-primary active" id="rather_view_sms_history" data-bs-toggle="tab" data-bs-target="#show_sms_windows" type="button" role="tab" aria-controls="show_sms_windows" aria-selected="true">SMS History</button>
+                        <button class="btn btn-sm btn-primary active" id="rather_view_sms_history" data-bs-toggle="tab" data-bs-target="#show_sms_windows" type="button" role="tab" aria-controls="show_sms_windows" aria-selected="true"><i class="fas fa-history"></i> SMS History</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="btn btn-sm btn-primary" id="rather_view_email_history" data-bs-toggle="tab" data-bs-target="#show_email_windows" type="button" role="tab" aria-controls="show_email_windows" aria-selected="false">Email History</button>
+                        <button class="btn btn-sm btn-primary" id="rather_view_email_history" data-bs-toggle="tab" data-bs-target="#show_email_windows" type="button" role="tab" aria-controls="show_email_windows" aria-selected="false"><i class="fas fa-history"></i> Email History</button>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent1">
@@ -406,7 +406,7 @@
                                     <input class="form-control" type="date" name="to_msg_sent" id="to_msg_sent" value = <?php echo date("Y-m-d", strtotime("3 hour"))?>><br>
                                 </div>
                                 <div class="col-md-4">
-                                    <button role="button" id="view_sms_history">View SMS history</button>
+                                    <button role="button" id="view_sms_history"><i class="fas fa-eye"></i> View SMS history</button>
                                 </div>
                             </div>
                             <p id="sms_checker_evt_handlers"></p>

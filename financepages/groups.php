@@ -188,8 +188,8 @@
             </div>
             <p id="edit_group_feedback"></p>
             <div class="btns">
-                <button type="button" id="save_edit_group_btn">Save Changes</button>
-                <button type="button" id="cancel_edit_group_btn">Cancel</button>
+                <button type="button" id="save_edit_group_btn"><i class="fas fa-save"></i> Save Changes</button>
+                <button type="button" id="cancel_edit_group_btn"><i class="fas fa-times"></i> Cancel</button>
             </div>
         </div>
     </div>
@@ -201,8 +201,8 @@
             <p>Are you sure you want to delete <b id="delete_group_name_label"></b>? This cannot be undone.</p>
             <input type="hidden" id="delete_group_id">
             <div class="btns">
-                <button type="button" id="confirm_delete_group_btn">Yes</button>
-                <button type="button" id="cancel_delete_group_btn">No</button>
+                <button type="button" id="confirm_delete_group_btn"><i class="fas fa-check"></i> Yes</button>
+                <button type="button" id="cancel_delete_group_btn"><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -298,7 +298,7 @@
             <p id="manage_members_feedback"></p>
 
             <div class="btns">
-                <button type="button" id="close_manage_members_btn">Close</button>
+                <button type="button" id="close_manage_members_btn"><i class="fas fa-times"></i> Close</button>
             </div>
         </div>
     </div>

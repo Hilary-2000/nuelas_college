@@ -56,7 +56,7 @@
                         <p id="exma_record_err"></p>
                     </div>
                     <div class="hide" id="btn_panel">
-                        <button type="button" id = "populate_btn">Populate</button>
+                        <button type="button" id = "populate_btn"><i class="fas fa-save"></i> Populate</button>
                     </div>
                 </div>
                 <div class="view_exams" id="view_exams_record">
@@ -68,7 +68,7 @@
                     </div>
                     <div class="class_sitters" id="class_sitters">
                     </div>
-                    <button class="hide" type="button" id="display_results">Display</button>
+                    <button class="hide" type="button" id="display_results"><i class="fas fa-search"></i> Display</button>
                     <p id="error_handlers"></p>
                 </div>
                 <div class="view_exams" id="view_exams_class_record">
@@ -79,7 +79,7 @@
                     <div class="term_select" id="select_one_class_siting">
                     </div>
                     <div class="term_select hide" id="display_btns">
-                        <button type='button' id = "display_results_per_class">Display</button>
+                        <button type='button' id = "display_results_per_class"><i class="fas fa-search"></i> Display</button>
                     </div>
                     <div class="term_select">
                         <p id="view_subjects_err"></p>
@@ -178,7 +178,7 @@
                     </div>
                 </div>
                 <div class="btns">
-                    <button class="" id="go_back" >Back</button>
+                    <button class="" id="go_back" ><i class="fas fa-arrow-left"></i> Back</button>
                     <button type="button" id="print_results"><i class="fa fa-print"></i> Print</button>
                 </div>
             </div>

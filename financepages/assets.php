@@ -183,7 +183,7 @@
                                         <button type="button" id="dispose_asset"><i class="fas fa-trash"></i>  Dispose <img class="hide" src="images/ajax_clock_small.gif" id="dispose_asset_loader"></button>
                                     </div>
                                     <div class="col-md-6">
-                                        <button type="button" id="cancel_asset_disposal"><i class="fas fa-x"></i> Cancel</button>
+                                        <button type="button" id="cancel_asset_disposal"><i class="fas fa-times"></i> Cancel</button>
                                     </div>
                                     <p id="asset-dispose-error"></p>
                                 </div>
@@ -197,7 +197,7 @@
                                         <button type="button" id="recover_asset_confirm_btn"><i class="fas fa-recycle"></i>  Recover Asset<img class="hide" src="images/ajax_clock_small.gif" id="recover_asset_loader"></button>
                                     </div>
                                     <div class="col-md-6">
-                                        <button type="button" id="cancel_asset_recovery"><i class="fas fa-x"></i> Cancel</button>
+                                        <button type="button" id="cancel_asset_recovery"><i class="fas fa-times"></i> Cancel</button>
                                     </div>
                                     <p id="asset-recovery-error"></p>
                                 </div>

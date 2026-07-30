@@ -156,7 +156,7 @@
                             <div class="autocomplete">
                                 <input class="form-control" type="text" style="max-width:300px; "  id="student_adm_credit_note" placeholder = "Reg No or Name">
                             </div>
-                            <button type='button'  id='search_student_credit_note'>Search</button>
+                            <button type='button'  id='search_student_credit_note'><i class="fas fa-search"></i> Search</button>
                         </div>
                         <div class="contsfd" id="fees_list_result">
                             
@@ -190,7 +190,7 @@
                             <div class="bg-white p-1">
                                 <p class="text-bolder">By clicking Assign Payment you are confirming transfer of Credit of Ksh <strong id="amount_to_credit_cr_nt">1000</strong> to <strong id="stud_name_credit_note">Student name</strong>.</p>
                             </div>
-                            <button class="btn btn-primary " id="assign_payment_credit_note">Assign Payment</button>
+                            <button class="btn btn-primary " id="assign_payment_credit_note"><i class="fas fa-check"></i> Assign Payment</button>
                             <p id="error_handled_credit_note"></p>
                         </div>
                     </div>

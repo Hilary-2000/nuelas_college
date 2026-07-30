@@ -118,7 +118,7 @@
         <div class="conts">
             <label class="form-control-label" >Change password?</label>
             <p id='passworderrors2'></p>
-            <button type='button' id ='changepwd'>Change password</button>
+            <button type='button' id ='changepwd'><i class="fas fa-pen-fancy"></i> Change password</button>
         </div>
     </div>
     <div class="credentials">

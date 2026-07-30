@@ -45,7 +45,7 @@
                 <p style="color:gray;font-size:12px;"><span id="count_char">0</span>/500 Characters</p>
                 <textarea name="suggestion_box" id="suggestion_box" cols="35" rows="10" placeholder = "Type here 500 characters maximum"></textarea>
                 <p id="err_handlered"></p>
-                <button type="button" id="send-feedback_btns">Send feedback</button>
+                <button type="button" id="send-feedback_btns"><i class="fas fa-paper-plane"></i> Send feedback</button>
             </div>
         </div>
         <div class="bottom1">

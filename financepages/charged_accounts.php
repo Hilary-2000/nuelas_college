@@ -45,7 +45,7 @@
                         <div class="autocomplete" style="max-width:400px;">
                             <input type="text" class="form-control" id="charge_admno_input" placeholder="Type a name or admission number">
                         </div>
-                        <button type="button" class="btn btn-outline-primary" id="add_charge_admno_btn">Add</button>
+                        <button type="button" class="btn btn-outline-primary" id="add_charge_admno_btn"><i class="fas fa-plus"></i> Add</button>
                     </div>
                     <p id="charge_admno_feedback"></p>
                     <div id="charge_admno_list" class="my-2"></div>
@@ -94,7 +94,7 @@
             <input type="text" class="form-control form-control-sm mb-2" id="batch_students_search_box" placeholder="Search by name or admission number...">
             <div id="batch_students_holder"></div>
             <div class="btns">
-                <button type="button" id="close_view_batch_students_btn">Close</button>
+                <button type="button" id="close_view_batch_students_btn"><i class="fas fa-times"></i> Close</button>
             </div>
         </div>
     </div>
