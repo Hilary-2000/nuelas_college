@@ -600,8 +600,8 @@ function checkPresnt($array, $string){
                     <p>Are you sure ?</p>
                 </div>
                 <div class="buttons">
-                    <button type='button' id='clasregyes'>Yes</button>
-                    <button type='button' id='clasregno'>No</button>
+                    <button type='button' id='clasregyes'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='clasregno'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -612,8 +612,8 @@ function checkPresnt($array, $string){
                     <p>Are you sure you want to save changes made in <b id="timetable_title"></b> ?</p>
                 </div>
                 <div class="buttons">
-                    <button type='button' id='save_changestt_yees'>Yes</button>
-                    <button type='button' id='save_changestt_no'>No</button>
+                    <button type='button' id='save_changestt_yees'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='save_changestt_no'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -626,8 +626,8 @@ function checkPresnt($array, $string){
                     <textarea id="label_desc" cols="30" rows="3" maxlength="300" class="form-control" placeholder="Direct deposit to KCB account 1230090019"></textarea>
                 </div>
                 <div class="buttons">
-                    <button type='button' id='save_changes_new_pd'>Save</button>
-                    <button type='button' id='cancel_save_changes_new_pd'>Cancel</button>
+                    <button type='button' id='save_changes_new_pd'><i class="fas fa-save"></i> Save</button>
+                    <button type='button' id='cancel_save_changes_new_pd'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -640,8 +640,8 @@ function checkPresnt($array, $string){
                     <p>Are you sure you want to delete <b id="description_index"></b> ?</p>
                 </div>
                 <div class="buttons">
-                    <button type='button' id='yes_delete_pd'>Yes</button>
-                    <button type='button' id='no_delete_pd'>No</button>
+                    <button type='button' id='yes_delete_pd'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='no_delete_pd'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -656,8 +656,8 @@ function checkPresnt($array, $string){
                         <p>You are previledged to change user`s passwords without the system asking for their current password</p>
                         <p>If you proceed you will change <span id='namesdd'>users</span> password</p>
                         <div class="contsbt">
-                            <button type='button' id='proceed'>Proceed!</button>
-                            <button type='button' id='cancelchngebtn1'>Cancel</button>
+                            <button type='button' id='proceed'><i class="fas fa-check"></i> Proceed!</button>
+                            <button type='button' id='cancelchngebtn1'><i class="fas fa-times"></i> Cancel</button>
                         </div>
                     </div>
                     <div class="changepass1 col-md-6">
@@ -671,8 +671,8 @@ function checkPresnt($array, $string){
                             <input class="form-control w-75 px-2 text-xxs" type="password" name="reenterpass" id="reenterpass" placeholder='Re-enter password'>
                         </div>
                         <div class="contsbt">
-                            <button type='button' id='changebtns'>Change password</button>
-                            <button type='button' id='cancelchngebtn2'>Cancel</button>
+                            <button type='button' id='changebtns'><i class="fas fa-pen-fancy"></i> Change password</button>
+                            <button type='button' id='cancelchngebtn2'><i class="fas fa-times"></i> Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -684,8 +684,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to un-assign this payment? <br><b>Note:</b><br>This will affect the student`s balance!</p>
                 <input type="hidden" value="0" id="un_assign_payments_id">
                 <div class="btns">
-                    <button type='button' id='confirm_unassign_payments'>Yes</button>
-                    <button type='button' id='decline_unassign_payments'>No</button>
+                    <button type='button' id='confirm_unassign_payments'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='decline_unassign_payments'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -731,11 +731,11 @@ function checkPresnt($array, $string){
                     <input type="hidden" value="<?php echo date("H:i:s");?>" name="time_of_payment_fees" id="time_of_payment_fees_holder_transfer">
                     <input type="hidden" value="auto" name="fees_payment_opt_holder" id="fees_payment_opt_holder_transfer">
                     <input type="hidden" name="supporting_documents_list" value="[]" id="supporting_documents_list_transfer">
-                    <button hidden id="submit_receipt_printing_transfer" type="submit">Submit</button>
+                    <button hidden id="submit_receipt_printing_transfer" type="submit"><i class="fas fa-save"></i> Submit</button>
                 </form>
                 <div class="btns">
-                    <button type='button' id='confirmyes_transfer'>Yes</button>
-                    <button type='button' id='confirmno_transfer'>No</button>
+                    <button type='button' id='confirmyes_transfer'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirmno_transfer'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -781,11 +781,11 @@ function checkPresnt($array, $string){
                     <input type="hidden" value="<?php echo date("H:i:s");?>" name="time_of_payment_fees" id="time_of_payment_fees_holder">
                     <input type="hidden" value="auto" name="fees_payment_opt_holder" id="fees_payment_opt_holder">
                     <input type="hidden" name="supporting_documents_list" value="[]" id="supporting_documents_list">
-                    <button hidden id="submit_receipt_printing" type="submit">Submit</button>
+                    <button hidden id="submit_receipt_printing" type="submit"><i class="fas fa-save"></i> Submit</button>
                 </form>
                 <div class="btns">
-                    <button type='button' id='confirmyes'>Yes</button>
-                    <button type='button' id='confirmno'>No</button>
+                    <button type='button' id='confirmyes'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirmno'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -809,7 +809,7 @@ function checkPresnt($array, $string){
                     <li class="list-group-item">Item 3</li>
                 </ul>
                 <div class="btns">
-                    <button type='button' id='payment_information_no'>Close</button>
+                    <button type='button' id='payment_information_no'><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -824,7 +824,7 @@ function checkPresnt($array, $string){
                 </table>
                 <hr>
                 <div class="btns">
-                    <button type='button' id='close_message_details'>Close</button>
+                    <button type='button' id='close_message_details'><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -835,8 +835,8 @@ function checkPresnt($array, $string){
                 <input type="hidden" id="transaction_pay_id">
                 <p id="delete_pay_err_handlers"></p>
                 <div class="btns">
-                    <button type='button' id='confirm_delete_trans_yes'>Yes</button>
-                    <button type='button' id='confirm_delete_trans_no'>No</button>
+                    <button type='button' id='confirm_delete_trans_yes'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirm_delete_trans_no'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -847,8 +847,8 @@ function checkPresnt($array, $string){
                 <input type="hidden" id="revenue_id_delete">
                 <p id="delete_pay_err_handlers"></p>
                 <div class="btns">
-                    <button type='button' id='confirm_delete_revenue'>Yes</button>
-                    <button type='button' id='confirm_Delete_revenue_no'>No</button>
+                    <button type='button' id='confirm_delete_revenue'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirm_Delete_revenue_no'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -874,7 +874,7 @@ function checkPresnt($array, $string){
                     </div>
                     <div class="btns">
                         <!-- <button type="button" id="save_add_expense">Save</button> -->
-                        <button type="button" id="close_latest_updates_window_2">Close</button>
+                        <button type="button" id="close_latest_updates_window_2"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -887,8 +887,8 @@ function checkPresnt($array, $string){
                 <p class="">"Its important to note that when this leave Application is deleted your staff is going to regain back the leave days applied for if it was accepted!"</p>
                 <p id="delete_leave_err_handlers"></p>
                 <div class="btns">
-                    <button type='button' id='confirm_delete_leave_apply_yes'>Yes</button>
-                    <button type='button' id='confirm_delete_leave_apply_no'>No</button>
+                    <button type='button' id='confirm_delete_leave_apply_yes'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirm_delete_leave_apply_no'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -917,7 +917,7 @@ function checkPresnt($array, $string){
                         <p><b>Current Fees : </b><span id="current_fees_evh">Loading...</span></p>
                         <input type="hidden" id="student_index_evh" value="0">
                         <input type="hidden" name="course_level_value_holder" id="course_level_value_holder" value="[]">
-                        <button type="button" id="reset_student_voteheads">Reset to default</button>
+                        <button type="button" id="reset_student_voteheads"><i class="fas fa-undo-alt"></i> Reset to default</button>
                     </div>
                     <hr class="mx-auto">
                     <div class="form-group my-2">
@@ -928,9 +928,9 @@ function checkPresnt($array, $string){
                     <div class="container" id="error_handler_evh"></div>
                 </div>
                 <div class="btns">
-                    <button type="button" id='save_changed_evh'>Save Votehead Changes</button>
+                    <button type="button" id='save_changed_evh'><i class="fas fa-save"></i> Save Votehead Changes</button>
                     <button class="btn btn-sm btn-outline-success" id="reset_vhs" type='button'><i class="fa fa-retweet"></i> Restore</button>
-                    <button type="button" id="close_student_fees_evh">Close</button>
+                    <button type="button" id="close_student_fees_evh"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -964,12 +964,12 @@ function checkPresnt($array, $string){
                     <div class="container" id="course_votehead_error_handler"></div>
                 </div>
                 <div class="btns">
-                    <button type="button" id='save_course_voteheads'>Save Votehead Changes</button>
+                    <button type="button" id='save_course_voteheads'><i class="fas fa-save"></i> Save Votehead Changes</button>
                     <div class='form-group'>
                         <input type="checkbox" id="edit_student_voteheads">
                         <label for="edit_student_voteheads" class="form-control-label"><b>Edit Student Voteheads?</b></label>
                     </div>
-                    <button type="button" id="close_course_votehead">Close</button>
+                    <button type="button" id="close_course_votehead"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -979,8 +979,8 @@ function checkPresnt($array, $string){
                 <h6>Confirm Role Removal</h6>
                 <p>Are you sure you want to remove this role?</p>
                 <div class="btns">
-                    <button type='button' id='confirmyes_roled'>Yes</button>
-                    <button type='button' id='confirmno_roled'>No</button>
+                    <button type='button' id='confirmyes_roled'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirmno_roled'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -991,8 +991,8 @@ function checkPresnt($array, $string){
                 <p class="text-danger p-1 border border-secondary my-1"><b>Note:</b> <br> All customizations that has been made will be lost</p>
                 <p>Are you sure you want to regenerate <b id="regen_tts"></b>?</p>
                 <div class="btns">
-                    <button type='button' id='confirm_regen'>Confirm</button>
-                    <button type='button' id='cancel_regen'>Cancel</button>
+                    <button type='button' id='confirm_regen'><i class="fas fa-check"></i> Confirm</button>
+                    <button type='button' id='cancel_regen'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1020,8 +1020,8 @@ function checkPresnt($array, $string){
                     <p id="add_prevsch_error"></p>
                 </div>
                 <div class="btns">
-                    <button type='button' id='add_prev_sch_btn'>Add</button>
-                    <button type='button' id='canc_add_prev_sch_btn'>Cancel</button>
+                    <button type='button' id='add_prev_sch_btn'><i class="fas fa-plus"></i> Add</button>
+                    <button type='button' id='canc_add_prev_sch_btn'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1049,8 +1049,8 @@ function checkPresnt($array, $string){
                     <p id="add_prevsch_error_edit"></p>
                 </div>
                 <div class="btns">
-                    <button type='button' id='add_prev_sch_btn_edit'>Add</button>
-                    <button type='button' id='canc_add_prev_sch_btn_edit'>Cancel</button>
+                    <button type='button' id='add_prev_sch_btn_edit'><i class="fas fa-plus"></i> Add</button>
+                    <button type='button' id='canc_add_prev_sch_btn_edit'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1067,8 +1067,8 @@ function checkPresnt($array, $string){
                 </div>
                 <p id="allowance_err1_handler"></p>
                 <div class="btns">
-                    <button type='button' id='add_allowances'>Add</button>
-                    <button type='button' id='cancel_allowances'>Cancel</button>
+                    <button type='button' id='add_allowances'><i class="fas fa-plus"></i> Add</button>
+                    <button type='button' id='cancel_allowances'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1085,8 +1085,8 @@ function checkPresnt($array, $string){
                 </div>
                 <p id="allowance_err2_handler"></p>
                 <div class="btns">
-                    <button type='button' id='add_allowances2'>Add</button>
-                    <button type='button' id='cancel_allowances2'>Cancel</button>
+                    <button type='button' id='add_allowances2'><i class="fas fa-plus"></i> Add</button>
+                    <button type='button' id='cancel_allowances2'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1113,8 +1113,8 @@ function checkPresnt($array, $string){
                 </div>
                 <p id="deduction_error"></p>
                 <div class="btns">
-                    <button type='button' id='add_deductions_in'>Add</button>
-                    <button type='button' id='cancel_deductions'>Cancel</button>
+                    <button type='button' id='add_deductions_in'><i class="fas fa-plus"></i> Add</button>
+                    <button type='button' id='cancel_deductions'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1141,8 +1141,8 @@ function checkPresnt($array, $string){
                 </div>
                 <p id="deduction_error_1"></p>
                 <div class="btns">
-                    <button type='button' id='add_deductions_in_1'>Add</button>
-                    <button type='button' id='cancel_deductions_1'>Cancel</button>
+                    <button type='button' id='add_deductions_in_1'><i class="fas fa-plus"></i> Add</button>
+                    <button type='button' id='cancel_deductions_1'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1290,8 +1290,8 @@ function checkPresnt($array, $string){
                 <p id="allowance_err3_handler"></p>
                 <p class="hide" id="add_user_roles_in"><img src="images/ajax_clock_small.gif" id=""> Loading... </p>
                 <div class="btns">
-                    <button type='button' id='add_role_btns'>Add</button>
-                    <button type='button' id='cancel_role_btn'>Cancel</button>
+                    <button type='button' id='add_role_btns'><i class="fas fa-plus"></i> Add</button>
+                    <button type='button' id='cancel_role_btn'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1440,8 +1440,8 @@ function checkPresnt($array, $string){
                 <p id="allowance_err4_handler"></p>
                 <p class="hide" id="add_user_roles_in2"><img src="images/ajax_clock_small.gif" id=""> Loading... </p>
                 <div class="btns">
-                    <button type='button' id='add_role_btns2'>Update</button>
-                    <button type='button' id='cancel_role_btn2'>Cancel</button>
+                    <button type='button' id='add_role_btns2'><i class="fas fa-upload"></i> Update</button>
+                    <button type='button' id='cancel_role_btn2'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -1472,8 +1472,8 @@ function checkPresnt($array, $string){
                     <p id='geterrors'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" id='changeclasslist'>Change</button>
-                    <button type="button" id="cancelclasschange">Close</button>
+                    <button type="button" id='changeclasslist'><i class="fas fa-pen-fancy"></i> Change</button>
+                    <button type="button" id="cancelclasschange"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -1505,8 +1505,8 @@ function checkPresnt($array, $string){
                     <p id="display_dept_message"></p>
                 </div>
                 <div class="btns">
-                    <button type="button" id='add_names_inside'>Add</button>
-                    <button type="button" id="close_adding_members">Close</button>
+                    <button type="button" id='add_names_inside'><i class="fas fa-plus"></i> Add</button>
+                    <button type="button" id="close_adding_members"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -1538,8 +1538,8 @@ function checkPresnt($array, $string){
                     <p id="display_subject_message"></p>
                 </div>
                 <div class="btns">
-                    <button type="button" id='add_subjects_list_dept'>Add</button>
-                    <button type="button" id="close_adding_subjects">Close</button>
+                    <button type="button" id='add_subjects_list_dept'><i class="fas fa-plus"></i> Add</button>
+                    <button type="button" id="close_adding_subjects"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -1588,7 +1588,7 @@ function checkPresnt($array, $string){
                         </p>
                     </div>
                     <div class="contbut ">
-                        <button type='button' id='return1'>Go back</button>
+                        <button type='button' id='return1'><i class="fas fa-arrow-left"></i> Go back</button>
                         <label class="form-control-label"><br> Note:</label>
                         <p style='color:green;font-size:14px;'>Remember to save. <br> If you go back no data will be saved</p>
                     </div>
@@ -1597,8 +1597,8 @@ function checkPresnt($array, $string){
                     <p id='geterrors12'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" class="hide" id='saves1'>Save</button>
-                    <button type="button" id="close2">Close</button>
+                    <button type="button" class="hide" id='saves1'><i class="fas fa-save"></i> Save</button>
+                    <button type="button" id="close2"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -1690,8 +1690,8 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="conts hide" id="savebuttons">
                     <div class="btns">
-                        <button type="button" class="" id='saveexams'>Save</button>
-                        <button type="button" id="cancelexams">Close</button>
+                        <button type="button" class="" id='saveexams'><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="cancelexams"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -1745,7 +1745,7 @@ function checkPresnt($array, $string){
                                 </p>
                                 <p style='margin-top:10px;' id='errhandlers12031'></p>
                                 <div class="conts">
-                                    <button type="button" id="addsubjbtn">Add subject</button>
+                                    <button type="button" id="addsubjbtn"><i class="fas fa-plus"></i> Add subject</button>
                                 </div>
                             </div>
                             <div class="conts1">
@@ -1764,7 +1764,7 @@ function checkPresnt($array, $string){
                                 </p>
                                 <p style='margin-top:10px;' id="err102_op"></p>
                                 <div class="conts">
-                                    <button type="button" id="addclassbtn">Add classes</button>
+                                    <button type="button" id="addclassbtn"><i class="fas fa-plus"></i> Add classes</button>
                                 </div>
                             </div>
                         </div>
@@ -1805,8 +1805,8 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="conts " id="savebuttons1">
                     <div class="btns">
-                        <button type="button" class="" id='saveexams1'>Save</button>
-                        <button type="button" id="cancelexams1">Close</button>
+                        <button type="button" class="" id='saveexams1'><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="cancelexams1"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -1869,8 +1869,8 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="conts hide" id="savebuttons2">
                     <div class="btns">
-                        <button type="button" class="" id='saveexams2'>Add</button>
-                        <button type="button" id="cancelexams2">Close</button>
+                        <button type="button" class="" id='saveexams2'><i class="fas fa-plus"></i> Add</button>
+                        <button type="button" id="cancelexams2"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -1907,8 +1907,8 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
                 <div class="btns">
-                    <button type="button" class="" id='saveexams232'>Add</button>
-                    <button type="button" id="cancelexams232">Close</button>
+                    <button type="button" class="" id='saveexams232'><i class="fas fa-plus"></i> Add</button>
+                    <button type="button" id="cancelexams232"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -1963,8 +1963,8 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="conts" id="savebuttons2">
                     <div class="btns">
-                        <button type="button" class="hide" id="add_subject">Add</button>
-                        <button type="button" id="cancel_addsub">Close</button>
+                        <button type="button" class="hide" id="add_subject"><i class="fas fa-plus"></i> Add</button>
+                        <button type="button" id="cancel_addsub"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -1983,14 +1983,14 @@ function checkPresnt($array, $string){
                             <label class="form-control-label">Class assigned: <span style="color:brown;" id="class_assigned">Class 1</span></label>
                         </div>
                         <div class="btns" id="option_s">
-                            <button type="button" id="un_assign_btn">Un-assign Teacher</button>
-                            <button type="button" id="change_assigned_tr">Change Teacher</button>
+                            <button type="button" id="un_assign_btn"><i class="fas fa-user-slash"></i> Un-assign Teacher</button>
+                            <button type="button" id="change_assigned_tr"><i class="fas fa-pen-fancy"></i> Change Teacher</button>
                         </div>
                         <div class="conts bordered hide" id="confirm_delete_btns">
                             <p>Are you sure you want to un-assign this class a teacher ?</p>
                             <div class="btns">
-                                <button type="button" id="no_unassign">No</button>
-                                <button type="button" id="yes_unassign">Yes</button>
+                                <button type="button" id="no_unassign"><i class="fas fa-times"></i> No</button>
+                                <button type="button" id="yes_unassign"><i class="fas fa-check"></i> Yes</button>
                             </div>
                         </div>
                     </div>
@@ -2016,8 +2016,8 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="conts" id="">
                     <div class="btns">
-                        <button type="button" class="hide" id="save_inform">Save</button>
-                        <button type="button" id="close_ci_1">Close</button>
+                        <button type="button" class="hide" id="save_inform"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="close_ci_1"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -2026,7 +2026,7 @@ function checkPresnt($array, $string){
             <label class="form-control-label">Please wait ...</label>
         </div>
         <div class="back_button animate hide" id="back_btns" title="Click to dismis">
-            <button class="my_back_button"><img src="images/back.png" alt="back"></button>
+            <button class="my_back_button"><i class="fas fa-arrow-left"></i></button>
         </div>
         <div class="anonymus hide" id="anonymus" title="Click to dismis">
         </div>
@@ -2047,7 +2047,7 @@ function checkPresnt($array, $string){
                             <p class="form-control-label">Grading Method: <span style="color:brown;" id="gradeMethod">8-4-4</span><br></p>
                             <hr>
                             <p>Delete the subject marks and record again if you want to change the grading system</p>
-                            <button type="button" id="delete_marks">Delete Record</button>
+                            <button type="button" id="delete_marks"><i class="fas fa-trash"></i> Delete Record</button>
                             <hr>
                         </div>
                         <div class="cbcmode" style="margin:10px 0" id="cbcmode1">
@@ -2078,8 +2078,8 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="conts" id="">
                     <div class="btns">
-                        <button type="button" class="" id="save_marks_change">Save</button>
-                        <button type="button" id="close_change_marks2">Close</button>
+                        <button type="button" class="" id="save_marks_change"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="close_change_marks2"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -2090,8 +2090,8 @@ function checkPresnt($array, $string){
                 <h6>Confirm</h6>
                 <p>Are you sure you want to delete marks for <b><span id="name_of_students"></span></b>?</p>
                 <div class="btns">
-                    <button type='button' id='confirm_yes'>Yes</button>
-                    <button type='button' id='confirm_no'>No</button>
+                    <button type='button' id='confirm_yes'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirm_no'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -2102,8 +2102,8 @@ function checkPresnt($array, $string){
                 <h6>Confirm</h6>
                 <p>Are you sure you want to delete this exam "<b><span id="name_of_students_exams"></span></b>" ? <br> <span class="text-danger">This action is irreversible.</span></p>
                 <div class="btns">
-                    <button type='button' id='confirm_del_exams_yes'>Yes</button>
-                    <button type='button' id='confirm_del_exams_no'>No</button>
+                    <button type='button' id='confirm_del_exams_yes'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirm_del_exams_no'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -2121,8 +2121,8 @@ function checkPresnt($array, $string){
 
                 </div>
                 <div class="btns">
-                    <button type='button' id='accept_class_change'>Save</button>
-                    <button type='button' id='cancel_class_change'>Cancel</button>
+                    <button type='button' id='accept_class_change'><i class="fas fa-save"></i> Save</button>
+                    <button type='button' id='cancel_class_change'><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -2136,8 +2136,8 @@ function checkPresnt($array, $string){
                 </div>
                 <p id="men_in_out"></p>
                 <div class="btns">
-                    <button type='button' id='accept_last_yr_acad_bal' class="balance-cf-save">Save</button>
-                    <button type='button' id='cancel_last_yr_acad_bal' class="balance-cf-cancel">Cancel</button>
+                    <button type='button' id='accept_last_yr_acad_bal' class="balance-cf-save"><i class="fas fa-save"></i> Save</button>
+                    <button type='button' id='cancel_last_yr_acad_bal' class="balance-cf-cancel"><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -2163,8 +2163,8 @@ function checkPresnt($array, $string){
                 </div>
                 <p id="new_discount_error"></p>
                 <div class="btns">
-                    <button type='button' id='accept_new_discount_val' class="fee-discount-save">Save</button>
-                    <button type='button' id='cancel_new_discount_val' class="fee-discount-cancel">Cancel</button>
+                    <button type='button' id='accept_new_discount_val' class="fee-discount-save"><i class="fas fa-save"></i> Save</button>
+                    <button type='button' id='cancel_new_discount_val' class="fee-discount-cancel"><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -2195,8 +2195,8 @@ function checkPresnt($array, $string){
                     <p id='add_dorm_err_handler'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" class="" id='add_dormitory'>Add</button>
-                    <button type="button" id="close_dorm_reg_btn">Close</button>
+                    <button type="button" class="" id='add_dormitory'><i class="fas fa-plus"></i> Add</button>
+                    <button type="button" id="close_dorm_reg_btn"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -2225,15 +2225,15 @@ function checkPresnt($array, $string){
                         <div class="contsload" id="teacher_lists">
                             <img src="images/load2.gif" alt="loading..">
                         </div>
-                        <button type='button' id="un_assign_captain_btn">Un-assign captain</button>
+                        <button type='button' id="un_assign_captain_btn"><i class="fas fa-user-slash"></i> Un-assign captain</button>
                     </div>
                 </form>
                 <div class="conts">
                     <p id='edit_dorm_err_handler'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" class="" id='update_dormitory'>Save Changes</button>
-                    <button type="button" id="close_dorm_edit_btn">Close</button>
+                    <button type="button" class="" id='update_dormitory'><i class="fas fa-save"></i> Save Changes</button>
+                    <button type="button" id="close_dorm_edit_btn"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -2256,14 +2256,14 @@ function checkPresnt($array, $string){
                             <img src="images/load2.gif" alt="loading..">
                         </div>
                         <div class="btns">
-                            <button type="button" class="" id='change_dormitory_btn'>Save Changes</button>
+                            <button type="button" class="" id='change_dormitory_btn'><i class="fas fa-save"></i> Save Changes</button>
                         </div>
                         <p id="chage_dorms_err_handlers"></p>
                         <p>Click the <b>Un-assign</b> button below to un-assign the boarder a dormitory</p>
                         <p>Click the <b>De-register</b> button below to de-register student as a boarder.</p>
                         <div class="btns" style='border-bottom:1px dashed black;'>
-                            <button type='button' style='margin:0;' id="un_assign_dorm_btn">Un-assign</button>
-                            <button type='button' style='margin:0;' id="un_assign_boarder_btn">De-register</button>
+                            <button type='button' style='margin:0;' id="un_assign_dorm_btn"><i class="fas fa-user-slash"></i> Un-assign</button>
+                            <button type='button' style='margin:0;' id="un_assign_boarder_btn"><i class="fas fa-user-times"></i> De-register</button>
                         </div>
                     </div>
                 </form>
@@ -2271,7 +2271,7 @@ function checkPresnt($array, $string){
                     <p id='change_dorm_err_handler'></p>
                 </div>
                 <div class="btns">
-                    <button type="button" id="close_dorm_change_btn">Close</button>
+                    <button type="button" id="close_dorm_change_btn"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -2294,8 +2294,8 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
                 <div class="btns">
-                    <button type="button" id="delete_message">Delete</button>
-                    <button type="button" id="close_read_notice1">Close</button>
+                    <button type="button" id="delete_message"><i class="fas fa-trash"></i> Delete</button>
+                    <button type="button" id="close_read_notice1"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -2378,8 +2378,8 @@ function checkPresnt($array, $string){
                         <p id="supplier_bill_error"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="save_new_supplier_bill">Save Bill <img class="hide" src="images/ajax_clock_small.gif" id="save_bill_loader"></button>
-                        <button type="button" id="close_new_supplier_bill_window">Close</button>
+                        <button type="button" id="save_new_supplier_bill"><i class="fas fa-save"></i> Save Bill <img class="hide" src="images/ajax_clock_small.gif" id="save_bill_loader"></button>
+                        <button type="button" id="close_new_supplier_bill_window"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -2403,7 +2403,7 @@ function checkPresnt($array, $string){
                                     <button id="confirm_bill_deletion"><i class="fas fa-trash"></i> Delete <img class="hide" src="images/ajax_clock_small.gif" id="delete_bill_loader"></button>
                                 </div>
                                 <div class="col-md-6">
-                                    <button id="cancel_bill_deletion"><i class="fas fa-x"></i> Cancel</button>
+                                    <button id="cancel_bill_deletion"><i class="fas fa-times"></i> Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -2470,8 +2470,8 @@ function checkPresnt($array, $string){
                         <p id="supplier_bill_error_edit"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="save_new_supplier_bill_edit">Update Bill <img class="hide" src="images/ajax_clock_small.gif" id="save_bill_loader_edit"></button>
-                        <button type="button" id="close_new_supplier_bill_window_edit">Close</button>
+                        <button type="button" id="save_new_supplier_bill_edit"><i class="fas fa-upload"></i> Update Bill <img class="hide" src="images/ajax_clock_small.gif" id="save_bill_loader_edit"></button>
+                        <button type="button" id="close_new_supplier_bill_window_edit"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -2529,7 +2529,7 @@ function checkPresnt($array, $string){
                                 <button id="confirm_accept_payment_request"><i class="fas fa-trash"></i> Yes <img class="hide" src="images/ajax_clock_small.gif" id="delete_supplier_loader"></button>
                             </div>
                             <div class="col-md-6">
-                                <button id="cancel_accept_payment_request"><i class="fas fa-x"></i> Cancel</button>
+                                <button id="cancel_accept_payment_request"><i class="fas fa-times"></i> Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -2556,10 +2556,10 @@ function checkPresnt($array, $string){
                         <p>- This action is irreversible.</p>
                         <div class="row">
                             <div class="col-md-6">
-                                <button id="confirm_payment_request_in" >Yes <img id="loader_clocks" class="hide" src="images/ajax_clock_small.gif" ></button>
+                                <button id="confirm_payment_request_in" ><i class="fas fa-check"></i> Yes <img id="loader_clocks" class="hide" src="images/ajax_clock_small.gif" ></button>
                             </div>
                             <div class="col-md-6">
-                                <button id="cancel_payment_request_in" >Cancel</button>
+                                <button id="cancel_payment_request_in" ><i class="fas fa-times"></i> Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -2583,10 +2583,10 @@ function checkPresnt($array, $string){
                         <textarea name="payment_decline_description" id="payment_decline_description" class="form-control" rows="5" placeholder="Reason for declining the payment request!"></textarea>
                         <div class="row">
                             <div class="col-md-6">
-                                <button id="confirm_payment_request_decline" >Yes <img id="all_loader_clocks" class="hide" src="images/ajax_clock_small.gif" ></button>
+                                <button id="confirm_payment_request_decline" ><i class="fas fa-check"></i> Yes <img id="all_loader_clocks" class="hide" src="images/ajax_clock_small.gif" ></button>
                             </div>
                             <div class="col-md-6">
-                                <button id="cancel_payment_request_decline" >Cancel</button>
+                                <button id="cancel_payment_request_decline" ><i class="fas fa-times"></i> Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -2644,8 +2644,8 @@ function checkPresnt($array, $string){
                         <p id="supplier_payment_description_error"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="make_supplier_payment">Confirm Payment Request<img class="hide" src="images/ajax_clock_small.gif" id="make_payment_loader"></button>
-                        <button type="button" id="close_supplier_payment">Close</button>
+                        <button type="button" id="make_supplier_payment"><i class="fas fa-check"></i> Confirm Payment Request<img class="hide" src="images/ajax_clock_small.gif" id="make_payment_loader"></button>
+                        <button type="button" id="close_supplier_payment"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -2675,7 +2675,7 @@ function checkPresnt($array, $string){
                                     <button id="confirm_delete_payments"><i class="fas fa-trash"></i> Delete <img class="hide" src="images/ajax_clock_small.gif" id="delete_payment_loader"></button>
                                 </div>
                                 <div class="col-md-6">
-                                    <button id="cancel_delete_payments"><i class="fas fa-x"></i> Cancel</button>
+                                    <button id="cancel_delete_payments"><i class="fas fa-times"></i> Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -2726,8 +2726,8 @@ function checkPresnt($array, $string){
                         <p id="supplier_payment_description_error_edit"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="make_supplier_payment_edit">Update Payment <img class="hide" src="images/ajax_clock_small.gif" id="make_payment_loader_edit"></button>
-                        <button type="button" id="close_supplier_payment_edit">Close</button>
+                        <button type="button" id="make_supplier_payment_edit"><i class="fas fa-upload"></i> Update Payment <img class="hide" src="images/ajax_clock_small.gif" id="make_payment_loader_edit"></button>
+                        <button type="button" id="close_supplier_payment_edit"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -2788,8 +2788,8 @@ function checkPresnt($array, $string){
                         <p id="err_handler_10"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="save_add_expense">Save</button>
-                        <button type="button" id="close_add_expense2">Close</button>
+                        <button type="button" id="save_add_expense"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="close_add_expense2"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -2811,8 +2811,8 @@ function checkPresnt($array, $string){
                 </div>
                 <p id="edit_charge_feedback"></p>
                 <div class="btns">
-                    <button type="button" id="save_edit_charge_btn" class="edit-charge-save">Save</button>
-                    <button type="button" id="cancel_edit_charge_btn" class="edit-charge-cancel">Cancel</button>
+                    <button type="button" id="save_edit_charge_btn" class="edit-charge-save"><i class="fas fa-save"></i> Save</button>
+                    <button type="button" id="cancel_edit_charge_btn" class="edit-charge-cancel"><i class="fas fa-times"></i> Cancel</button>
                 </div>
             </div>
         </div>
@@ -2825,8 +2825,8 @@ function checkPresnt($array, $string){
                 <input type="hidden" id="delete_charge_adm_no">
                 <input type="hidden" id="delete_charge_id">
                 <div class="btns">
-                    <button type="button" id="confirm_delete_charge_btn" class="delete-charge-confirm">Yes</button>
-                    <button type="button" id="cancel_delete_charge_btn" class="delete-charge-cancel">No</button>
+                    <button type="button" id="confirm_delete_charge_btn" class="delete-charge-confirm"><i class="fas fa-check"></i> Yes</button>
+                    <button type="button" id="cancel_delete_charge_btn" class="delete-charge-cancel"><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -2866,7 +2866,7 @@ function checkPresnt($array, $string){
                     <p id="charged_account_modal_feedback"></p>
                 </div>
                 <div class="btns">
-                    <button type="button" id="close_view_student_charged_account_btn">Close</button>
+                    <button type="button" id="close_view_student_charged_account_btn"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -2882,8 +2882,8 @@ function checkPresnt($array, $string){
                 <div id="alumni_candidates_list_holder"></div>
                 <p id="alumni_candidates_feedback"></p>
                 <div class="btns">
-                    <button type="button" id="move_selected_to_alumni_btn">Move Selected to Alumni</button>
-                    <button type="button" id="close_alumni_candidates_btn">Close</button>
+                    <button type="button" id="move_selected_to_alumni_btn"><i class="fas fa-user-graduate"></i> Move Selected to Alumni</button>
+                    <button type="button" id="close_alumni_candidates_btn"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -2898,8 +2898,8 @@ function checkPresnt($array, $string){
                     <label for="" class="form-control-label">Write your payment description below</label>
                     <textarea class="form-control" maxlength="250" name="" id="payment_description_texts" cols="30" rows="3" placeholder="Ex : Direct deposit to KCB Bank, Account No. 1257951734, Account Name 'Ladybird School Mis'"></textarea>
                     <div class="btns">
-                        <button type="button" id="save_payment_option">Save</button>
-                        <button type="button" id="cancel_payment_options">Close</button>
+                        <button type="button" id="save_payment_option"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="cancel_payment_options"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -2980,8 +2980,8 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
                 <div class="btns">
-                    <button type="button" id="save_expense_category">Save</button>
-                    <button type="button" id="cancel_expense_category">Close</button>
+                    <button type="button" id="save_expense_category"><i class="fas fa-save"></i> Save</button>
+                    <button type="button" id="cancel_expense_category"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -3045,8 +3045,8 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
                 <div class="btns">
-                    <button type="button" id="save_revenue_category">Save</button>
-                    <button type="button" id="cancel_revenue_category">Close</button>
+                    <button type="button" id="save_revenue_category"><i class="fas fa-save"></i> Save</button>
+                    <button type="button" id="cancel_revenue_category"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -3060,8 +3060,8 @@ function checkPresnt($array, $string){
                     <p>Are you sure you want to delete <b id="expense_category_delete_name"></b>?</p>
                     <input type="hidden" id="exp_indexes">
                     <div class="btns">
-                        <button type="button" id="save_delete_expense_category">Yes</button>
-                        <button type="button" id="cancel_delete_expense_category">Close</button>
+                        <button type="button" id="save_delete_expense_category"><i class="fas fa-check"></i> Yes</button>
+                        <button type="button" id="cancel_delete_expense_category"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3074,7 +3074,7 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button type='button' id="delete_promt_expenses">Delete</button>
+                        <button type='button' id="delete_promt_expenses"><i class="fas fa-trash"></i> Delete</button>
                     </div>
                     <div class="col-md-6" id="expense_status_view">
                         <!-- show the payment approve status -->
@@ -3121,8 +3121,8 @@ function checkPresnt($array, $string){
                     <input type="hidden" id="expense_ids_in">
                     <div class="btns">
                         <p class="border border-secondary text-success p-1" id="no-edit-supplier-details">You can`t edit a supplier payment from here!</p>
-                        <button type="button" id="save_expense_details">Update Expense</button>
-                        <button type="button" id="close_edit_expense_window">Close</button>
+                        <button type="button" id="save_expense_details"><i class="fas fa-upload"></i> Update Expense</button>
+                        <button type="button" id="close_edit_expense_window"><i class="fas fa-times"></i> Close</button>
                     </div>
                     <div class="container" id="error_handlers_expenses">
                     </div>
@@ -3274,8 +3274,8 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
                 <div class="btns">
-                    <button type="button" id="save_change_expense_category">Update</button>
-                    <button type="button" id="cancel_change_expense_category">Close</button>
+                    <button type="button" id="save_change_expense_category"><i class="fas fa-upload"></i> Update</button>
+                    <button type="button" id="cancel_change_expense_category"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -3304,7 +3304,7 @@ function checkPresnt($array, $string){
                         </div>
                     </div> -->
                     <div class="btns">
-                        <button type="button" id="close_email_data_windows">Close</button>
+                        <button type="button" id="close_email_data_windows"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3347,8 +3347,8 @@ function checkPresnt($array, $string){
                         <p id="error_email_setups"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="save_email_setup">Save</button>
-                        <button type="button" id="close_email_setup">Close</button>
+                        <button type="button" id="save_email_setup"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="close_email_setup"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3359,8 +3359,8 @@ function checkPresnt($array, $string){
                 <h6>Remove Fee</h6>
                 <p><b>This action is irreversible!</b> <br>Are you sure you want remove <b id='expensenamed'></b> fee.?</p>
                 <div class="btns">
-                    <button type='button' id='confirm_yes_fees'>Yes</button>
-                    <button type='button' id='confirm_no_fees'>No</button>
+                    <button type='button' id='confirm_yes_fees'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='confirm_no_fees'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -3371,8 +3371,8 @@ function checkPresnt($array, $string){
                 <p><b class="text-danger">This action is irreversible!</b> <br>Are you sure you want delete "<b id='department_name_delete'></b>" department?</p>
                 <p id="error_handler_delete_dept"></p>
                 <div class="btns">
-                    <button type='button' id='confirm_delete_department'>Yes</button>
-                    <button type='button' id='close_delete_department_window'>No</button>
+                    <button type='button' id='confirm_delete_department'><i class="fas fa-check"></i> Yes</button>
+                    <button type='button' id='close_delete_department_window'><i class="fas fa-times"></i> No</button>
                 </div>
             </div>
         </div>
@@ -3435,8 +3435,8 @@ function checkPresnt($array, $string){
                         <p id="err_handler_101"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="save_add_expense1">Save</button>
-                        <button type="button" id="close_add_expense21">Close</button>
+                        <button type="button" id="save_add_expense1"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="close_add_expense21"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3468,7 +3468,7 @@ function checkPresnt($array, $string){
                             <input type="text" class="form-control w-100" id="grade_score" placeholder="Grade Name eg 'A'">
                         </div>
                         <div class="col-md-6 my-2">
-                            <p id="set_grades_btn" class="block_btn">Add Grade</p>
+                            <p id="set_grades_btn" class="block_btn"><i class="fas fa-plus"></i> Add Grade</p>
                         </div>
                     </div>
                     <p id="error_handler_graders"></p>
@@ -3491,10 +3491,10 @@ function checkPresnt($array, $string){
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <button id="add_grades_in">Save Grades</button>
+                            <button id="add_grades_in"><i class="fas fa-save"></i> Save Grades</button>
                         </div>
                         <div class="col-md-6">
-                        <button id="add_grades_in_cancels">Cancel</button>
+                        <button id="add_grades_in_cancels"><i class="fas fa-times"></i> Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -3527,7 +3527,7 @@ function checkPresnt($array, $string){
                             <input type="text" class="form-control w-100" id="edit_grade_score" placeholder="Grade Name eg 'A'">
                         </div>
                         <div class="col-md-6 my-2">
-                            <p id="edit_grades_btn" class="block_btn">Add Grade</p>
+                            <p id="edit_grades_btn" class="block_btn"><i class="fas fa-plus"></i> Add Grade</p>
                         </div>
                     </div>
                     <p id="edit_error_handler_graders"></p>
@@ -3550,10 +3550,10 @@ function checkPresnt($array, $string){
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <button id="edit_add_grades_in">Save Grades</button>
+                            <button id="edit_add_grades_in"><i class="fas fa-save"></i> Save Grades</button>
                         </div>
                         <div class="col-md-6">
-                        <button id="edit_add_grades_in_cancels">Cancel</button>
+                        <button id="edit_add_grades_in_cancels"><i class="fas fa-times"></i> Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -3573,8 +3573,8 @@ function checkPresnt($array, $string){
                         <p id="add_class_outputtxt"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="add_class_btn">Add Course Level</button>
-                        <button type="button" id="close_add_cl_win">Close</button>
+                        <button type="button" id="add_class_btn"><i class="fas fa-plus"></i> Add Course Level</button>
+                        <button type="button" id="close_add_cl_win"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3593,8 +3593,8 @@ function checkPresnt($array, $string){
                         <p id="add_branch_error"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="add_branch_button">Add Branch</button>
-                        <button type="button" id="close_add_branch_modal_2">Close</button>
+                        <button type="button" id="add_branch_button"><i class="fas fa-plus"></i> Add Branch</button>
+                        <button type="button" id="close_add_branch_modal_2"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3614,8 +3614,8 @@ function checkPresnt($array, $string){
                         <p id="edit_branch_error"></p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="edit_branch_button">Update Branch</button>
-                        <button type="button" id="close_edit_branch_modal_2">Close</button>
+                        <button type="button" id="edit_branch_button"><i class="fas fa-upload"></i> Update Branch</button>
+                        <button type="button" id="close_edit_branch_modal_2"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3632,8 +3632,8 @@ function checkPresnt($array, $string){
                         <p class="text-center">Are you sure you want to delete "<b id="delete_class_id"></b>". <br> This action is permanent!</p>
                     </div>
                     <div class="btns">
-                        <button type="button" id="del_class_btn">Yes, Delete</button>
-                        <button type="button" id="close_del_cl_win">Close</button>
+                        <button type="button" id="del_class_btn"><i class="fas fa-trash"></i> Yes, Delete</button>
+                        <button type="button" id="close_del_cl_win"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3702,8 +3702,8 @@ function checkPresnt($array, $string){
                     </div>
                 </div>
                 <div class="btns">
-                    <button type="button" id="add_course_btn">Add Course</button>
-                    <button type="button" id="close_add_course_window">Close</button>
+                    <button type="button" id="add_course_btn"><i class="fas fa-plus"></i> Add Course</button>
+                    <button type="button" id="close_add_course_window"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -3769,8 +3769,8 @@ function checkPresnt($array, $string){
                         </div>
                     </div>
                     <div class="btns">
-                        <button type="button" id="Edit_course_btn">Edit Course</button>
-                        <button type="button" id="close_Edit_course_window">Close</button>
+                        <button type="button" id="Edit_course_btn"><i class="fas fa-pen-fancy"></i> Edit Course</button>
+                        <button type="button" id="close_Edit_course_window"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3791,8 +3791,8 @@ function checkPresnt($array, $string){
                         <img src="images/ajax_clock_small.gif" class="hide" id="active_hour_clocker">
                     </div>
                     <div class="btns">
-                        <button type="button" id="change_active_btn">Change time</button>
-                        <button type="button" id="close_active_hours1">Close</button>
+                        <button type="button" id="change_active_btn"><i class="fas fa-pen-fancy"></i> Change time</button>
+                        <button type="button" id="close_active_hours1"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3843,8 +3843,8 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="conts hide" id="save_opts">
                     <div class="btns">
-                        <button type="button" id="Change_acad_cal">Save</button>
-                        <button type="button" id="close_acad_cal">Close</button>
+                        <button type="button" id="Change_acad_cal"><i class="fas fa-save"></i> Save</button>
+                        <button type="button" id="close_acad_cal"><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
             </div>
@@ -3864,8 +3864,8 @@ function checkPresnt($array, $string){
                     <p id="admission_essentials_err_handler"></p>
                 </div>
                 <div class="btns">
-                    <button type="button" id="save_comp">Add</button>
-                    <button type="button" id="close_win">Close</button>
+                    <button type="button" id="save_comp"><i class="fas fa-plus"></i> Add</button>
+                    <button type="button" id="close_win"><i class="fas fa-times"></i> Close</button>
                 </div>
             </div>
         </div>
@@ -3878,8 +3878,8 @@ function checkPresnt($array, $string){
             <p id="imagenotifier"></p>
             <img class="hide" src="images/ajax_clock_small.gif" alt="loading btb" id="insert_images">
             <div class="btns">
-                <button type='button' id='change_my_dp_img'>Yes</button>
-                <button type='button' id='close_change_dp'>No</button>
+                <button type='button' id='change_my_dp_img'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='close_change_dp'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3890,8 +3890,8 @@ function checkPresnt($array, $string){
             <input class="form-control" type="file" name="school_dp" id="school_dp">
             <p id="imagenotifiered"></p>
             <div class="btns">
-                <button type='button' id='change_sch_dp_img'>Yes</button>
-                <button type='button' id='close_sch_change_dp'>No</button>
+                <button type='button' id='change_sch_dp_img'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='close_sch_change_dp'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3903,8 +3903,8 @@ function checkPresnt($array, $string){
             <input class="form-control" type="file" name="students_image" id="students_image">
             <p id="imagenotifiered_studes"></p>
             <div class="btns">
-                <button type='button' id='change_studes_dp_img'>Yes</button>
-                <button type='button' id='close_studes_change_dp'>No</button>
+                <button type='button' id='change_studes_dp_img'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='close_studes_change_dp'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3920,8 +3920,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to un-enroll <b><span id="name_sake">your staff</span></b> from the payroll system?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='yes_unenroll'>Yes</button>
-                <button type='button' id='no_unenroll'>No</button>
+                <button type='button' id='yes_unenroll'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_unenroll'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3932,8 +3932,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to delete this staff`s advance payment and its history?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='yes_delete_advance'>Yes</button>
-                <button type='button' id='no_delete_advance'>No</button>
+                <button type='button' id='yes_delete_advance'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_delete_advance'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3944,8 +3944,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to make payments for <b><span id="name_sake_2">unknown</span></b> of Kes <b><span id="amount_salo">0.00</span></b> ?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='yes_salo_pay'>Yes</button>
-                <button type='button' id='no_salo_pay'>No</button>
+                <button type='button' id='yes_salo_pay'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_salo_pay'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3956,8 +3956,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to delete <b><span id="staff_name_del">unknown</span></b> permanently ?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='yes_delete_permanently'>Yes</button>
-                <button type='button' id='no_delete_permanently'>No</button>
+                <button type='button' id='yes_delete_permanently'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_delete_permanently'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3969,8 +3969,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to delete <b><span id="revenue_category_name_holder">unknown</span></b> the revenue permanently ?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='yes_delete_revenue_category'>Yes</button>
-                <button type='button' id='no_delete_revenue_category'>No</button>
+                <button type='button' id='yes_delete_revenue_category'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_delete_revenue_category'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3982,8 +3982,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to delete <b><span id="college_branch_name">unknown</span></b> permanently ?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='yes_delete_college_branch'>Yes</button>
-                <button type='button' id='no_delete_college_branch'>No</button>
+                <button type='button' id='yes_delete_college_branch'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_delete_college_branch'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -3997,8 +3997,8 @@ function checkPresnt($array, $string){
             </div>
             <p id="error_handler_course_del"></p>
             <div class="buttons">
-                <button type='button' id='yes_delete_permanently_course'>Yes</button>
-                <button type='button' id='no_delete_permanently_course'>No</button>
+                <button type='button' id='yes_delete_permanently_course'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_delete_permanently_course'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -4011,8 +4011,8 @@ function checkPresnt($array, $string){
             </div>
             <p id="leaves_accept_err_handlers"></p>
             <div class="buttons">
-                <button type='button' id='yes_accept_leaves'>Yes</button>
-                <button type='button' id='no_accept_leaves'>No</button>
+                <button type='button' id='yes_accept_leaves'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_accept_leaves'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -4025,8 +4025,8 @@ function checkPresnt($array, $string){
             </div>
             <p id="leaves_reject_err_handlers"></p>
             <div class="buttons">
-                <button type='button' id='yes_reject_leaves'>Yes</button>
-                <button type='button' id='no_reject_leaves'>No</button>
+                <button type='button' id='yes_reject_leaves'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_reject_leaves'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -4037,8 +4037,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to delete <b><span id="stud_name_del">unknown</span></b> permanently ?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='delete_student'>Yes</button>
-                <button type='button' id='no_delete_students'>No</button>
+                <button type='button' id='delete_student'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='no_delete_students'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -4051,8 +4051,8 @@ function checkPresnt($array, $string){
                 <input type="text" class="form-control w-100 mx-0" id="club_name" placeholder="Sports House Name / Club">
             </div>
             <div class="buttons align-center">
-                <button type='button' id='add_clubs_btn'>Add</button>
-                <button type='button' id='cancel_add_sports_btn'>Cancel</button>
+                <button type='button' id='add_clubs_btn'><i class="fas fa-plus"></i> Add</button>
+                <button type='button' id='cancel_add_sports_btn'><i class="fas fa-times"></i> Cancel</button>
             </div>
         </div>
     </div>
@@ -4065,8 +4065,8 @@ function checkPresnt($array, $string){
                 <input type="text" class="form-control w-100 mx-0" id="admission_number_prefix" placeholder="Admission Number Prefix">
             </div>
             <div class="buttons align-center">
-                <button type='button' id='confirm_set_admission_number'>Edit</button>
-                <button type='button' id='cancel_set_admission_number'>Cancel</button>
+                <button type='button' id='confirm_set_admission_number'><i class="fas fa-pen-fancy"></i> Edit</button>
+                <button type='button' id='cancel_set_admission_number'><i class="fas fa-times"></i> Cancel</button>
             </div>
         </div>
     </div>
@@ -4080,8 +4080,8 @@ function checkPresnt($array, $string){
                 <input type="text" class="form-control w-100 mx-0" id="club_edit_name" placeholder="Sports House Name / Club">
             </div>
             <div class="buttons align-center">
-                <button type='button' id='edit_clubs_btn'>Edit</button>
-                <button type='button' id='cancel_edit_sports_btn'>Cancel</button>
+                <button type='button' id='edit_clubs_btn'><i class="fas fa-pen-fancy"></i> Edit</button>
+                <button type='button' id='cancel_edit_sports_btn'><i class="fas fa-times"></i> Cancel</button>
             </div>
         </div>
     </div>
@@ -4099,8 +4099,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure ?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='delsubyes'>Yes</button>
-                <button type='button' id='delsubno'>No</button>
+                <button type='button' id='delsubyes'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='delsubno'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -4131,7 +4131,7 @@ function checkPresnt($array, $string){
                 <label for="classes_for_exams" class="form-control-label"><b>Select classes: </b></label>
                 <span id="all_classes_here"></span>
                 <button class="my-2" type="submit">Print <i class="fas fa-print"></i></button>
-                <button class="my-2 mx-1" id="canc_exam_print" type="button">Cancel</button>
+                <button class="my-2 mx-1" id="canc_exam_print" type="button"><i class="fas fa-times"></i> Cancel</button>
             </form>
         </div>
     </div>
@@ -4143,8 +4143,8 @@ function checkPresnt($array, $string){
                 <p>Are you sure you want to delete <b id="sports_house_name">Null</b> ?</p>
             </div>
             <div class="buttons">
-                <button type='button' id='delete_clubs_yes'>Yes</button>
-                <button type='button' id='cancel_delete_clubs'>No</button>
+                <button type='button' id='delete_clubs_yes'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='cancel_delete_clubs'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -4155,8 +4155,8 @@ function checkPresnt($array, $string){
                 <p>Are you want to restart the process ? <br><strong>Note:</strong> all the information collected will be lost.</p>
             </div>
             <div class="buttons">
-                <button type='button' id='promptyestt'>Yes</button>
-                <button type='button' id='promptnott'>No</button>
+                <button type='button' id='promptyestt'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='promptnott'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>
@@ -4168,8 +4168,8 @@ function checkPresnt($array, $string){
             </div>
             <p class="hide" id="ttimetableid"></p>
             <div class="buttons">
-                <button type='button' id='promptyesttt'>Yes</button>
-                <button type='button' id='promptnottt'>No</button>
+                <button type='button' id='promptyesttt'><i class="fas fa-check"></i> Yes</button>
+                <button type='button' id='promptnottt'><i class="fas fa-times"></i> No</button>
             </div>
         </div>
     </div>

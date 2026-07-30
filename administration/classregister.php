@@ -128,7 +128,7 @@
                             <input type="date" class="form-control" id="class_register_dates_cltr" value="<?php echo date("Y-m-d")?>" max="<?php echo date("Y-m-d")?>">
                             <label class="form-control-label" for="classselected"><b>Click to display: </b></label>
                             <input type="hidden" class="hide" id="classselected"  value = "<?php echo $my_class;?>" placeholder="Class assigned" readonly>
-                            <button type='button' id="show_class_att">Display</button>
+                            <button type='button' id="show_class_att"><i class="fas fa-search"></i> Display</button>
                         </div>
                     </div>
                     <div style="border-bottom:1px dashed black;padding-bottom:10px;" class="classoptions" id="class_tr_only">
@@ -154,13 +154,13 @@
                             <label for="register_branch_list" class="form-control-label mt-1"><b>Branch Name:</b></label>
                             <p id="register_branch_list_holder"><span class="text-success border border-success p-1">Branches appears here!</span></p>
                             
-                            <button class="btn btn-secondary btn-sm" id="display_student_attendances" type="button">Display</button>
+                            <button class="btn btn-secondary btn-sm" id="display_student_attendances" type="button"><i class="fas fa-search"></i> Display</button>
                         </div>
                         <div class="option2 hide" id="moreopt2">
                             <label class="form-control-label" for="sel_att_date"><b>Select date: </b><br></label>
                             <input class="form-control" type="date" id="sel_att_date" value = <?php echo date("Y-m-d", strtotime("3 hour"));?> max = <?php echo date("Y-m-d", strtotime("3 hour"));?> ><br>
                             <p id="err_date_handled"></p>
-                            <button type="button" id="display_attendance_class"> Display</button>
+                            <button type="button" id="display_attendance_class"><i class="fas fa-search"></i> Display</button>
                         </div>
                         <div class="option2 hide" id="moreopt3">
                             <label class="form-control-label" for="students_admnos_in"><strong>Student Reg No: </strong></label>
@@ -170,7 +170,7 @@
                             <label class="form-control-label my-0" for="select_months_attendance"><strong>Select Month: </strong></label>
                             <input class="form-control w-25 my-1" value="<?php echo date("Y-m");?>" type="month" id="select_months_attendance">
                             <img src="images/ajax_clock_small.gif" class="hide" id="select_student_clock">
-                            <button type="button" id="display_attendance_class_specific"> Display</button>
+                            <button type="button" id="display_attendance_class_specific"><i class="fas fa-search"></i> Display</button>
                         </div>
                     </div>
                 </div>
@@ -180,8 +180,8 @@
                 <div class="container hide"  id ="register_btns">
                     <p id="error_handler_attendance"></p>
                     <div class="btns">
-                        <button type='button' id='submitclasspresent'>Submit</button>
-                        <button type='button' id='viewpresent'>View attendance</button>
+                        <button type='button' id='submitclasspresent'><i class="fas fa-save"></i> Submit</button>
+                        <button type='button' id='viewpresent'><i class="fas fa-eye"></i> View attendance</button>
                     </div>
                 </div>
             </div>
@@ -225,7 +225,7 @@
                         <input type="date" style="max-width:150px;" name="date_selected" id="date_selected" value = <?php echo date("Y-m-d", strtotime("3 hour"));?>  max =<?php echo date("Y-m-d",strtotime("3 hour"));?> >
                         <br>
                         <div class="conts">
-                            <button type="button" id="display_attendance">Display</button>
+                            <button type="button" id="display_attendance"><i class="fas fa-search"></i> Display</button>
                         </div>
                     </div>
                 </div>

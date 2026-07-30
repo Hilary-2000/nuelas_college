@@ -14,7 +14,7 @@
             <div class="logs_search">
                 <label for="date_logs">Search for logs <br></label>
                 <input type="date" name="date_logs" id="date_logs" value = <?php echo date("Y-m-d",strtotime("3 hour"));?> max = <?php echo date("Y-m-d",strtotime("3 hour"));?>>
-                <button type='button' id="display_loggers">Display logs</button>
+                <button type='button' id="display_loggers"><i class="fas fa-search"></i> Display logs</button>
             </div>
             <div class="logs_contents">
                 <label>Active users: <br></label>

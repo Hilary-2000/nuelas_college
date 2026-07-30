@@ -154,7 +154,7 @@
                                     <button id="confirm_delete_supplier"><i class="fas fa-trash"></i> Delete <img class="hide" src="images/ajax_clock_small.gif" id="delete_supplier_loader"></button>
                                 </div>
                                 <div class="col-md-6">
-                                    <button id="cancel_delete_supplier"><i class="fas fa-x"></i> Cancel</button>
+                                    <button id="cancel_delete_supplier"><i class="fas fa-times"></i> Cancel</button>
                                 </div>
                             </div>
                         </div>

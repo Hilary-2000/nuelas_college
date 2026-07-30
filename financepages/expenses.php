@@ -26,7 +26,7 @@
                 <div class="expeses_options" id="exp_options">
                     <button id="add_exp"><i class="fas fa-plus"></i> Add Expenses</button>
                     <button class="<?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "d-none" : ""?>" id="approve_payments"><i class="fas fa-check"></i> Approve Payments</button>
-                    <button class="hide" id="find_exp_da">Find Expenses</button>
+                    <button class="hide" id="find_exp_da"><i class="fas fa-search"></i> Find Expenses</button>
                 </div>
                 <div class="find_exp hide" id="find_exp_date">
                     <div class="conts">
@@ -74,8 +74,8 @@
                         <p id="date_err"></p>
                     </div>
                     <div class="conts">
-                        <button id="disp_btns">Display</button>
-                        <button id='done_display_exp'>Close</button>
+                        <button id="disp_btns"><i class="fas fa-search"></i> Display</button>
+                        <button id='done_display_exp'><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
                 <div class="conts hide" id="recordexp">
@@ -155,7 +155,7 @@
                             <button id='add_expenseed' class="hide"><i class="fas fa-paper-plane"></i> Make Payment Request</button>
                         </div>
                         <div class="col-md-6">
-                            <button id='done_adding_exp'>Close</button>
+                            <button id='done_adding_exp'><i class="fas fa-times"></i> Close</button>
                         </div>
                     </div>
                 </div>

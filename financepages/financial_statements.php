@@ -55,7 +55,7 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <button class="mx-auto" id="generate_finance_reports">Generate Reports</button>
+                        <button class="mx-auto" id="generate_finance_reports"><i class="fas fa-save"></i> Generate Reports</button>
                     </div>
                 </div>
                 <div class="table_holders">
@@ -89,7 +89,7 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <button class="mx-auto" id="generate_finance_perfomance_reports">Generate Reports</button>
+                        <button class="mx-auto" id="generate_finance_perfomance_reports"><i class="fas fa-save"></i> Generate Reports</button>
                     </div>
                 </form>
             </div>

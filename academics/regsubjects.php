@@ -45,12 +45,12 @@
                         </div>
                         <div class="cont my-2">
                             <label for="set_grades" class="form-control-label"><b>Set Grades</b></label><br>
-                            <p class="block_btn" id="set_grades_display_btn">Set Grades</p>
+                            <p class="block_btn" id="set_grades_display_btn"><i class="fas fa-pen-fancy"></i> Set Grades</p>
                             <p class="my-2 hide" id="set_my_grades_list"></p>
                             <p class="my-2" id="display_tables_list"></p>
                         </div>
                         <div class="conts" style='margin:20px 0 0 0;display:flex;flex-direction:row-reverse;'>
-                            <button type='button' id='registersub'>Register</button>
+                            <button type='button' id='registersub'><i class="fas fa-save"></i> Register</button>
                         </div>
                         <div class="conts">
                             <p id='errregsub'></p>

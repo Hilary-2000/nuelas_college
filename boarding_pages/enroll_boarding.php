@@ -16,7 +16,7 @@
                 <div style="border-top:1px dashed black;padding:10px 0;margin-top:10px;font-size:14px; display:flex; flex-direction:column;align-items:center;" class="conts">
                     <label style="font-weight:600;" for="admission_number">Enter Student`s admission number: <br></label>
                     <input type="text" style="margin:0;"  name="admission_number" id="admission_number" placeholder = "Search Adm number">
-                    <button id ="display_unenrolled"  type="button">Search</button>
+                    <button id ="display_unenrolled"  type="button"><i class="fas fa-search"></i> Search</button>
                     <p style="text-align:center;" id="err_handler_enroll"></p>
                 </div>
                 <div class="conts">

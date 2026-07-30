@@ -197,7 +197,7 @@
                     <input type="time" name="from_time" id="from_time" readonly>
                     <label for="to_time"><br>To: <br></label>
                     <input type="time" name="to_time" id="to_time" readonly><br>
-                    <button type='button' id="change_active_hrs_btn">Change</button>
+                    <button type='button' id="change_active_hrs_btn"><i class="fas fa-pen-fancy"></i> Change</button>
                     <p id="outputbtn_activehours"></p>
                 </div>
             </div>
@@ -223,7 +223,7 @@
                     <label for="acad_calender">Academic Calender: <br></label>
                     <p id="acad_table"></p>
                     <p id="acad_cal_errhandler"></p>
-                    <button type="button" id="change_acad_win">Change</button>
+                    <button type="button" id="change_acad_win"><i class="fas fa-pen-fancy"></i> Change</button>
                 </div>
             </div>
             <div class="setting_s">
@@ -236,7 +236,7 @@
                     <label for="setters">Admission essentials: <br></label>
                     <p id="adm_essential"></p>
                     <p id="add_admission_err_handler"></p>
-                    <button type="button" id="add_adm_ess">Add item</button>
+                    <button type="button" id="add_adm_ess"><i class="fas fa-plus"></i> Add item</button>
                 </div>
             </div>
             <div class="setting_s">

@@ -13,9 +13,9 @@
             </div>
             <div class="body4">
                 <p>Start by doing either of the following:</p>
-                <p class="block_btn" id="registerexamsbtn">Register New Exam</p>
-                <p class="block_btn" id="viewexams">View Exams</p>
-                <p class="block_btn" id="generate_exams_reports">Generate Reports</p>
+                <p class="block_btn" id="registerexamsbtn"><i class="fas fa-save"></i> Register New Exam</p>
+                <p class="block_btn" id="viewexams"><i class="fas fa-eye"></i> View Exams</p>
+                <p class="block_btn" id="generate_exams_reports"><i class="fas fa-cogs"></i> Generate Reports</p>
                 <div class="conts bordered_bottom">
                     <div class="options hide border border-dark p-2 col-md-6 my-1" id="viewexam">
                         <h5>Search Exams</h5>
@@ -54,7 +54,7 @@
                         <div class="conts" id="classed1234">
 
                         </div>
-                        <button type="button" title="Click to display the exams available" id="displaysubjects">Display</button>
+                        <button type="button" title="Click to display the exams available" id="displaysubjects"><i class="fas fa-search"></i> Display</button>
                     </div>
                 </div>
                 <div class="container w-75 animate bordered_bottom  border border-secondary rounded hide" id="generate_exams_reports_window">
@@ -362,7 +362,7 @@
                                 <td>Active</td>
                                 <td>Tue 12th Aug</td>
                                 <td>Fri 15th Aug</td>
-                                <td><button type="button">View</button></td>
+                                <td><button type="button"><i class="fas fa-eye"></i> View</button></td>
                             </tr>
                         </table>
                     </div>
@@ -379,7 +379,7 @@
                         <label for="class_label_exams_result" class="form-control-label">Select a class to display the
                             result</label><br>
                         <span id="exams_details_holder">Please wait...</span><br>
-                        <button id="display_exams_for_classes">Display</button>
+                        <button id="display_exams_for_classes"><i class="fas fa-search"></i> Display</button>
                         <span id="results_output"></span>
                     </div>
                     <!-- the display button -->
