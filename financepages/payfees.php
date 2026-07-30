@@ -26,7 +26,7 @@
                     <div class="notify">
                         <p><strong>Procedure:</strong></p>
                         <div class="conts" id='btnshow1'>
-                            <button type='button' id="showprocess1">Show</button>
+                            <button type='button' id="showprocess1"><i class="fas fa-eye"></i> Show</button>
                         </div>
                     </div>
                     <div class="procedure hide" id="procedure">
@@ -36,18 +36,18 @@
                         <p>4. Enter the information requested by the system <strong>correctly</strong>.</p>
                         <p>5. Confirm payment to save the information in the database.</p>
                         <div class="conts" id='btnshide1'>
-                            <button type='button' id="hideprocess1">Hide</button>
+                            <button type='button' id="hideprocess1"><i class="fas fa-eye-slash"></i> Hide</button>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <button type='button' class="d-none" id='assign_fees_credit_notes' >Assign Fees Credit Notes</button>
-                    <button type='button' id='record_school_income' >Manage Revenue</button>
+                    <p class="block_btn d-none" id='assign_fees_credit_notes'><i class="fas fa-money-bill"></i> Assign Fees Credit Notes</p>
+                    <p class="block_btn" id='record_school_income'><i class="fas fa-list"></i> Manage Revenue</p>
                 </div>
             </div>
             <div class="paywindow">
                 <div class="title">
-                    <h4 style="text-align:center;">Student summary information</h4>
+                    <h4 style="text-align:center;"><i class="fas fa-user-graduate"></i> Student summary information</h4>
                 </div>
                 <div class="conts search_students_finance">
                     <p class="hide" id="err_handler"></p>
@@ -55,7 +55,7 @@
                     <div class="autocomplete">
                         <input class="form-control" type="text" style="max-width:300px; "  id="studids" placeholder = "Reg No or Name">
                     </div>
-                    <button type='button'  id='searchfin1'>Search</button>
+                    <button type='button'  id='searchfin1'><i class="fas fa-search"></i> Search</button>
                 </div>
                 <div class="contsfd">
                     <p id='paymentsresults'></p>
@@ -63,7 +63,7 @@
             </div>
             <form class="paywindow" id='payforms'>
                 <div class="title">
-                    <h3>Pay here</h3>
+                    <h3><i class="fas fa-cash-register"></i> Pay here</h3>
                 </div>
                 <div class="conts">
                     <label for="payfor"><b>Select what to pay for and enter the amount:</b> <br></label>
@@ -149,7 +149,7 @@
                         <label for="supporting_documents" class="form-control-label">Select Multiple Supporting Documents <i title="Upload Supporting documents like cheques & bank deposit slips." class="fas fa-info-circle"></i> <span class="hide" id="load_documents"><img src="images/ajax_clock_small.gif" id=""></span></label>
                         <input type="file"  accept=".png, .jpeg, .jpg, .pdf, .docx" class="form-control text-sm my-2" name="supporting_documents" id="supporting_documents">
                         <progress class="form-control my-1 hide" id="upload-progress" value="0" max="100"></progress>
-                        <button type="button" id="upload_supporting_documents" class="">Upload</button>
+                        <button type="button" id="upload_supporting_documents" class=""><i class="fas fa-upload"></i> Upload</button>
                         <div class="container my-1 p-1 border border-secondary rounded" id="list_supporting_documents">
                             <p class="text-secondary">No Supporting Documents Added</p>
                         </div>
@@ -161,7 +161,7 @@
                     </div>
                 </div>
                 <div class="contsbtn hide" id="btns">
-                    <button type='button' id='makepayments' >Confirm</button>
+                    <button type='button' id='makepayments' ><i class="fas fa-check"></i> Confirm</button>
                 </div>
             </form>
         </div>
