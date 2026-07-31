@@ -11,7 +11,7 @@
     <meta content="Ladybird School Management System, Best Management System, SMIS, Ladybird SMIS, School management Systems in Kenya" name="keywords">
 
     <!-- Favicons -->
-    <link href="assets/img/ladybird.png" rel="icon">
+    <link href="images/ladybird_white.png" rel="icon">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
