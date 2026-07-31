@@ -1031,6 +1031,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($data_array,isset($row['referral_phone']) ? $row['referral_phone'] : '');
                         array_push($data_array,isset($row['heard_others_specify']) ? $row['heard_others_specify'] : '');
                         array_push($data_array,!empty($row['preferred_communication']) ? $row['preferred_communication'] : 'school_default');
+                        array_push($data_array,"Kes ".number_format(getTotalPaymentsOwed($row['adm_no'],$conn2)));
                     }
                 }
 
