@@ -3292,8 +3292,12 @@ function tablebtnlistener() {
                     var _class = classNameAdms(splitdata[6]);
                     var _adm = splitdata[7];
                     var _bal = splitdata[31] || "—";
-                    var _paid = splitdata[28] || "—";
                     var _totalPaid = splitdata[32] || "—";
+
+                    // Total Payments Owed: server-computed sum of the votehead-aware fee for
+                    // every completed module plus the active one (see getTotalPaymentsOwed()
+                    // in ajax/finance/financial.php). Inactive modules are excluded.
+                    var _totalOwed = splitdata[58] || "—";
                     var _attTerm = splitdata[37] || "—";
                     var _attYear = splitdata[38] || "—";
                     var _pctFn = function (s) { var m = String(s || "").match(/(\d+(?:\.\d+)?)\s*%/); return m ? parseFloat(m[1]) : null; };
@@ -3320,7 +3324,7 @@ function tablebtnlistener() {
                             "<p style='font-size:12px;color:#777;margin:0 0 12px;'>" + escHtml(_class) + " &nbsp;&bull;&nbsp; Adm: " + escHtml(_adm) + "</p>" +
                             "<div class='row'>" +
                             "<div class='col-6 col-md-4 mb-2'><div style='background:#fdecea;border-left:4px solid #dc3545;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#dc3545;'>" + escHtml(_bal) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-exclamation-circle'></i>&nbsp;Fee Balance</div></div></div>" +
-                            "<div class='col-6 col-md-4 mb-2'><div style='background:#e8f5e9;border-left:4px solid #28a745;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#28a745;'>" + escHtml(_paid) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-check-circle'></i>&nbsp;Paid This Module</div></div></div>" +
+                            "<div class='col-6 col-md-4 mb-2'><div style='background:#e8f5e9;border-left:4px solid #28a745;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#28a745;'>" + escHtml(_totalOwed) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-file-invoice-dollar'></i>&nbsp;Total Payments Owed</div></div></div>" +
                             "<div class='col-6 col-md-4 mb-2'><div style='background:#ede7f6;border-left:4px solid #7b1fa2;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#7b1fa2;'>" + escHtml(_totalPaid) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-history'></i>&nbsp;Total Paid Since Joining</div></div></div>" +
                             "<div class='col-6 col-md-4 mb-2'>" + _attCard("Attendance (Module)", _attTerm, _termPct, "fas fa-calendar-check") + "</div>" +
                             "<div class='col-6 col-md-4 mb-2'>" + _attCard("Attendance (Year)", _attYear, _yearPct, "fas fa-chart-line") + "</div>" +

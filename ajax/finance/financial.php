@@ -8091,6 +8091,102 @@
         return $course_fees;
     }
 
+    // Fees owed for a single module term, respecting its own votehead selection the same
+    // way getFeesAsFromTermAdmited() resolves the active module: a "0" votehead marked
+    // not-payable omits the base module cost, specific payable votehead ids replace the
+    // whole fees_structure lookup with just those items, and no voteheads at all falls
+    // back to the full class/course fees_structure total.
+    function getModuleFeesOwed($module, $study_mode, $classes, $course_enrolled, $conn2) {
+        $omit_course_fees = false;
+        $other_vh = [];
+        $issetup = false;
+        if (isset($module->voteheads)) {
+            $issetup = true;
+            foreach ($module->voteheads as $valued) {
+                if ($valued->votehead == "0" && !$valued->pay) {
+                    $omit_course_fees = true;
+                }
+                if ($valued->votehead != "0" && $valued->votehead != "charged_account" && $valued->pay) {
+                    array_push($other_vh, $valued->votehead);
+                }
+            }
+        }
+
+        $module_cost = 0;
+        if (!$omit_course_fees) {
+            $module_cost = $study_mode == "weekend" ? ($module->weekend_cost ?? 0)
+                : ($study_mode == "evening" ? ($module->evening_cost ?? 0)
+                : ($study_mode == "fulltime" ? ($module->fulltime_cost ?? 0)
+                : ($study_mode == "online" ? ($module->online_cost ?? 0)
+                : ($module->termly_cost ?? 0))));
+        }
+
+        $term_column = $study_mode == "weekend" ? "TERM_3" : ($study_mode == "evening" ? "TERM_2" : ($study_mode == "online" ? "TERM_4" : "TERM_1"));
+        $fees_structure = 0;
+        if ($issetup && count($other_vh) > 0) {
+            $ids = array_map('intval', $other_vh);
+            $select = "SELECT sum(`$term_column`) AS 'TOTALS' FROM `fees_structure` WHERE ids IN (".join(',', $ids).")";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            if ($res && ($row = $res->fetch_assoc())) {
+                $fees_structure = $row['TOTALS'] ?? 0;
+            }
+            $stmt->close();
+        } elseif (!$issetup) {
+            $select = "SELECT sum(`$term_column`) AS 'TOTALS' FROM `fees_structure` WHERE `classes` = ? AND `course` = ? AND `activated` = 1 and `roles` = 'regular'";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss", $classes, $course_enrolled);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            if ($res && ($row = $res->fetch_assoc())) {
+                $fees_structure = $row['TOTALS'] ?? 0;
+            }
+            $stmt->close();
+        }
+        // when voteheads are set but none besides "0"/"charged_account" are payable,
+        // no fees_structure amount is added, mirroring getFeesAsFromTermAdmited()
+
+        return ($module_cost * 1) + ($fees_structure * 1);
+    }
+
+    // Total Payments Owed: sums the votehead-aware fee (above) for every completed module
+    // plus the active one, applying the student's discount per module and adding any
+    // charged-account one-off charges tied to that specific module.
+    function getTotalPaymentsOwed($admno, $conn2) {
+        $student_data = students_details($admno, $conn2);
+        if (count($student_data) == 0) {
+            return 0;
+        }
+        $study_mode = strtolower($student_data['study_mode']);
+        $classes = $student_data['stud_class'];
+        $course_enrolled = $student_data['course_done'];
+        $my_course_list = isJson($student_data['my_course_list']) ? json_decode($student_data['my_course_list']) : [];
+        $discounts = getDiscount($admno, $conn2);
+
+        $total_owed = 0;
+        for ($index = 0; $index < count($my_course_list); $index++) {
+            if ($my_course_list[$index]->course_status == 1) {
+                $module_terms = $my_course_list[$index]->module_terms;
+                for ($ind = 0; $ind < count($module_terms); $ind++) {
+                    $module = $module_terms[$ind];
+                    if ($module->status == 1 || $module->status == 2) {
+                        $module_total = getModuleFeesOwed($module, $study_mode, $classes, $course_enrolled, $conn2);
+                        if ($discounts[0] > 0) {
+                            $module_total = round(($module_total * (100 - $discounts[0])) / 100);
+                        } elseif ($discounts[1] > 0) {
+                            $module_total = $module_total - $discounts[1];
+                        }
+                        $module_total += get_charged_account_total($module);
+                        $total_owed += $module_total;
+                    }
+                }
+            }
+        }
+
+        return $total_owed;
+    }
+
     function getFeesTerm($term,$conn2,$classes,$admno){
         $select = '';
         $class = "%|".$classes."|%";
