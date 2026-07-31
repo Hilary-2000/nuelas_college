@@ -1815,17 +1815,35 @@ cObj("effect_from").addEventListener("change", checkPayrollStaffDetails);
 cObj("effect_year").addEventListener("change", checkPayrollStaffDetails);
 cObj("balances").addEventListener("change", checkPayrollStaffDetails);
 function checkPayrollStaffDetails() {
-    var err = cObj("staff_l") !=undefined ? checkBlank("staff_l", false) : 1;
-    err += checkBlank("amount_to_pay", false);
-    err += checkBlank("effect_from", false);
-    err += checkBlank("effect_year", false);
-    err += checkBlank("balances", false);
+    var missing = [];
+
+    var staffErr = 0;
+    if (cObj("staff_l") != undefined) {
+        staffErr = checkBlank("staff_l", false);
+        if (staffErr) missing.push("Select Staff");
+    } else {
+        staffErr = 1;
+        missing.push("No staff available to enroll");
+    }
+
+    var amountErr = checkBlank("amount_to_pay", false);
+    var monthErr = checkBlank("effect_from", false);
+    if (monthErr) missing.push("Current Month");
+    var yearErr = checkBlank("effect_year", false);
+    if (yearErr) missing.push("Current Year");
+    var balanceErr = checkBlank("balances", false);
+    if (balanceErr) missing.push("Balance");
+
+    var err = staffErr + amountErr + monthErr + yearErr + balanceErr;
 
     if (err == 0) {
         cObj("payrollOverlay").classList.add("hide");
         breakdownPayments();
     }else{
         cObj("payrollOverlay").classList.remove("hide");
+        if (cObj("payrollOverlayMissing")) {
+            cObj("payrollOverlayMissing").innerText = missing.join(", ");
+        }
     }
 }
 
@@ -3551,11 +3569,12 @@ function breakdownPayments() {
     var gross_salary = valObj("gross_salary")*1;
     var allowances = getAllowances()*1;
     gross_salary += allowances;
+    var nssf_tier = valObj("nssf_rates");
     var nhif_shif_amount = Nhif_Shif_Amount(gross_salary,effect_year);
-    var nssf_amount = Nssf_Amount(gross_salary, effect_year);
+    var nssf_amount = Nssf_Amount(gross_salary, effect_year, nssf_tier);
     var housing_levy = Housing_Levy((gross_salary), effect_year);
     var taxable_income = Taxable_Income(gross_salary, effect_year, nssf_amount, nhif_shif_amount, housing_levy);
-    var income_tax = Income_Tax((gross_salary), effect_year);
+    var income_tax = Income_Tax((gross_salary), effect_year, nssf_tier);
     var deductions = hasJsonStructure(valObj("deductions_holder_1")) ? JSON.parse(valObj("deductions_holder_1")) : [];
     var insurance_relief = Nhif_Shif_Relief(gross_salary, effect_year);
     var income_tax_relief = Income_Tax_Relief(effect_year);
@@ -3645,11 +3664,14 @@ function breakdownPayments() {
     cObj("final_income_taxe").innerHTML = payment_breakdown.income_tax > payment_breakdown.income_tax_relief ? "Kes "+(final_income_taxes.toFixed(2).toLocaleString()) : "Kes 0";
 
 
-    // DEDUCTIONS
-    cObj("deductions_calculate").innerText = "Kes "+payment_breakdown.deductions_total.toLocaleString();
-
     // NET SALARY
     var net_salary = Net_Salary_Amount(payment_breakdown);
+
+    // DEDUCTIONS: the full amount taken off gross salary (tax, NSSF, NHIF/SHIF, housing
+    // levy, and any other manual deductions), not just the manual ones.
+    var total_deductions = (payment_breakdown.gross_salary_with_allowance - net_salary).toFixed(2);
+    cObj("deductions_calculate").innerText = "Kes "+(total_deductions*1).toLocaleString();
+
     cObj("net_salary_record").innerHTML = "Kes "+net_salary.toLocaleString();
     cObj("amount_to_pay").value = (net_salary*1).toFixed(0);
 }
@@ -3711,35 +3733,44 @@ function Nhif_Shif_Amount(gross_salary, effect_year){
     }
     return 0;
 }
-function Nssf_Amount(gross_salary, effect_year) {
+function Nssf_Amount(gross_salary, effect_year, tier) {
+    tier = tier || "teir_1_2";
+    if (tier === "none") {
+        return 0;
+    }
+
+    // Pre-2013 Act era: flat rate applies regardless of tier selection.
     if (effect_year >= 200001 && effect_year <= 201501) {
         return 200;
-    }else if (effect_year >201501 && effect_year <= 202401) {
-        if (gross_salary <= 6000) {
-            return 0.06 * gross_salary;
-        }else if (gross_salary > 6000 && gross_salary <= 18000) {
-            return 360 + ((gross_salary - 6000) * 0.06);
-        }else if (gross_salary > 18000) {
-            return 1080
-        }
-    }else if (effect_year > 202401 && effect_year <= 202501) {
-        if (gross_salary <= 7000) {
-            return 0.06 * gross_salary;
-        }else if (gross_salary > 7000 && gross_salary <= 36000) {
-            return 420 + ((gross_salary - 7000) * 0.06);
-        }else if (gross_salary > 36000) {
-            return 2160;
-        }
-    }else if (effect_year > 202501) {
-        if (gross_salary <= 8000) {
-            return 0.06 * gross_salary;
-        }else if (gross_salary > 8000 && gross_salary <= 72000) {
-            return 480 + ((gross_salary - 8000) * 0.06);
-        }else if (gross_salary > 72000) {
-            return 4320;
-        }
     }
-    return 0;
+
+    // Manual override to apply the old flat rate to a current-year record.
+    if (tier === "teir_old") {
+        return 200;
+    }
+
+    var lower_limit, upper_limit;
+    if (effect_year > 201501 && effect_year <= 202401) {
+        lower_limit = 6000;
+        upper_limit = 18000;
+    } else if (effect_year > 202401 && effect_year <= 202501) {
+        lower_limit = 7000;
+        upper_limit = 36000;
+    } else if (effect_year > 202501) {
+        lower_limit = 8000;
+        upper_limit = 72000;
+    } else {
+        return 0;
+    }
+
+    var tier_1 = 0.06 * Math.min(gross_salary, lower_limit);
+    if (tier === "teir_1") {
+        return tier_1;
+    }
+
+    // teir_1_2: Tier I plus the additional Tier II band up to the upper limit.
+    var tier_2 = gross_salary > lower_limit ? 0.06 * (Math.min(gross_salary, upper_limit) - lower_limit) : 0;
+    return tier_1 + tier_2;
 }
 function Housing_Levy(gross_salary, effect_year) {
     if (effect_year >= 202402) {
@@ -3784,10 +3815,10 @@ function Ahl_Relief(gross_salary, effect_year){
     return 0;
 }
 
-function Income_Tax(gross_salary, effect_year){
+function Income_Tax(gross_salary, effect_year, nssf_tier){
     var housing_levy = Housing_Levy(gross_salary, effect_year)*1;
     var nhif_shif_amount = Nhif_Shif_Amount(gross_salary, effect_year)*1;
-    var nssf_amount = Nssf_Amount(gross_salary, effect_year)*1;
+    var nssf_amount = Nssf_Amount(gross_salary, effect_year, nssf_tier)*1;
     var taxable_income = Taxable_Income(gross_salary, effect_year, nssf_amount, nhif_shif_amount, housing_levy)*1;
     
 
@@ -3915,11 +3946,12 @@ function breakdownPayments2() {
     var gross_salary = valObj("gross_salary_edit")*1;
     var allowances = getAllowances2()*1;
     gross_salary+=allowances;
-    var nssf_contribution = Nssf_Amount(gross_salary, effect_year_edit)*1;
+    var nssf_tier_edit = valObj("nssf_rates_edit");
+    var nssf_contribution = Nssf_Amount(gross_salary, effect_year_edit, nssf_tier_edit)*1;
     var nhif_shif_amount = Nhif_Shif_Amount(gross_salary, effect_year_edit)*1;
     var housing_levy = Housing_Levy(gross_salary, effect_year_edit)*1;
     var taxable_income = Taxable_Income(gross_salary, effect_year_edit, nssf_contribution, nhif_shif_amount, housing_levy)*1;
-    var income_tax = Income_Tax(gross_salary, effect_year_edit)*1;
+    var income_tax = Income_Tax(gross_salary, effect_year_edit, nssf_tier_edit)*1;
     var income_tax_relief = Income_Tax_Relief(effect_year_edit)*1;
     var insurance_relief = Nhif_Shif_Relief(gross_salary, effect_year_edit)*1;
     var ahl_relief = Ahl_Relief(gross_salary, effect_year_edit)*1;
@@ -3997,7 +4029,7 @@ function breakdownPayments2() {
     cObj("incomeTaxRecord_edit").innerText = "Ksh " + comma3(payment_breakdown.income_tax);
     cObj("personal_relief_records_edit").innerText = "Ksh " + comma3(payment_breakdown.income_tax_relief);
     cObj("nhif_relief_record_edit").innerText = "Ksh " + comma3(payment_breakdown.insurance_relief);
-    cObj("all_deductions_edit").innerText = "Kes "+comma3(payment_breakdown.deductions_total);
+    cObj("all_deductions_edit").innerText = "Kes "+comma3(payment_breakdown.gross_salary_with_allowance - netSalary);
     cObj("final_income_tax").innerHTML = "Kes "+((payment_breakdown.income_tax > payment_breakdown.income_tax_relief ? payment_breakdown.income_tax - payment_breakdown.income_tax_relief : 0).toLocaleString())
     cObj("AHL_relief_edit").innerHTML = "Kes "+(payment_breakdown.ahl_relief.toLocaleString());
     cObj("total_reliefs").innerHTML = "Kes "+((payment_breakdown.ahl_relief + payment_breakdown.insurance_relief).toLocaleString());

@@ -3978,14 +3978,14 @@
                     }
 
                     // NSSF AMOUNT
-                    $nssf_amount = $salary_break->nssf_rates == "none" ? 0 : Nssf_Amount($gross_salary, $effect_year);
+                    $nssf_amount = $salary_break->nssf_rates == "none" ? 0 : Nssf_Amount($gross_salary, $effect_year, $salary_break->nssf_rates);
                     $housing_levy = isset($salary_break->housing_levy) ? ($salary_break->housing_levy == "yes" ? Housing_Levy($gross_salary, $effect_year) : 0) : 0;
 
                     // get taxable income
                     $taxable_income = Taxable_Income($gross_salary, $effect_year, $nssf_amount, $nhif_shif_amount, $housing_levy);
 
                     // calculate P.A.Y.E
-                    $income_tax = ($salary_break->deduct_paye == "yes") ? Income_Tax($gross_salary, $effect_year) : 0;
+                    $income_tax = ($salary_break->deduct_paye == "yes") ? Income_Tax($gross_salary, $effect_year, $salary_break->nssf_rates) : 0;
 
                     // get reliefs
                     $paye_relief = ($salary_break->deduct_paye == "yes" && $salary_break->personal_relief == "yes") ? Income_Tax_Relief($effect_year) : 0;
@@ -5123,7 +5123,7 @@
 
                             // effect year
                             $effect_year = isset($decode_salary->effect_month) ? date("Ym", strtotime($decode_salary->effect_month)) : $decode_salary->year."01";
-                            $nssf_amounts = $decode_salary->nssf_rates != "none" ? Nssf_Amount($gross_salary, $effect_year) : 0;
+                            $nssf_amounts = $decode_salary->nssf_rates != "none" ? Nssf_Amount($gross_salary, $effect_year, $decode_salary->nssf_rates) : 0;
                             if ($decode_salary->nssf_rates == "teir_1") {
                                 $nssf_type = "Teir 1";
                             } elseif ($decode_salary->nssf_rates == "teir_1_2") {
@@ -5154,7 +5154,7 @@
                             $taxable_income = Taxable_Income($gross_salary, $effect_year, $nssf_amounts, $nhif_amounts, $housing_levy);
 
                             // calculate P.A.Y.E
-                            $paye = ($decode_salary->deduct_paye == "yes") ? Income_Tax($gross_salary, $effect_year) : 0;
+                            $paye = ($decode_salary->deduct_paye == "yes") ? Income_Tax($gross_salary, $effect_year, $decode_salary->nssf_rates) : 0;
 
                             // get reliefs
                             $paye_relief = ($decode_salary->deduct_paye == "yes" && $decode_salary->personal_relief == "yes") ? Income_Tax_Relief($effect_year) : 0;
@@ -8623,8 +8623,8 @@
                 array_push($deductions, $nhif_amounts);
             }
 
-            // nssf deductions 
-            $nssf_amount = $payroll_data->nssf_rates != "none" ? Nssf_Amount($gross_salary,$effect_year) : 0;
+            // nssf deductions
+            $nssf_amount = $payroll_data->nssf_rates != "none" ? Nssf_Amount($gross_salary,$effect_year,$payroll_data->nssf_rates) : 0;
             if($payroll_data->nssf_rates != "none"){
                 $nssf_amount = array("N.S.S.F" => $nssf_amount);
                 array_push($deductions, $nssf_amount);
@@ -8633,7 +8633,7 @@
             // deductions
             $payes = $payroll_data->deduct_paye;
             if ($payes == "yes") {
-                $paye = round(Income_Tax($gross_salary,$effect_year));
+                $paye = round(Income_Tax($gross_salary,$effect_year,$payroll_data->nssf_rates));
                 $paye = array("P.A.Y.E" => $paye);
                 array_push($deductions, $paye);
             }
@@ -8959,8 +8959,8 @@
                         }
                         $nhif_amounts = $payroll_data->deduct_nhif == "yes" ? Nhif_Shif_Amount($gross_salary, $effect_year) : 0;
                         $housing_levy = isset($payroll_data->housing_levy) ? ($payroll_data->housing_levy == "yes" ? Housing_Levy($gross_salary, $effect_year) : 0) : 0;
-                        $nssf_amount = $payroll_data->nssf_rates != "none" ? Nssf_Amount($gross_salary, $effect_year) : 0;
-                        $income_tax = $payroll_data->deduct_paye == "yes" ? Income_Tax($gross_salary, $effect_year) : 0;
+                        $nssf_amount = $payroll_data->nssf_rates != "none" ? Nssf_Amount($gross_salary, $effect_year, $payroll_data->nssf_rates) : 0;
+                        $income_tax = $payroll_data->deduct_paye == "yes" ? Income_Tax($gross_salary, $effect_year, $payroll_data->nssf_rates) : 0;
                         $nhif_relief = $payroll_data->deduct_nhif == "yes" && $payroll_data->nhif_relief == "yes" ? Nhif_Shif_Relief($gross_salary, $effect_year) : 0;
                         $paye_relief = $payroll_data->deduct_paye == "yes" && $payroll_data->personal_relief == "yes" ? Income_Tax_Relief($effect_year) : 0;
                         $ahl_relief = (isset($payroll_data->housing_levy) && isset($payroll_data->ahl_relief)) ? (($payroll_data->housing_levy == "yes" && $payroll_data->ahl_relief == "yes") ? Ahl_Relief($gross_salary, $effect_year) : 0) : 0;
@@ -10115,43 +10115,48 @@ function Nhif_Shif_Amount($gross_salary, $effect_year){
 }
 
 
-function Nssf_Amount($gross_salary, $effect_year) {
-    // Old NSSF rates (before Feb 2014)
+function Nssf_Amount($gross_salary, $effect_year, $tier = "teir_1_2") {
+    if ($tier == "none") {
+        return 0;
+    }
+
+    // Old NSSF rates (before Feb 2014): flat rate applies regardless of tier selection.
     if ($effect_year >= 200001 && $effect_year <= 201501) {
         return 200;
+    }
+
+    // Manual override to apply the old flat rate to a current-year record.
+    if ($tier == "teir_old") {
+        return 200;
+    }
 
     // 2014–2023 (Transitional rates)
-    } else if ($effect_year > 201501 && $effect_year <= 202401) {
-        if ($gross_salary <= 6000) {
-            return 0.06 * $gross_salary;
-        } else if ($gross_salary > 6000 && $gross_salary <= 18000) {
-            return 360 + (($gross_salary - 6000) * 0.06);
-        } else {
-            return 1080; // Max cap for that period
-        }
+    if ($effect_year > 201501 && $effect_year <= 202401) {
+        $lower_limit = 6000;
+        $upper_limit = 18000;
 
     // 2024–Jan 2025 (Enhanced rates phase)
     } else if ($effect_year > 202401 && $effect_year < 202502) {
-        if ($gross_salary <= 7000) {
-            return 0.06 * $gross_salary;
-        } else if ($gross_salary > 7000 && $gross_salary <= 36000) {
-            return 420 + (($gross_salary - 7000) * 0.06);
-        } else {
-            return 2160; // Max cap for that phase
-        }
+        $lower_limit = 7000;
+        $upper_limit = 36000;
 
     // Feb 2025 and beyond (latest structure)
     } else if ($effect_year >= 202502) {
-        if ($gross_salary <= 8000) {
-            return 0.06 * $gross_salary;
-        } else if ($gross_salary > 8000 && $gross_salary <= 72000) {
-            return 480 + (($gross_salary - 8000) * 0.06);
-        } else {
-            return 4320; // Max cap for salaries above 72,000
-        }
+        $lower_limit = 8000;
+        $upper_limit = 72000;
+
+    } else {
+        return 0; // Default fallback
     }
 
-    return 0; // Default fallback
+    $tier_1 = 0.06 * min($gross_salary, $lower_limit);
+    if ($tier == "teir_1") {
+        return $tier_1;
+    }
+
+    // teir_1_2: Tier I plus the additional Tier II band up to the upper limit.
+    $tier_2 = $gross_salary > $lower_limit ? 0.06 * (min($gross_salary, $upper_limit) - $lower_limit) : 0;
+    return $tier_1 + $tier_2;
 }
 
 
@@ -10171,10 +10176,10 @@ function Taxable_Income($gross_salary, $effect_year, $nssf_amount, $nhif_shif_am
     return $gross_salary;
 }
 
-function Income_Tax($gross_salary, $effect_year){
+function Income_Tax($gross_salary, $effect_year, $nssf_tier = "teir_1_2"){
     $housing_levy = Housing_Levy($gross_salary, $effect_year)*1;
     $nhif_shif_amount = Nhif_Shif_Amount($gross_salary, $effect_year)*1;
-    $nssf_amount = Nssf_Amount($gross_salary, $effect_year)*1;
+    $nssf_amount = Nssf_Amount($gross_salary, $effect_year, $nssf_tier)*1;
     $taxable_income = Taxable_Income($gross_salary, $effect_year, $nssf_amount, $nhif_shif_amount, $housing_levy)*1;
     
 

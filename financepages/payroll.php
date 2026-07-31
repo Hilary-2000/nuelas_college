@@ -92,8 +92,14 @@
                                 </div>
                             </div>
                             <div class=" col-lg-8 my-2" style="border-left: 1px solid black;border-right: 1px solid black;position:relative;">
-                                <div id="payrollOverlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.3); z-index:20;">
-                                    <!-- overlay content -->
+                                <div id="payrollOverlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.45); z-index:20;">
+                                    <div style="display:flex; align-items:center; justify-content:center; height:100%; padding:16px;">
+                                        <div class="alert alert-warning shadow-sm mb-0" style="max-width:320px; text-align:center;">
+                                            <i class="fas fa-lock"></i>
+                                            <p class="mb-1"><strong>Complete these fields to unlock the Net Pay Calculator:</strong></p>
+                                            <p class="mb-0" id="payrollOverlayMissing">Select Staff, Current Month, Current Year, Balance</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
                                     <h6 class="text-center"><u>Net Pay Calculator (Based on Finance Act 2023)</u></h6>
