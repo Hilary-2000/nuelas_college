@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="assets/CSS/mainpage.css">
     <link rel="stylesheet" href="assets/CSS/login-modern.css">
     <link rel="stylesheet" href="assets/CSS/font-awesome/css/all.css">
-    <link rel="shortcut icon" href="images/ladybird.png" type="image/x-icon">
+    <link rel="shortcut icon" href="images/ladybird_white.png" type="image/x-icon">
 </head>
 <body>
     <div class="auth-shell">

@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="assets/CSS/mainpage.css">
     <link rel="stylesheet" href="assets/CSS/login-modern.css">
     <link rel="stylesheet" href="assets/CSS/font-awesome/css/all.css">
-    <link rel="shortcut icon" href="images/ladybird.png" type="image/x-icon">
+    <link rel="shortcut icon" href="images/ladybird_white.png" type="image/x-icon">
     <title>Ladybird SMIS</title>
     <?php if (!$turnstile_bypassed): ?>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
