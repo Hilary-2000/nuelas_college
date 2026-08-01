@@ -22,7 +22,7 @@
     <div class="auth-shell">
         <div class="auth-brand">
             <div class="auth-logo">
-                <img src="images/ladybird.png" alt="icon">
+                <img src="images/ladybird_white.png" alt="icon">
                 <h3>Ladybird School MIS</h3>
             </div>
             <h1>Welcome to LadyBird School MIS</h1>
