@@ -1857,6 +1857,125 @@ table tr:last-of-type{
     margin-left: 10px;
     min-height: 100px;
 }
+/* Timetable creation wizard: searchable, bulk-selectable class/unit lists.
+   Scoped under .classlist_group so it only affects the wizard and never the
+   plain .classlist/.checkboxholder pickers used elsewhere in the app. */
+.classlist_search{
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 10px;
+    margin-bottom: 6px;
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    outline: none;
+    font-size: 13px;
+}
+.classlist_search:focus{
+    border-color: #1976d2;
+}
+.classlist_selectall_row{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-bottom: 6px;
+}
+.classlist_selectall_row .classlist_selectall{
+    width: 15px;
+    height: 15px;
+    margin-right: 6px;
+    cursor: pointer;
+    accent-color: #28a745;
+    flex-shrink: 0;
+}
+.classlist_selectall_row label{
+    margin: 0;
+    font-size: 12px;
+    cursor: pointer;
+    color: #333;
+}
+.classlist_group{
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    padding: 8px;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+.classlist_group > .row{
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+.classlist_group .classlist_search{
+    border: none;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+.classlist_group .classlist_selectall_row{
+    margin-bottom: 0;
+}
+.classlist_group .classlist{
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: none;
+    box-sizing: border-box;
+}
+.classlist_group .classlist::-webkit-scrollbar{
+    width: 5px;
+}
+.classlist_group .classlist::-webkit-scrollbar-track{
+    background: transparent;
+}
+.classlist_group .classlist::-webkit-scrollbar-thumb{
+    background: #c8c8c8;
+    border-radius: 4px;
+}
+.classlist_group .classlist::-webkit-scrollbar-thumb:hover{
+    background: #999;
+}
+.classlist_group .classlist input[type=checkbox]{
+    accent-color: #28a745;
+}
+.classlist_group .classlist .checkboxholder{
+    width: 100% !important;
+    margin: 1px 0 !important;
+    padding: 7px 10px !important;
+    border-bottom: 1px solid rgba(0,0,0,0.07) !important;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    box-sizing: border-box;
+}
+.classlist_group .classlist .checkboxholder:last-child{
+    border-bottom: none !important;
+}
+.classlist_group .classlist .checkboxholder:hover{
+    background: #f0f7ff;
+}
+.classlist_group .classlist .checkboxholder:has(input[type="checkbox"]:checked){
+    background: #e6f4ea;
+}
+.classlist_group .classlist .checkboxholder label{
+    cursor: pointer !important;
+    font-size: 13px !important;
+    margin-right: 0 !important;
+    flex: 1;
+    color: #333;
+}
+.classlist_group .classlist .checkboxholder:hover label{
+    color: #1565c0;
+}
+.classlist_group .classlist .checkboxholder:has(input[type="checkbox"]:checked) label{
+    color: #1a6b38;
+    font-weight: 500;
+}
 .classlist2 input[type=checkbox]{
     min-width: 15px;
     min-height: 15px;
@@ -2081,7 +2200,7 @@ select option:hover{
     cursor: pointer;
     /**margin: 5px auto;*/
     text-align: center;
-    width: fit-content;
+    /* width: fit-content; */
 }
 .link:hover{
     color: brown;
@@ -2093,7 +2212,7 @@ select option:hover{
     min-width: 150px;
 }
 td .link{
-    max-width: 50px;
+    /* max-width: 50px; */
 }
 .middle1 .options select,.middle1 .options input[type=date]{
     width: 20%;
@@ -2880,6 +2999,10 @@ td{
     .classlist{
         width: 85%;
         min-width: 100px;
+    }
+    .classlist_group .classlist{
+        width: 100%;
+        min-width: unset;
     }
     .window_lg{
         width: 80%;

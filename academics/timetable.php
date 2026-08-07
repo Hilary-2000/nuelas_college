@@ -33,12 +33,20 @@
                         <div class="conts">
                             <p>Start by selecting the classes.</p>
                             <label for="sel_class">Select Class: <br></label>
-                            <p id="class_datas_12"></p>
-                            <!-- <div class="classlist">
-                                <div class="checkboxholder" style="margin:10px 0;padding:0px 0px;"><label style="margin-right:5px;cursor:pointer;font-size:12px;" for="1">Class 1</label><input class="ttt_class" type="checkbox" name="1" id="1"></div>
-                                <div class="checkboxholder" style="margin:10px 0;padding:0px 0px;"><label style="margin-right:5px;cursor:pointer;font-size:12px;" for="2">Class 2</label><input class="ttt_class" type="checkbox" name="1" id="1"></div>
-                                <div class="checkboxholder" style="margin:10px 0;padding:0px 0px;"><label style="margin-right:5px;cursor:pointer;font-size:12px;" for="3">Class 3</label><input class="ttt_class" type="checkbox" name="1" id="1"></div>
-                            </div> -->
+                            <div class="classlist_group">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <input type="text" class="classlist_search" id="classlist_search_1" data-target="class_datas_12" placeholder="Search classes...">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="classlist_selectall_row">
+                                            <input type="checkbox" class="classlist_selectall" id="classlist_selectall_1" data-target="class_datas_12" data-checkbox-class="ttt_class">
+                                            <label for="classlist_selectall_1">Select all / Deselect all</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p id="class_datas_12"></p>
+                            </div>
                         </div>
                         <div class="">
                             <p class='link' style='text-align:right;' id='next_infor'>Next >></p>
@@ -46,15 +54,28 @@
                     </div>
                 </div>
                 <div class="body3 hide animate hind"  id="create_tt_inside2">
-                    <h6 style='text-align:center;'>Step 2 : Select subject</h6>
+                    <h6 style='text-align:center;'>Step 2 : Select Units</h6>
                     <div class="left">
                         <div class="conts">
                             <p><strong>Notice:</strong></p>
-                            <p><i>- Only subjects done by these classes will be displayed here.</i></p>
-                            <p>Select subjects below.</p>
-                            <label for="sel_class">Select subjects: <br></label>
-                            <p id="class_datas_13"></p>
-                            <!-- Display the subjects that is shared amoung the classes -->
+                            <p><i>- Only units done by these classes will be displayed here.</i></p>
+                            <p>Select units below.</p>
+                            <label for="sel_class">Select Units: <br></label>
+                            <div class="classlist_group">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <input type="text" class="classlist_search" id="classlist_search_2" data-target="class_datas_13" placeholder="Search units...">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="classlist_selectall_row">
+                                            <input type="checkbox" class="classlist_selectall" id="classlist_selectall_2" data-target="class_datas_13" data-checkbox-class="ttt_class2">
+                                            <label for="classlist_selectall_2">Select all / Deselect all</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p id="class_datas_13"></p>
+                            </div>
+                            <!-- Display the units that is shared amoung the classes -->
                         </div>
                         <div class="flexed">
                             <p class='link' style='text-align:left;' id='prev_infor1'><< Previous</p>
@@ -83,7 +104,7 @@
                     <div class="left">
                         <div class="conts">
                             <p><strong>Notice:</strong></p>
-                            <p><i>- The maximum number of lessons a day is twice the number of subjects choosen.</i></p>
+                            <p><i>- The maximum number of lessons a day is twice the number of units choosen.</i></p>
                             <p><i>- For this case the maximum number of lessons a day is <span id="max_lessons_in"></span></i></p>
                             <p id="class_datas_15"></p>
                             <!-- Display the subjects that is shared amoung the classes -->
@@ -98,15 +119,28 @@
                 </div>
 
                 <div class="body3 hide animate hind" id="create_tt_inside5">
-                    <h6 style='text-align:center;'>Step 5: Morning hours subjects</h6>
+                    <h6 style='text-align:center;'>Step 5: Morning hours units</h6>
                     <div class="left">
                         <div class="conts">
                             <p><strong>Notice:</strong></p>
                             <p><i>- Select the lessons to appear in the morning.</i></p>
                             <p id="class_datas_15"></p>
-                            <!-- Display the subjects that is shared amoung the classes -->
+                            <!-- Display the units that is shared amoung the classes -->
                             <label for="">Select morning hour lessons: <br></label>
-                            <p id="morning_less"></p>
+                            <div class="classlist_group">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <input type="text" class="classlist_search" id="classlist_search_5" data-target="morning_less" placeholder="Search units...">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="classlist_selectall_row">
+                                            <input type="checkbox" class="classlist_selectall" id="classlist_selectall_5" data-target="morning_less" data-checkbox-class="ttt_class3">
+                                            <label for="classlist_selectall_5">Select all / Deselect all</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p id="morning_less"></p>
+                            </div>
                         </div>
                         <div class="flexed">
                             <p class='link' style='text-align:left;' id='prev_infor4'><< Previous</p>
@@ -124,14 +158,27 @@
                             <p id="class_datas_15"></p>
                             <!-- Display the subjects that is shared amoung the classes -->
                             <label for="">Select days of the week: <br></label>
-                            <div class="classlist">
-                            <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='monday1'>Monday</label><input class='ttt_class4' type='checkbox' name = 'Monday' value = 'Monday' id='monday1'></div>
-                            <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='tuesday1'>Tuesday</label><input class='ttt_class4' type='checkbox' name = 'Tuesday' value = 'Tuesday' id='tuesday1'></div>
-                            <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='wednesday1'>Wednesday</label><input class='ttt_class4' type='checkbox' name = 'Wednesday' value = 'Wednesday' id='wednesday1'></div>
-                            <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='thursday1'>Thursday</label><input class='ttt_class4' type='checkbox' name = 'Thursday' value = 'Thursday' id='thursday1'></div>
-                            <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='friday1'>Friday</label><input class='ttt_class4' type='checkbox' name = 'Friday' value = 'Friday' id='friday1'></div>
-                            <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='saturday1'>Saturday</label><input class='ttt_class4' type='checkbox' name = 'saturday' value = 'Saturday' id='saturday1'></div>
-                            <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='sunday1'>Sunday</label><input class='ttt_class4' type='checkbox' name = 'Sunday' value = 'Sunday' id='sunday1'></div>
+                            <div class="classlist_group">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <input type="text" class="classlist_search" id="classlist_search_6" data-target="days_of_week_list" placeholder="Search days...">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="classlist_selectall_row">
+                                            <input type="checkbox" class="classlist_selectall" id="classlist_selectall_6" data-target="days_of_week_list" data-checkbox-class="ttt_class4">
+                                            <label for="classlist_selectall_6">Select all / Deselect all</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="classlist" id="days_of_week_list">
+                                <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='monday1'>Monday</label><input class='ttt_class4' type='checkbox' name = 'Monday' value = 'Monday' id='monday1'></div>
+                                <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='tuesday1'>Tuesday</label><input class='ttt_class4' type='checkbox' name = 'Tuesday' value = 'Tuesday' id='tuesday1'></div>
+                                <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='wednesday1'>Wednesday</label><input class='ttt_class4' type='checkbox' name = 'Wednesday' value = 'Wednesday' id='wednesday1'></div>
+                                <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='thursday1'>Thursday</label><input class='ttt_class4' type='checkbox' name = 'Thursday' value = 'Thursday' id='thursday1'></div>
+                                <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='friday1'>Friday</label><input class='ttt_class4' type='checkbox' name = 'Friday' value = 'Friday' id='friday1'></div>
+                                <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='saturday1'>Saturday</label><input class='ttt_class4' type='checkbox' name = 'saturday' value = 'Saturday' id='saturday1'></div>
+                                <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'><label style='margin-right:5px;cursor:pointer;font-size:12px;' for='sunday1'>Sunday</label><input class='ttt_class4' type='checkbox' name = 'Sunday' value = 'Sunday' id='sunday1'></div>
+                                </div>
                             </div>
                         </div>
                         <div class="flexed">

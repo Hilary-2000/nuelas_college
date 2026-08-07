@@ -1351,16 +1351,18 @@ function getExamsInfor() {
                                         sendData1("GET", "academic/academic.php", datapass, cObj("course_unit_exam_result_holder"), function () {
                                             if (cObj("course_unit_exam_result") != undefined) {
                                                 cObj("course_unit_exam_result").onchange = function () {
-                                                    if (valObj("exam_result_options") == "cat") {
-                                                        var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=exam_cat_list";
-                                                        sendData1("GET", "academic/academic.php", datapass, cObj("exam_cat_result_holder"), function () {
-                                                            if (cObj("exam_cat_list") != undefined){
-                                                                $("#exam_cat_list").select2({
-                                                                    width: '100%'
-                                                                });
-                                                            }
-                                                        });
-                                                    }
+                                                    // Always fetch, regardless of what "Select Option" currently
+                                                    // shows - the C.A.T list needs to be ready the moment the user
+                                                    // switches to "View C.A.T Results", whichever order they picked
+                                                    // things in, otherwise it's blank/missing right when it's needed.
+                                                    var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=exam_cat_list";
+                                                    sendData1("GET", "academic/academic.php", datapass, cObj("exam_cat_result_holder"), function () {
+                                                        if (cObj("exam_cat_list") != undefined){
+                                                            $("#exam_cat_list").select2({
+                                                                width: '100%'
+                                                            });
+                                                        }
+                                                    });
                                                 }
                                                 $("#course_unit_exam_result").select2({
                                                     width: '100%'
@@ -1385,6 +1387,30 @@ cObj("back_exams_list").onclick = function () {
     cObj("exams_table_list").classList.remove("hide");
     cObj("exams_details_window").classList.add("hide");
     cObj("exams_window_display").innerHTML = "<p class='class-success text-center'>Your exams results will appear here!<br>Select class to proceed!</p>"
+}
+
+// Show/hide the "Select CAT" field based on whether "View C.A.T Results" is
+// chosen, and (re)fetch the C.A.T list on demand - the cascade below only
+// fetches it as a side effect of picking a course unit, so switching this
+// dropdown to "cat" after a unit is already selected needs its own fetch
+// here or the C.A.T list would never load.
+cObj("exam_result_options").onchange = function () {
+    if (this.value == "cat") {
+        cObj("cat_option_list_window").classList.remove("hide");
+        if (cObj("course_unit_exam_result") != null && cObj("course_unit_exam_result") != undefined && valObj("course_unit_exam_result").length > 0) {
+            var exam_id = cObj("exams_id_result").innerText;
+            var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=exam_cat_list";
+            sendData1("GET", "academic/academic.php", datapass, cObj("exam_cat_result_holder"), function () {
+                if (cObj("exam_cat_list") != undefined){
+                    $("#exam_cat_list").select2({
+                        width: '100%'
+                    });
+                }
+            });
+        }
+    } else {
+        cObj("cat_option_list_window").classList.add("hide");
+    }
 }
 
 /********change password controls***********/

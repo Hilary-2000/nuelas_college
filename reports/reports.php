@@ -8745,167 +8745,143 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     }
                 }
             }
-        } elseif ($what_to_print == "exams_marks") {
+        } elseif ($what_to_print == "examinees_list") {
             include("../connections/conn2.php");
             include("../connections/conn1.php");
+            $course_id = $_POST['courses_for_exams'];
             $select = "SELECT * FROM `exams_tbl` WHERE `exams_id` = '" . $exam_ids_printing . "'";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($result) {
-                if ($row = $result->fetch_assoc()) {
-                    $exams_names = $row['exams_name'];
-                    $students_sitting = strlen($row['students_sitting']) > 0 ? json_decode($row['students_sitting']) : [];
-                    $subjects_examined = strlen($row['subject_done']) > 0 ? explode(",", substr($row['subject_done'], 1, (strlen($row['subject_done']) - 2))) : [];
-                    // get the subjects taught in the selected class.
-                    $subjects_present = [];
-                    for ($ind = 0; $ind < count($subjects_examined); $ind++) {
-                        $present = isSubjectTaught($conn2, $subjects_examined[$ind], $classes_for_exams);
-                        if ($present == 1) {
-                            array_push($subjects_present, $subjects_examined[$ind]);
-                        }
-                    }
-                    // get the class that is needed
-                    $class_lists = [];
-                    for ($index = 0; $index < count($students_sitting); $index++) {
-                        $curr_class = $students_sitting[$index]->classname;
-                        if ($curr_class == $classes_for_exams) {
-                            $class_lists = $students_sitting[$index]->classlist;
-                            break;
-                        }
-                    }
-                    // take all students in that class
-                    // $select = "SELECT * FROM `student_data` WHERE `stud_class` = '".$classes_for_exams."'";
-                    // $stmt = $conn2->prepare($select);
-                    // $stmt->execute();
-                    // $result = $stmt->get_result();
-                    // $student_data = [];
-                    // $admno = [];
-                    // if ($result) {
-                    //     while($row = $result->fetch_assoc()){
-                    //         $student_names = $row['first_name']." ".$row['second_name'] ;
-                    //         $adm = $row['adm_no'];
-                    //         array_push($student_data,$student_names);
-                    //         array_push($admno,$adm);
-                    //     }
-                    // }
-                    $student_data = [];
-                    $admno = [];
-                    // go through all students and get their information
-                    for ($index = 0; $index < count($class_lists); $index++) {
-                        $select = "SELECT * FROM `student_data` WHERE `adm_no` = '" . $class_lists[$index] . "'";
-                        $stmt = $conn2->prepare($select);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        if ($result) {
-                            if ($row = $result->fetch_assoc()) {
-                                $student_names = $row['first_name'] . " " . $row['second_name'] . " " . $row['surname'];
-                                $adm = $row['adm_no'];
-                                array_push($student_data, $student_names);
-                                array_push($admno, $adm);
-                            }
-                        }
-                    }
-                    if (count($admno) > 0) {
-                        // take the data and get the
-                        $pdf = new PDF('P', 'mm', 'A4');
-                        $pdf->setHeaderPos(200);
-                        $tittle = "" . ucwords(strtolower($exams_names)) . " " . className_exam($classes_for_exams) . " Results.";
-                        $pdf->set_document_title($tittle);
-                        $pdf->setSchoolLogo("../../" . schoolLogo($conn));
-                        $pdf->set_school_name($_SESSION['schname']);
-                        $pdf->set_school_po($_SESSION['po_boxs']);
-                        $pdf->set_school_box_code($_SESSION['box_codes']);
-                        $pdf->set_school_contact($_SESSION['school_contact']);
-                        $pdf->AddPage();
-                        $original = 170;
-                        $no = 8;
-                        $names = 35;
-                        $admnos = 20;
-                        $original = $original - ($names + $no);
-                        $widths = round($original / (count($subjects_present) + 1));
-                        $width = [$no, $names, $admnos];
-                        $subjects = [];
-                        for ($index = 0; $index < count($subjects_present); $index++) {
-                            array_push($width, $widths);
-                            $sub_name = subjectName($conn2, $subjects_present[$index]);
-                            array_push($subjects, $sub_name);
-                        }
-                        array_push($width, $widths);
-                        $header = ["Pos", "Student Name", "Adm No"];
-                        $header = array_merge($header, $subjects, ["Total"]);
-                        // get the subjects data
-                        $all_data = [];
-                        $totals = [];
-                        for ($index = 0; $index < count($student_data); $index++) {
-                            $in_data = [ucwords(strtolower($student_data[$index])), $admno[$index]];
-                            $total = 0;
-                            for ($index2 = 0; $index2 < count($subjects); $index2++) {
-                                $marks = marksNGrade($exam_ids_printing, $subjects_present[$index2], $admno[$index], $conn2);
-                                // $marks = count($marks) >  ? $marks:["",""];
-                                array_push($in_data, (strlen($marks[0]) > 0 ? $marks[0] : "-") . " " . $marks[1]);
-                                $total += strlen($marks[0]) > 0 ? $marks[0] : 0;
-                            }
-                            array_push($totals, $total);
-                            array_push($in_data, $total);
-                            array_push($all_data, $in_data);
-                        }
-                        // sort the total arrays 
-                        rsort($totals);
-                        // assign each total to the correct array
-                        $arrayed = [];
-                        $position = 1;
-                        $prev = 0;
-                        $counter = 1;
-                        for ($index = 0; $index < count($totals); $index++) {
-                            for ($index2 = 0; $index2 < count($all_data); $index2++) {
-                                // echo $all_data[$index2][(count($all_data[$index2])-1)]." == ".$totals[$index]."<br>";
-                                if ($all_data[$index2][(count($all_data[$index2]) - 1)] == $totals[$index]) {
-                                    // if ($all_data[$index2][(count($all_data[$index2])-1)] == 0) {
-                                    //     break;
-                                    // }
-                                    if ($prev == $totals[$index]) {
-                                        $position = $position;
-                                    } else {
-                                        $position = $counter;
-                                    }
-                                    $my_data = [$position];
+            if ($result && ($row = $result->fetch_assoc())) {
+                $exams_names = $row['exams_name'];
+                $student_data = getExamineesAllModules_report($conn2, $exam_ids_printing, $classes_for_exams, $course_id);
+                if (count($student_data) > 0) {
+                    $pdf = new PDF('P', 'mm', 'A4');
+                    $pdf->setHeaderPos(200);
+                    $pdf->set_document_title(ucwords(strtolower($exams_names)) . " " . className_exam($classes_for_exams) . " Examinees List.");
+                    $pdf->setSchoolLogo("../../" . schoolLogo($conn));
+                    $pdf->set_school_name($_SESSION['schname']);
+                    $pdf->set_school_po($_SESSION['po_boxs']);
+                    $pdf->set_school_box_code($_SESSION['box_codes']);
+                    $pdf->set_school_contact($_SESSION['school_contact']);
+                    $pdf->AddPage();
+                    renderExamineesTable_report($pdf, ["Module"], [55], $student_data, function ($student) {
+                        return [$student['active_module']];
+                    });
+                    $pdf->Output();
+                } else {
+                    echo "<p style='color:red;'><b>Note: </b><br>No examinees have been registered for this exam on the selected course/level yet!</p>";
+                }
+            }
+        } elseif ($what_to_print == "examinees_mark_list" || $what_to_print == "exams_marks") {
+            include("../connections/conn2.php");
+            include("../connections/conn1.php");
+            $course_id = $_POST['courses_for_exams'];
+            $module_id = $_POST['course_modules_for_exams'];
+            $unit_id = $_POST['course_units_for_exams'];
+            $is_blank = $what_to_print == "examinees_mark_list";
+            $select = "SELECT * FROM `exams_tbl` WHERE `exams_id` = '" . $exam_ids_printing . "'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result && ($row = $result->fetch_assoc())) {
+                $exams_names = $row['exams_name'];
+                $unit_info = getUnitInfo_report($conn2, $unit_id);
+                $student_data = getExaminees_report($conn2, $exam_ids_printing, $classes_for_exams, $course_id, $module_id);
 
-                                    $present = chckPrsnt($arrayed, array_merge($my_data, $all_data[$index2]));
-                                    if ($present == 1) {
-                                        continue;
-                                    }
-                                    array_push($arrayed, array_merge($my_data, $all_data[$index2]));
-                                    $prev = $totals[$index];
-                                    break;
-                                }
-                            }
-                            $counter++;
-                        }
-                        $pdf->SetFont("Helvetica", "", 7);
-                        $pdf->setConn($conn2);
-                        $pdf->exams_results($header, $arrayed, $width);
-                        $pdf->Ln(10);
-                        $pdf->SetFont('Helvetica', 'U', 10);
-                        $pdf->Cell(30, 5, "Class Teacher Remarks", 0, 1, 'L', false);
-                        $pdf->Cell(190, 5, "", 'B', 1, 'C', false);
-                        $pdf->Cell(190, 5, "", 'B', 1, 'C', false);
-                        $pdf->Cell(100, 5, "", 'B', 1, 'C', false);
-                        // CLASS TEACHER SIGNATURE
-                        $pdf->Ln(10);
-                        $pdf->Cell(30, 5, "Class Teacher Signature", 0, 1, 'L', false);
-                        $pdf->Cell(60, 10, "", 'B', 1, 'C', false);
-                        $pdf->Ln(10);
-                        $pdf->Cell(50, 5, "Head Teacher / Principal Signature", 0, 1, 'L', false);
-                        $pdf->Cell(60, 10, "", 'B', 1, 'C', false);
-                        if (count($arrayed) > 0) {
-                            $pdf->Output();
-                        } else {
-                            echo "<p style='color:red;'>No student has their marks recorded yet!</p>";
-                        }
-                    } else {
-                        echo "<p style='color:red;'><b>Note: </b><br>No student were available in that class during this exams occurence!</p>";
+                // Rank best-to-least performer on the filled marks sheet - a
+                // blank sheet has no scores yet, so there's nothing to rank.
+                if (!$is_blank) {
+                    foreach ($student_data as &$student) {
+                        $score = getUnitExamScore_report($conn2, $exam_ids_printing, $student['examinee_id'], $unit_id);
+                        $has_score = strlen((string)$score['exam_score']) > 0;
+                        $student['_sort_score'] = $has_score ? ($score['exam_score']*1) : -1;
+                        $student['_display_score'] = $has_score ? $score['exam_score'] : "-";
+                        $student['_display_grade'] = strlen($score['exam_grade']) > 0 ? $score['exam_grade'] : "-";
                     }
+                    unset($student);
+                    usort($student_data, function($a, $b){
+                        return $b['_sort_score'] <=> $a['_sort_score'];
+                    });
+                }
+
+                if (count($student_data) > 0) {
+                    $pdf = new PDF('P', 'mm', 'A4');
+                    $pdf->setHeaderPos(200);
+                    $doc_title = $is_blank ? " Exams Sheet." : " Exam Marks Sheet.";
+                    $pdf->set_document_title(ucwords(strtolower($exams_names)) . " " . className_exam($classes_for_exams) . " " . $unit_info['unit_name'] . $doc_title);
+                    $pdf->setSchoolLogo("../../" . schoolLogo($conn));
+                    $pdf->set_school_name($_SESSION['schname']);
+                    $pdf->set_school_po($_SESSION['po_boxs']);
+                    $pdf->set_school_box_code($_SESSION['box_codes']);
+                    $pdf->set_school_contact($_SESSION['school_contact']);
+                    $pdf->AddPage();
+                    $pdf->SetFont('Helvetica', 'B', 10);
+                    $pdf->Cell(190, 6, $unit_info['unit_name'] . " {" . $unit_info['unit_code'] . "}", 0, 1, 'C', false);
+                    $pdf->Ln(2);
+                    renderExamineesTable_report($pdf, ["Score", "Grade"], [35, 30], $student_data, function ($student) use ($is_blank) {
+                        if ($is_blank) {
+                            return ["", ""];
+                        }
+                        return [$student['_display_score'], $student['_display_grade']];
+                    });
+                    $pdf->Ln(10);
+                    $pdf->SetFont('Helvetica', 'U', 10);
+                    $pdf->Cell(30, 5, "Head of Academic Remarks", 0, 1, 'L', false);
+                    $pdf->Cell(190, 5, "", 'B', 1, 'C', false);
+                    $pdf->Ln(10);
+                    $pdf->Cell(30, 5, "Head of Academic Signature", 0, 1, 'L', false);
+                    $pdf->Cell(60, 10, "", 'B', 1, 'C', false);
+                    $pdf->Ln(10);
+                    $pdf->Cell(50, 5, "Head Teacher / Principal Signature", 0, 1, 'L', false);
+                    $pdf->Cell(60, 10, "", 'B', 1, 'C', false);
+                    $pdf->Output();
+                } else {
+                    echo "<p style='color:red;'><b>Note: </b><br>No examinees have been registered for this exam on the selected course/level/module yet!</p>";
+                }
+            }
+        } elseif ($what_to_print == "examinees_cat_mark_list" || $what_to_print == "exams_cat_marks") {
+            include("../connections/conn2.php");
+            include("../connections/conn1.php");
+            $course_id = $_POST['courses_for_exams'];
+            $module_id = $_POST['course_modules_for_exams'];
+            $unit_id = $_POST['course_units_for_exams'];
+            $cat_id = $_POST['course_cats_for_exams'];
+            $is_blank = $what_to_print == "examinees_cat_mark_list";
+            $select = "SELECT * FROM `exams_tbl` WHERE `exams_id` = '" . $exam_ids_printing . "'";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result && ($row = $result->fetch_assoc())) {
+                $exams_names = $row['exams_name'];
+                $unit_info = getUnitInfo_report($conn2, $unit_id);
+                $cat_info = getCatInfo_report($conn2, $cat_id);
+                $student_data = getExaminees_report($conn2, $exam_ids_printing, $classes_for_exams, $course_id, $module_id);
+                if (count($student_data) > 0) {
+                    $pdf = new PDF('P', 'mm', 'A4');
+                    $pdf->setHeaderPos(200);
+                    $doc_title = $is_blank ? " C.A.T Sheet." : " C.A.T Marks Sheet.";
+                    $pdf->set_document_title(ucwords(strtolower($exams_names)) . " " . className_exam($classes_for_exams) . " " . $unit_info['unit_name'] . $doc_title);
+                    $pdf->setSchoolLogo("../../" . schoolLogo($conn));
+                    $pdf->set_school_name($_SESSION['schname']);
+                    $pdf->set_school_po($_SESSION['po_boxs']);
+                    $pdf->set_school_box_code($_SESSION['box_codes']);
+                    $pdf->set_school_contact($_SESSION['school_contact']);
+                    $pdf->AddPage();
+                    $pdf->SetFont('Helvetica', 'B', 10);
+                    $pdf->Cell(190, 6, $unit_info['unit_name'] . " {" . $unit_info['unit_code'] . "} - " . $cat_info['cat_name'] . " (" . $cat_info['max_marks'] . " Mks)", 0, 1, 'C', false);
+                    $pdf->Ln(2);
+                    renderExamineesTable_report($pdf, ["Score (" . $cat_info['max_marks'] . " Mks)"], [45], $student_data, function ($student) use ($conn2, $cat_id, $is_blank) {
+                        if ($is_blank) {
+                            return [""];
+                        }
+                        $score = getCatScore_report($conn2, $cat_id, $student['examinee_id']);
+                        return [strlen((string)$score) > 0 ? $score : "-"];
+                    });
+                    $pdf->Output();
+                } else {
+                    echo "<p style='color:red;'><b>Note: </b><br>No examinees have been registered for this exam on the selected course/level/module yet!</p>";
                 }
             }
         } elseif ($what_to_print == "student_report_card") {
@@ -9028,7 +9004,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             // $pdf->Cell(30, 5, "Position: ", 0, 0, 'L', false);
                             // $pdf->Cell(60, 5, "7", 'R', 0, 'L', false);
                             // $pdf->Ln();
-                            $pdf->Cell(30, 5, "Class Teacher: ", 0, 0, 'L', false);
+                            $pdf->Cell(30, 5, "Head of Academic: ", 0, 0, 'L', false);
                             $pdf->Cell(60, 5, ucwords(strtolower($student_classteacher)), 'R', 0, 'L', false);
                             $pdf->Ln();
                             $pdf->Ln(5);
@@ -9066,13 +9042,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             // 
                             $pdf->Ln(10);
                             $pdf->SetFont('Helvetica', 'U', 10);
-                            $pdf->Cell(30, 5, "Class Teacher Remarks", 0, 1, 'L', false);
+                            $pdf->Cell(30, 5, "Head of Academic Remarks", 0, 1, 'L', false);
                             $pdf->Cell(190, 5, "", 'B', 1, 'C', false);
                             $pdf->Cell(190, 5, "", 'B', 1, 'C', false);
                             $pdf->Cell(100, 5, "", 'B', 1, 'C', false);
                             // CLASS TEACHER SIGNATURE
                             $pdf->Ln(5);
-                            $pdf->Cell(30, 5, "Class Teacher Signature", 0, 1, 'L', false);
+                            $pdf->Cell(30, 5, "Head of Academic Signature", 0, 1, 'L', false);
                             $pdf->Cell(60, 10, "", 'B', 1, 'C', false);
                             $pdf->Ln(5);
                             $pdf->Cell(50, 5, "Head Teacher / Principal Signature", 0, 1, 'L', false);
@@ -17394,6 +17370,156 @@ function classteacher($conn, $conn2, $class_tr)
     }
     return "Not Available";
 }
+/**
+ * Examinees registered for an exam on a given course level/course/module,
+ * joined with their student details. Mirrors the query already used by the
+ * exam results screens (ajax/academic/academic.php: display_unit_report /
+ * display_cat_report) so print output matches what staff see on screen.
+ */
+function getExaminees_report($conn2, $exam_id, $course_level, $course_id, $module_id)
+{
+    $select = "SELECT examinees.*, student_data.* FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ? AND examinees.active_module = ?";
+    $stmt = $conn2->prepare($select);
+    $active_module = "MODULE " . $module_id;
+    $stmt->bind_param("ssss", $exam_id, $course_level, $course_id, $active_module);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $student_data = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            array_push($student_data, $row);
+        }
+    }
+    return $student_data;
+}
+
+/**
+ * Examinees registered for an exam on a course level/course, across every
+ * module (used for the plain "Examinees" roster, which is printed before a
+ * specific module/unit is chosen).
+ */
+function getExamineesAllModules_report($conn2, $exam_id, $course_level, $course_id)
+{
+    $select = "SELECT examinees.*, student_data.* FROM `examinees` LEFT JOIN student_data ON student_data.adm_no = examinees.student_id WHERE examinees.exam_id = ? AND student_data.stud_class = ? AND student_data.course_done = ?";
+    $stmt = $conn2->prepare($select);
+    $stmt->bind_param("sss", $exam_id, $course_level, $course_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $student_data = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            array_push($student_data, $row);
+        }
+    }
+    // List progresses through the modules in order (Module 1, then Module 2,
+    // ...) rather than whatever order the DB happens to return - sorted on
+    // the numeric module number so it stays correct past Module 9.
+    usort($student_data, function($a, $b){
+        return intval(preg_replace('/[^0-9]/', '', $a['active_module'])) <=> intval(preg_replace('/[^0-9]/', '', $b['active_module']));
+    });
+    return $student_data;
+}
+
+function getUnitInfo_report($conn2, $unit_id)
+{
+    $select = "SELECT * FROM `table_subject` WHERE `subject_id` = ?";
+    $stmt = $conn2->prepare($select);
+    $stmt->bind_param("s", $unit_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $unit_name = "";
+    $unit_code = "";
+    if ($result) {
+        if ($row = $result->fetch_assoc()) {
+            $unit_name = $row['display_name'];
+            $unit_code = $row['timetable_id'];
+        }
+    }
+    return array("unit_name" => $unit_name, "unit_code" => $unit_code);
+}
+
+function getUnitExamScore_report($conn2, $exam_id, $examinee_id, $unit_id)
+{
+    $select = "SELECT * FROM exam_record_tbl WHERE exam_id = ? AND examinee_id = ? AND unit_id = ?";
+    $stmt = $conn2->prepare($select);
+    $stmt->bind_param("sss", $exam_id, $examinee_id, $unit_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $exam_score = "";
+    $exam_grade = "";
+    if ($result) {
+        if ($row = $result->fetch_assoc()) {
+            $exam_score = $row['exam_marks'];
+            $exam_grade = $row['exam_grade'];
+        }
+    }
+    return array("exam_score" => $exam_score, "exam_grade" => $exam_grade);
+}
+
+function getCatInfo_report($conn2, $cat_id)
+{
+    $select = "SELECT * FROM `exams_cat` WHERE cat_id = ?";
+    $stmt = $conn2->prepare($select);
+    $stmt->bind_param("s", $cat_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $cat_name = "N/A";
+    $cat_max_marks = 0;
+    if ($result) {
+        if ($row = $result->fetch_assoc()) {
+            $cat_name = $row['name'];
+            $cat_max_marks = $row['max_marks'];
+        }
+    }
+    return array("cat_name" => $cat_name, "max_marks" => $cat_max_marks);
+}
+
+function getCatScore_report($conn2, $cat_id, $examinee_id)
+{
+    $select = "SELECT * FROM `exam_cat_scores` WHERE cat_id = ? AND examinee_id = ?";
+    $stmt = $conn2->prepare($select);
+    $stmt->bind_param("ss", $cat_id, $examinee_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $cat_score = "";
+    if ($result) {
+        if ($row = $result->fetch_assoc()) {
+            $cat_score = $row['student_score'];
+        }
+    }
+    return $cat_score;
+}
+
+/** Renders a simple striped examinees table: No | Student Name | Adm No | extra columns. */
+function renderExamineesTable_report($pdf, $extra_headers, $extra_widths, $student_data, $row_builder)
+{
+    $pdf->SetFont('Helvetica', 'B', 8);
+    $pdf->SetFillColor(157, 183, 184);
+    $pdf->Cell(10, 8, "No.", 1, 0, "C", true);
+    $pdf->Cell(80, 8, "Student Name", 1, 0, "C", true);
+    $pdf->Cell(35, 8, "Adm No", 1, 0, "C", true);
+    for ($i = 0; $i < count($extra_headers); $i++) {
+        $pdf->Cell($extra_widths[$i], 8, $extra_headers[$i], 1, 0, "C", true);
+    }
+    $pdf->Ln();
+    $pdf->SetFont('Helvetica', '', 8);
+    $pdf->SetFillColor(205, 211, 218);
+    $fill = false;
+    for ($index = 0; $index < count($student_data); $index++) {
+        $student = $student_data[$index];
+        $student_name = ucwords(strtolower($student['first_name'] . " " . $student['second_name'] . " " . $student['surname']));
+        $pdf->Cell(10, 6, ($index + 1), 1, 0, "L", $fill);
+        $pdf->Cell(80, 6, $student_name, 1, 0, "L", $fill);
+        $pdf->Cell(35, 6, $student['adm_no'], 1, 0, "L", $fill);
+        $extra_cells = $row_builder($student);
+        for ($i = 0; $i < count($extra_cells); $i++) {
+            $pdf->Cell($extra_widths[$i], 6, $extra_cells[$i], 1, 0, "C", $fill);
+        }
+        $pdf->Ln();
+        $fill = !$fill;
+    }
+}
+
 function marksNGrade($exam_id, $subject_id, $student_id, $conn2)
 {
     $select = "SELECT * FROM `exam_record_tbl` WHERE `student_id` = '" . $student_id . "' AND `exam_id` = '" . $exam_id . "' AND `subject_id` = '" . $subject_id . "'";

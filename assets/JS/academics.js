@@ -24,6 +24,7 @@ cObj("registersub").onclick = function () {
                 if (cObj("error_adding_unit") == undefined) {
                     cObj("formpay").reset();
                     cObj("display_tables_list").innerHTML = "";
+                    cObj("set_my_grades_list").innerText = "";
                     setTimeout(() => {
                         cObj("errregsub").innerHTML = "";
                     }, 3000);
@@ -414,8 +415,10 @@ function get_exam_list_report(){
 
 function get_course_level_filter() {
     cObj("exam_ids_printing_2").value = cObj("exam_list_option").value;
-    var datapass = "?getclass=true&select_class_id=course_level_option";
-    sendData1("GET", "administration/admissions.php", datapass, cObj("course_level_filter_holder"), function () {
+    // Scoped to the course levels actually examined in this exam (exam_unit)
+    // instead of every course level in the system.
+    var datapass = "?getexams_classes="+cObj("exam_list_option").value+"&object_id=course_level_option";
+    sendData1("GET", "academic/academic.php", datapass, cObj("course_level_filter_holder"), function () {
         if (cObj("course_level_option") != undefined) {
             $("#course_level_option").select2({
                 width: "100%"
@@ -427,9 +430,10 @@ function get_course_level_filter() {
 
 function display_course_list_report() {
     cObj("classes_for_exams_2").value = cObj("course_level_option").value;
-    // get the course lists
+    // Scoped to the courses actually examined on this exam/course level
+    // (exam_unit) instead of every course offered at that level.
     var datapass = "?get_course_list=true&exam_id="+valObj("exam_list_option")+"&course_level="+this.value+"&object_id=course_list_option";
-    sendData2("GET","administration/admissions.php",datapass,cObj("course_list_filter_holder"),cObj("loadings"), function () {
+    sendData2("GET","academic/academic.php",datapass,cObj("course_list_filter_holder"),cObj("loadings"), function () {
         if (cObj("course_list_option") != undefined) {
             $("#course_list_option").select2({
                 width: "100%"
@@ -498,7 +502,8 @@ cObj("display_course_reports").onclick = function () {
             sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
                 if(cObj("report_exam_table")!=null && cObj("report_exam_table")!=undefined){
                     $('#report_exam_table').DataTable({
-                        pageLength: 25
+                        pageLength: 25,
+                        order: []
                     });
                 }
             });
@@ -1162,6 +1167,11 @@ function exam_table_listener() {
         const element = exam_cats[index];
         element.addEventListener("click", manage_exam_cats);
     }
+    var view_examinees = document.getElementsByClassName("view_examinees");
+    for (let index = 0; index < view_examinees.length; index++) {
+        const element = view_examinees[index];
+        element.addEventListener("click", edit_examinees);
+    }
 
     // exams_table_data
     $('#exams_table_data').DataTable();
@@ -1238,6 +1248,94 @@ cObj("add_exam_cat").onclick = function () {
     cObj("register_cat_exams_save_btn").innerHTML = "<i class='fas fa-save'></i> Save";
 }
 
+// Manage Examinees: Course Level -> Course List -> Module cascade (same
+// shape as the print/results cascades), then a checkbox list of every
+// student currently active on that course/level/module - checked if
+// they're already registered as an examinee for this exam, unchecked
+// otherwise. Toggling a checkbox adds/removes them immediately.
+function edit_examinees() {
+    cObj("exams_table_list").classList.add("hide");
+    cObj("manage_examinees").classList.remove("hide");
+    var exam_id = this.id.substring(14);
+    cObj("examinee_exam_id").innerText = exam_id;
+    cObj("examinees_class").innerHTML = "<p class='class-success text-center'>Examinees list will appear here!<br>Select a course, level and module to proceed!</p>";
+
+    var datapass = "?getexams_classes="+exam_id+"&object_id=examinees_course_level";
+    sendData2("GET", "academic/academic.php", datapass, cObj("examinees_course_level_holder"), cObj("examinees_loader"), function () {
+        if (cObj("examinees_course_level") != null) {
+            $("#examinees_course_level").select2({ width: '100%' });
+            cObj("examinees_course_level").onchange = function () {
+                var datapass = "?get_course_list=true&exam_id="+exam_id+"&course_level="+valObj("examinees_course_level")+"&object_id=examinees_course_list";
+                sendData1("GET", "academic/academic.php", datapass, cObj("examinees_course_list_holder"), function () {
+                    if (cObj("examinees_course_list") != undefined) {
+                        $("#examinees_course_list").select2({ width: '100%' });
+                        cObj("examinees_course_list").onchange = function () {
+                            var datapass = "?get_course_module_terms="+this.value+"&object_id=examinees_module_level";
+                            sendData2("GET", "administration/admissions.php", datapass, cObj("examinees_module_level_holder"), cObj("loadings"), function () {
+                                if (cObj("examinees_module_level") != undefined) {
+                                    $("#examinees_module_level").select2({ width: '100%' });
+                                }
+                            });
+                        };
+                    }
+                });
+            };
+        }
+    });
+}
+
+cObj("display_examinees_for_classes").onclick = function () {
+    var err = 0;
+    err += checkBlank("examinees_course_level");
+    err += checkBlank("examinees_course_list");
+    err += checkBlank("examinees_module_level");
+    if (err == 0) {
+        cObj("examinees_error_handler").innerHTML = "";
+        var datapass = "?get_examinees_manage=true&exam_id="+cObj("examinee_exam_id").innerText+"&course_level="+valObj("examinees_course_level")+"&course_id="+valObj("examinees_course_list")+"&module_id="+valObj("examinees_module_level");
+        sendData2("GET", "academic/academic.php", datapass, cObj("examinees_class"), cObj("examinees_loader"), function () {
+            var examinee_toggle = document.getElementsByClassName("examinee_toggle");
+            for (let index = 0; index < examinee_toggle.length; index++) {
+                const element = examinee_toggle[index];
+                element.addEventListener("change", toggleExaminee);
+            }
+            if (cObj("examinee_select_all") != null) {
+                cObj("examinee_select_all").onchange = function () {
+                    var checkedState = this.checked;
+                    var boxes = document.getElementsByClassName("examinee_toggle");
+                    for (let index = 0; index < boxes.length; index++) {
+                        const element = boxes[index];
+                        if (element.checked != checkedState) {
+                            element.checked = checkedState;
+                            toggleExaminee.call(element);
+                        }
+                    }
+                };
+            }
+            if (cObj("manage_examinees_table") != null) {
+                $("#manage_examinees_table").DataTable({ "order": [] });
+            }
+        });
+    } else {
+        cObj("examinees_error_handler").innerHTML = "<p class='text-danger'>Select the course, level and module first!</p>";
+    }
+}
+
+function toggleExaminee() {
+    var adm_no = this.getAttribute("data-adm");
+    var datapass = "toggle_examinee=true&exam_id="+cObj("examinee_exam_id").innerText+"&student_id="+adm_no+"&module_id="+valObj("examinees_module_level")+"&course_level="+valObj("examinees_course_level")+"&course_id="+valObj("examinees_course_list")+"&checked="+(this.checked ? "1" : "0");
+    sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("examinee_toggle_status_"+adm_no), cObj("loadings"), function () {
+        setTimeout(() => {
+            cObj("examinee_toggle_status_"+adm_no).innerHTML = "";
+        }, 2000);
+    });
+}
+
+cObj("back_from_examinees").onclick = function () {
+    cObj("manage_examinees").classList.add("hide");
+    cObj("exams_table_list").classList.remove("hide");
+    cObj("examinees_class").innerHTML = "<p class='class-success text-center'>Examinees list will appear here!<br>Select a course, level and module to proceed!</p>";
+}
+
 cObj("register_cat_exams_close_btn").onclick = function () {
     cObj("register_cat_exams_window").classList.add("hide");
     cObj("register_cat_exams_form").reset();
@@ -1284,6 +1382,10 @@ cObj("display_exams_for_classes").onclick = function () {
         err+=checkBlank("course_module_level");
         err+=checkBlank("course_unit_exam_result");
         if(valObj("exam_result_options") == "cat"){
+            if (cObj("exam_cat_list") == null) {
+                cObj("results_output").innerHTML = "<p style='color:red;'>The C.A.T list hasn't loaded yet. Re-select the Course Unit above so the C.A.T options can load, then try again.</p>";
+                return;
+            }
             err+=checkBlank("exam_cat_list");
         }
         if (err == 0) {
@@ -1294,7 +1396,8 @@ cObj("display_exams_for_classes").onclick = function () {
                     console.log("We are here!");
                     if(cObj("exam_view_result_table") != null || cObj("exam_view_result_table") != undefined){
                         $('#exam_view_result_table').DataTable({
-                            "pageLength": 25
+                            "pageLength": 25,
+                            "order": []
                         });
                     }
                 });
@@ -1305,7 +1408,8 @@ cObj("display_exams_for_classes").onclick = function () {
                     console.log("We are here!");
                     if(cObj("exam_cat_view_result_table") != null || cObj("exam_cat_view_result_table") != undefined){
                         $('#exam_cat_view_result_table').DataTable({
-                            "pageLength": 25
+                            "pageLength": 25,
+                            "order": []
                         });
                     }
                 });
@@ -6067,13 +6171,17 @@ cObj("back_to_course_list_holder").onclick = function () {
     display_table_unit_course_assignment();
 }
 
+function unitCode(unit) {
+    return (unit.timetable_id != null && unit.timetable_id.length > 0) ? unit.timetable_id : "N/A";
+}
+
 function display_table_unit_course_assignment() {
     var unit_assignment_data = valObj("course_unit_assignment_data");
     if (hasJsonStructure(unit_assignment_data)) {
         unit_assignment_data = JSON.parse(unit_assignment_data);
         var module_assignment = cObj("course_module_list_assignment").innerText;
         var module_assignment_data = hasJsonStructure(module_assignment) ? JSON.parse(module_assignment) : [];
-        var data_to_display = "<hr><table class='table'><tr><th>Course</th><th>Module</th><th colspan='2'>Units</th><th>Action</th></tr>";
+        var data_to_display = "<hr><table class='table'><tr><th>Course</th><th>Module</th><th colspan='3'>Units</th><th>Action</th></tr>";
         var modules = (unit_assignment_data.no_of_terms*1) + (module_assignment_data.length > 0 ? module_assignment_data.length : 1);
         var module_count = unit_assignment_data.no_of_terms*1;
         var this_module_units = [];
@@ -6086,13 +6194,13 @@ function display_table_unit_course_assignment() {
             }
 
             if (index == 0) {
-                data_to_display += "<tr><td rowspan='"+modules+"' style='vertical-align: middle;'><input type='hidden' id='module_data_"+index+"' value='"+JSON.stringify(this_module_units)+"'>"+unit_assignment_data.course_name+"</td><td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'>Module "+(index+1)+"</td> "+(this_module_units.length > 0 ? "<td>"+(this_module_units[0].display_name != null ? this_module_units[0].display_name : this_module_units[0].subject_name)+"</td><td><span class='remove_unit_module link' id='remove_module_unit_"+this_module_units[0].assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td>" : "<td colspan='2'><p class='text-success p-1 my-2 border border-success rounded'>No units present at the moment!</p></td>") + "<td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><span class='edit_module_units link' id='edit_course_units_"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
+                data_to_display += "<tr><td rowspan='"+modules+"' style='vertical-align: middle;'><input type='hidden' id='module_data_"+index+"' value='"+JSON.stringify(this_module_units)+"'>"+unit_assignment_data.course_name+"</td><td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'>Module "+(index+1)+"</td> "+(this_module_units.length > 0 ? "<td>"+(this_module_units[0].display_name != null ? this_module_units[0].display_name : this_module_units[0].subject_name)+"</td><td>"+unitCode(this_module_units[0])+"</td><td><span class='remove_unit_module link' id='remove_module_unit_"+this_module_units[0].assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td>" : "<td colspan='3'><p class='text-success p-1 my-2 border border-success rounded'>No units present at the moment!</p></td>") + "<td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><span class='edit_module_units link' id='edit_course_units_"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
             }else{
-                data_to_display += "<tr><td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><input type='hidden' id='module_data_"+index+"' value='"+JSON.stringify(this_module_units)+"'>Module "+(index+1)+"</td>" + (this_module_units.length > 0 ? "<td>"+(this_module_units[0].display_name != null ? this_module_units[0].display_name : this_module_units[0].subject_name)+"</td><td><span class='remove_unit_module link' id='remove_module_unit_"+this_module_units[0].assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td>" : "<td colspan='2'><p class='text-success p-1 my-2 border border-success rounded'>No units present at the moment!</p></td>") + "<td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><span class='edit_module_units link' id='edit_module_units_"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
+                data_to_display += "<tr><td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><input type='hidden' id='module_data_"+index+"' value='"+JSON.stringify(this_module_units)+"'>Module "+(index+1)+"</td>" + (this_module_units.length > 0 ? "<td>"+(this_module_units[0].display_name != null ? this_module_units[0].display_name : this_module_units[0].subject_name)+"</td><td>"+unitCode(this_module_units[0])+"</td><td><span class='remove_unit_module link' id='remove_module_unit_"+this_module_units[0].assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td>" : "<td colspan='3'><p class='text-success p-1 my-2 border border-success rounded'>No units present at the moment!</p></td>") + "<td rowspan='"+(this_module_units.length > 0 ? this_module_units.length : 1) +"'><span class='edit_module_units link' id='edit_module_units_"+index+"'><i class='fas fa-pen-fancy'></i> Edit</span></td></tr>";
             }
             for (let ind = 1; ind < this_module_units.length; ind++) {
                 const element = this_module_units[ind];
-                data_to_display+="<tr><td>" + (element.display_name != null ? element.display_name : element.subject_name)+ "</td><td><span class='remove_unit_module link' id='remove_unit_module_"+element.assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td></tr>";
+                data_to_display+="<tr><td>" + (element.display_name != null ? element.display_name : element.subject_name)+ "</td><td>"+unitCode(element)+"</td><td><span class='remove_unit_module link' id='remove_unit_module_"+element.assignment_id+"'><i class='fas fa-trash'></i> Remove</span></td></tr>";
             }
             this_module_units = [];
         }
@@ -6326,3 +6434,75 @@ cObj("confirm_yes_assignment_id_holder_unit").onclick = function () {
         cObj("course_unit_assignment_btn_"+cObj("course_unit_assignment_id").value).click();
     })
 }
+
+// Timetable wizard: search boxes above each .classlist (Steps 1, 2, 5, 6).
+// These boxes sit outside the containers they filter since those containers
+// get their innerHTML replaced on every step load/reload - binding once here
+// is enough, the filter re-reads the list's current contents on every keystroke.
+document.querySelectorAll(".classlist_search").forEach(function (input) {
+    input.oninput = function () {
+        var kw = this.value.toLowerCase().trim();
+        var targetId = this.getAttribute("data-target");
+        var container = cObj(targetId);
+        if (!container) return;
+        container.querySelectorAll(".checkboxholder").forEach(function (holder) {
+            var label = holder.querySelector("label");
+            var text = label ? label.textContent.toLowerCase() : "";
+            holder.classList.toggle("hide", kw.length > 0 && !text.includes(kw));
+        });
+        var selectAllInput = document.querySelector(".classlist_selectall[data-target='" + targetId + "']");
+        if (selectAllInput) classlistUpdateSelectAllState(selectAllInput);
+    };
+});
+
+// Select all / deselect all per classlist, indeterminate when only some of
+// the currently VISIBLE items are checked (items hidden by the search box
+// above are ignored).
+function classlistUpdateSelectAllState(selectAllInput) {
+    var container = cObj(selectAllInput.getAttribute("data-target"));
+    if (!container) return;
+    var checkboxClass = selectAllInput.getAttribute("data-checkbox-class");
+    var visibleChecks = [];
+    container.querySelectorAll(".checkboxholder").forEach(function (holder) {
+        if (holder.classList.contains("hide")) return;
+        var cb = holder.querySelector("input." + checkboxClass);
+        if (cb) visibleChecks.push(cb);
+    });
+    var checkedCount = visibleChecks.filter(function (cb) { return cb.checked; }).length;
+    if (visibleChecks.length === 0 || checkedCount === 0) {
+        selectAllInput.checked = false;
+        selectAllInput.indeterminate = false;
+    } else if (checkedCount === visibleChecks.length) {
+        selectAllInput.checked = true;
+        selectAllInput.indeterminate = false;
+    } else {
+        selectAllInput.checked = false;
+        selectAllInput.indeterminate = true;
+    }
+}
+document.querySelectorAll(".classlist_selectall").forEach(function (selectAllInput) {
+    selectAllInput.onchange = function () {
+        var container = cObj(this.getAttribute("data-target"));
+        if (!container) return;
+        var checkboxClass = this.getAttribute("data-checkbox-class");
+        var checkedState = this.checked;
+        container.querySelectorAll(".checkboxholder").forEach(function (holder) {
+            if (holder.classList.contains("hide")) return;
+            var cb = holder.querySelector("input." + checkboxClass);
+            if (cb) cb.checked = checkedState;
+        });
+        this.indeterminate = false;
+    };
+});
+// Keep each select-all checkbox in sync whenever an individual item inside
+// its list is toggled by hand (delegated since Steps 1/2/5 rebuild their
+// list contents via AJAX/JS after the page has already loaded).
+document.addEventListener("change", function (e) {
+    if (!e.target.matches(".classlist input[type='checkbox']")) return;
+    document.querySelectorAll(".classlist_selectall").forEach(function (selectAllInput) {
+        var container = cObj(selectAllInput.getAttribute("data-target"));
+        if (container && container.contains(e.target)) {
+            classlistUpdateSelectAllState(selectAllInput);
+        }
+    });
+});

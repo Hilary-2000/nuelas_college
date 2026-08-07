@@ -419,6 +419,33 @@
                     <div id="cat_exam_err_holders"></div>
                     <button id="back_to_exam_list"><i class="fas fa-arrow-left"></i> Back</button>
                 </div>
+                <div class="container hide" id="manage_examinees">
+                    <h5 class="text-center my-2">Manage Examinees <img src="images/ajax_clock_small.gif" class="hide" id="examinees_loader"></h5>
+                    <span class="link" id="back_from_examinees"><i class="fas fa-arrow-left"></i> Back Exam List</span>
+                    <div class="container col-md-6 border border-secondary">
+                        <p class="text-center"><b>Display Examinees</b></p>
+                        <p class="hide" id="examinee_exam_id"></p>
+                        <p id="examinees_error_handler"></p>
+                        <p class="text-success"><small>Only active students on the selected course, level and module can be added or removed as examinees</small></p>
+                        <div class="form-group">
+                            <label for="examinees_course_level" class="form-control-label">Select Course Level</label><br>
+                            <span id="examinees_course_level_holder"><p class="text-success p-1 my-2 border border-success rounded">Course Level Will appear here!</p></span><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="examinees_course_list" class="form-control-label">Select Course List</label><br>
+                            <span id="examinees_course_list_holder"><p class="text-success p-1 my-1 border border-success rounded">Course List Will appear here!</p></span><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="examinees_module_level" class="form-control-label">Select Module Level</label><br>
+                            <span id="examinees_module_level_holder"><p class="text-success p-1 my-1 border border-success rounded">Course Module Level appear here!</p></span><br>
+                        </div>
+                        <button id="display_examinees_for_classes"><i class="fas fa-search"></i> Display</button>
+                    </div>
+                    <hr>
+                    <div class="container" id="examinees_class">
+                        <p class="class-success text-center">Examinees list will appear here!<br>Select a course, level and module to proceed!</p>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="bottom1">
