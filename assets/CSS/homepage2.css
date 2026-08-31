@@ -16,11 +16,37 @@
     position: relative;
     width: 90%;
     height: auto;
-    margin: 10px auto;
-    padding: 0px 0px 10px 0px;
-    border-radius: 20px;
-    box-shadow: 0px 0px 10px gray;
+    margin: 18px auto;
+    padding: 0 0 14px 0;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.06);
     overflow: hidden;
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+.setting_s:hover{
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08), 0 12px 28px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+/* Header bar: overrides the flat Bootstrap .bg-secondary utility with the
+   same teal used for the sidebar (.sidebars) and table headers, so the
+   capsule reads as part of this app's existing look rather than the
+   barely-used --maincolors variable. */
+.setting_s > .bg-secondary{
+    background: linear-gradient(135deg, rgb(122, 157, 158), rgb(74, 124, 126)) !important;
+    padding: 12px 18px !important;
+    margin: 0 !important;
+}
+.setting_s > .bg-secondary p{
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    margin: 0;
+}
+.setting_s > .p-2,
+.setting_s > .conts{
+    padding: 18px !important;
 }
 .short_detail label{
     color: gray;
