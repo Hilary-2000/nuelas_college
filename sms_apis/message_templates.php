@@ -193,6 +193,27 @@
                     </div>
                 </div>
             </div>
+            <div class="setting_s">
+                <div class="bg-secondary mt-0 rounded">
+                    <p class="text-center text-white">Student Module Progression Message</p>
+                </div>
+                <div class="conts p-2">
+                    <p>- This message is sent to the student themselves when the system automatically moves them to the next module!</p>
+                    <p><small class="text-muted">- Only these tags work here: {stud_fullname}, {stud_first_name}, {stud_class}, {stud_age}, {stud_adm}, {stud_noun}, {stud_fees_balance}, {stud_fees_to_pay}, {stud_fees_paid}, {next_module_fees}, {today}. Parent, school name/contact/email and receipt tags are not available for this message.</small></p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><b class="text-primary">Compose Message</b></p>
+                            <textarea name="student_module_progression_message_editor" id="student_module_progression_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your student module progression message here!'>Hello {stud_first_name}, you have now been moved to the next module. Your new fee balance is Kes {next_module_fees}. Thank you.</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b class="text-primary">Sample Message</b></p>
+                            <small id="student_module_progression_message_viewer">Message Sample will appear here</small>
+                        </div>
+                        <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_student_module_progression_message"><i class="fas fa-save"></i> Save</span>
+                        <p id="student_module_progression_message_template_holder"></p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="bottom1">
             <p>Managed by Ladybird</p>

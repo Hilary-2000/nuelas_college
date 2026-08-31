@@ -201,6 +201,37 @@
                 $stmt->execute();
                 echo "<p class='text-success'>Message template saved successfully!.</p>";
             }
+        }elseif (isset($_GET["save_student_module_progression_message"])) {
+            $student_module_progression_message = $_GET['student_module_progression_message'];
+            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'student_module_progression_message';";
+            $stmt = $conn2->prepare($select);
+            $stmt->execute();
+            $stmt->store_result();
+            $num_rows = $stmt->num_rows;
+
+            if ($num_rows > 0) {
+                // update the student module progression message
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if($row = $result->fetch_assoc()){
+                    $message_id = $row['message_id'];
+                    $update = "UPDATE `template_messages` SET `message_content` = ? WHERE `message_id` = ?";
+                    $stmt = $conn2->prepare($update);
+                    $stmt->bind_param("ss",$student_module_progression_message, $message_id);
+                    $stmt->execute();
+                    echo "<p class='text-success'>Message template saved successfully!.</p>";
+                }else{
+                    echo "<p class='text-danger'>Error has occured! Try again later.</p>";
+                }
+            }else{
+                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`) VALUES (?,?,?,?)";
+                $stmt = $conn2->prepare($insert);
+                $message_type = "student_module_progression_message";
+                $date_today = date("YmdHis");
+                $stmt->bind_param("ssss",$message_type,$student_module_progression_message,$date_today,$date_today);
+                $stmt->execute();
+                echo "<p class='text-success'>Message template saved successfully!.</p>";
+            }
         }elseif (isset($_GET['getStaffMailData'])) {
             $select = "SELECT `fullname`,`email` FROM `user_tbl` WHERE `school_code` = ? AND `deleted` = 0";
             $stmt = $conn->prepare($select);

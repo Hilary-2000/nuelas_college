@@ -57,6 +57,49 @@ function notifyModuleProgression($student_row, $conn, $conn2) {
     }
 }
 
+// Sends the "student_module_progression_message" template (if one has been saved
+// under Template Messages) to the student's own contact, right as the cron steps
+// them into their next module.
+function notifyStudentModuleProgression($student_row, $conn, $conn2) {
+    $progression_message = getMessage("student_module_progression_message", $conn2);
+    if ($progression_message === null) {
+        // nothing configured under Template Messages yet -- stay silent
+        return;
+    }
+
+    $student_contact = trim($student_row['student_contact'] ?? '');
+    if (strlen($student_contact) < 10) {
+        return;
+    }
+
+    $api_key = getApiKey($conn2);
+    $school = 1;
+    if ($api_key == 0) {
+        $school = 0;
+        $api_key = getApiKey($conn);
+    }
+    if ($api_key === 0) {
+        // no SMS API configured for this school (or the platform fallback) -- stay silent
+        return;
+    }
+    $partnerID = $school == 0 ? getPatnerId($conn) : getPatnerId($conn2);
+    $shortcodes = $school == 0 ? getShortCode($conn) : getShortCode($conn2);
+    $send_sms_url = $school == 0 ? getUrl($conn) : getUrl($conn2);
+
+    $message = process_sms([$student_row], $progression_message, $student_row['adm_no'], $conn2, "primary");
+    sendSmsToClient($student_contact, $message, $api_key, $partnerID, $shortcodes, $send_sms_url);
+
+    $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
+    $stmt_sms = $conn2->prepare($insert);
+    $message_count = 1;
+    $message_undelivered = 0;
+    $message_type_sms = "Multicast";
+    $message_desc = strlen($message) > 43 ? substr($message, 0, 45)."..." : $message;
+    $date_sms = date("Y-m-d");
+    $stmt_sms->bind_param("sssssssss", $message_count, $date_sms, $message_count, $message_undelivered, $message_type_sms, $message_desc, $student_contact, $message, $student_contact);
+    $stmt_sms->execute();
+}
+
 $_SERVER['REQUEST_METHOD'] = "";
 $databases = ['nuelas_college', 'lizola_college_new', 'lawrenzo_college'];
 foreach ($databases as $database) {
@@ -105,11 +148,12 @@ foreach ($databases as $database) {
                                 echo $row['first_name']." - ".$row['second_name']."<span style='color:green'>(Extended)</span> <br>\n";
                                 if(!$stepped){
                                     if ($key_mod < count($modules)-1) {
-                                        // notify the parents before the module_terms below get mutated,
-                                        // so process_sms() still sees the currently-active module as
-                                        // "current" and correctly resolves {next_module_fees} to the
-                                        // module the student is being moved into.
+                                        // notify the parents and the student before the module_terms
+                                        // below get mutated, so process_sms() still sees the currently-
+                                        // active module as "current" and correctly resolves
+                                        // {next_module_fees} to the module the student is being moved into.
                                         notifyModuleProgression($row, $conn, $conn2);
+                                        notifyStudentModuleProgression($row, $conn, $conn2);
                                     }
 
                                     $student_course[$key]->module_terms[$key_mod]->status = 2;

@@ -1785,6 +1785,7 @@ function get_message_samples() {
                     var parent_account_confirmation_message = null
                     var student_welcome_message = null;
                     var module_progression_message = null;
+                    var student_module_progression_message = null;
                     for (let index = 0; index < messages_holder.length; index++) {
                         const element = messages_holder[index];
                         if(element['message_type'] == "welcome_message"){
@@ -1805,6 +1806,10 @@ function get_message_samples() {
 
                         if(element['message_type'] == "module_progression_message"){
                             module_progression_message = element['message_content'];
+                        }
+
+                        if(element['message_type'] == "student_module_progression_message"){
+                            student_module_progression_message = element['message_content'];
                         }
                     }
 
@@ -1848,12 +1853,20 @@ function get_message_samples() {
                     }else{
                         cObj("module_progression_message_viewer").innerHTML = process_messages(cObj("module_progression_message_editor").value);
                     }
+
+                    if(student_module_progression_message){
+                        cObj("student_module_progression_message_editor").value = student_module_progression_message;
+                        cObj("student_module_progression_message_viewer").innerHTML = process_messages(student_module_progression_message);
+                    }else{
+                        cObj("student_module_progression_message_viewer").innerHTML = process_messages(cObj("student_module_progression_message_editor").value);
+                    }
                 }else{
                     // default value for the welcome message
                     cObj("welcome_message_viewer").innerHTML = process_messages(cObj("welcome_message_editor").value);
                     cObj("confirmation_message_viewer").innerHTML = process_messages(cObj("confirmation_message_editor").value);
                     cObj("parent_confirmation_message_viewer").innerHTML = process_messages(cObj("parent_confirmation_message_editor").value);
                     cObj("module_progression_message_viewer").innerHTML = process_messages(cObj("module_progression_message_editor").value);
+                    cObj("student_module_progression_message_viewer").innerHTML = process_messages(cObj("student_module_progression_message_editor").value);
                 }
             }
         }, 100);
@@ -1890,6 +1903,14 @@ cObj("save_module_progression_message").onclick = function () {
 }
 cObj("module_progression_message_editor").onkeyup = function () {
     cObj("module_progression_message_viewer").innerHTML = process_messages(this.value);
+}
+cObj("save_student_module_progression_message").onclick = function () {
+    // save the student module progression message
+    var datapass = "?save_student_module_progression_message=true&student_module_progression_message="+valObj("student_module_progression_message_editor");
+    sendData2("GET", "sms/sms.php", datapass, cObj("student_module_progression_message_template_holder"), cObj("class_loader_tags"));
+}
+cObj("student_module_progression_message_editor").onkeyup = function () {
+    cObj("student_module_progression_message_viewer").innerHTML = process_messages(this.value);
 }
 cObj("back_to_message_dash").onclick = function () {
     cObj("sms_broadcast").click();
