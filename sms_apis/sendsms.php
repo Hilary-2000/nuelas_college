@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-md-3">
                             <u>Try Message Templates Now!</u>
-                            <span class="btn btn-sm btn-primary" id="message_templates_setup_btn">Message Templates <small class="badges bg-success p-1 border rounded">new</small></span>
+                            <button type="button" id="message_templates_setup_btn">Message Templates</button>
                         </div>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                                 <input type="text" name="email_header" id="email_header" class="form-control" placeholder="E-Mail Subject">
 
                                 <label for="email_messages">Message: <br></label>
-                                <textarea class="form-control fx-12" name="email_messages" id="email_messages" cols="30" rows="5" maxlength="320"  placeholder = "Type your message here"></textarea><br>
+                                <div id="email_messages" style="min-height:120px;"></div><br>
                                 
                                 <p class="hide" id="email_not_setup_notify"></p>
                                 <span class="btn btn-primary" type='button' id="send_email_button"><i class="fas fa-paper-plane"></i> Send <span class="hide" id="load_email_sending"><img src="images/ajax_clock_small.gif"></span></span>
@@ -294,25 +294,38 @@
                             <option value="secondary">Secondary Parent</option>
                         </select>
                     </div>
-                    <label for="send_options" class="form-control-label">Would You rather ?</label>
-                    <select name="send_options" id="send_options" class="form-control">
-                        <option value="" hidden >Select an option</option>
-                        <option value="send_emails">Send Email</option>
-                        <option selected value="send_sms">Send SMS</option>
-                    </select>
-                    <div class="container w-50 border border-primary p-1 mx-0 my-2 hide" id="email_sender">
-                        <h6 class="text-center">Send Email</h6>
-                        <div class="container w-100">
-                            <label for="cc_email_bulk" class="form-control-label">CC</label>
-                            <input type="text" class="form-control w-100" id="cc_email_bulk" placeholder="CC">
+                    <div class="p-2 my-2 text-primary border border-primary w-100">
+                        <b>Note:</b> Compose separately for each channel below. Recipients whose preferred channel is SMS get the SMS Message tab's content; recipients whose preferred channel is Email get the Email Message tab's content. <b>Always check and preview the Email tab before sending</b> &mdash; it is easy to fill in only the SMS box and forget the Email one.
+                    </div>
+                    <ul class="nav nav-tabs" id="broadcastComposeTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="btn btn-sm btn-primary active" id="broadcast_sms_tab_btn" data-bs-toggle="tab" data-bs-target="#broadcast_sms_tab" type="button" role="tab" aria-controls="broadcast_sms_tab" aria-selected="true"><i class="fas fa-sms"></i> SMS Message</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="btn btn-sm btn-primary" id="broadcast_email_tab_btn" data-bs-toggle="tab" data-bs-target="#broadcast_email_tab" type="button" role="tab" aria-controls="broadcast_email_tab" aria-selected="false"><i class="fas fa-envelope"></i> Email Message</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="broadcastComposeTabContent">
+                        <div class="tab-pane fade show active p-1 m-1" id="broadcast_sms_tab" role="tabpanel" aria-labelledby="broadcast_sms_tab_btn">
+                            <label for="text_message2"><br> Write Message: <br></label><br>
+                            <p style="color:gray;font-size:12px;" ><span id="chr_counts_in">0</span>/160 characters (One unit for 160 characters)</p>
+                            <textarea class="form-control" name="text_message2" id="text_message2" cols="30" rows="10" maxlength="160" placeholder="Type your SMS message here"></textarea>
                         </div>
-                        <div class="container w-100">
-                            <label for="bcc_email_bulk" class="form-control-label">BCC</label>
-                            <input type="text" class="form-control w-100" id="bcc_email_bulk" placeholder="BCC">
-                        </div>
-                        <div class="container w-100">
-                            <label for="email_bulk_subject" class="form-control-label">Subject</label>
-                            <input type="text" class="form-control w-100" id="email_bulk_subject" value="Email from <?php echo ucwords(strtolower($_SESSION['schname']))?>" placeholder="Subject">
+                        <div class="tab-pane fade p-1 m-1" id="broadcast_email_tab" role="tabpanel" aria-labelledby="broadcast_email_tab_btn">
+                            <div class="container w-100">
+                                <label for="cc_email_bulk" class="form-control-label">CC</label>
+                                <input type="text" class="form-control w-100" id="cc_email_bulk" placeholder="CC">
+                            </div>
+                            <div class="container w-100">
+                                <label for="bcc_email_bulk" class="form-control-label">BCC</label>
+                                <input type="text" class="form-control w-100" id="bcc_email_bulk" placeholder="BCC">
+                            </div>
+                            <div class="container w-100">
+                                <label for="email_bulk_subject" class="form-control-label">Subject</label>
+                                <input type="text" class="form-control w-100" id="email_bulk_subject" value="Email from <?php echo ucwords(strtolower($_SESSION['schname']))?>" placeholder="Subject">
+                            </div>
+                            <label for="email_editored"><br> Write Message: <br></label><br>
+                            <div id="email_editored" style="min-height:200px;"></div>
                         </div>
                     </div>
                     <div class="cont border border-secondary p-1 my-2 mx-2 d-none" id="message_tags_window">
@@ -343,22 +356,16 @@
                             </div>
                         </div>
                     </div>
-                    <label  for="text_message2"><br> Write Message: <br></label><br>
-                    <p style="color:gray;font-size:12px;" ><span id="chr_counts_in">0</span>/160 characters (One unit for 160 characters)</p>
                     <div class="w-90 mx-2 p-1 row bg-light">
-                        <div class="col-md-7 p-0">
-                            <div class="container hide p-0" id="hide_text_areas">
-                                <textarea class="form-control" name="email_editors" id="email_editored" cols="30" rows="10" maxlength="160"   placeholder = "Type your message here"></textarea><br>
-                            </div>
-                            <textarea class="form-control" name="text_message2" id="text_message2" cols="30" rows="10" maxlength="160"   placeholder = "Type your message here"></textarea><br>
-                        </div>
-                        <div class="col-md-5 border border-primary p-2">
+                        <div class="col-md-12 border border-primary p-2">
                             <h6><b>Message Sample</b></h6>
                             <small id="message_samples">Message Sample will appear here</small>
                         </div>
                     </div>
                     <p id="err_hands_error"></p>
                     <button type='button' id="send_msg_btns"><i class="fas fa-paper-plane"></i> Send message <span class="hide" id="load_bulk_emails_sending"><img src="images/ajax_clock_small.gif"></span></button>
+                    <p id="broadcast_sms_result"></p>
+                    <p id="broadcast_email_result"></p>
                     <p id="out_put"></p>
                 </div>
             </div>

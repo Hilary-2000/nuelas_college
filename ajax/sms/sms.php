@@ -36,63 +36,69 @@
             }
         }elseif (isset($_GET["save_welcome_message"])) {
             $welcome_message = $_GET['welcome_message'];
-            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'welcome_message';";
+            $channel = (($_GET['channel'] ?? '') === 'email') ? 'email' : 'sms';
+            $subject = isset($_GET['subject']) ? $_GET['subject'] : null;
+            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'welcome_message' AND `channel` = ?;";
             $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $channel);
             $stmt->execute();
             $stmt->store_result();
             $num_rows = $stmt->num_rows;
-            
+
             if ($num_rows > 0) {
                 // update the welcome message
                 $stmt->execute();
                 $result = $stmt->get_result();
                 if($row = $result->fetch_assoc()){
                     $message_id = $row['message_id'];
-                    $update = "UPDATE `template_messages` SET `message_content` = ? WHERE `message_id` = ?";
+                    $update = "UPDATE `template_messages` SET `message_content` = ?, `message_subject` = ? WHERE `message_id` = ?";
                     $stmt = $conn2->prepare($update);
-                    $stmt->bind_param("ss",$welcome_message, $message_id);
+                    $stmt->bind_param("sss",$welcome_message, $subject, $message_id);
                     $stmt->execute();
                     echo "<p class='text-success'>Message template saved successfully!.</p>";
                 }else{
                     echo "<p class='text-danger'>Error has occured! Try again later.</p>";
                 }
             }else{
-                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`) VALUES (?,?,?,?)";
+                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`,`channel`,`message_subject`) VALUES (?,?,?,?,?,?)";
                 $stmt = $conn2->prepare($insert);
                 $message_type = "welcome_message";
                 $date_today = date("YmdHis");
-                $stmt->bind_param("ssss",$message_type,$welcome_message,$date_today,$date_today);
+                $stmt->bind_param("ssssss",$message_type,$welcome_message,$date_today,$date_today,$channel,$subject);
                 $stmt->execute();
                 echo "<p class='text-success'>Message template saved successfully!.</p>";
             }
         }elseif (isset($_GET["student_save_welcome_message"])) {
             $welcome_message = $_GET['welcome_message'];
-            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'student_welcome_message';";
+            $channel = (($_GET['channel'] ?? '') === 'email') ? 'email' : 'sms';
+            $subject = isset($_GET['subject']) ? $_GET['subject'] : null;
+            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'student_welcome_message' AND `channel` = ?;";
             $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $channel);
             $stmt->execute();
             $stmt->store_result();
             $num_rows = $stmt->num_rows;
-            
+
             if ($num_rows > 0) {
                 // update the welcome message
                 $stmt->execute();
                 $result = $stmt->get_result();
                 if($row = $result->fetch_assoc()){
                     $message_id = $row['message_id'];
-                    $update = "UPDATE `template_messages` SET `message_content` = ? WHERE `message_id` = ?";
+                    $update = "UPDATE `template_messages` SET `message_content` = ?, `message_subject` = ? WHERE `message_id` = ?";
                     $stmt = $conn2->prepare($update);
-                    $stmt->bind_param("ss",$welcome_message, $message_id);
+                    $stmt->bind_param("sss",$welcome_message, $subject, $message_id);
                     $stmt->execute();
                     echo "<p class='text-success'>Message template saved successfully!.</p>";
                 }else{
                     echo "<p class='text-danger'>Error has occured! Try again later.</p>";
                 }
             }else{
-                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`) VALUES (?,?,?,?)";
+                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`,`channel`,`message_subject`) VALUES (?,?,?,?,?,?)";
                 $stmt = $conn2->prepare($insert);
                 $message_type = "student_welcome_message";
                 $date_today = date("YmdHis");
-                $stmt->bind_param("ssss",$message_type,$welcome_message,$date_today,$date_today);
+                $stmt->bind_param("ssssss",$message_type,$welcome_message,$date_today,$date_today,$channel,$subject);
                 $stmt->execute();
                 echo "<p class='text-success'>Message template saved successfully!.</p>";
             }
@@ -110,70 +116,79 @@
             echo json_encode($data_to_display);
         }elseif (isset($_GET["save_confirmation_message"])) {
             $confirmation_message = $_GET['confirmation_message'];
-            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'confirmation_message';";
+            $channel = (($_GET['channel'] ?? '') === 'email') ? 'email' : 'sms';
+            $subject = isset($_GET['subject']) ? $_GET['subject'] : null;
+            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'confirmation_message' AND `channel` = ?;";
             $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $channel);
             $stmt->execute();
             $stmt->store_result();
             $num_rows = $stmt->num_rows;
-            
+
             if ($num_rows > 0) {
                 // update the welcome message
                 $stmt->execute();
                 $result = $stmt->get_result();
                 if($row = $result->fetch_assoc()){
                     $message_id = $row['message_id'];
-                    $update = "UPDATE `template_messages` SET `message_content` = ? WHERE `message_id` = ?";
+                    $update = "UPDATE `template_messages` SET `message_content` = ?, `message_subject` = ? WHERE `message_id` = ?";
                     $stmt = $conn2->prepare($update);
-                    $stmt->bind_param("ss",$confirmation_message, $message_id);
+                    $stmt->bind_param("sss",$confirmation_message, $subject, $message_id);
                     $stmt->execute();
                     echo "<p class='text-success'>Message template saved successfully!.</p>";
                 }else{
                     echo "<p class='text-danger'>Error has occured! Try again later.</p>";
                 }
             }else{
-                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`) VALUES (?,?,?,?)";
+                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`,`channel`,`message_subject`) VALUES (?,?,?,?,?,?)";
                 $stmt = $conn2->prepare($insert);
                 $message_type = "confirmation_message";
                 $date_today = date("YmdHis");
-                $stmt->bind_param("ssss",$message_type,$confirmation_message,$date_today,$date_today);
+                $stmt->bind_param("ssssss",$message_type,$confirmation_message,$date_today,$date_today,$channel,$subject);
                 $stmt->execute();
                 echo "<p class='text-success'>Message template saved successfully!.</p>";
             }
         }elseif (isset($_GET["save_parent_confirmation"])) {
             $parent_account_msg = $_GET['parent_account_msg'];
-            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'parent_account_confirmation_message';";
+            $channel = (($_GET['channel'] ?? '') === 'email') ? 'email' : 'sms';
+            $subject = isset($_GET['subject']) ? $_GET['subject'] : null;
+            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'parent_account_confirmation_message' AND `channel` = ?;";
             $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $channel);
             $stmt->execute();
             $stmt->store_result();
             $num_rows = $stmt->num_rows;
-            
+
             if ($num_rows > 0) {
                 // update the welcome message
                 $stmt->execute();
                 $result = $stmt->get_result();
                 if($row = $result->fetch_assoc()){
                     $message_id = $row['message_id'];
-                    $update = "UPDATE `template_messages` SET `message_content` = ? WHERE `message_id` = ?";
+                    $update = "UPDATE `template_messages` SET `message_content` = ?, `message_subject` = ? WHERE `message_id` = ?";
                     $stmt = $conn2->prepare($update);
-                    $stmt->bind_param("ss",$parent_account_msg, $message_id);
+                    $stmt->bind_param("sss",$parent_account_msg, $subject, $message_id);
                     $stmt->execute();
                     echo "<p class='text-success'>Message template saved successfully!.</p>";
                 }else{
                     echo "<p class='text-danger'>Error has occured! Try again later.</p>";
                 }
             }else{
-                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`) VALUES (?,?,?,?)";
+                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`,`channel`,`message_subject`) VALUES (?,?,?,?,?,?)";
                 $stmt = $conn2->prepare($insert);
                 $message_type = "parent_account_confirmation_message";
                 $date_today = date("YmdHis");
-                $stmt->bind_param("ssss",$message_type,$parent_account_msg,$date_today,$date_today);
+                $stmt->bind_param("ssssss",$message_type,$parent_account_msg,$date_today,$date_today,$channel,$subject);
                 $stmt->execute();
                 echo "<p class='text-success'>Message template saved successfully!.</p>";
             }
         }elseif (isset($_GET["save_module_progression_message"])) {
             $module_progression_message = $_GET['module_progression_message'];
-            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'module_progression_message';";
+            $channel = (($_GET['channel'] ?? '') === 'email') ? 'email' : 'sms';
+            $subject = isset($_GET['subject']) ? $_GET['subject'] : null;
+            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'module_progression_message' AND `channel` = ?;";
             $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $channel);
             $stmt->execute();
             $stmt->store_result();
             $num_rows = $stmt->num_rows;
@@ -184,27 +199,30 @@
                 $result = $stmt->get_result();
                 if($row = $result->fetch_assoc()){
                     $message_id = $row['message_id'];
-                    $update = "UPDATE `template_messages` SET `message_content` = ? WHERE `message_id` = ?";
+                    $update = "UPDATE `template_messages` SET `message_content` = ?, `message_subject` = ? WHERE `message_id` = ?";
                     $stmt = $conn2->prepare($update);
-                    $stmt->bind_param("ss",$module_progression_message, $message_id);
+                    $stmt->bind_param("sss",$module_progression_message, $subject, $message_id);
                     $stmt->execute();
                     echo "<p class='text-success'>Message template saved successfully!.</p>";
                 }else{
                     echo "<p class='text-danger'>Error has occured! Try again later.</p>";
                 }
             }else{
-                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`) VALUES (?,?,?,?)";
+                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`,`channel`,`message_subject`) VALUES (?,?,?,?,?,?)";
                 $stmt = $conn2->prepare($insert);
                 $message_type = "module_progression_message";
                 $date_today = date("YmdHis");
-                $stmt->bind_param("ssss",$message_type,$module_progression_message,$date_today,$date_today);
+                $stmt->bind_param("ssssss",$message_type,$module_progression_message,$date_today,$date_today,$channel,$subject);
                 $stmt->execute();
                 echo "<p class='text-success'>Message template saved successfully!.</p>";
             }
         }elseif (isset($_GET["save_student_module_progression_message"])) {
             $student_module_progression_message = $_GET['student_module_progression_message'];
-            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'student_module_progression_message';";
+            $channel = (($_GET['channel'] ?? '') === 'email') ? 'email' : 'sms';
+            $subject = isset($_GET['subject']) ? $_GET['subject'] : null;
+            $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'student_module_progression_message' AND `channel` = ?;";
             $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $channel);
             $stmt->execute();
             $stmt->store_result();
             $num_rows = $stmt->num_rows;
@@ -215,20 +233,20 @@
                 $result = $stmt->get_result();
                 if($row = $result->fetch_assoc()){
                     $message_id = $row['message_id'];
-                    $update = "UPDATE `template_messages` SET `message_content` = ? WHERE `message_id` = ?";
+                    $update = "UPDATE `template_messages` SET `message_content` = ?, `message_subject` = ? WHERE `message_id` = ?";
                     $stmt = $conn2->prepare($update);
-                    $stmt->bind_param("ss",$student_module_progression_message, $message_id);
+                    $stmt->bind_param("sss",$student_module_progression_message, $subject, $message_id);
                     $stmt->execute();
                     echo "<p class='text-success'>Message template saved successfully!.</p>";
                 }else{
                     echo "<p class='text-danger'>Error has occured! Try again later.</p>";
                 }
             }else{
-                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`) VALUES (?,?,?,?)";
+                $insert = "INSERT INTO `template_messages` (`message_type`,`message_content`,`date_created`,`date_updated`,`channel`,`message_subject`) VALUES (?,?,?,?,?,?)";
                 $stmt = $conn2->prepare($insert);
                 $message_type = "student_module_progression_message";
                 $date_today = date("YmdHis");
-                $stmt->bind_param("ssss",$message_type,$student_module_progression_message,$date_today,$date_today);
+                $stmt->bind_param("ssssss",$message_type,$student_module_progression_message,$date_today,$date_today,$channel,$subject);
                 $stmt->execute();
                 echo "<p class='text-success'>Message template saved successfully!.</p>";
             }
@@ -840,8 +858,11 @@
                 $bcc = $_GET['bcc'];
                 $subject = $_GET['subject'];
 
-                // set email recepient
-                if (($to_whom == "primary" || $to_whom == "all_three" || $to_whom == "both") && $email_primary != null) {
+                // set email recepient -- only if this parent's own channel preference is explicitly "email"
+                $primary_channel_bulk = $students_data[$index]['primary_parent_channel'] ?? '';
+                $secondary_channel_bulk = $students_data[$index]['secondary_parent_channel'] ?? '';
+                $student_channel_bulk = $students_data[$index]['student_channel'] ?? '';
+                if (($to_whom == "primary" || $to_whom == "all_three" || $to_whom == "both") && $email_primary != null && $primary_channel_bulk == 'email') {
                     // SET SUBJECT
                     $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,"primary");
                     // SET BODY
@@ -856,7 +877,7 @@
                     $stmt->execute();
                 }
 
-                if (($to_whom == "secondary" || $to_whom == "all_three" || $to_whom == "both") && $secondary_mail != null) {
+                if (($to_whom == "secondary" || $to_whom == "all_three" || $to_whom == "both") && $secondary_mail != null && $secondary_channel_bulk == 'email') {
                     // SET SUBJECT
                     $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,"secondary");
                     // SET BODY
@@ -871,7 +892,7 @@
                     $stmt->execute();
                 }
 
-                if (($to_whom == "student_contact" || $to_whom == "all_three") && $student_email != null) {
+                if (($to_whom == "student_contact" || $to_whom == "all_three") && $student_email != null && $student_channel_bulk == 'email') {
                     // SET SUBJECT
                     $subject = process_sms($students_data,$_GET['subject'],$students_data[$index]['adm_no'],$conn2,$to_whom);
                     // SET BODY
@@ -924,11 +945,15 @@
                 $effective_parent = ($which_parent == "preferred_contact")
                     ? mapPreferredCommToSendTarget($student_data[$index]['preferred_communication'], $school_default_pref)
                     : $which_parent;
+                // only message a recipient here if their own channel preference is explicitly "sms"
+                $primary_channel_broadcast = $student_data[$index]['primary_parent_channel'] ?? '';
+                $secondary_channel_broadcast = $student_data[$index]['secondary_parent_channel'] ?? '';
+                $student_channel_broadcast = $student_data[$index]['student_channel'] ?? '';
                 if (checkPresnt($exploded_data, $student_data[$index]['adm_no']) == 1) {
                     // process message
                     $message = $_GET['messages'];
                     $message_status = "pending";
-                    if(($effective_parent == "both" || $effective_parent == "all_three" || $effective_parent == "primary") && (trim($primary_parent) != "none" && trim($primary_parent) != "")){
+                    if(($effective_parent == "both" || $effective_parent == "all_three" || $effective_parent == "primary") && (trim($primary_parent) != "none" && trim($primary_parent) != "") && $primary_channel_broadcast == 'sms'){
                         $message1 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"primary");
                         
                         // create message
@@ -950,7 +975,7 @@
                         $count++;
                     }
 
-                    if(($effective_parent == "both" || $effective_parent == "all_three" || $effective_parent == "secondary") && (trim($secondary_parent) != "none" && trim($secondary_parent) != "")){
+                    if(($effective_parent == "both" || $effective_parent == "all_three" || $effective_parent == "secondary") && (trim($secondary_parent) != "none" && trim($secondary_parent) != "") && $secondary_channel_broadcast == 'sms'){
                         // message
                         $message2 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,"secondary");
                         
@@ -970,7 +995,7 @@
                         $count++;
                     }
 
-                    if(($effective_parent == "all_three" || $effective_parent == "student_contact") && (trim($student_contact) != "none" && trim($student_contact) != "")){
+                    if(($effective_parent == "all_three" || $effective_parent == "student_contact") && (trim($student_contact) != "none" && trim($student_contact) != "") && $student_channel_broadcast == 'sms'){
                         // message3
                         $message3 = process_sms($student_data,$message,$student_data[$index]['adm_no'],$conn2,$effective_parent);
                         // save the data in the database

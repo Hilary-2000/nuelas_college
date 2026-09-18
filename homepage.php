@@ -131,8 +131,8 @@ function checkPresnt($array, $string){
 
     
     <!-- the customizable text editor documents -->
-    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
-    <script src="https://cdn.tiny.cloud/1/7rm4l4e0oa0zq4xscpmjlaybzcu2t0ald5hpigdbevjw9cgp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <!-- ends here -->
 
     <!-- START DATATABLES -->
@@ -4215,87 +4215,57 @@ function checkPresnt($array, $string){
     <script src="assets/JS/chartconfig.js"></script>
 
     <script>
-        // tinymce.init({
-        // selector: '#email_messages',
-        // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-        // toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        // menubar: true,
-        // toolbar: true
-        // });
-        
-        // tinymce.init({
-        //     selector: '#email_editored',
-        //     plugins: ["link","code","media","image","emoticons"],
-        //     // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-        //     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        //     menubar: true,
-        //     toolbar: true,
-        //     setup : function(ed) {
-        //         ed.on('keyup', function(e) {
-        //             working_onit(ed);
-        //         });
-        //     }
-        // });
-        
-        // tinymce.init({
-        //     selector: '#email_contents_exam_reports',
-        //     plugins: ["link","code","media","image","emoticons"],
-        //     // plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace table visualblocks wordcount',
-        //     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-        //     menubar: true,
-        //     toolbar: true,
-        //     setup : function(ed) {
-        //         ed.on('keyup', function(e) {
-        //             editSamplesData(ed);
-        //         });
-        //     }
-        // });
+        // All rich text fields in the app are Quill instances (see assets/JS/sms.js
+        // for the shared createQuillEditor()/getQuillData()/setQuillData() helpers
+        // and the quillInstances registry they populate).
 
-        // email_messages
-        CKEDITOR.replace('email_messages', {
-            height: 400,
-            toolbar: [
-                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
-                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList' ] },
-                { name: 'insert', items: [ 'Image', 'Table', 'Link' ] }
-            ]
+        createQuillEditor('email_messages');
+
+        createQuillEditor('email_contents_exam_reports');
+        quillInstances.email_contents_exam_reports.on('text-change', function () {
+            var sample_message = getQuillData('email_contents_exam_reports');
+            if (sample_message.length > 0) {
+                cObj("email_contents_exam_reports_preview").innerHTML = sample_message;
+            }else{
+                cObj("email_contents_exam_reports_preview").innerHTML = "Sample Appear here ..";
+            }
+            html_messageData(sample_message);
         });
 
-        // email_contents_exam_reports
-        CKEDITOR.replace('email_contents_exam_reports', {
-            height: 400,
-            toolbar: [
-                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
-                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList' ] },
-                { name: 'insert', items: [ 'Image', 'Table', 'Link' ] }
-            ]
+        createQuillEditor('email_editored');
+        quillInstances.email_editored.on('text-change', function () {
+            html_messageData(getQuillData('email_editored'));
         });
-        CKEDITOR.instances.email_contents_exam_reports.on('contentDom', function () {
-            this.document.on('keyup', function () {
-                var sample_message = CKEDITOR.instances.email_contents_exam_reports.getData();
-                if (sample_message.length > 0) {
-                    cObj("email_contents_exam_reports_preview").innerHTML = sample_message;
-                }else{
-                    cObj("email_contents_exam_reports_preview").innerHTML = "Sample Appear here ..";
-                }
-                html_messageData(CKEDITOR.instances.email_contents_exam_reports.getData());
+
+        // Email Templates tab -- rich text editors for the six email message templates.
+        // Initial content comes from the default copy baked into each container; that
+        // default is only ever persisted once the user clicks that template's Save
+        // button (see assets/JS/sms.js), so simply loading this page never overwrites
+        // a previously saved template.
+        var emailTemplateEditors = [
+            "student_welcome_message_editor_email",
+            "welcome_message_editor_email",
+            "confirmation_message_editor_email",
+            "parent_confirmation_message_editor_email",
+            "module_progression_message_editor_email",
+            "student_module_progression_message_editor_email"
+        ];
+        emailTemplateEditors.forEach(function (editorId) {
+            var quill = createQuillEditor(editorId);
+            if (!quill) {
+                return;
+            }
+            var subjectId = editorId.replace("_editor_email", "_subject_email");
+
+            quill.on('text-change', function () {
+                refreshEmailTemplatePreview(editorId);
             });
-        });
-
-
-        // email_editored
-        CKEDITOR.replace('email_editored', {
-            height: 400,
-            toolbar: [
-                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
-                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList' ] },
-                { name: 'insert', items: [ 'Image', 'Table', 'Link' ] }
-            ]
-        });
-        CKEDITOR.instances.email_editored.on('contentDom', function () {
-            this.document.on('keyup', function () {
-                html_messageData(CKEDITOR.instances.email_editored.getData());
-            });
+            if (cObj(subjectId)) {
+                cObj(subjectId).addEventListener("input", function () {
+                    refreshEmailTemplatePreview(editorId);
+                });
+            }
+            refreshEmailTemplatePreview(editorId);
         });
     </script>
 </body>

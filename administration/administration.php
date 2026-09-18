@@ -280,6 +280,13 @@
                         <label for="student_email">Student email: <span class="examples"> eg esmond@gmail.com</span></label>
                         <input type="email" name="student_email" id="student_email" placeholder = "Enter email">
                     </div>
+                    <div class="conts">
+                        <label>Student preferred communication channel:</label><br>
+                        <input type="radio" name="student_channel" id="student_channel_sms" value="sms" checked>
+                        <label for="student_channel_sms">SMS</label>
+                        <input type="radio" name="student_channel" id="student_channel_email" value="email">
+                        <label for="student_channel_email">Email</label>
+                    </div>
                     <hr class="p-0 w-75 mx-auto my-2">
                     <p class="text-danger"><strong>Guardian / Parent information</strong></p>
                     <!-- The first parent -->
@@ -310,6 +317,13 @@
                         <label for="pemail">Primary Parent email: <span class="examples"> eg esmond@gmail.com</span></label>
                         <p id="emailerr"></p>
                         <input type="email" name="pemail" id="pemail" placeholder = "Enter email">
+                    </div>
+                    <div class="conts">
+                        <label>Primary Parent preferred communication channel:</label><br>
+                        <input type="radio" name="primary_parent_channel" id="primary_parent_channel_sms" value="sms" checked>
+                        <label for="primary_parent_channel_sms">SMS</label>
+                        <input type="radio" name="primary_parent_channel" id="primary_parent_channel_email" value="email">
+                        <label for="primary_parent_channel_email">Email</label>
                     </div>
                     <div class="conts">
                         <label for="parent_accupation1">Primary Parent`s Occupation</label>
@@ -344,6 +358,13 @@
                         <label for="pemail2">Secondary Parent email: <span class="examples"> eg esmond@gmail.com</span></label>
                         <p id="emailerr"></p>
                         <input type="email" name="pemail2" id="pemail2" placeholder = "Enter email">
+                    </div>
+                    <div class="conts">
+                        <label>Secondary Parent preferred communication channel:</label><br>
+                        <input type="radio" name="secondary_parent_channel" id="secondary_parent_channel_sms" value="sms" checked>
+                        <label for="secondary_parent_channel_sms">SMS</label>
+                        <input type="radio" name="secondary_parent_channel" id="secondary_parent_channel_email" value="email">
+                        <label for="secondary_parent_channel_email">Email</label>
                     </div>
                     <div class="conts">
                         <label for="parent_accupation2">Secondary Parent`s Occupation</label>

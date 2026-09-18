@@ -4608,7 +4608,7 @@ cObj("back_exams_btn").onclick = function () {
 cObj("finish_generating_reports").onclick = function () {
     goNextExams();
     cObj("first_exmas_options").selected = true;
-    tinymce.get("email_contents_exam_reports").setContent("");
+    setQuillData("email_contents_exam_reports", "");
     cObj("generate_exams_reports_window").classList.add("hide");
     cObj("back_exams_btn").classList.add("hide");
     cObj("next_exams_btn").classList.remove("hide");
