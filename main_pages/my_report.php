@@ -258,6 +258,13 @@
                                 <input type="text" name="student_admno_in" id="student_admno_in" class="form-control" placeholder="Enter Admission No">
                             </div>
                         </div>
+                        <div class="col-md-4 hide" id="votehead_display_win">
+                            <label for="votehead_display" class="form-label"><b>Votehead Display</b></label>
+                            <select name="votehead_display" id="votehead_display" class="form-control">
+                                <option value="bundled">Bundled</option>
+                                <option value="by_votehead">By Votehead</option>
+                            </select>
+                        </div>
                         <div class="col-md-4 hide" id="specific_class">
                             <label for="student_class_fin" class="form-label"><b>Select Course Level</b><img src="images/ajax_clock_small.gif" id="class_fin_in_load" class="hide"></label>
                             <span id="class_fin_in"></span>

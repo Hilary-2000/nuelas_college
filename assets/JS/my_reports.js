@@ -171,6 +171,7 @@ cObj("finance_entity").onchange = function () {
     cObj("level_balance_type_win").classList.add("hide");
     cObj("stud_status_win").classList.add("hide");
     cObj("branch_filter_win").classList.add("hide");
+    cObj("votehead_display_win").classList.add("hide");
     if(my_val == "fees_collection"){
         var student_opt = document.getElementsByClassName("student_opt");
         for (let index = 0; index < student_opt.length; index++) {
@@ -292,14 +293,21 @@ cObj("student_options").onchange = function () {
         cObj("specific_class").classList.remove("hide");
         cObj("specific_course_1").classList.remove("hide");
         cObj("specific_stud_admno").classList.add("hide");
+        cObj("votehead_display_win").classList.add("hide");
     }else if (my_val == "byAll") {
         cObj("specific_course_1").classList.add("hide");
         cObj("specific_class").classList.add("hide");
         cObj("specific_stud_admno").classList.add("hide");
+        cObj("votehead_display_win").classList.add("hide");
     }else if (my_val == "bySpecific") {
         cObj("specific_course_1").classList.add("hide");
         cObj("specific_class").classList.add("hide");
         cObj("specific_stud_admno").classList.remove("hide");
+        if (cObj("finance_entity").value == "fees_collection") {
+            cObj("votehead_display_win").classList.remove("hide");
+        }else{
+            cObj("votehead_display_win").classList.add("hide");
+        }
     }
     // cObj("specific_date_finance").value = "";
     // cObj("from_date_finance").value = "";
