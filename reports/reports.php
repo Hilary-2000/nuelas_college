@@ -329,7 +329,7 @@ class PDF extends FPDF
         // $this->Cell(array_sum($w), 0, '', 'T');
     }
     // Colored table
-    function financeTable($header, $data, $width, $skip = true)
+    function financeTable($header, $data, $width, $skip = true, $votehead_mode = false)
     {
         // Colors, line width and bold font
         $this->SetFillColor(157, 183, 184);
@@ -368,9 +368,12 @@ class PDF extends FPDF
             // for ($$index=0; $$index < count($row); $$index++) { 
             //     $this->Cell($w[$index], 6, $row[$index], 1, 0, 'L', $fill);
             // }
+            if ($votehead_mode == true) {
+                $this->SetFont('Helvetica', $row[0] === "" ? 'I' : 'B', 8);
+            }
             $this->Cell($w[0], 6, $row[0], 1, 0, 'L', $fill);
             $this->Cell($w[1], 6, "Kes " . number_format($row[1]), 1, 0, 'L', $fill);
-            $this->Cell($w[2], 6, "Kes " . number_format($row[2]), 1, 0, 'L', $fill);
+            $this->Cell($w[2], 6, $row[2] === "" ? "" : "Kes " . number_format($row[2]), 1, 0, 'L', $fill);
             $this->Cell($w[3], 6, ($row[3]), 1, 0, 'C', $fill);
             if ($skip == false) {
                 $this->Cell($w[4], 6, $row[4], 1, 0, 'L', $fill);
@@ -384,8 +387,13 @@ class PDF extends FPDF
             }
             $this->Ln();
             $fill = !$fill;
-            $balance += $row[2];
-            $recieved += $row[1];
+            // votehead breakdown sub-rows (blank No column) are not separate
+            // payments -- their amount is already counted in the main row above,
+            // so they must be excluded from the totals to avoid double-counting.
+            if ($row[0] !== "") {
+                $balance += $row[2];
+                $recieved += $row[1];
+            }
         }
         $this->SetFont('Helvetica', 'BI', 8);
         $this->Cell($w[0], 6, "Tot", 1, 0, 'L', $fill);
@@ -3849,6 +3857,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $expense_category = isset($_POST['expense_category']) ? $_POST['expense_category'] : "All";
         $student_status = isset($_POST['student_status']) ? $_POST['student_status'] : 'active';
         $branch_filter = isset($_POST['branch_filter']) ? intval($_POST['branch_filter']) : 0;
+        $votehead_display = isset($_POST['votehead_display']) ? $_POST['votehead_display'] : "bundled";
 
         if ($finance_entity == "fees_collection") {
             if (strlen($student_class_fin) > 0 && strlen($period_selection) > 0 && $student_options == "byClass") {
@@ -4155,6 +4164,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             // array_push($finance_list,$stud_data);
                             if ($amount_paid != 0) {
                                 array_push($finance_list, $stud_data);
+                                if ($votehead_display == "by_votehead" && isJson_report($row['payment_for'])) {
+                                    $voteheads_paid = json_decode($row['payment_for']);
+                                    if (count($voteheads_paid) > 1) {
+                                        foreach ($voteheads_paid as $votehead_paid) {
+                                            $votehead_name = isset($votehead_paid->name) ? $votehead_paid->name : $votehead_paid->real_name;
+                                            array_push($finance_list, array("", $votehead_paid->amount_paid, "", "", "", "", $votehead_name, "", ""));
+                                        }
+                                    }
+                                }
                             }
                             $number++;
                         }
@@ -4213,7 +4231,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $pdf->Ln();
                         $pdf->SetFont('Helvetica', 'B', 8);
                         $width = array(8, 22, 22, 20, 28, 13, 35, 33, 18);
-                        $pdf->financeTable($header, $data, $width);
+                        $pdf->financeTable($header, $data, $width, true, $votehead_display == "by_votehead");
                         $pdf->Output("I", str_replace(" ", "_", $pdf->school_document_title) . ".pdf");
                     } else {
                         echo "<p style='color:red;'>No records to display</p>";
@@ -5773,6 +5791,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $expense_category = isset($_POST['expense_category']) ? $_POST['expense_category'] : "All";
         $student_status = isset($_POST['student_status']) ? $_POST['student_status'] : 'active';
         $branch_filter = isset($_POST['branch_filter']) ? intval($_POST['branch_filter']) : 0;
+        $votehead_display = isset($_POST['votehead_display']) ? $_POST['votehead_display'] : "bundled";
 
         if ($finance_entity == "fees_collection") {
             if (strlen($student_class_fin) > 0 && strlen($period_selection) > 0 && $student_options == "byClass") {
@@ -6090,6 +6109,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             // array_push($finance_list,$stud_data);
                             if ($amount_paid != 0) {
                                 array_push($finance_list, $stud_data);
+                                if ($votehead_display == "by_votehead" && isJson_report($row['payment_for'])) {
+                                    $voteheads_paid = json_decode($row['payment_for']);
+                                    if (count($voteheads_paid) > 1) {
+                                        foreach ($voteheads_paid as $votehead_paid) {
+                                            $votehead_name = isset($votehead_paid->name) ? $votehead_paid->name : $votehead_paid->real_name;
+                                            array_push($finance_list, array("", $votehead_paid->amount_paid, "", "", "", "", $votehead_name, "", ""));
+                                        }
+                                    }
+                                }
                             }
                             $number++;
                         }
@@ -6154,10 +6182,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             }
                         }
                         $spreadsheet->getActiveSheet()->getStyle("A13:".$letters[count($header)-1]."".(count($data)+12))->applyFromArray($table_style_2);
-    
+
+                        // in "By Votehead" mode, bold the main transaction row and
+                        // italicize the votehead breakdown sub-rows below it (blank No column)
+                        if ($votehead_display == "by_votehead") {
+                            for ($index=0; $index < count($data); $index++) {
+                                $row_font = $worksheet->getStyle("A".($index+13).":".$letters[count($header)-1]."".($index+13))->getFont();
+                                if ($data[$index][0] === "") {
+                                    $row_font->setItalic(true);
+                                } else {
+                                    $row_font->setBold(true);
+                                }
+                            }
+                        }
+
                         // Set active sheet index to the first sheet
                         $spreadsheet->setActiveSheetIndex(0);
-                        
+
                         // set auto width
                         foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
                             // set auto width
