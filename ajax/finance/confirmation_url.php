@@ -364,8 +364,6 @@ if (session_status() === PHP_SESSION_NONE) {
         }
 
         function getPaymentFor($conn2, $student, $TransAmount){
-            $std_adm = $student['adm_no'];
-            // check the student votehead status
             $student_data = $student;
             $all_course_fees = [];
             $my_course_list = $student['my_course_list'];
@@ -494,90 +492,4 @@ if (session_status() === PHP_SESSION_NONE) {
                 array_push($all_course_fees, $a_fee);
                 return $all_course_fees;
             }
-
-            // check if their voteheads are defined or not
-            $students_vh = $student_data['votehead_status'];
-            $selected_voteheads = [];
-            $student_class = $student_data['stud_class'];
-            if(isJson($students_vh)){
-                $student_votehead = json_decode($students_vh);
-                foreach($student_votehead as $vhs){
-                    if($vhs->class_name == $student_class){
-                        $selected_voteheads = $vhs->voteheads;
-                    }
-                }
-            }
-        
-            $statement = "";
-            foreach($selected_voteheads as $votehead){
-                if(is_int($votehead) || is_string($votehead)){
-                    $statement .= "(classes LIKE '%|" . $student_class . "|%' AND ids = '".$votehead."') OR ";
-                }else{
-                    $statement .= "(classes LIKE '%|" . $student_class . "|%' AND ids = '".$votehead->votehead."') OR ";
-                }
-            }
-            $statement = count($selected_voteheads) > 0 ? substr($statement, 0, strlen($statement)-4)."" : "";
-            
-            // for students who are boarding
-            $boarding = isBoarding($std_adm, $conn2) ? "" : "AND roles != 'boarding'";
-
-            $select = count($selected_voteheads) > 0 ? "SELECT * FROM `fees_structure` WHERE ".$statement : "SELECT * FROM `fees_structure` WHERE `activated` = 1 AND roles != 'provisional' and `classes` like '%|".$student['stud_class']."|%' ". $boarding;
-            $stmt = $conn2->prepare($select);
-            $stmt->execute();
-            $results = $stmt->get_result();
-            $term = getTermV2($conn2);
-            $select = "<p style='color:green;'>There is no payment option set by the administrator</p>";
-            if ($results) {
-                $xs = 0;
-                $all_votehead = [];
-                $total = 0;
-                while ($row = $results->fetch_assoc()) {
-                    array_push($all_votehead, $row);
-                    $total+=$row[$term];
-                }
-
-                if (isTransport($conn2, $std_adm) == true) {
-                    $get_route_1 = routeName($conn2, $std_adm, "TERM_1");
-                    $get_route_2 = routeName($conn2, $std_adm, "TERM_2");
-                    $get_route_3 = routeName($conn2, $std_adm, "TERM_3");
-                    
-                    $row_data = array(
-                        "expenses" => ucwords(strtolower($get_route_1[0])),
-                        "display_name" => "Transport",
-                        "roles" => "regular",
-                        "TERM_1" => $get_route_1[1],
-                        "TERM_2" => $get_route_2[1],
-                        "TERM_3" => $get_route_3[1]
-                    );
-                    array_push($all_votehead, $row_data);
-                    $total += $row_data[$term];
-                }
-
-                // get the percentage and device how each votehead will get a share
-                $paid_voteheads = [];
-                foreach ($all_votehead as $key => $votehead) {
-                    $percentage = $votehead[$term] / $total * 100;
-                    $amount = $percentage / 100  * $TransAmount;
-                    $payment_data = array(
-                        "id" => $key+1,
-                        "name" => $votehead['display_name'],
-                        "real_name" => $votehead['expenses'],
-                        "amount_paid" => number_format($amount,2, '.', ''),
-                        "roles" => $votehead['roles']
-                    );
-
-                    array_push($paid_voteheads, $payment_data);
-                }
-                return $paid_voteheads;
-
-                // loop through the voteheads and get the total;
-            }
-            
-            return [array(
-                        "id" => 1,
-                        "name" => "Tuition",
-                        "real_name" => "Tuition",
-                        "amount_paid" => number_format($TransAmount,2),
-                        "roles" => "regular"
-                    )];
         }
