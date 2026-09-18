@@ -6,28 +6,28 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn", "academic_report_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "action_logs_btn", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn", "academic_report_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn", "academic_report_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "action_logs_btn", "enroll_boarding_btn", "maanage_dorm", "regsub", "managesub","managetrnsub", "course_unit_assignment", "lecture_halls_btn","generate_tt_btn","examanagement","exam_fill_btn", "academic_report_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
-        $allowed = ["sms_broadcast","update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
+        $allowed = ["sms_broadcast","update_personal_profile","general_reports", "action_logs_btn", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "3") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff","update_school_profile", "update_personal_profile", "general_reports", "apply_leave_menu", "payroll_advance"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff","update_school_profile", "update_personal_profile", "general_reports", "action_logs_btn", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "4") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "update_personal_profile", "general_reports", "apply_leave_menu", "payroll_advance"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "update_personal_profile", "general_reports", "action_logs_btn", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "5") {
-        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "apply_leave_menu", "payroll_advance", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "update_personal_profile","general_reports"];
+        $allowed = ["admit_student", "callregister", "manage_student", "pay_fees", "find_transaction", "apply_leave_menu", "payroll_advance", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "update_personal_profile","general_reports", "action_logs_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "6") {
-        $allowed = ["register_staff", "manage_staff","general_reports", "apply_leave_menu", "payroll_advance"];
+        $allowed = ["register_staff", "manage_staff","general_reports", "action_logs_btn", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "7") {
-        $allowed = ["update_personal_profile","general_reports", "apply_leave_menu", "payroll_advance"];
+        $allowed = ["update_personal_profile","general_reports", "action_logs_btn", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "8") {
         $allowed = ["update_personal_profile", "apply_leave_menu", "payroll_advance"];
@@ -511,6 +511,7 @@ function checkPresnt($array, $string){
                         <button type='button' class="sidebtns <?php echo allowed("update_school_profile"); ?> htbtn" id='update_school_profile'><span><img class="icons" src="images/updateprofile.png"></span>Update school profile</button>
                         <button type='button' class="sidebtns <?php echo allowed("update_personal_profile"); ?> " id='update_personal_profile'><span><img class="icons" src="images/updateprofile.png"></span>Update personal profile</button>
                         <button type='button' class="sidebtns <?php echo allowed("settings"); ?> htbtn" id='set_btns'><span><img class="icons" src="images/settings.png"></span>Settings</button>
+                        <button type='button' class="sidebtns <?php echo allowed("action_logs_btn"); ?> htbtn" id='action_logs_btn'><span><i class="fas fa-history text-dark"></i></span>Action Logs</button>
                         <button type='button' class="sidebtns <?php echo allowed("general_reports"); ?> htbtn" id='my_reports'><span><i class="fas fa-book text-dark"></i></span>Reports</button>
                         <button id="logout" class="sidebtns" style='color:red'><span><img class="icons" src="images/logout.png"></span>Logout</button>
                         <p class="copyright1">Ladybird SMIS Copyright © 2020 - <?php echo date("Y"); ?> | All rights reserved</p>
@@ -589,6 +590,7 @@ function checkPresnt($array, $string){
             include("main_pages/settings.php");
             include("main_pages/logsview.php");
             include("main_pages/send_feedback.php");
+            include("main_pages/action_logs.php");
             include("main_pages/my_report.php");
             include("feesprint.php");
             include("results_print.php");
@@ -1336,7 +1338,11 @@ function checkPresnt($array, $string){
                             <input class='accounts_section' type='checkbox' name='settings_sect' id='settings_sect'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='my_school_reports'>4. Reports</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='action_logs_sect'>4. Action Logs</label>
+                            <input class='accounts_section' type='checkbox' name='action_logs_sect' id='action_logs_sect'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='my_school_reports'>5. Reports</label>
                             <input class='accounts_section' type='checkbox' name='my_school_reports' id='my_school_reports'>
                         </div>
                     </div>
@@ -1528,7 +1534,11 @@ function checkPresnt($array, $string){
                             <input class='fill_data accounts_section2' type='checkbox' name='settings_sect2' id='settings_sect2'>
                         </div>
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
-                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='my_school_reports2'>4. Reports</label>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='action_logs_sect2'>4. Action Logs</label>
+                            <input class='fill_data accounts_section2' type='checkbox' name='action_logs_sect2' id='action_logs_sect2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='my_school_reports2'>5. Reports</label>
                             <input class='fill_data accounts_section2' type='checkbox' name='my_school_reports2' id='my_school_reports2'>
                         </div>
                     </div>
@@ -4943,6 +4953,7 @@ function checkPresnt($array, $string){
     <script src="assets/JS/sms.js"></script>
     <script src="assets/JS/groups.js"></script>
     <script src="assets/JS/charged_accounts.js"></script>
+    <script src="assets/JS/action_logs.js"></script>
     <script src="assets/JS/my_reports.js"></script>
     <script src="assets/JS/chart.min.js"></script>
     <script src="assets/JS/chartconfig.js"></script>
