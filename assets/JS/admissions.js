@@ -1450,19 +1450,12 @@ function deleteCookie(cookieName) {
 /*********Admission essentials**********/
 window.onload = function () {
     // get the latest updates
-    
+    var user_id = cObj("useriddds").value;
+
     // Delete the cookie before
     deleteCookie("latest_update_1_"+user_id+"");
 
-    // Example usage
-    var user_id = cObj("useriddds").value;
-    var isSet = isCookieSet("latest_update_3_"+user_id+"");
-    if (isSet) {
-        cObj("latest_updates_window").classList.add("hide");
-    }else{
-        setCookie("latest_update_3_"+user_id+"", "Latest : 8th Jul 2023", 30);
-        cObj("latest_updates_window").classList.remove("hide");
-    }
+    cObj("latest_updates_window").classList.add("hide");
 
 
     //get essentials
