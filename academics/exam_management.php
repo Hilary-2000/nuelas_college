@@ -318,7 +318,7 @@
                                     <div class="row">
                                         <div class="col-md-9">
                                             <label for="email_contents_exam_reports" class="form-control-label">Email Contents: </label>
-                                            <textarea name="email_contents_exam_reports" id="email_contents_exam_reports" cols="30" rows="5" class="form-control" placeholder="Write your message here"></textarea>
+                                            <div id="email_contents_exam_reports" style="min-height:120px;"></div>
                                         </div>
                                         <div class="col-md-3 bg-white">
                                             <p class="text-primary py-2 my-2" id="email_contents_exam_reports_preview">Previews Appear here..</p>

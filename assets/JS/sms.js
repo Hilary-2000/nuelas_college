@@ -33,7 +33,7 @@ cObj("email_recipient").onchange = function () {
 
 cObj("send_email_button").onclick = function () {
     var err = 0;
-    var myContent = CKEDITOR.instances['email_messages'].getData();
+    var myContent = getQuillData('email_messages');
     console.log(myContent);
     err += checkBlank("email_recipient");
     if (err == 0) {
@@ -48,7 +48,7 @@ cObj("send_email_button").onclick = function () {
                 cObj("email_send_errors").innerHTML = "";
                 var datapass = "send_mail_to=" + valObj("staff_email_addressess") + "&cc=" + valObj("carbon_copy1") + "&bcc=" + valObj("blind_carbon_copy1") + "&message=" + encodeURIComponent(myContent) + "&email_header=" + valObj("email_header");
                 sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("email_send_errors"), cObj("load_email_sending"), function () {
-                    CKEDITOR.instances['email_messages'].setData('');
+                    setQuillData('email_messages', '');
                     cObj("staff_email_addressess").value = "";
                     cObj("carbon_copy1").value = "";
                     cObj("blind_carbon_copy1").value = "";
@@ -69,7 +69,7 @@ cObj("send_email_button").onclick = function () {
                 cObj("email_send_errors").innerHTML = "";
                 var datapass = "send_mail_to=" + valObj("select_staff_emails") + "&cc=" + valObj("carbon_copy1") + "&bcc=" + valObj("blind_carbon_copy1") + "&message=" + encodeURIComponent(myContent) + "&email_header=" + valObj("email_header");
                 sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("email_send_errors"), cObj("load_email_sending"), function () {
-                    CKEDITOR.instances['email_messages'].setData('');
+                    setQuillData('email_messages', '');
                     // cObj("select_staff_emails").value = "";
                     cObj("carbon_copy1").value = "";
                     cObj("blind_carbon_copy1").value = "";
@@ -555,128 +555,99 @@ cObj("text_message2").onkeyup = function () {
     messageData();
 }
 cObj("send_msg_btns").onclick = function () {
-    // check if its sms or email
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        //check error
-        var err = checkBlank("text_message2");
-        if (err == 0) {
-            cObj("err_hands_error").innerHTML = "";
-            //check if its parent or staff
-            var selection = valObj("select_recipients2");
-            if (selection == "my_staff") {
-                //get selected staff
-                var data = "";
-                //get the selected staff
-                var selected_staff = document.getElementsByClassName("snamesd112e");
-                var checker = 0;
-                for (let index = 0; index < selected_staff.length; index++) {
-                    var element = selected_staff[index];
-                    if (element.checked == true) {
-                        var elem = element.id.substr(1, element.id.length);
-                        data += elem + ",";
-                        checker++;
-                    }
-                }
-                if (checker > 0) {
-                    cObj("err_hands_error").innerHTML = "<p class= 'red_notice'></p>";
-                    data = data.substr(0, data.length - 1);
-                    var datapass = "?tr_ids_excempt=" + data + "&messages=" + encodeURIComponent(valObj("text_message2"));
-                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"), function () {
-                        cObj("text_message2").value = "";
-                        cObj("message_samples").innerHTML = "";
-                        setTimeout(() => {
-                            cObj("err_hands_error").innerText = "";
-                        }, 4000);
-                    });
-                } else {
-                    cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select atleast one staff to send a message!</p>";
-                }
-            } else if (selection == "parents") {
-                var err = checkBlank("send_to_whom");
-                if (err == 0) {
-                    cObj("err_hands_error").innerHTML = "";
-                    var data = cObj("seleceted_class").innerText;
-                    var datapass = "?parents_ids_excempt=" + data + "&messages=" + encodeURIComponent(valObj("text_message2")) + "&to_whom=" + valObj("send_to_whom");
-                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"), function () {
-                        cObj("text_message2").value = "";
-                        cObj("message_samples").innerHTML = "";
-                        cObj("send_to_whom").children[0].selected = true;
-                        setTimeout(() => {
-                            cObj("err_hands_error").innerText = "";
-                        }, 4000);
-                    });
-                } else {
-                    cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select which parents you will want to send SMS.</p>";
-                }
-            }
-        } else {
-            cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Fill all the fields colored with a red border</p>";
-        }
-    } else if (send_options == "send_emails") {
-        //check error
-        var err = checkBlank("email_bulk_subject");
-        err += CKEDITOR.instances.email_editored.getData().length > 0 ? 0 : 1;
-        if (err == 0) {
-            cObj("err_hands_error").innerHTML = "";
-            //check if its parent or staff
-            var selection = valObj("select_recipients2");
-            cObj("err_hands_error").innerHTML = "";
-            if (selection == "my_staff") {
-                //get selected staff
-                var data = "";
-                //get the selected staff
-                var selected_staff = document.getElementsByClassName("snamesd112e");
-                var checker = 0;
-                for (let index = 0; index < selected_staff.length; index++) {
-                    var element = selected_staff[index];
-                    if (element.checked == true) {
-                        var elem = element.id.substr(1, element.id.length);
-                        data += elem + ",";
-                        checker++;
-                    }
-                }
-                if (checker > 0) {
-                    cObj("err_hands_error").innerHTML = "<p class= 'red_notice'></p>";
-                    data = data.substr(0, data.length - 1);
-                    var datapass = "?teacher_sms_id_group=" + data + "&messages=" + encodeURIComponent(CKEDITOR.instances.email_editored.getData()) + "&email_subject=" + valObj("email_bulk_subject") + "&email_cc=" + valObj("cc_email_bulk") + "&email_bcc=" + valObj("bcc_email_bulk");
-                    // console.log(datapass);
-                    sendData1("GET", "sms/sms.php", datapass, cObj("err_hands_error"), function () {
-                        CKEDITOR.instances['email_editored'].setData("");
-                        setTimeout(() => {
-                            cObj("err_hands_error").innerText = "";
-                            cObj("message_samples").innerHTML = "";
-                        }, 4000);
-                    });
-                } else {
-                    cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select atleast one staff so that you can send the email!</p>";
-                }
-            } else if (selection == "parents") {
-                var err = checkBlank("send_to_whom");
-                var emeil_message = CKEDITOR.instances.email_editored.getData();
-                err += emeil_message.length > 0 ? 0 : 1;
-                if (err == 0) {
-                    cObj("err_hands_error").innerHTML = "";
-                    var data = cObj("seleceted_class").innerText;
-                    var datapass = "?parents_ids_excempt_email=" + data + "&messages=" + encodeURIComponent(emeil_message) + "&to_whom=" + valObj("send_to_whom") + "&cc=" + valObj("cc_email_bulk") + "&bcc=" + valObj("bcc_email_bulk") + "&subject=" + valObj("email_bulk_subject");
-                    sendData2("GET", "sms/sms.php", datapass, cObj("err_hands_error"), cObj("load_bulk_emails_sending"), function () {
-                        CKEDITOR.instances['email_editored'].setData('');
-                        setTimeout(() => {
-                            cObj("err_hands_error").innerText = "";
-                            cObj("message_samples").innerHTML = "";
-                        }, 4000);
-                    });
-                    cObj("err_hands_error").innerHTML = "<p class='text-success'>Sending bulk E-Mails can take some time. <br>Kindly be patient as the process is done by the system</p>";
-                } else {
-                    cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select which parents you will want to send SMS.</p>";
-                }
-            } else {
-                cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Select who to send email.</p>";
-            }
-        } else {
-            cObj("err_hands_error").innerHTML = "<p class= 'red_notice'>Fill all the fields that are left blank</p>";
-        }
+    cObj("err_hands_error").innerHTML = "";
+    cObj("broadcast_sms_result").innerHTML = "";
+    cObj("broadcast_email_result").innerHTML = "";
+
+    // Dual compose: the SMS tab and Email tab are independent. Whichever tab
+    // has content gets sent -- to just the recipients whose own channel
+    // preference matches that tab (sms_table / email_address are already
+    // filtered server-side by student_channel / primary_parent_channel /
+    // secondary_parent_channel). Composing both and clicking Send once
+    // dispatches both in the same click.
+    var smsContent = valObj("text_message2").trim();
+    var emailContent = getQuillData('email_editored').trim();
+    var emailSubject = valObj("email_bulk_subject").trim();
+    var wantsSms = smsContent.length > 0;
+    var wantsEmail = emailContent.length > 0;
+
+    if (!wantsSms && !wantsEmail) {
+        cObj("err_hands_error").innerHTML = "<p class='red_notice'>Compose a message in the SMS tab, the Email tab, or both, before sending.</p>";
+        return;
     }
+    if (wantsEmail && emailSubject.length == 0) {
+        cObj("err_hands_error").innerHTML = "<p class='red_notice'>Give the email a subject before sending -- check the Email tab.</p>";
+        return;
+    }
+
+    var selection = valObj("select_recipients2");
+    if (selection == "my_staff") {
+        var data = "";
+        var selected_staff = document.getElementsByClassName("snamesd112e");
+        var checker = 0;
+        for (let index = 0; index < selected_staff.length; index++) {
+            var element = selected_staff[index];
+            if (element.checked == true) {
+                var elem = element.id.substr(1, element.id.length);
+                data += elem + ",";
+                checker++;
+            }
+        }
+        if (checker == 0) {
+            cObj("err_hands_error").innerHTML = "<p class='red_notice'>Select atleast one staff to send a message!</p>";
+            return;
+        }
+        data = data.substr(0, data.length - 1);
+
+        if (wantsSms) {
+            var datapass = "?tr_ids_excempt=" + data + "&messages=" + encodeURIComponent(smsContent);
+            sendData1("GET", "sms/sms.php", datapass, cObj("broadcast_sms_result"), function () {
+                cObj("text_message2").value = "";
+                cObj("message_samples").innerHTML = "";
+            });
+        }
+        if (wantsEmail) {
+            var datapass2 = "?teacher_sms_id_group=" + data + "&messages=" + encodeURIComponent(emailContent) + "&email_subject=" + encodeURIComponent(emailSubject) + "&email_cc=" + valObj("cc_email_bulk") + "&email_bcc=" + valObj("bcc_email_bulk");
+            sendData1("GET", "sms/sms.php", datapass2, cObj("broadcast_email_result"), function () {
+                setQuillData('email_editored', '');
+                cObj("message_samples").innerHTML = "";
+            });
+        }
+    } else if (selection == "parents") {
+        var err = checkBlank("send_to_whom");
+        if (err != 0) {
+            cObj("err_hands_error").innerHTML = "<p class='red_notice'>Select which parents/students you will want to send to.</p>";
+            return;
+        }
+        var data = cObj("seleceted_class").innerText;
+        var to_whom = valObj("send_to_whom");
+
+        if (wantsSms) {
+            var datapass = "?parents_ids_excempt=" + data + "&messages=" + encodeURIComponent(smsContent) + "&to_whom=" + to_whom;
+            sendData1("GET", "sms/sms.php", datapass, cObj("broadcast_sms_result"), function () {
+                cObj("text_message2").value = "";
+                cObj("message_samples").innerHTML = "";
+            });
+        }
+        if (wantsEmail) {
+            var datapass2 = "?parents_ids_excempt_email=" + data + "&messages=" + encodeURIComponent(emailContent) + "&to_whom=" + to_whom + "&cc=" + valObj("cc_email_bulk") + "&bcc=" + valObj("bcc_email_bulk") + "&subject=" + encodeURIComponent(emailSubject);
+            cObj("broadcast_email_result").innerHTML = "<p class='text-success'>Sending bulk E-Mails can take some time. <br>Kindly be patient as the process is done by the system</p>";
+            sendData2("GET", "sms/sms.php", datapass2, cObj("broadcast_email_result"), cObj("load_bulk_emails_sending"), function () {
+                setQuillData('email_editored', '');
+                cObj("message_samples").innerHTML = "";
+            });
+        }
+        cObj("send_to_whom").children[0].selected = true;
+    } else {
+        cObj("err_hands_error").innerHTML = "<p class='red_notice'>Select who to send to.</p>";
+        return;
+    }
+
+    setTimeout(() => {
+        cObj("err_hands_error").innerText = "";
+        cObj("broadcast_sms_result").innerText = "";
+        cObj("broadcast_email_result").innerText = "";
+    }, 6000);
 }
 cObj("type_notice_here").onkeyup = function () {
     cObj("chr_counts_in1").innerText = this.value.length;
@@ -1158,187 +1129,36 @@ function sortTable_sms() {
     });
 }
 
-cObj("insert_tag1").onclick = function () {
-    // check if its email or sms first
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
+// Broadcast composer: SMS Message and Email Message are two tabs (#broadcast_sms_tab /
+// #broadcast_email_tab) rather than a toggled either/or dropdown, so a tag-insert click
+// goes into whichever tab is currently active.
+function insertBroadcastTag(tag) {
+    var smsTabActive = cObj("broadcast_sms_tab") && cObj("broadcast_sms_tab").classList.contains("active");
+    if (smsTabActive) {
         var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_fullname}";
+        cObj("text_message2").value = valued + " " + tag;
         messageData();
     } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_fullname}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
+        var valued = getQuillData('email_editored');
+        setQuillData('email_editored', valued + " " + tag);
+        html_messageData(getQuillData('email_editored'));
     }
 }
-cObj("insert_tag2").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_first_name}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_first_name}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag3").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_class}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_class}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag4").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_age}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_age}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag5").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_fees_balance}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_fees_balance}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag6").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_fees_to_pay}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_fees_to_pay}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag7").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_fees_paid}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_fees_paid}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag8").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {par_fullname}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {par_fullname}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag9").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {today}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {today}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag10").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {par_first_name}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {par_first_name}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag11").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {title_1}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {title_1}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag12").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {title_2}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {title_2}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag13").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_noun}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_noun}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag14").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {stud_adm}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {stud_adm}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
-cObj("insert_tag15").onclick = function () {
-    var send_options = cObj("send_options").value;
-    if (send_options == "send_sms") {
-        var valued = cObj("text_message2").value.trim();
-        cObj("text_message2").value = valued + " {next_module_fees}";
-        messageData();
-    } else {
-        var valued = CKEDITOR.instances.email_editored.getData();
-        CKEDITOR.instances['email_editored'].setData(valued + " {next_module_fees}");
-        html_messageData(CKEDITOR.instances.email_editored.getData());
-    }
-}
+cObj("insert_tag1").onclick = function () { insertBroadcastTag("{stud_fullname}"); }
+cObj("insert_tag2").onclick = function () { insertBroadcastTag("{stud_first_name}"); }
+cObj("insert_tag3").onclick = function () { insertBroadcastTag("{stud_class}"); }
+cObj("insert_tag4").onclick = function () { insertBroadcastTag("{stud_age}"); }
+cObj("insert_tag5").onclick = function () { insertBroadcastTag("{stud_fees_balance}"); }
+cObj("insert_tag6").onclick = function () { insertBroadcastTag("{stud_fees_to_pay}"); }
+cObj("insert_tag7").onclick = function () { insertBroadcastTag("{stud_fees_paid}"); }
+cObj("insert_tag8").onclick = function () { insertBroadcastTag("{par_fullname}"); }
+cObj("insert_tag9").onclick = function () { insertBroadcastTag("{today}"); }
+cObj("insert_tag10").onclick = function () { insertBroadcastTag("{par_first_name}"); }
+cObj("insert_tag11").onclick = function () { insertBroadcastTag("{title_1}"); }
+cObj("insert_tag12").onclick = function () { insertBroadcastTag("{title_2}"); }
+cObj("insert_tag13").onclick = function () { insertBroadcastTag("{stud_noun}"); }
+cObj("insert_tag14").onclick = function () { insertBroadcastTag("{stud_adm}"); }
+cObj("insert_tag15").onclick = function () { insertBroadcastTag("{next_module_fees}"); }
 function process_messages(data) {
     var message = data;
     message = message.replace(/{stud_fullname}/g, "<b class='text-primary'>Esmond Adala</b>");
@@ -1762,7 +1582,93 @@ cObj("rather_view_sms_history").onclick = function () {
 cObj("welcome_message_editor").onkeyup = function () {
     cObj("welcome_message_viewer").innerHTML = process_messages(valObj("welcome_message_editor"));
 }
-// get message 
+// Toggles a template's saved/not-set status dot (green = saved with content
+// in the database, grey = no row for that message_type/channel, or the row's
+// content is blank).
+function setTemplateStatusDot(statusId, isSet) {
+    var dot = cObj(statusId);
+    if (!dot) {
+        return;
+    }
+    dot.title = isSet ? "Saved" : "Not set";
+    var icon = dot.querySelector("i");
+    if (icon) {
+        icon.classList.toggle("text-success", isSet);
+        icon.classList.toggle("text-secondary", !isSet);
+    }
+}
+function hasTemplateContent(value) {
+    return !!(value && String(value).trim().length > 0);
+}
+
+// All rich text fields in the app are Quill (https://quilljs.com) instances,
+// mounted on a <div> (not a <textarea> -- Quill manages its own editable
+// content). quillInstances holds every editor keyed by its container's id.
+var quillInstances = {};
+var QUILL_TOOLBAR_OPTIONS = [
+    ['bold', 'italic', 'underline'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    ['link', 'image'],
+    ['clean']
+];
+function createQuillEditor(id) {
+    if (!cObj(id)) {
+        return null;
+    }
+    var quill = new Quill('#' + id, {
+        theme: 'snow',
+        modules: { toolbar: QUILL_TOOLBAR_OPTIONS }
+    });
+    quillInstances[id] = quill;
+    return quill;
+}
+function getQuillData(id) {
+    return quillInstances[id] ? quillInstances[id].root.innerHTML : (cObj(id) ? cObj(id).innerHTML : "");
+}
+function setQuillData(id, html) {
+    if (quillInstances[id]) {
+        quillInstances[id].setContents([]);
+        quillInstances[id].clipboard.dangerouslyPasteHTML(html || "");
+    } else if (cObj(id)) {
+        cObj(id).innerHTML = html || "";
+    }
+}
+
+// Email template editors are Quill instances (see homepage.php for the
+// createQuillEditor() calls). This reads their rich text content.
+function getEmailEditorData(id) {
+    return getQuillData(id);
+}
+// Renders both the subject and body (with sample tag values) into the
+// template's "Sample Message" viewer. Shared by the Quill text-change/subject
+// bindings in homepage.php and by setEmailTemplateEditor() below, so the
+// preview always looks the same regardless of what triggered the refresh.
+function refreshEmailTemplatePreview(editorId) {
+    var subjectId = editorId.replace("_editor_email", "_subject_email");
+    var viewerId = editorId.replace("_editor_email", "_viewer_email");
+    if (!cObj(viewerId)) {
+        return;
+    }
+    var subjectPreview = cObj(subjectId) ? process_messages(cObj(subjectId).value) : "";
+    var bodyPreview = process_messages(getEmailEditorData(editorId));
+    cObj(viewerId).innerHTML = "<b>Subject:</b> " + subjectPreview + "<hr class='my-1'>" + bodyPreview;
+}
+
+function setEmailTemplateEditor(editorId, viewerId, savedValue) {
+    if (savedValue) {
+        // a template was already saved for this message type -- load it
+        setQuillData(editorId, savedValue);
+    }
+    // otherwise leave the editor's current content (the default copy) untouched
+    // until the user saves it themselves
+    refreshEmailTemplatePreview(editorId);
+    var statusId = editorId.replace("_editor_email", "_status_email");
+    setTemplateStatusDot(statusId, hasTemplateContent(savedValue));
+}
+
+// get message
 function get_message_samples() {
     var datapass = "?get_messages_samples=true";
     sendData2("GET", "sms/sms.php", datapass, cObj("messages_holder_templates"), cObj("class_loader_tags"));
@@ -1786,32 +1692,69 @@ function get_message_samples() {
                     var student_welcome_message = null;
                     var module_progression_message = null;
                     var student_module_progression_message = null;
+
+                    // email variants (channel == "email")
+                    var welcome_message_email = null, welcome_message_email_subject = "";
+                    var confirmation_message_email = null, confirmation_message_email_subject = "";
+                    var parent_account_confirmation_message_email = null, parent_account_confirmation_message_email_subject = "";
+                    var student_welcome_message_email = null, student_welcome_message_email_subject = "";
+                    var module_progression_message_email = null, module_progression_message_email_subject = "";
+                    var student_module_progression_message_email = null, student_module_progression_message_email_subject = "";
+
                     for (let index = 0; index < messages_holder.length; index++) {
                         const element = messages_holder[index];
+                        var isEmail = element['channel'] == "email";
                         if(element['message_type'] == "welcome_message"){
-                            welcome_message = element['message_content'];
+                            if (isEmail) { welcome_message_email = element['message_content']; welcome_message_email_subject = element['message_subject'] || ""; }
+                            else { welcome_message = element['message_content']; }
                         }
 
                         if(element['message_type'] == "student_welcome_message"){
-                            student_welcome_message = element['message_content'];
+                            if (isEmail) { student_welcome_message_email = element['message_content']; student_welcome_message_email_subject = element['message_subject'] || ""; }
+                            else { student_welcome_message = element['message_content']; }
                         }
 
                         if(element['message_type'] == "confirmation_message"){
-                            confirmation_message = element['message_content'];
+                            if (isEmail) { confirmation_message_email = element['message_content']; confirmation_message_email_subject = element['message_subject'] || ""; }
+                            else { confirmation_message = element['message_content']; }
                         }
 
                         if(element['message_type'] == "parent_account_confirmation_message"){
-                            parent_account_confirmation_message = element['message_content'];
+                            if (isEmail) { parent_account_confirmation_message_email = element['message_content']; parent_account_confirmation_message_email_subject = element['message_subject'] || ""; }
+                            else { parent_account_confirmation_message = element['message_content']; }
                         }
 
                         if(element['message_type'] == "module_progression_message"){
-                            module_progression_message = element['message_content'];
+                            if (isEmail) { module_progression_message_email = element['message_content']; module_progression_message_email_subject = element['message_subject'] || ""; }
+                            else { module_progression_message = element['message_content']; }
                         }
 
                         if(element['message_type'] == "student_module_progression_message"){
-                            student_module_progression_message = element['message_content'];
+                            if (isEmail) { student_module_progression_message_email = element['message_content']; student_module_progression_message_email_subject = element['message_subject'] || ""; }
+                            else { student_module_progression_message = element['message_content']; }
                         }
                     }
+
+                    // populate the email tab fields. A saved template (non-null) replaces
+                    // the editor/subject's content; otherwise the default copy already
+                    // baked into the page is left untouched until the user saves it.
+                    if (welcome_message_email_subject) { cObj("welcome_message_subject_email").value = welcome_message_email_subject; }
+                    setEmailTemplateEditor("welcome_message_editor_email", "welcome_message_viewer_email", welcome_message_email);
+
+                    if (student_welcome_message_email_subject) { cObj("student_welcome_message_subject_email").value = student_welcome_message_email_subject; }
+                    setEmailTemplateEditor("student_welcome_message_editor_email", "student_welcome_message_viewer_email", student_welcome_message_email);
+
+                    if (confirmation_message_email_subject) { cObj("confirmation_message_subject_email").value = confirmation_message_email_subject; }
+                    setEmailTemplateEditor("confirmation_message_editor_email", "confirmation_message_viewer_email", confirmation_message_email);
+
+                    if (parent_account_confirmation_message_email_subject) { cObj("parent_confirmation_message_subject_email").value = parent_account_confirmation_message_email_subject; }
+                    setEmailTemplateEditor("parent_confirmation_message_editor_email", "parent_confirmation_message_viewer_email", parent_account_confirmation_message_email);
+
+                    if (module_progression_message_email_subject) { cObj("module_progression_message_subject_email").value = module_progression_message_email_subject; }
+                    setEmailTemplateEditor("module_progression_message_editor_email", "module_progression_message_viewer_email", module_progression_message_email);
+
+                    if (student_module_progression_message_email_subject) { cObj("student_module_progression_message_subject_email").value = student_module_progression_message_email_subject; }
+                    setEmailTemplateEditor("student_module_progression_message_editor_email", "student_module_progression_message_viewer_email", student_module_progression_message_email);
 
                     // set the welcome message if its not null
                     if (student_welcome_message) {
@@ -1821,6 +1764,7 @@ function get_message_samples() {
                         // default value for the welcome message
                         cObj("student_welcome_message_viewer").innerHTML = process_messages(cObj("student_welcome_message_editor").value);
                     }
+                    setTemplateStatusDot("student_welcome_message_status", hasTemplateContent(student_welcome_message));
 
                     // set the welcome message if its not null
                     if (welcome_message) {
@@ -1830,6 +1774,7 @@ function get_message_samples() {
                         // default value for the welcome message
                         cObj("welcome_message_viewer").innerHTML = process_messages(cObj("welcome_message_editor").value);
                     }
+                    setTemplateStatusDot("welcome_message_status", hasTemplateContent(welcome_message));
 
                     // set the welcome message if its not null
                     if (confirmation_message) {
@@ -1839,6 +1784,7 @@ function get_message_samples() {
                         // default value for the welcome message
                         cObj("confirmation_message_viewer").innerHTML = process_messages(cObj("confirmation_message_editor").value);
                     }
+                    setTemplateStatusDot("confirmation_message_status", hasTemplateContent(confirmation_message));
 
                     if(parent_account_confirmation_message){
                         cObj("parent_confirmation_message_editor").value = parent_account_confirmation_message;
@@ -1846,6 +1792,7 @@ function get_message_samples() {
                     }else{
                         cObj("parent_confirmation_message_viewer").innerHTML = process_messages(cObj("parent_confirmation_message_editor").value);
                     }
+                    setTemplateStatusDot("parent_confirmation_message_status", hasTemplateContent(parent_account_confirmation_message));
 
                     if(module_progression_message){
                         cObj("module_progression_message_editor").value = module_progression_message;
@@ -1853,6 +1800,7 @@ function get_message_samples() {
                     }else{
                         cObj("module_progression_message_viewer").innerHTML = process_messages(cObj("module_progression_message_editor").value);
                     }
+                    setTemplateStatusDot("module_progression_message_status", hasTemplateContent(module_progression_message));
 
                     if(student_module_progression_message){
                         cObj("student_module_progression_message_editor").value = student_module_progression_message;
@@ -1860,6 +1808,7 @@ function get_message_samples() {
                     }else{
                         cObj("student_module_progression_message_viewer").innerHTML = process_messages(cObj("student_module_progression_message_editor").value);
                     }
+                    setTemplateStatusDot("student_module_progression_message_status", hasTemplateContent(student_module_progression_message));
                 }else{
                     // default value for the welcome message
                     cObj("welcome_message_viewer").innerHTML = process_messages(cObj("welcome_message_editor").value);
@@ -1876,22 +1825,30 @@ function get_message_samples() {
 cObj("save_welcome_message").onclick = function () {
     // save the welcome message
     var datapass = "?save_welcome_message=true&welcome_message="+valObj("welcome_message_editor");
-    sendData2("GET", "sms/sms.php", datapass, cObj("welcome_message_template_holder"), cObj("class_loader_tags"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("welcome_message_template_holder"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("welcome_message_status", hasTemplateContent(valObj("welcome_message_editor")));
+    });
 }
 cObj("student_save_welcome_message").onclick = function () {
     // save the welcome message
     var datapass = "?student_save_welcome_message=true&welcome_message="+valObj("student_welcome_message_editor");
-    sendData2("GET", "sms/sms.php", datapass, cObj("student_welcome_message_template_holder"), cObj("class_loader_tags"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("student_welcome_message_template_holder"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("student_welcome_message_status", hasTemplateContent(valObj("student_welcome_message_editor")));
+    });
 }
 cObj("save_confirmation_message").onclick = function () {
     // save the welcome message
     var datapass = "?save_confirmation_message=true&confirmation_message="+valObj("confirmation_message_editor");
-    sendData2("GET", "sms/sms.php", datapass, cObj("confirmation_message_template_holder"), cObj("class_loader_tags"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("confirmation_message_template_holder"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("confirmation_message_status", hasTemplateContent(valObj("confirmation_message_editor")));
+    });
 }
 cObj("save_parent_confirmation_message").onclick = function () {
     // save the welcome message
     var datapass = "?save_parent_confirmation=true&parent_account_msg="+valObj("parent_confirmation_message_editor");
-    sendData2("GET", "sms/sms.php", datapass, cObj("parent_confirmation_message_template_holder"), cObj("class_loader_tags"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("parent_confirmation_message_template_holder"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("parent_confirmation_message_status", hasTemplateContent(valObj("parent_confirmation_message_editor")));
+    });
 }
 cObj("parent_confirmation_message_editor").onkeyup = function () {
     cObj("parent_confirmation_message_viewer").innerHTML = process_messages(this.value);
@@ -1899,7 +1856,9 @@ cObj("parent_confirmation_message_editor").onkeyup = function () {
 cObj("save_module_progression_message").onclick = function () {
     // save the module progression message
     var datapass = "?save_module_progression_message=true&module_progression_message="+valObj("module_progression_message_editor");
-    sendData2("GET", "sms/sms.php", datapass, cObj("module_progression_message_template_holder"), cObj("class_loader_tags"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("module_progression_message_template_holder"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("module_progression_message_status", hasTemplateContent(valObj("module_progression_message_editor")));
+    });
 }
 cObj("module_progression_message_editor").onkeyup = function () {
     cObj("module_progression_message_viewer").innerHTML = process_messages(this.value);
@@ -1907,11 +1866,53 @@ cObj("module_progression_message_editor").onkeyup = function () {
 cObj("save_student_module_progression_message").onclick = function () {
     // save the student module progression message
     var datapass = "?save_student_module_progression_message=true&student_module_progression_message="+valObj("student_module_progression_message_editor");
-    sendData2("GET", "sms/sms.php", datapass, cObj("student_module_progression_message_template_holder"), cObj("class_loader_tags"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("student_module_progression_message_template_holder"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("student_module_progression_message_status", hasTemplateContent(valObj("student_module_progression_message_editor")));
+    });
 }
 cObj("student_module_progression_message_editor").onkeyup = function () {
     cObj("student_module_progression_message_viewer").innerHTML = process_messages(this.value);
 }
+
+// email template variants -- editors are CKEditor instances (see homepage.php);
+// live preview-on-type is wired there too, so only the Save handlers live here.
+cObj("save_welcome_message_email").onclick = function () {
+    var datapass = "?save_welcome_message=true&channel=email&subject="+encodeURIComponent(valObj("welcome_message_subject_email"))+"&welcome_message="+encodeURIComponent(getEmailEditorData("welcome_message_editor_email"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("welcome_message_template_holder_email"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("welcome_message_status_email", hasTemplateContent(getEmailEditorData("welcome_message_editor_email")));
+    });
+}
+cObj("student_save_welcome_message_email").onclick = function () {
+    var datapass = "?student_save_welcome_message=true&channel=email&subject="+encodeURIComponent(valObj("student_welcome_message_subject_email"))+"&welcome_message="+encodeURIComponent(getEmailEditorData("student_welcome_message_editor_email"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("student_welcome_message_template_holder_email"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("student_welcome_message_status_email", hasTemplateContent(getEmailEditorData("student_welcome_message_editor_email")));
+    });
+}
+cObj("save_confirmation_message_email").onclick = function () {
+    var datapass = "?save_confirmation_message=true&channel=email&subject="+encodeURIComponent(valObj("confirmation_message_subject_email"))+"&confirmation_message="+encodeURIComponent(getEmailEditorData("confirmation_message_editor_email"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("confirmation_message_template_holder_email"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("confirmation_message_status_email", hasTemplateContent(getEmailEditorData("confirmation_message_editor_email")));
+    });
+}
+cObj("save_parent_confirmation_message_email").onclick = function () {
+    var datapass = "?save_parent_confirmation=true&channel=email&subject="+encodeURIComponent(valObj("parent_confirmation_message_subject_email"))+"&parent_account_msg="+encodeURIComponent(getEmailEditorData("parent_confirmation_message_editor_email"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("parent_confirmation_message_template_holder_email"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("parent_confirmation_message_status_email", hasTemplateContent(getEmailEditorData("parent_confirmation_message_editor_email")));
+    });
+}
+cObj("save_module_progression_message_email").onclick = function () {
+    var datapass = "?save_module_progression_message=true&channel=email&subject="+encodeURIComponent(valObj("module_progression_message_subject_email"))+"&module_progression_message="+encodeURIComponent(getEmailEditorData("module_progression_message_editor_email"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("module_progression_message_template_holder_email"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("module_progression_message_status_email", hasTemplateContent(getEmailEditorData("module_progression_message_editor_email")));
+    });
+}
+cObj("save_student_module_progression_message_email").onclick = function () {
+    var datapass = "?save_student_module_progression_message=true&channel=email&subject="+encodeURIComponent(valObj("student_module_progression_message_subject_email"))+"&student_module_progression_message="+encodeURIComponent(getEmailEditorData("student_module_progression_message_editor_email"));
+    sendData2("GET", "sms/sms.php", datapass, cObj("student_module_progression_message_template_holder_email"), cObj("class_loader_tags"), function () {
+        setTemplateStatusDot("student_module_progression_message_status_email", hasTemplateContent(getEmailEditorData("student_module_progression_message_editor_email")));
+    });
+}
+
 cObj("back_to_message_dash").onclick = function () {
     cObj("sms_broadcast").click();
 }

@@ -9866,10 +9866,11 @@
         }
     }
 
-    function getMessage($message_type, $conn2)
+    function getMessage($message_type, $conn2, $channel = 'sms')
     {
-        $select = "SELECT * FROM `template_messages` WHERE `message_type` = '$message_type';";
+        $select = "SELECT * FROM `template_messages` WHERE `message_type` = ? AND `channel` = ?;";
         $stmt = $conn2->prepare($select);
+        $stmt->bind_param("ss", $message_type, $channel);
         $stmt->execute();
         $result = $stmt->get_result();
         $message = null;
@@ -9883,13 +9884,43 @@
         return $message;
     }
 
-    function get_message_template($message_type, $conn2, $adm_no, $amount_paid = 0, $balance = 0, $which_parent = "first_parent", $transaction_id = null)
+    // fetch the email subject saved for a given template, or a sensible fallback
+    function getMessageSubject($message_type, $conn2, $fallback = "")
+    {
+        $select = "SELECT `message_subject` FROM `template_messages` WHERE `message_type` = ? AND `channel` = 'email';";
+        $stmt = $conn2->prepare($select);
+        $stmt->bind_param("s", $message_type);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result) {
+            if ($row = $result->fetch_assoc()) {
+                return !empty($row['message_subject']) ? $row['message_subject'] : $fallback;
+            }
+        }
+        return $fallback;
+    }
+
+    // queue an email into the email_address table for the background email_agent to send.
+    function queueEmailMessage($conn2, $to, $subject, $message, $cc = null, $bcc = null)
+    {
+        if (empty($to)) {
+            return;
+        }
+        $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`,`email_status`,`processing_id`) VALUES (?,?,?,?,?,?,?,'pending',0)";
+        $stmt = $conn2->prepare($insert);
+        $sender_from = isset($_SESSION['school_mail']) ? $_SESSION['school_mail'] : '';
+        $date_time = date("YmdHis");
+        $stmt->bind_param("sssssss", $sender_from, $to, $bcc, $date_time, $subject, $message, $cc);
+        $stmt->execute();
+    }
+
+    function get_message_template($message_type, $conn2, $adm_no, $amount_paid = 0, $balance = 0, $which_parent = "first_parent", $transaction_id = null, $channel = 'sms')
     {
         $final_message = null;
         if ($adm_no == "0") {
             return $final_message;
         }
-        $final_message = getMessage($message_type, $conn2);
+        $final_message = getMessage($message_type, $conn2, $channel);
         if ($final_message == null) {
             return null;
         }

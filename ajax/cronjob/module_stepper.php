@@ -8,17 +8,52 @@ date_default_timezone_set('Africa/Nairobi');
 
 // Sends the "module_progression_message" template (if one has been saved under
 // Template Messages) to whichever parent contacts are on file for the student,
-// right as the cron steps them into their next module.
+// right as the cron steps them into their next module. Routes each parent to
+// SMS or email individually, per that parent's own channel preference.
 function notifyModuleProgression($student_row, $conn, $conn2) {
-    $progression_message = getMessage("module_progression_message", $conn2);
+    $contacts = explode(",", getPhoneNumber($conn2, $student_row['adm_no']));
+    $parent_1 = isset($contacts[1]) ? $contacts[1] : "";
+    $parent_2 = isset($contacts[2]) ? $contacts[2] : "";
+
+    $primary_channel = $student_row['primary_parent_channel'] ?? '';
+    $secondary_channel = $student_row['secondary_parent_channel'] ?? '';
+
+    // email recipients first, they don't need the SMS API
+    if ($primary_channel == 'email' && !empty($student_row['parent_email'])) {
+        $email_message_content = getMessage("module_progression_message", $conn2, 'email');
+        if ($email_message_content !== null) {
+            $message = process_sms([$student_row], $email_message_content, $student_row['adm_no'], $conn2, "primary");
+            $subject = process_sms([$student_row], getMessageSubject("module_progression_message", $conn2, "Module Progression Update"), $student_row['adm_no'], $conn2, "primary");
+            queueEmailMessage($conn2, $student_row['parent_email'], $subject, $message);
+        }
+    }
+    if ($secondary_channel == 'email' && !empty($student_row['parent_email2'])) {
+        $email_message_content = getMessage("module_progression_message", $conn2, 'email');
+        if ($email_message_content !== null) {
+            $message = process_sms([$student_row], $email_message_content, $student_row['adm_no'], $conn2, "secondary");
+            $subject = process_sms([$student_row], getMessageSubject("module_progression_message", $conn2, "Module Progression Update"), $student_row['adm_no'], $conn2, "secondary");
+            queueEmailMessage($conn2, $student_row['parent_email2'], $subject, $message);
+        }
+    }
+
+    // remaining SMS-channel recipients (channel must be explicitly "sms" -- an
+    // undefined/blank channel means skip that recipient entirely, no assumption)
+    $recipients = [];
+    if ($primary_channel == 'sms') {
+        $recipients[] = ["number" => $parent_1, "which" => "primary"];
+    }
+    if ($secondary_channel == 'sms') {
+        $recipients[] = ["number" => $parent_2, "which" => "secondary"];
+    }
+    if (count($recipients) == 0) {
+        return;
+    }
+
+    $progression_message = getMessage("module_progression_message", $conn2, 'sms');
     if ($progression_message === null) {
         // nothing configured under Template Messages yet -- stay silent
         return;
     }
-
-    $contacts = explode(",", getPhoneNumber($conn2, $student_row['adm_no']));
-    $parent_1 = isset($contacts[1]) ? $contacts[1] : "";
-    $parent_2 = isset($contacts[2]) ? $contacts[2] : "";
 
     $api_key = getApiKey($conn2);
     $school = 1;
@@ -34,10 +69,6 @@ function notifyModuleProgression($student_row, $conn, $conn2) {
     $shortcodes = $school == 0 ? getShortCode($conn) : getShortCode($conn2);
     $send_sms_url = $school == 0 ? getUrl($conn) : getUrl($conn2);
 
-    $recipients = [
-        ["number" => $parent_1, "which" => "primary"],
-        ["number" => $parent_2, "which" => "secondary"],
-    ];
     foreach ($recipients as $recipient) {
         if (strlen($recipient["number"]) < 10) {
             continue;
@@ -59,9 +90,29 @@ function notifyModuleProgression($student_row, $conn, $conn2) {
 
 // Sends the "student_module_progression_message" template (if one has been saved
 // under Template Messages) to the student's own contact, right as the cron steps
-// them into their next module.
+// them into their next module. Routes to SMS or email per the student's own
+// channel preference.
 function notifyStudentModuleProgression($student_row, $conn, $conn2) {
-    $progression_message = getMessage("student_module_progression_message", $conn2);
+    $student_channel = $student_row['student_channel'] ?? '';
+
+    if ($student_channel == 'email') {
+        if (!empty($student_row['student_email'])) {
+            $email_message_content = getMessage("student_module_progression_message", $conn2, 'email');
+            if ($email_message_content !== null) {
+                $message = process_sms([$student_row], $email_message_content, $student_row['adm_no'], $conn2, "primary");
+                $subject = process_sms([$student_row], getMessageSubject("student_module_progression_message", $conn2, "Module Progression Update"), $student_row['adm_no'], $conn2, "primary");
+                queueEmailMessage($conn2, $student_row['student_email'], $subject, $message);
+            }
+        }
+        return;
+    }
+
+    if ($student_channel != 'sms') {
+        // channel not defined for this student -- skip sending entirely, no assumption
+        return;
+    }
+
+    $progression_message = getMessage("student_module_progression_message", $conn2, 'sms');
     if ($progression_message === null) {
         // nothing configured under Template Messages yet -- stay silent
         return;

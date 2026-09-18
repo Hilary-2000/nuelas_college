@@ -140,6 +140,12 @@ The canonical schema lives in two files inside `.claude/`:
 - Credentials: `root` / *(no password)* on `localhost`
 - All queries use MySQLi prepared statements with `bind_param`
 
+### Local development database
+
+This machine's MySQL server hosts many databases beyond this repo's three colleges, including unrelated live customer schools (via the shared `ladybird_smis` platform, e.g. `ruiru_sch`, `43551250_db`, `college_sims`). For local development and testing, `nuelas_college` is the only database in use, regardless of which git branch (`main`, `lawrenzo`, `lizola_college`) is checked out. `lawrenzo` has no dedicated database of its own.
+
+**When making a schema change** (`ALTER TABLE`, seeded `settings` rows, etc.), apply it to `nuelas_college` only. Do not fan it out to other databases on the server without the user explicitly asking for that broader scope.
+
 ### Master DB tables (`ladybird_smis`)
 
 Core tables for platform-level management:
