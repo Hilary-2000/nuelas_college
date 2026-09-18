@@ -3485,6 +3485,19 @@ function tablebtnlistener() {
                     var preferredComm = splitdata[57] || "school_default";
                     var preferredCommRadio = document.querySelector('input[name="preferred_communication"][value="' + preferredComm + '"]');
                     if (preferredCommRadio) preferredCommRadio.checked = true;
+
+                    // preferred communication channel per entity (indices 59-61)
+                    var studentChannel = splitdata[59] || "sms";
+                    var studentChannelRadio = document.querySelector('input[name="student_channel"][value="' + studentChannel + '"]');
+                    if (studentChannelRadio) studentChannelRadio.checked = true;
+
+                    var primaryParentChannel = splitdata[60] || "sms";
+                    var primaryParentChannelRadio = document.querySelector('input[name="primary_parent_channel"][value="' + primaryParentChannel + '"]');
+                    if (primaryParentChannelRadio) primaryParentChannelRadio.checked = true;
+
+                    var secondaryParentChannel = splitdata[61] || "sms";
+                    var secondaryParentChannelRadio = document.querySelector('input[name="secondary_parent_channel"][value="' + secondaryParentChannel + '"]');
+                    if (secondaryParentChannelRadio) secondaryParentChannelRadio.checked = true;
                 }
                 stopInterval(ids);
             }
@@ -4243,7 +4256,15 @@ cObj("updatestudinfor").onclick = function () {
                 var edit_heard_others_specify = cObj("edit_heard_others").checked ? cObj("edit_heard_others_specify").value : "";
                 var preferred_communication_checked = document.querySelector('input[name="preferred_communication"]:checked');
                 var preferred_communication = preferred_communication_checked ? preferred_communication_checked.value : "school_default";
-                datapass += "&edit_county="+encodeURIComponent(edit_county)+"&edit_heard_about_us="+encodeURIComponent(edit_heard_about_us)+"&edit_referral_name="+encodeURIComponent(edit_referral_name)+"&edit_referral_phone="+encodeURIComponent(edit_referral_phone)+"&edit_heard_others_specify="+encodeURIComponent(edit_heard_others_specify)+"&preferred_communication="+encodeURIComponent(preferred_communication);
+
+                var student_channel_checked = document.querySelector('input[name="student_channel"]:checked');
+                var student_channel = student_channel_checked ? student_channel_checked.value : "sms";
+                var primary_parent_channel_checked = document.querySelector('input[name="primary_parent_channel"]:checked');
+                var primary_parent_channel = primary_parent_channel_checked ? primary_parent_channel_checked.value : "sms";
+                var secondary_parent_channel_checked = document.querySelector('input[name="secondary_parent_channel"]:checked');
+                var secondary_parent_channel = secondary_parent_channel_checked ? secondary_parent_channel_checked.value : "sms";
+
+                datapass += "&edit_county="+encodeURIComponent(edit_county)+"&edit_heard_about_us="+encodeURIComponent(edit_heard_about_us)+"&edit_referral_name="+encodeURIComponent(edit_referral_name)+"&edit_referral_phone="+encodeURIComponent(edit_referral_phone)+"&edit_heard_others_specify="+encodeURIComponent(edit_heard_others_specify)+"&preferred_communication="+encodeURIComponent(preferred_communication)+"&student_channel="+encodeURIComponent(student_channel)+"&primary_parent_channel="+encodeURIComponent(primary_parent_channel)+"&secondary_parent_channel="+encodeURIComponent(secondary_parent_channel);
 
                 cObj("updateerrors").innerHTML = "";
                 sendData1("POST", "administration/admissions.php", datapass, cObj("updateerrors"));
@@ -4732,7 +4753,15 @@ cObj("submitbtn").onclick = function () {
             var referral_phone = cObj("heard_referral").checked ? valObj("referral_phone") : "";
             var heard_others_specify = cObj("heard_others").checked ? valObj("heard_others_specify") : "";
 
+            var student_channel_checked = document.querySelector('input[name="student_channel"]:checked');
+            var student_channel = student_channel_checked ? student_channel_checked.value : "sms";
+            var primary_parent_channel_checked = document.querySelector('input[name="primary_parent_channel"]:checked');
+            var primary_parent_channel = primary_parent_channel_checked ? primary_parent_channel_checked.value : "sms";
+            var secondary_parent_channel_checked = document.querySelector('input[name="secondary_parent_channel"]:checked');
+            var secondary_parent_channel = secondary_parent_channel_checked ? secondary_parent_channel_checked.value : "sms";
+
             var datapass = "admit=true&surname=" + encodeURIComponent(surname) + "&fname=" + encodeURIComponent(fname) + "&sname=" + encodeURIComponent(sname) +"&doa="+ encodeURIComponent(doa) +"&dob=" + encodeURIComponent(dob) + "&gender=" + encodeURIComponent(gender) + "&enrolment=" + encodeURIComponent(errolment) + "&parentname=" + encodeURIComponent(parname) + "&parentconts=" + encodeURIComponent(parconts) + "&upis=" + encodeURIComponent(upis);
+            datapass += "&student_channel=" + encodeURIComponent(student_channel) + "&primary_parent_channel=" + encodeURIComponent(primary_parent_channel) + "&secondary_parent_channel=" + encodeURIComponent(secondary_parent_channel);
             datapass += "&parentrela=" + encodeURIComponent(parrelation) + "&pemail=" + encodeURIComponent(pemail) + "&bcno=" + encodeURIComponent(bcno) + "&address=" + encodeURIComponent(address) + "&admnos=" + encodeURIComponent(admno);
             datapass += "&parentrela2=" + encodeURIComponent(parrelation2) + "&pemail2=" + encodeURIComponent(pemail2) + "&parentname2=" + encodeURIComponent(parname2) + "&parentconts2=" + encodeURIComponent(parconts2);
             datapass += "&parent_accupation1=" + encodeURIComponent(parent_accupation1) + "&parent_accupation2=" + encodeURIComponent(parent_accupation2) + "&last_year_academic_balance=" + encodeURIComponent(last_year_academic_balance);
@@ -7784,18 +7813,6 @@ cObj("delete_clubs_yes").onclick = function () {
     }, 200);
 }
 
-cObj("send_options").onchange = function () {
-    var my_value = cObj("send_options").value;
-    if (my_value == "send_emails") {
-        cObj("email_sender").classList.remove("hide");
-        cObj("text_message2").classList.add("hide");
-        cObj("hide_text_areas").classList.remove("hide");
-    } else {
-        cObj("email_sender").classList.add("hide");
-        cObj("text_message2").classList.remove("hide");
-        cObj("hide_text_areas").classList.add("hide");
-    }
-}
 
 function working_onit(event) {
     html_messageData(event.getContent());

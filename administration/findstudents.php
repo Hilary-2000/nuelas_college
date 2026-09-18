@@ -796,6 +796,45 @@
                                     </label>
                                 </div>
                             </div>
+                            <hr class="mt-2 mb-2">
+                            <div class="px-1 pb-1">
+                                <p class="mb-2" style="font-size:13px;font-weight:600;color:#555;"><i class="fas fa-satellite-dish mr-1"></i> Preferred Communication Channel</p>
+                                <div class="d-flex flex-wrap" style="gap:24px;">
+                                    <div>
+                                        <label class="mb-1 d-block" style="font-size:12px;color:#777;">Student</label>
+                                        <label class="mb-0" style="cursor:pointer;font-size:13px;">
+                                            <input type="radio" name="student_channel" id="student_channel_sms" value="sms" checked>
+                                            &nbsp;SMS
+                                        </label>
+                                        <label class="mb-0 ml-2" style="cursor:pointer;font-size:13px;">
+                                            <input type="radio" name="student_channel" id="student_channel_email" value="email">
+                                            &nbsp;Email
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label class="mb-1 d-block" style="font-size:12px;color:#777;">Primary Parent</label>
+                                        <label class="mb-0" style="cursor:pointer;font-size:13px;">
+                                            <input type="radio" name="primary_parent_channel" id="primary_parent_channel_sms" value="sms" checked>
+                                            &nbsp;SMS
+                                        </label>
+                                        <label class="mb-0 ml-2" style="cursor:pointer;font-size:13px;">
+                                            <input type="radio" name="primary_parent_channel" id="primary_parent_channel_email" value="email">
+                                            &nbsp;Email
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label class="mb-1 d-block" style="font-size:12px;color:#777;">Secondary Parent</label>
+                                        <label class="mb-0" style="cursor:pointer;font-size:13px;">
+                                            <input type="radio" name="secondary_parent_channel" id="secondary_parent_channel_sms" value="sms" checked>
+                                            &nbsp;SMS
+                                        </label>
+                                        <label class="mb-0 ml-2" style="cursor:pointer;font-size:13px;">
+                                            <input type="radio" name="secondary_parent_channel" id="secondary_parent_channel_email" value="email">
+                                            &nbsp;Email
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="btns">

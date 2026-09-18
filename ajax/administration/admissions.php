@@ -1032,6 +1032,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         array_push($data_array,isset($row['heard_others_specify']) ? $row['heard_others_specify'] : '');
                         array_push($data_array,!empty($row['preferred_communication']) ? $row['preferred_communication'] : 'school_default');
                         array_push($data_array,"Kes ".number_format(getTotalPaymentsOwed($row['adm_no'],$conn2)));
+                        array_push($data_array,!empty($row['student_channel']) ? $row['student_channel'] : 'sms');
+                        array_push($data_array,!empty($row['primary_parent_channel']) ? $row['primary_parent_channel'] : 'sms');
+                        array_push($data_array,!empty($row['secondary_parent_channel']) ? $row['secondary_parent_channel'] : 'sms');
                     }
                 }
 
@@ -6558,6 +6561,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $edit_referral_phone = isset($_POST['edit_referral_phone']) ? $_POST['edit_referral_phone'] : '';
             $edit_heard_others_specify = isset($_POST['edit_heard_others_specify']) ? $_POST['edit_heard_others_specify'] : '';
             $edit_preferred_communication = !empty($_POST['preferred_communication']) ? $_POST['preferred_communication'] : 'school_default';
+            $edit_student_channel = ($_POST['student_channel'] ?? '') === 'email' ? 'email' : 'sms';
+            $edit_primary_parent_channel = ($_POST['primary_parent_channel'] ?? '') === 'email' ? 'email' : 'sms';
+            $edit_secondary_parent_channel = ($_POST['secondary_parent_channel'] ?? '') === 'email' ? 'email' : 'sms';
 
             // process the student course progress
             // if they have changed the course update the new course
@@ -6707,9 +6713,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
 
-            $update = "UPDATE `student_data` SET `study_mode` = ?, `branch_name` = ?, `year_of_study` = ?,`stud_class` = ?, `BCNo`= ?,`index_no` = ?,`gender` = ?, `disabled` = ? , `disable_describe` = ? , `address` = ? ,`parentName` = ?,`parentContacts` = ?,`parent_relation` = ?,`parent_email` = ?,`parent_name2` = ?,`parent_contact2` = ?, `parent_relation2` = ?, `parent_email2` = ?, `first_name` = ? ,`surname` = ? ,`second_name` = ? ,`primary_parent_occupation` = ?, `secondary_parent_occupation` = ?, `medical_history` = ?, `clubs_id` = ?, `prev_sch_attended` = ?,`D_O_A` = ?, `transfered_comment` = ?, `course_done` = ?,`intake_year` = ?, `intake_month` = ?, `course_progress_status` = ?, `student_email` = ?, `student_contact` = ?, `county` = ?, `heard_about_us` = ?, `referral_name` = ?, `referral_phone` = ?, `heard_others_specify` = ?, `preferred_communication` = ? WHERE `adm_no`=?";
+            $update = "UPDATE `student_data` SET `study_mode` = ?, `branch_name` = ?, `year_of_study` = ?,`stud_class` = ?, `BCNo`= ?,`index_no` = ?,`gender` = ?, `disabled` = ? , `disable_describe` = ? , `address` = ? ,`parentName` = ?,`parentContacts` = ?,`parent_relation` = ?,`parent_email` = ?,`parent_name2` = ?,`parent_contact2` = ?, `parent_relation2` = ?, `parent_email2` = ?, `first_name` = ? ,`surname` = ? ,`second_name` = ? ,`primary_parent_occupation` = ?, `secondary_parent_occupation` = ?, `medical_history` = ?, `clubs_id` = ?, `prev_sch_attended` = ?,`D_O_A` = ?, `transfered_comment` = ?, `course_done` = ?,`intake_year` = ?, `intake_month` = ?, `course_progress_status` = ?, `student_email` = ?, `student_contact` = ?, `county` = ?, `heard_about_us` = ?, `referral_name` = ?, `referral_phone` = ?, `heard_others_specify` = ?, `preferred_communication` = ?, `student_channel` = ?, `primary_parent_channel` = ?, `secondary_parent_channel` = ? WHERE `adm_no`=?";
             $stmt = $conn2->prepare($update);
-            $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssss",$study_mode, $college_branch, $newYOS,$class,$bcnos,$index,$genders,$disabled,$describe,$address,$pnamed,$pcontacts,$prelation,$pemail,$parentname2,$parentcontact,$parentrelation,$pemails,$fnamed,$snamed,$lnamed,$occupation1,$occupation2,$medical_history,$clubs_in_sporters,$previous_schools,$doas,$reason_for_leaving,$course_chosen,$intake_year_edit,$intake_month_edit,$course_progress,$student_email,$student_contacts,$edit_county,$edit_heard_about_us,$edit_referral_name,$edit_referral_phone,$edit_heard_others_specify,$edit_preferred_communication,$adminno);
+            $stmt->bind_param("ssssssssssssssssssssssssssssssssssssssssssss",$study_mode, $college_branch, $newYOS,$class,$bcnos,$index,$genders,$disabled,$describe,$address,$pnamed,$pcontacts,$prelation,$pemail,$parentname2,$parentcontact,$parentrelation,$pemails,$fnamed,$snamed,$lnamed,$occupation1,$occupation2,$medical_history,$clubs_in_sporters,$previous_schools,$doas,$reason_for_leaving,$course_chosen,$intake_year_edit,$intake_month_edit,$course_progress,$student_email,$student_contacts,$edit_county,$edit_heard_about_us,$edit_referral_name,$edit_referral_phone,$edit_heard_others_specify,$edit_preferred_communication,$edit_student_channel,$edit_primary_parent_channel,$edit_secondary_parent_channel,$adminno);
             if($stmt->execute()){
                 echo "<p style='color:green;font-size:12px;'>Student  data updated successfully!</p>";
                 $log_text = $fnamed." ".$lnamed." - of Reg No. (".$adminno.") data has been updated successfully!";
@@ -6763,6 +6769,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $course_chosen = $_POST["course_chosen"];
             $student_contacts = $_POST["student_contacts"];
             $student_email = $_POST["student_email"];
+            $student_channel = ($_POST['student_channel'] ?? '') === 'email' ? 'email' : 'sms';
+            $primary_parent_channel = ($_POST['primary_parent_channel'] ?? '') === 'email' ? 'email' : 'sms';
+            $secondary_parent_channel = ($_POST['secondary_parent_channel'] ?? '') === 'email' ? 'email' : 'sms';
 
             $parentname2 = $_POST['parentname2'];
             $parentcontact2 = $_POST['parentconts2'];
@@ -6916,9 +6925,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $course_details_string = ($classenrol != "-1" && $classenrol != "-2" && $classenrol != "-3") ? json_encode([$course_detail]) : "[]";
 
             // ----------------END OF SETTING COURSE DETAILS--------------
-            $insert = "INSERT INTO `student_data` (`surname`,`adm_no`,`first_name`,`second_name`,`branch_name`,`student_upi`,`D_O_B`,`gender`,`stud_class`,`D_O_A`,`parentName`,`parentContacts`,`parent_relation`,`parent_email`,`parent_name2`,`parent_contact2`,`parent_relation2`,`parent_email2`,`address`,`BCNo`,`primary_parent_occupation`,`secondary_parent_occupation`,`course_done`,`my_course_list`,`intake_year`,`intake_month`,`student_contact`,`student_email`,`county`,`heard_about_us`,`referral_name`,`referral_phone`,`heard_others_specify`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            $insert = "INSERT INTO `student_data` (`surname`,`adm_no`,`first_name`,`second_name`,`branch_name`,`student_upi`,`D_O_B`,`gender`,`stud_class`,`D_O_A`,`parentName`,`parentContacts`,`parent_relation`,`parent_email`,`parent_name2`,`parent_contact2`,`parent_relation2`,`parent_email2`,`address`,`BCNo`,`primary_parent_occupation`,`secondary_parent_occupation`,`course_done`,`my_course_list`,`intake_year`,`intake_month`,`student_contact`,`student_email`,`county`,`heard_about_us`,`referral_name`,`referral_phone`,`heard_others_specify`,`student_channel`,`primary_parent_channel`,`secondary_parent_channel`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
-            $stmt->bind_param("sssssssssssssssssssssssssssssssss",$suname,$admno,$fname,$sname,$college_branch,$upis,$dob,$gender,$classenrol,$doa,$parentname,$parentcontact,$parentrelation,$parentemail,$parentname2,$parentcontact2,$parentrelation2,$pmail2,$address,$bcno,$parent_accupation1,$parent_accupation2,$course_chosen,$course_details_string,$intake_year,$intake_month,$student_contacts,$student_email,$student_county,$heard_about_us,$referral_name,$referral_phone,$heard_others_specify);
+            $stmt->bind_param("ssssssssssssssssssssssssssssssssssss",$suname,$admno,$fname,$sname,$college_branch,$upis,$dob,$gender,$classenrol,$doa,$parentname,$parentcontact,$parentrelation,$parentemail,$parentname2,$parentcontact2,$parentrelation2,$pmail2,$address,$bcno,$parent_accupation1,$parent_accupation2,$course_chosen,$course_details_string,$intake_year,$intake_month,$student_contacts,$student_email,$student_county,$heard_about_us,$referral_name,$referral_phone,$heard_others_specify,$student_channel,$primary_parent_channel,$secondary_parent_channel);
             if($stmt->execute()){
                 $data = "<p style ='color:green;font-size:12px;'>".$fname." ".$sname." has been admitted successfully with admission number : ".$admno."<br>Use their admission number to search their information</p>";
                 $data.= "<input type='text' id='admnohold' value=".$admno." hidden> <input type='text' id='namehold' value='".$fname." ".$sname."' hidden>";
@@ -6966,89 +6975,70 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         }
                     }
 
-                    // SEND SMS
+                    // SEND WELCOME MESSAGE (SMS or Email, per parent's channel preference)
                     if($send_second_parent == "on" || $send_first_parent == "on"){
-                        $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'welcome_message';";
-                        $statement = $conn2->prepare($select);
-                        $statement->execute();
-                        $res = $statement->get_result();
-                        if($res){
-                            if($rowed = $res->fetch_assoc()){
-                                // message content
-                                $message_content = $rowed['message_content'];
+                        include_once("../finance/financial.php");
 
-                                // send to parents that have been checked
-                                if($send_first_parent == "on"){
-                                    if($parentContacts != null && strlen($parentContacts) >= 10){
-                                        // dont send to parents that have not been set
-                                        $which_parent = "primary";
-                                        $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
-                                        // sendSmsToClient($row['parentContacts'],$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
-
-                                        //send the information to the database
-                                        $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
-                                        $stmt = $conn2->prepare($insert);
-                                        $message_count = 1;
-                                        $message_undelivered = 0;
-                                        $message_type = "Multicast";
-                                        $message_desc = $message;
-                                        if (strlen($message) > 43) {
-                                            $message_desc = substr($message,0,45)."...";
-                                        }
-
-                                        // date
-                                        $date = date("Y-m-d");
-
-                                        // !st parent
-                                        $recepient = $row['parentContacts'];
-                                        $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$recepient,$message,$recepient);
-                                        $stmt->execute();
+                        // send to the primary parent, if checked
+                        if($send_first_parent == "on"){
+                            $primary_channel = $row['primary_parent_channel'] ?? '';
+                            if($primary_channel == 'email'){
+                                if($row['parent_email'] != null && strlen(trim($row['parent_email'])) > 0){
+                                    $message_content = getMessage('welcome_message', $conn2, 'email');
+                                    if($message_content != null){
+                                        $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,"primary");
+                                        $subject = process_sms([$row], getMessageSubject('welcome_message', $conn2, "Welcome to ".$_SESSION['schname']), $row['adm_no'], $conn2, "primary");
+                                        queueEmailMessage($conn2, $row['parent_email'], $subject, $message);
                                     }
                                 }
+                            }else if($primary_channel == 'sms' && $parentContacts != null && strlen($parentContacts) >= 10){
+                                // dont send to parents that have not been set
+                                $message_content = getMessage('welcome_message', $conn2, 'sms');
+                                $which_parent = "primary";
+                                $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
+                                // sendSmsToClient($row['parentContacts'],$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
 
-                                // send to parents that have been checked
-                                if($send_second_parent == "on"){
-                                    $parentContacts = $parent_contact2;
-                                    if($parentContacts != null && strlen($parentContacts) >= 10){
-                                        // dont send to parents that have not been set
-                                        $which_parent = "secondary";
-                                        $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
-                                        // sendSmsToClient($row['parent_contact2'],$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
-
-                                        //send the information to the database
-                                        $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
-                                        $stmt = $conn2->prepare($insert);
-                                        $message_count = 1;
-                                        $message_undelivered = 0;
-                                        $message_type = "Multicast";
-                                        $message_desc = $message;
-                                        if (strlen($message) > 43) {
-                                            $message_desc = substr($message,0,45)."...";
-                                        }
-                                        $date = date("Y-m-d", strtotime("3 hour"));
-                                        // !st parent
-                                        $recepient = "[\"".$row['parent_contact2']."\"]";
-                                        $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$row['parent_contact2'],$message,$recepient);
-                                        $stmt->execute();
-                                    }
+                                //send the information to the database
+                                $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
+                                $stmt = $conn2->prepare($insert);
+                                $message_count = 1;
+                                $message_undelivered = 0;
+                                $message_type = "Multicast";
+                                $message_desc = $message;
+                                if (strlen($message) > 43) {
+                                    $message_desc = substr($message,0,45)."...";
                                 }
+
+                                // date
+                                $date = date("Y-m-d");
+
+                                // !st parent
+                                $recepient = $row['parentContacts'];
+                                $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$recepient,$message,$recepient);
+                                $stmt->execute();
                             }
                         }
-                    }
 
-                    if($send_student_message == "on"){
-                        $select = "SELECT * FROM `template_messages` WHERE `message_type` = 'student_welcome_message';";
-                        $statement = $conn2->prepare($select);
-                        $statement->execute();
-                        $res = $statement->get_result();
-                        if($res){
-                            if($rowed = $res->fetch_assoc()){
-                                $message_content = $rowed['message_content'];
-                                // send to parents that have been checked
-                                if($student_contact != null && strlen($student_contact) >= 10){
+                        // send to the secondary parent, if checked
+                        if($send_second_parent == "on"){
+                            $secondary_channel = $row['secondary_parent_channel'] ?? '';
+                            if($secondary_channel == 'email'){
+                                if($row['parent_email2'] != null && strlen(trim($row['parent_email2'])) > 0){
+                                    $message_content = getMessage('welcome_message', $conn2, 'email');
+                                    if($message_content != null){
+                                        $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,"secondary");
+                                        $subject = process_sms([$row], getMessageSubject('welcome_message', $conn2, "Welcome to ".$_SESSION['schname']), $row['adm_no'], $conn2, "secondary");
+                                        queueEmailMessage($conn2, $row['parent_email2'], $subject, $message);
+                                    }
+                                }
+                            }else if($secondary_channel == 'sms'){
+                                $parentContacts = $parent_contact2;
+                                if($parentContacts != null && strlen($parentContacts) >= 10){
                                     // dont send to parents that have not been set
-                                    $which_parent = "primary";
+                                    $message_content = getMessage('welcome_message', $conn2, 'sms');
+                                    $which_parent = "secondary";
                                     $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
+                                    // sendSmsToClient($row['parent_contact2'],$message,$api_key,$partnerID,$shortcodes,$send_sms_url);
 
                                     //send the information to the database
                                     $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
@@ -7062,11 +7052,47 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                     }
                                     $date = date("Y-m-d", strtotime("3 hour"));
                                     // !st parent
-                                    $recepient = "[\"".$student_contact."\"]";
-                                    $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$student_contact,$message,$recepient);
+                                    $recepient = "[\"".$row['parent_contact2']."\"]";
+                                    $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$row['parent_contact2'],$message,$recepient);
                                     $stmt->execute();
                                 }
                             }
+                        }
+                    }
+
+                    if($send_student_message == "on"){
+                        include_once("../finance/financial.php");
+                        $student_channel = $row['student_channel'] ?? '';
+                        if($student_channel == 'email'){
+                            if($row['student_email'] != null && strlen(trim($row['student_email'])) > 0){
+                                $message_content = getMessage('student_welcome_message', $conn2, 'email');
+                                if($message_content != null){
+                                    $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,"primary");
+                                    $subject = process_sms([$row], getMessageSubject('student_welcome_message', $conn2, "Welcome to ".$_SESSION['schname']), $row['adm_no'], $conn2, "primary");
+                                    queueEmailMessage($conn2, $row['student_email'], $subject, $message);
+                                }
+                            }
+                        }else if($student_channel == 'sms' && $student_contact != null && strlen($student_contact) >= 10){
+                            // dont send to parents that have not been set
+                            $message_content = getMessage('student_welcome_message', $conn2, 'sms');
+                            $which_parent = "primary";
+                            $message = process_sms([$row],$message_content,$row['adm_no'],$conn2,$which_parent);
+
+                            //send the information to the database
+                            $insert = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`message_description`,`sender_no`,`message`,`number_collection`) VALUES (?,?,?,?,?,?,?,?,?)";
+                            $stmt = $conn2->prepare($insert);
+                            $message_count = 1;
+                            $message_undelivered = 0;
+                            $message_type = "Multicast";
+                            $message_desc = $message;
+                            if (strlen($message) > 43) {
+                                $message_desc = substr($message,0,45)."...";
+                            }
+                            $date = date("Y-m-d", strtotime("3 hour"));
+                            // !st parent
+                            $recepient = "[\"".$student_contact."\"]";
+                            $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$student_contact,$message,$recepient);
+                            $stmt->execute();
                         }
                     }
 

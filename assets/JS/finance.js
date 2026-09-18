@@ -1090,10 +1090,6 @@ function getTransactionId() {
                 sendData1("GET", "finance/financial.php", datapass, cObj("errhandler"));
                 assignEventsDone();
             } else if (thirdselect.length > 0 && firstselect == "clased" && firstselect != "transactioncodes") {
-                if (mybutclicked > 0) {
-                    tinymce.triggerSave();
-                    tinymce.remove();
-                }
                 datapass = "?findtransindates=true&class=" + thirdselect;
                 sendData1("GET", "finance/financial.php", datapass, cObj("errhandler"));
                 setTimeout(() => {

@@ -148,34 +148,104 @@ if (session_status() === PHP_SESSION_NONE) {
                                 $phone_parent_2 = null;
                                 $phone_student = null;
                                 if ($phone_number != 0) {
+                                    // route each recipient to SMS or email individually, per their
+                                    // own channel preference -- if a recipient's channel isn't
+                                    // explicitly "sms" or "email", skip sending to them entirely
+                                    $primary_channel = $row['primary_parent_channel'] ?? '';
+                                    $secondary_channel = $row['secondary_parent_channel'] ?? '';
+                                    $student_channel_pref = $row['student_channel'] ?? '';
+
                                     if ($send_sms == "first_parent") {
                                         $message_category = "parent_account_confirmation_message";
-                                        $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id);
-                                        $phone_parent_1 = validateKenyanNumber(explode(",",$phone_number)[1]);
+                                        if ($primary_channel == 'email' && !empty($row['parent_email'])) {
+                                            $email_content = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id, 'email');
+                                            if ($email_content !== null) {
+                                                $subject = process_sms([$row], getMessageSubject($message_category, $conn2, "Payment Confirmation"), $row['adm_no'], $conn2, "primary");
+                                                queueEmailMessage($conn2, $row['parent_email'], $subject, $email_content);
+                                            }
+                                        } else if ($primary_channel == 'sms') {
+                                            $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id);
+                                            $phone_parent_1 = validateKenyanNumber(explode(",",$phone_number)[1]);
+                                        }
                                     }else if ($send_sms == "second_parent") {
                                         $message_category = "parent_account_confirmation_message";
-                                        $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id);
-                                        $phone_parent_2 = validateKenyanNumber(explode(",",$phone_number)[2]);
+                                        if ($secondary_channel == 'email' && !empty($row['parent_email2'])) {
+                                            $email_content = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id, 'email');
+                                            if ($email_content !== null) {
+                                                $subject = process_sms([$row], getMessageSubject($message_category, $conn2, "Payment Confirmation"), $row['adm_no'], $conn2, "secondary");
+                                                queueEmailMessage($conn2, $row['parent_email2'], $subject, $email_content);
+                                            }
+                                        } else if ($secondary_channel == 'sms') {
+                                            $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id);
+                                            $phone_parent_2 = validateKenyanNumber(explode(",",$phone_number)[2]);
+                                        }
                                     }elseif ($send_sms == "student_contact") {
                                         $message_category = "confirmation_message";
-                                        $message_student = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id);
-                                        $phone_student = validateKenyanNumber(explode(",",$phone_number)[0]);
+                                        if ($student_channel_pref == 'email' && !empty($row['student_email'])) {
+                                            $email_content = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id, 'email');
+                                            if ($email_content !== null) {
+                                                $subject = process_sms([$row], getMessageSubject($message_category, $conn2, "Payment Confirmation"), $row['adm_no'], $conn2, "primary");
+                                                queueEmailMessage($conn2, $row['student_email'], $subject, $email_content);
+                                            }
+                                        } else if ($student_channel_pref == 'sms') {
+                                            $message_student = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, $send_sms, $transaction_id);
+                                            $phone_student = validateKenyanNumber(explode(",",$phone_number)[0]);
+                                        }
                                     }elseif ($send_sms == "both_parent") {
                                         $message_category = "parent_account_confirmation_message";
-                                        $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "first_parent", $transaction_id);
-                                        $message_parent_2 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "second_parent", $transaction_id);
-                                        $phone_parent_1 = validateKenyanNumber(explode(",",$phone_number)[1]);
-                                        $phone_parent_2 = validateKenyanNumber(explode(",",$phone_number)[2]);
+                                        if ($primary_channel == 'email' && !empty($row['parent_email'])) {
+                                            $email_content = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "first_parent", $transaction_id, 'email');
+                                            if ($email_content !== null) {
+                                                $subject = process_sms([$row], getMessageSubject($message_category, $conn2, "Payment Confirmation"), $row['adm_no'], $conn2, "primary");
+                                                queueEmailMessage($conn2, $row['parent_email'], $subject, $email_content);
+                                            }
+                                        } else if ($primary_channel == 'sms') {
+                                            $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "first_parent", $transaction_id);
+                                            $phone_parent_1 = validateKenyanNumber(explode(",",$phone_number)[1]);
+                                        }
+                                        if ($secondary_channel == 'email' && !empty($row['parent_email2'])) {
+                                            $email_content = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "second_parent", $transaction_id, 'email');
+                                            if ($email_content !== null) {
+                                                $subject = process_sms([$row], getMessageSubject($message_category, $conn2, "Payment Confirmation"), $row['adm_no'], $conn2, "secondary");
+                                                queueEmailMessage($conn2, $row['parent_email2'], $subject, $email_content);
+                                            }
+                                        } else if ($secondary_channel == 'sms') {
+                                            $message_parent_2 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "second_parent", $transaction_id);
+                                            $phone_parent_2 = validateKenyanNumber(explode(",",$phone_number)[2]);
+                                        }
                                     }elseif ($send_sms == "all_three") {
                                         $message_category = "parent_account_confirmation_message";
-                                        $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "first_parent", $transaction_id);
-                                        $message_parent_2 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "second_parent", $transaction_id);
+                                        if ($primary_channel == 'email' && !empty($row['parent_email'])) {
+                                            $email_content = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "first_parent", $transaction_id, 'email');
+                                            if ($email_content !== null) {
+                                                $subject = process_sms([$row], getMessageSubject($message_category, $conn2, "Payment Confirmation"), $row['adm_no'], $conn2, "primary");
+                                                queueEmailMessage($conn2, $row['parent_email'], $subject, $email_content);
+                                            }
+                                        } else if ($primary_channel == 'sms') {
+                                            $message_parent_1 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "first_parent", $transaction_id);
+                                            $phone_parent_1 = validateKenyanNumber(explode(",",$phone_number)[1]);
+                                        }
+                                        if ($secondary_channel == 'email' && !empty($row['parent_email2'])) {
+                                            $email_content = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "second_parent", $transaction_id, 'email');
+                                            if ($email_content !== null) {
+                                                $subject = process_sms([$row], getMessageSubject($message_category, $conn2, "Payment Confirmation"), $row['adm_no'], $conn2, "secondary");
+                                                queueEmailMessage($conn2, $row['parent_email2'], $subject, $email_content);
+                                            }
+                                        } else if ($secondary_channel == 'sms') {
+                                            $message_parent_2 = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "second_parent", $transaction_id);
+                                            $phone_parent_2 = validateKenyanNumber(explode(",",$phone_number)[2]);
+                                        }
                                         $message_category = "confirmation_message";
-                                        $message_student = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "student_contact", $transaction_id);
-                                        $phone_number = $phone_number;
-                                        $phone_parent_1 = validateKenyanNumber(explode(",",$phone_number)[1]);
-                                        $phone_parent_2 = validateKenyanNumber(explode(",",$phone_number)[2]);
-                                        $phone_student = validateKenyanNumber(explode(",",$phone_number)[0]);
+                                        if ($student_channel_pref == 'email' && !empty($row['student_email'])) {
+                                            $email_content = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "student_contact", $transaction_id, 'email');
+                                            if ($email_content !== null) {
+                                                $subject = process_sms([$row], getMessageSubject($message_category, $conn2, "Payment Confirmation"), $row['adm_no'], $conn2, "primary");
+                                                queueEmailMessage($conn2, $row['student_email'], $subject, $email_content);
+                                            }
+                                        } else if ($student_channel_pref == 'sms') {
+                                            $message_student = get_message_template($message_category, $conn2, $row['adm_no'], $TransAmount, $newBalance, "student_contact", $transaction_id);
+                                            $phone_student = validateKenyanNumber(explode(",",$phone_number)[0]);
+                                        }
                                     }else {
                                         $phone_number = "";
                                     }
