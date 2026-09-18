@@ -6901,6 +6901,10 @@ function getEditedStaffRoles(status = "new"){
                 "Status": status == "edit" ? (cObj("settings_sect2") != undefined ? (cObj("settings_sect2").checked ? "yes" : "no") : "no") : (cObj("settings_sect") != undefined ? (cObj("settings_sect").checked ? "yes" : "no") : "no")
             },
             {
+                "name": "action_logs_btn",
+                "Status": status == "edit" ? (cObj("action_logs_sect2") != undefined ? (cObj("action_logs_sect2").checked ? "yes" : "no") : "no") : (cObj("action_logs_sect") != undefined ? (cObj("action_logs_sect").checked ? "yes" : "no") : "no")
+            },
+            {
                 "name": "general_reports",
                 "Status": status == "edit" ? (cObj("my_school_reports2") != undefined ? (cObj("my_school_reports2").checked ? "yes" : "no") : "no") : (cObj("my_school_reports") != undefined ? (cObj("my_school_reports").checked ? "yes" : "no") : "no")
             }
@@ -7249,7 +7253,15 @@ function checkRoles(roles, edit_status = "new") {
         if(edit_status == "edit"){
             element_id = "my_school_reports2";
         }
-        if(cObj(element_id) != undefined){ 
+        if(cObj(element_id) != undefined){
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "action_logs_btn"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "action_logs_sect2";
+        }
+        if(cObj(element_id) != undefined){
             cObj(element_id).checked = roles.Status == "yes";
         }
     }else if(roles.name == "apply_leave_menu"){
