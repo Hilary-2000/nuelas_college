@@ -1161,3 +1161,204 @@ table th > input[type=checkbox]{
     vertical-align: middle;
     margin-left: 4px;
 }
+
+/* ===== Modern form controls =====
+   The skin (soft border, 10px radius, teal focus ring, Nunito) lives in the "Global form
+   control design system" block of mainpage.css. This adds what makes them consistent in
+   size and state. Sizing is written with :where() so it has no weight of its own: Bootstrap's
+   .form-control-sm, a component's own width or an inline style still override it. */
+:where(input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=reset]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden]), select){
+    box-sizing: border-box;
+    min-height: 38px;
+    padding: 7px 12px;
+    line-height: 1.5;
+}
+:where(textarea){
+    box-sizing: border-box;
+    min-height: 90px;
+    padding: 9px 12px;
+    line-height: 1.5;
+    resize: vertical;
+}
+/* inside table cells the controls stay compact so rows do not grow */
+:where(td input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=hidden]), td select){
+    min-height: 32px;
+    padding: 4px 10px;
+}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=reset]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden]):not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):hover:not(:focus):not(:disabled),
+select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):hover:not(:focus):not(:disabled),
+textarea:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):hover:not(:focus):not(:disabled) {
+    border-color: #b8c6cd !important;
+}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=reset]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden]):not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):disabled,
+select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):disabled,
+textarea:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):disabled {
+    background-color: #f3f6f8 !important;
+    color: #6b7b84 !important;
+    border-color: #e4eaee !important;
+    cursor: not-allowed;
+}
+input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=reset]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden]):not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *)[readonly],
+textarea:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *)[readonly] {
+    background-color: #f7fafb !important;
+}
+/* one dropdown arrow for every select, whatever its class */
+select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):not([multiple]):not([size]) {
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 34px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2351626b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px 8px;
+}
+input[type=checkbox],
+input[type=radio]{
+    accent-color: var(--maincolors);
+}
+input[type=file]:not(.left_dash *):not(.sidebars *){
+    border: 1px solid #d5dee3;
+    border-radius: 10px;
+    padding: 5px 8px;
+    font-family: "Nunito", "Calibri", sans-serif;
+    font-size: 14px;
+    background-color: #fff;
+}
+input[type=file]::file-selector-button{
+    border: 0;
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin-right: 10px;
+    background: #eef3f5;
+    color: #51626b;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Select2 dropdowns, made to match the native controls. Select2's stylesheet loads after this
+   one, so each selector carries an extra class to win. */
+.select2-container.select2-container--default .select2-selection--single{
+    height: 38px;
+    border: 1px solid #d5dee3;
+    border-radius: 10px;
+    background-color: #fff;
+}
+.select2-container.select2-container--default .select2-selection--single .select2-selection__rendered{
+    line-height: 36px;
+    padding-left: 12px;
+    color: #2b3a3a;
+    font-family: "Nunito", "Calibri", sans-serif;
+    font-size: 14px;
+}
+.select2-container.select2-container--default .select2-selection--single .select2-selection__arrow{
+    height: 36px;
+    right: 6px;
+}
+.select2-container.select2-container--default .select2-selection--multiple{
+    min-height: 38px;
+    border: 1px solid #d5dee3;
+    border-radius: 10px;
+}
+.select2-container.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container.select2-container--default.select2-container--open .select2-selection--single{
+    border-color: var(--maincolors);
+    box-shadow: 0 0 0 3px rgba(3,131,135,0.15);
+}
+.select2-container .select2-dropdown{
+    border: 1px solid #d5dee3;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.select2-container .select2-results__option--highlighted[aria-selected]{
+    background-color: var(--maincolors);
+}
+
+/* ===== Dropdown lists (the list that opens from a select) =====
+   Browsers without customisable selects only get the option colours below. Where
+   `appearance: base-select` is supported (Chromium 135+), the opened list itself is styled:
+   a rounded card with a soft shadow, spaced options, a soft hover, the chosen option
+   marked in the school's colour. Multi-selects and selects with a size keep the native look. */
+select option{
+    font-family: "Nunito", "Calibri", sans-serif;
+    font-size: 14px;
+    color: #2b3a3a;
+    background-color: #fff;
+}
+select option:hover{
+    background-color: #eef3f5;
+}
+select option:checked{
+    background-color: rgba(3,131,135,0.12);
+    color: #0b5f62;
+}
+select option:disabled{
+    color: #9aa8a8;
+}
+@supports (appearance: base-select) {
+    select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):not([multiple]):not([size]) {
+        -webkit-appearance: base-select;
+        appearance: base-select;
+        background-image: none;
+        padding-right: 12px;
+        /* .form-control makes a select display:block, which drops the arrow under the text */
+        display: flex;
+        align-items: center;
+    }
+    select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):not([multiple]):not([size])::picker-icon {
+        content: "";
+        width: 12px;
+        height: 8px;
+        margin-left: auto;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2351626b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / 12px 8px;
+        transition: rotate .2s ease;
+    }
+    select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):not([multiple]):not([size]):open::picker-icon {
+        rotate: 180deg;
+    }
+    select:not([multiple]):not([size])::picker(select) {
+        -webkit-appearance: base-select;
+        appearance: base-select;
+        box-sizing: border-box;
+        min-width: anchor-size(width);
+        max-height: 320px;
+        margin-top: 6px;
+        padding: 6px;
+        background: #fff;
+        border: 1px solid #d5dee3;
+        border-radius: 12px;
+        box-shadow: 0 12px 32px rgba(31,45,51,0.16);
+    }
+    select:not([multiple]):not([size]) option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    select:not([multiple]):not([size]) option:hover,
+    select:not([multiple]):not([size]) option:focus {
+        background-color: #eef3f5;
+        outline: none;
+    }
+    select:not([multiple]):not([size]) option:checked {
+        background-color: rgba(3,131,135,0.12);
+        color: #0b5f62;
+        font-weight: 600;
+    }
+    select:not([multiple]):not([size]) option::checkmark {
+        order: 1;
+        margin-left: auto;
+        color: var(--maincolors);
+    }
+}
+
+/* The dropdown styling above sets display on selects and options, which beats the plain
+   .hide / [hidden] rules. Restated here so hiding a select, or one option of it, still works. */
+select.hide,
+select[hidden],
+select option.hide,
+select option[hidden]{
+    display: none !important;
+}
