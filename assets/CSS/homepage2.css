@@ -957,3 +957,207 @@ tr{
         margin: 9px 0;
     }
 } */
+/* ===== Modern tables, applied to every table in the app =====
+   Light header with small uppercase labels, hairline
+   row dividers, no grey grid lines or blue striping, a hover highlight. Colours set by a
+   class or an inline style on a cell still win, so status-coloured rows keep their colour.
+   Background is always set as background-color, never the shorthand, so nothing that a
+   library draws as a background image is wiped. */
+table{
+    border: 1px solid var(--maincolors);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    font-family: "Nunito", "Calibri", sans-serif;
+}
+/* The rounded corners need the separate border model above. A table can never clip its
+   own cells, so the four corner cells are rounded to follow the border. (A table that
+   sets border-collapse: collapse itself stays square.) */
+table > thead:first-child > tr:first-child > *:first-child,
+table > tbody:first-child > tr:first-child > *:first-child{
+    border-top-left-radius: 11px;
+}
+table > thead:first-child > tr:first-child > *:last-child,
+table > tbody:first-child > tr:first-child > *:last-child{
+    border-top-right-radius: 11px;
+}
+table > tbody:last-child > tr:last-child > *:first-child,
+table > tfoot:last-child > tr:last-child > *:first-child{
+    border-bottom-left-radius: 11px;
+}
+table > tbody:last-child > tr:last-child > *:last-child,
+table > tfoot:last-child > tr:last-child > *:last-child{
+    border-bottom-right-radius: 11px;
+}
+table th{
+    background-color: #eef3f5;
+    background-image: none;
+    color: #51626b;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 1px solid #cbd6dc;
+}
+table td{
+    padding: 9px 12px;
+    border: 0;
+    border-bottom: 1px solid #cbd6dc;
+    color: #33424a;
+    vertical-align: middle;
+}
+table tr:nth-child(odd) td{
+    background-color: transparent;
+    color: #33424a;
+}
+table tr:last-of-type{
+    border-bottom: 0;
+}
+table tbody tr:last-child td,
+table tfoot tr:last-child > *{
+    border-bottom: 0;
+}
+table tbody tr:hover td{
+    background-color: #f3f8f9;
+}
+/* Bootstrap .table sets its cell padding and background through variables, and
+   also sets its own border-color (#dee2e6) which, as a class selector, beats the
+   plain `table{border:1px solid var(--maincolors)}` rule above on specificity -
+   leaving every table.table (Grade Table, Combination Table, Rooms table, the
+   Lesson Allocation tables, etc.) with Bootstrap's grey border instead of the
+   app's teal rounded one, even though the rounding itself still applies. */
+table.table{
+    border-color: var(--maincolors);
+}
+table.table th,
+table.table td{
+    padding: 9px 12px;
+}
+table.table > thead > tr > th{
+    background-color: #eef3f5;
+}
+
+/* DataTables. Its stylesheet loads AFTER this one and its rules are heavier
+   (table.dataTable ...), so every rule below is prefixed with the wrapper it always adds.
+   Together they restate the look above for every DataTables variant (stripe, hover,
+   row-border, cell-border, order-column, display, compact) and for scrolling tables, whose
+   header is a separate cloned table. */
+.dataTables_wrapper table.dataTable{
+    border: 1px solid var(--maincolors);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    margin: 10px auto;
+}
+.dataTables_wrapper table.dataTable thead th,
+.dataTables_wrapper table.dataTable thead td,
+.dataTables_wrapper .dataTables_scrollHead table.dataTable thead th{
+    background-color: #eef3f5;
+    background-image: none;
+    color: #51626b;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 1px solid #cbd6dc;
+}
+/* room for the sort arrows DataTables draws at the right of sortable headers */
+.dataTables_wrapper table.dataTable thead th.sorting,
+.dataTables_wrapper table.dataTable thead th.sorting_asc,
+.dataTables_wrapper table.dataTable thead th.sorting_desc,
+.dataTables_wrapper table.dataTable thead th.sorting_asc_disabled,
+.dataTables_wrapper table.dataTable thead th.sorting_desc_disabled{
+    padding-right: 26px;
+}
+.dataTables_wrapper table.dataTable tbody th,
+.dataTables_wrapper table.dataTable tbody td{
+    padding: 9px 12px;
+    border: 0;
+    border-top: 0 !important;
+    border-bottom: 1px solid #cbd6dc;
+    color: #33424a;
+    text-align: left;
+    vertical-align: middle;
+}
+.dataTables_wrapper table.dataTable tbody tr,
+.dataTables_wrapper table.dataTable.stripe tbody tr.odd,
+.dataTables_wrapper table.dataTable.stripe tbody tr.even,
+.dataTables_wrapper table.dataTable.display tbody tr.odd,
+.dataTables_wrapper table.dataTable.display tbody tr.even{
+    background-color: transparent;
+}
+/* the shaded "sorted column" of the order-column / display variants */
+.dataTables_wrapper table.dataTable tbody tr > .sorting_1,
+.dataTables_wrapper table.dataTable tbody tr > .sorting_2,
+.dataTables_wrapper table.dataTable tbody tr > .sorting_3,
+.dataTables_wrapper table.dataTable.stripe tbody tr.odd > .sorting_1,
+.dataTables_wrapper table.dataTable.display tbody tr.odd > .sorting_1,
+.dataTables_wrapper table.dataTable.order-column.stripe tbody tr.odd > .sorting_1,
+.dataTables_wrapper table.dataTable.order-column tbody tr > .sorting_1{
+    background-color: transparent;
+}
+/* stripe, hover and order-column shade cells with an inset box-shadow, not a background */
+.dataTables_wrapper table.dataTable > tbody > tr > *,
+.dataTables_wrapper table.dataTable > thead > tr > *{
+    box-shadow: none !important;
+}
+.dataTables_wrapper table.dataTable tbody tr:last-child td{
+    border-bottom: 0;
+}
+.dataTables_wrapper table.dataTable tbody tr:hover td,
+.dataTables_wrapper table.dataTable.hover tbody tr:hover > .sorting_1,
+.dataTables_wrapper table.dataTable.display tbody tr:hover > .sorting_1{
+    background-color: #f3f8f9;
+}
+.dataTables_wrapper table.dataTable tfoot th,
+.dataTables_wrapper table.dataTable tfoot td{
+    background-color: #f7fafb;
+    color: #51626b;
+    border: 0;
+    border-top: 1px solid #cbd6dc;
+    text-align: left;
+    padding: 10px 12px;
+}
+.dataTables_wrapper table.dataTable.no-footer{
+    border-bottom: 1px solid var(--maincolors);
+}
+.dataTables_wrapper .dataTables_scrollBody{
+    border-bottom: 1px solid var(--maincolors) !important;
+}
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter{
+    color: #51626b;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    border-radius: 8px !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{
+    background: var(--maincolors) !important;
+    border: 1px solid var(--maincolors) !important;
+    color: #fff !important;
+}
+
+/* The class register's checkboxes sat off-centre in their cells because of the
+   .registerbody table input rule in mainpage.css */
+#class_register_table input[type=checkbox],
+#promoSelect,
+.promotionCheck{
+    margin: 0;
+    vertical-align: middle;
+}
+/* a header holding a select-all checkbox keeps the label and the box on one line */
+table th:has(> input[type=checkbox]){
+    white-space: nowrap;
+}
+table th > input[type=checkbox]{
+    vertical-align: middle;
+    margin-left: 4px;
+}
