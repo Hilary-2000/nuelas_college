@@ -22,9 +22,9 @@
                     </ul>
                     <button type='button' id='back_to_fees_payment' ><i class="fa fa-arrow-left"></i> Back to Fees Payment</button>
             </div>
-            <div class="container">
-                <div id="credit_note_window">
-                    <h6 class="text-center my-2"><b>Credit Notes</b><span class="hide" id="credit_notes_loader"><img src="images/ajax_clock_small.gif"></span></h6>
+            <div>
+                <div id="credit_note_window" class="section_card">
+                    <p class="card_heading">Credit Notes <span class="hide" id="credit_notes_loader"><img src="images/ajax_clock_small.gif"></span></p>
                     <span class="hide" id="store_credit_notes"></span>
                     <p id="success_message_cr"></p>
                     <div class="row" id="search_option_credit_note">
@@ -93,13 +93,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="container my-2 hide" id="credit_note_window2">
+                <div class="my-2 hide" id="credit_note_window2">
                     <span class="btn btn-primary btn-sm" id="back_to_credit_win"><i class="fas fa-arrow-left"></i> Back to List</span>
-                    <h6 class="text-center my-2"><b>Credit Note</b><span class="hide" id="credit_notes_loader_win2"><img src="images/ajax_clock_small.gif"></span></h6>
-                    <div class="container row border border-secondary rounded w-75 p-1 mx-auto">
+                    <h6 style="font-size:17px;text-align:center;font-weight:500;margin:10px 0;">Credit Note <span class="hide" id="credit_notes_loader_win2"><img src="images/ajax_clock_small.gif"></span></h6>
+                    <div class="section_card"><div class="row">
                         <div class="col-md-12">
                             <input type="hidden" name="" id="credit_note_id">
-                            <h6 class="text-center"><u>Credit Note Details</u></h6>
+                            <p class="card_heading">Credit Note Details</p>
                         </div>
                         <div class="col-md-4">
                             <p><b>Staff Credited : </b></p>
@@ -143,10 +143,10 @@
                             <span class="btn btn-danger btn-sm my-2" id="un_assign_credit_note">Un-Assign Credit Note</span>
                             <p id="unassign_credit_note_message_holder"></p>
                         </div>
-                    </div>
-                    <div class="container border border-secondary rounded my-2 p-2" id="assign_credit_note_window_2">
+                    </div></div>
+                    <div class="section_card" id="assign_credit_note_window_2">
                         <div class="title">
-                            <h4 style="text-align:center;">Assign Student Credit Note <span class="hide" id="credit_notes_loader_win3"><img src="images/ajax_clock_small.gif"></span></h4>
+                            <p class="card_heading">Assign Student Credit Note <span class="hide" id="credit_notes_loader_win3"><img src="images/ajax_clock_small.gif"></span></p>
                         </div>
                         <div class="conts search_students_finance">
                             <p class="hide" id="display_error_credit_note"></p>

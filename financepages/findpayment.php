@@ -23,6 +23,7 @@
                         <p>- Select <strong>By class</strong> and select a class to print fee reminders.</p>
                     </div><p id='look'></p>
                 </div>
+                <div class="section_card">
                 <div class="tops">
                     <div class="conts">
                         <label class="form-control-label" for="timeopt">Select time period:</label><br>
@@ -77,12 +78,12 @@
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
-            <div class="body1">
+            <div class="body1 section_card">
                 <p id='errhandler'></p>
                 <div id="window_2">
-                    <hr>
-                    <h6 class="text-center my-2"><b>Transaction Details</b></h6>
+                    <p class="sections">Transaction Details</p>
                     <div class="row d-none" id="search_option_fee">
                         <div class="col-md-6 form-group row">
                             <input type="text" name="search" id="searchkey_fees" class="w-100 form-control rounded-lg p-1" placeholder="Search here ..">
