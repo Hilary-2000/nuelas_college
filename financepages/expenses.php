@@ -21,8 +21,8 @@
                 <p>- At this window you are allowed to record expenses and liabilities from both operating and non-operating activities.</p>
                 <p>- Please capture the information you enter correctly.</p>
             </div>
-            <div class="expense_record_panel">
-                <h6><i class="fa fa-file" style="font-size:18px;margin-bottom:10px;"></i> Expenses:</h6>
+            <div class="section_card">
+                <p class="card_heading"><i class="fa fa-file"></i> Expenses</p>
                 <div class="expeses_options" id="exp_options">
                     <button id="add_exp"><i class="fas fa-plus"></i> Add Expenses</button>
                     <button class="<?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "d-none" : ""?>" id="approve_payments"><i class="fas fa-check"></i> Approve Payments</button>
@@ -163,9 +163,8 @@
             <div class="display_daily_expense">
                 <div class="tables">
                     <p id ="my_table"></p>
-                    <div id="window_expenses">
-                        <hr>
-                        <h6 class="text-center my-2"><b>Expenses Table</b></h6>
+                    <div id="window_expenses" class="section_card">
+                        <p class="card_heading">Expenses Table</p>
                         <div class="row d-none" id="search_option_expenses">
                             <div class="col-md-6 form-group row">
                                 <input type="text" name="search" id="searchkey_expenses" class="w-100 form-control rounded-lg p-1" placeholder="Search here ..">
