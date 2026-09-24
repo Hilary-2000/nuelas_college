@@ -15,10 +15,13 @@
         </div>
         <div class="middle1">
             <div class="instructions">
-                <p><strong>Enlightenment:</strong></p>
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you get to view the fees structure that the system uses to pay fees.</p>
                 <p>- Changes to the fees structure once a year is highly recomemnded so that the dignity of the system is upheld.</p>
-                <p><br> <strong> <?php if (isset($_SESSION['schoolname'] )) { echo $_SESSION['schoolname']; }else {echo "School Name"; }?> </strong>current fees structure. <br>Click button bellow to display </p>
+            </div>
+            <div class="section_card">
+                <p class="card_heading">Fees Structure</p>
+                <p><strong> <?php if (isset($_SESSION['schoolname'] )) { echo $_SESSION['schoolname']; }else {echo "School Name"; }?> </strong>current fees structure. <br>Click button bellow to display </p>
                 <div class="conts" style="width:180px">
                     <label for="daros"><b>Select class</b></label>
                     <div id='fees_struct_class'></div>
@@ -32,7 +35,7 @@
                 </div>
                 <p class="hide" id="removeer_fees"></p>
             </div>
-            <div class="conts">
+            <div class="conts section_card" id="fees_structure_display_card">
                 <p id='displayfin'></p>
             </div>
         </div>

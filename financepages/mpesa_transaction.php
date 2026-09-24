@@ -14,7 +14,7 @@
             </div>
         </div>
         <!-- M-Pesa statistics -->
-        <div id="mpesa_stats_holder" class="w-75 mx-auto" style="margin:15px 0 20px 0;">
+        <div id="mpesa_stats_holder" class="section_card stats_card">
             <p style="font-weight:700;font-size:15px;margin-bottom:12px;">
                 <i class="fas fa-mobile-alt" style="color:cadetblue;"></i>&nbsp; M-Pesa Transaction Overview (Last 30 days)
             </p>
@@ -68,7 +68,6 @@
                 </div>
             </div>
         </div>
-        <hr class="w-75 mx-auto my-2">
         <div class="middle1">
             <div class="instructions">
                 <p><strong>Hint:</strong></p>
@@ -78,15 +77,13 @@
                 <p>- The unassigned payments are the payments that were done but to the wrong admission numbers.</p>
                 <p>- For the un-assigned payments there are actions that are to be done.</p>
             </div>
-            <div class="container shadow-lg my-2 " id="mpesa_payment_tbl">
-                <div class="card mb-4">
-                    <div class="card-header">
+            <div class="my-2" id="mpesa_payment_tbl">
+                <div class="section_card">
+                    <div>
                         <p class="hide" id="student_done"><?php echo $student_done?></p>
-                        <div class="card-title">
-                            <h5 class="text-primary">M-PESA Transaction Table.</h5>
-                        </div>
+                        <p class="sections">M-PESA Transaction Table</p>
                     </div>
-                    <div class="card-header">
+                    <div>
                         <p class="hide" id="output"></p>
                         <div class="row m-0">
                             <div class="col-sm-7">
@@ -100,7 +97,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div>
                         <div class="table-responsive p-0" id="transDataReciever">
                             <p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! No M-Pesa transactions has been captured yet!</p>
                         </div>

@@ -1597,3 +1597,59 @@ p.instructions{
 }
 
 /* a header holding a select-all checkbox keeps the label and the box on one line */
+
+/* ===== Manage Transaction: the stats, the filters and the results as cards ===== */
+#findtransaction .ontop > hr{
+    display: none;
+}
+#findtransaction .ontop > .container{
+    max-width: none;
+    padding: 0;
+}
+#findtransaction .body1{
+    border-top: 0;
+    margin: 0 0 16px;
+    padding: 18px 20px 12px;
+}
+#findtransaction .body1 p.sections{
+    color: rgb(3,131,135) !important;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4eaee;
+}
+#findtransaction .section_card .tops{
+    padding: 0;
+    margin: 0;
+}
+/* ===== M-Pesa Transactions as cards ===== */
+#mpesa_trans p.sections,
+#mpesa_payment_tbl p.sections{
+    color: rgb(3,131,135) !important;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4eaee;
+}
+#mpesa_trans #mpesa_stats_section{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* cards for results stay hidden until something has been loaded into them */
+#fees_structure_display_card:not(:has(#displayfin > *)){
+    display: none;
+}
+#expenses_win #window_expenses:not(:has(#transDataReciever_expenses > *)){
+    display: none;
+}
+
+/* ===== Financial Reports ===== */
+#income_statement_window .results_card:not(:has(#finance_statements > *, #balanced_sheet > *)){
+    display: none;
+}
+
