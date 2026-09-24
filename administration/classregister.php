@@ -15,7 +15,7 @@
             <input type="text"  id="myname" hidden value = <?php if(isset($_SESSION['username'])){ echo $_SESSION['username']; } ?> >
         </div>
         <!-- Attendance statistics -->
-        <div id="attendance_stats_holder" class="w-75 mx-auto" style="margin:15px 0 20px 0;">
+        <div id="attendance_stats_holder" class="section_card stats_card">
             <p style="font-weight:700;font-size:15px;margin-bottom:12px;">
                 <i class="fas fa-clipboard-list" style="color:cadetblue;"></i>&nbsp; Today's Attendance Overview
             </p>
@@ -68,7 +68,6 @@
                 </div>
             </div>
         </div>
-        <hr class="w-75 mx-auto my-2">
         <div class="middle1">
             <div class="instructions">
                 <p><strong>Hint:</strong></p>
@@ -76,7 +75,7 @@
                 <p><i>After submitting the attendance you can view the attendance list.</i></p>
             </div>
             <div class="register" id='mains'>
-                <div class="registerbodytop rounded-lg p-2">
+                <div class="registerbodytop section_card">
                     <input type="hidden" name="" id="hidden_course_level_selected">
                     <input type="hidden" name="" id="hidden_course_name_selected">
                     <div class="conts ">
@@ -174,7 +173,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="registerbody" id='tableinformation'>
+                <div class="registerbody section_card" id='tableinformation'>
                     
                 </div>
                 <div class="container hide"  id ="register_btns">
@@ -186,11 +185,11 @@
                 </div>
             </div>
             <div class="container hide" id="attendance_register_one_student">
-                <div class="container" id="display_student_attendance">
+                <div class="container section_card" id="display_student_attendance">
                 </div>
             </div>
             <div class="view hide" id="view_attendances">
-                <div class="conts">
+                <div class="conts section_card">
                     <p style=''>You are logged in as <?php 
                     if(isset($_SESSION['auth'])){
                         $authority = $_SESSION['auth'];
@@ -229,7 +228,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="informationtoview" id="atendanceinfor">
+                <div class="informationtoview section_card" id="atendanceinfor">
                 </div>
                 <div class="buttons">
                     <button id ='backtosearch'><i class="fas fa-arrow-left"></i> Back</button>

@@ -3300,7 +3300,7 @@ function tablebtnlistener() {
                     var _statsEl = cObj("student_detail_stats");
                     if (_statsEl) {
                         _statsEl.innerHTML =
-                            "<div style='background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:12px 16px;margin-bottom:4px;'>" +
+                            "<div class='section_card'>" +
                             "<p style='font-size:17px;font-weight:700;color:#333;margin:0 0 2px;'>" + escHtml(_fullname) + "</p>" +
                             "<p style='font-size:12px;color:#777;margin:0 0 12px;'>" + escHtml(_class) + " &nbsp;&bull;&nbsp; Adm: " + escHtml(_adm) + "</p>" +
                             "<div class='row'>" +
