@@ -121,7 +121,8 @@ cObj("select_student_option").onchange = function () {
             element.classList.add("hide");
         }
         // get the students admitted
-        cObj("date_select_report").classList.remove("hide");
+        cObj("admitted_date_mode_win").classList.remove("hide");
+        toggleAdmittedDateMode();
         cObj("class_select_report").classList.remove("hide");
         cObj("specific_course_2").classList.remove("hide");
 
@@ -166,6 +167,18 @@ cObj("select_student_option").onchange = function () {
         }
     }
 }
+// students admitted: switch between a single admission date and a date range
+function toggleAdmittedDateMode() {
+    if (cObj("admitted_date_mode").value == "range") {
+        cObj("date_select_report").classList.add("hide");
+        cObj("between_dates").classList.remove("hide");
+    }else{
+        cObj("between_dates").classList.add("hide");
+        cObj("date_select_report").classList.remove("hide");
+    }
+}
+cObj("admitted_date_mode").onchange = toggleAdmittedDateMode;
+
 cObj("finance_entity").onchange = function () {
     var my_val = this.value;
     cObj("level_balance_type_win").classList.add("hide");

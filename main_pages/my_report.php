@@ -53,6 +53,13 @@
                             <option value="2">All</option>
                         </select>
                     </div>
+                    <div class="col-md-4 student ctrl my-2 hide" id="admitted_date_mode_win">
+                        <label for="admitted_date_mode" class="form-label"><b>Date Filter</b></label>
+                        <select name="admitted_date_mode" id="admitted_date_mode" class="form-control">
+                            <option value="single" selected>Single Date</option>
+                            <option value="range">Date Range</option>
+                        </select>
+                    </div>
                     <div class="col-md-4 student ctrl my-2 hide" id="date_select_report">
                         <label for="select_date" class="form-label"><b>Select date</b></label>
                         <input type="date" value="<?php echo date("Y-m-d");?>" name="select_date" id="select_date" class="form-control" max="<?php echo date("Y-m-d") ?>">
