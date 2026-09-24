@@ -43,7 +43,7 @@
                     </tr>
                 </table>-->
             </div>
-            <p><strong>Note: </strong>Only teachers assigned as <strong>Class teachers</strong>  will appear here</p>
+            <p class="instructions"><strong>Hint:</strong> Only teachers assigned as <strong>Class teachers</strong>  will appear here</p>
         </div>
         <div class="conts">
             <p> Click to assign a classteacher a new class: <br> <button type="button" id="show_subjects"><i class="fas fa-user-plus"></i> Assign teacher</button></p>

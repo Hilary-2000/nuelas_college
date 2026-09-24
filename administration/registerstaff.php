@@ -14,8 +14,8 @@
             </div>
         </div>
         <div class="middle1">
-            <div class="top">
-                <p style='text-align:center;font-size:17px;'><strong>Instructions</strong></p>
+            <div class="top instructions">
+                <p><strong>Hint:</strong></p>
                 <p>1. Please fill all the fields required: They are marked with <span style = 'color:red;'>*</span> </p>
                 <p>2. This user will have an account and will be limited to some functions with the role you assign to them. </p>
                 <p>3. Depending on the role you assign a user, the user will be able to change some information but will be monitored.</p>

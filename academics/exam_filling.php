@@ -7,8 +7,9 @@
             <p>Student Marks Entry and viewing</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p> <strong>Note:</strong><br>- Only active exams will appear when you record student marks and the subjects that you teach</p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
+                <p>- Only active exams will appear when you record student marks and the subjects that you teach</p>
                 <p>- Changes of exams can only be done if the exam is still active.</p>
                 <p>- Start by selecting either of the three options</p>
                 <p>- The results displayed by the system will only be accurate if the all the student marks are filled and have the same grading system</p>

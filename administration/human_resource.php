@@ -15,9 +15,9 @@
             <!-- <input type="text"  id="myname" hidden value = <?php if(isset($_SESSION['username'])){ echo $_SESSION['username']; } ?> > -->
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
-                    <p><strong>Important:</strong></p>
+                    <p><strong>Hint:</strong></p>
                 </div>
                 <p>- Manage your Employees Leave Information.</p>
                 <p>- Manage your Employees employment information.</p>
@@ -34,7 +34,7 @@
             <div class="container border border-secondary p-2 my-2 hide" id="leave_management_window">
                 <h4 class="text-center ">Manage Leaves</h4>
                 <!-- options for leaves are below -->
-                <p><b>Note:</b> <br> Kindly select an action before proceeding</p>
+                <p class="instructions"><strong>Hint:</strong><br> Kindly select an action before proceeding</p>
                 <label for="leaves_options">Select an action</label>
                 <select name="leaves_options" id="leaves_options" class="form-control">
                     <option value="" hidden>Select an action</option>

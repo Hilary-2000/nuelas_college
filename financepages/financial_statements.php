@@ -7,9 +7,9 @@
             <p>Financial statements</p>
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
-                    <p><strong>Important:</strong></p>
+                    <p><strong>Hint:</strong></p>
                 </div>
                 <p>- At this window you will be able to view the different account statements basing on the financial information collected over time.</p>
                 <p>- Select different option to view your information differently.</p>

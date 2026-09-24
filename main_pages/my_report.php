@@ -9,8 +9,8 @@
             <p class="hide" id="set_reports2"></p>
         </div>
         <div class="middle1">
-            <div class="conts border-bottom border-secondary border-dashed p-2">
-                <p><b>Note:</b></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>At this window you are previledged to generate reports of the whole school starting from the basic student information to the complex financial statements.</p>
                 <p>We have different sections that generate different reports</p>
             </div>

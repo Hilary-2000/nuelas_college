@@ -7,8 +7,8 @@
             <p>Academic Reports</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p><strong>Information:</strong></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you will be able to generate students academic report cards.</p>
                 <ul>
                     <li>Unit perfomance reports</li>

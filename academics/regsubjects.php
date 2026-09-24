@@ -8,8 +8,8 @@
         </div>
         <div class="middle1">
             <div class="tops" style='padding: 10px 0;'>
-                <div class="conts">
-                    <p><strong>Note:</strong></p>
+                <div class="instructions">
+                    <p><strong>Hint:</strong></p>
                     <p>- At this window you will be able to register a Course Units.</p>
                     <p>- Fill all the fields required correctly.</p>
                     <p>- A Course Units name can be used twice but the Course Unit id cant be used twice.</p>

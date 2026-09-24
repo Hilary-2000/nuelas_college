@@ -7,7 +7,8 @@
             <p>Logs</p>
         </div>
         <div class="middle1">
-            <div class="logs_information">
+            <div class="logs_information instructions">
+                <p><strong>Hint:</strong></p>
                 <p>At this window you are previledged to view user logs: They include</p>
                 <p>- User log in time <br>- User logout time.<br>- User active hours</p>
             </div>

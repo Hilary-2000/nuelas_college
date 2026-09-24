@@ -7,12 +7,10 @@
             <p>Student Boarding List</p>
         </div>
         <div class="middle1">
-            <div class="conts" style="border-bottom:1px dashed black;">
-                <div class="conts">
-                    <p><strong>Information:</strong></p>
-                    <p>- At this window will see the list of students enrolled in hostels.</p>
-                    <p>- Start by searching for a students who are enrolled for boarding.</p>
-                </div>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
+                <p>- At this window will see the list of students enrolled in hostels.</p>
+                <p>- Start by searching for a students who are enrolled for boarding.</p>
             </div>
             <div class="conts my-2">
                 <span id="display_all_students_present" class="btn btn-sm btn-success"><i class="fas fa-sync-alt"></i> Refresh List</span>

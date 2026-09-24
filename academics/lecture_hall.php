@@ -7,8 +7,8 @@
             <p>Lecture Hall List</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p><strong>Information</strong></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you will be able to manage you Lecture halls.</p>
                 <p>- During timetable generation this hall listed will be available for Lecture assignment.</p>
                 <p>- Fill all fields required!</p>

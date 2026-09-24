@@ -7,8 +7,8 @@
             <p>Assign Teacher Units</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p><strong>Information</strong></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you will be able to assign the lecturers the units they teach.</p>
                 <p>- Once a unit has been assigned they will be able to manage the unit scores for each exam.</p>
                 <p>- Additionally, they will also be scheduled appropriately on the timetable based on the units you assign to them.</p>

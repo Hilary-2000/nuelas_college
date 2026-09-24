@@ -914,14 +914,14 @@ function checkPresnt($array, $string){
                 </div>
                 <div class="add_expense">
                     <div class="form-group my-2">
-                        <b>Note:</b>
+                        <div class="instructions"><strong>Hint:</strong>
                         <ul>
                             <li>This voteheads settings will be linked to the class this student is in this academic year.</li>
                             <li>Select voteheads the student will pay for!</li>
                             <li>Transport votehead is compulsory for every student enrolled in transport until un-enrolled/in-active!</li>
                             <li>Once the voteheads are selected this will determine the amount the student pays!</li>
                             <li>If a votehead selected is provisional, it will be compulsory for the student to pay for that!</li>
-                        </ul>
+                        </ul></div>
                     </div>
                     <hr class="mx-auto">
                     <div class="form-group my-2">
@@ -955,8 +955,8 @@ function checkPresnt($array, $string){
                     <h5 class="text-center"><b>Edit Course Voteheads <img class="hide" src="images/ajax_clock_small.gif" id="load_course_voteheads"></b></h5>
                 </div>
                 <div class="add_expense">
-                    <div class="form-group my-2">
-                        <b>Note:</b>
+                    <div class="form-group my-2 instructions">
+                        <strong>Hint:</strong>
                         <ul>
                             <li>Select only voteheads that you wish students doing this course would select.</li>
                             <li>Once the voteheads are selected this will determine the amount the student pays!</li>
@@ -1589,9 +1589,7 @@ function checkPresnt($array, $string){
                     <p class="funga" id="close_window_add_member_dept">&times</p>
                     <h5 class="text-center"><b>Add Members</b></h5>
                 </div>
-                <div class="container">
-                    <p>
-                        <b>Note:</b> <br> 
+                <div class="container"><p class="instructions"><strong>Hint:</strong><br> 
                         - Add members from the list below. <br>
                         - The list below will show the members that have not been assigned a department.
                     </p>
@@ -1622,9 +1620,7 @@ function checkPresnt($array, $string){
                     <p class="funga" id="close_window_add_subject_dept">&times</p>
                     <h5 class="text-center"><b>Add Subjects</b></h5>
                 </div>
-                <div class="container">
-                    <p>
-                        <b>Note:</b> <br> 
+                <div class="container"><p class="instructions"><strong>Hint:</strong><br> 
                         - Add subjects from the list below. <br>
                         - The list below will show the subjects that have not been assigned a department.
                     </p>
@@ -1864,10 +1860,10 @@ function checkPresnt($array, $string){
                     <p class="funga" id="fungash1">&times</p>
                     <h5 class="text-center"><b>Edit Exam Information</b></h5>
                     <p class="hide" id="exams_infor"></p>
-                    <p><b>Note:</b></p>
+                    <div class="instructions"><p><strong>Hint:</strong></p>
                     <p>- You can only remove the subjects and the classes if the exam is active. <br>
                         - An active exam is which its end date is today or future date.
-                    </p>
+                    </p></div>
                 </div>
                 <form class="formsexams1" id='formsexams11'>
                     <div class="exam_form" id="examform11">
@@ -2946,8 +2942,8 @@ function checkPresnt($array, $string){
                     <h6 class="text-center">Add Supplier Bill</h6>
                 </div>
                 <div class="conts">
-                    <div class="message_contents">
-                        <label class="form-control-label"><u>Note:</u></label>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Fill all fields as required!</p>
                     </div>
                     <form class="add_expense" id="add_supplier_bill">
@@ -3048,8 +3044,8 @@ function checkPresnt($array, $string){
                             </div>
                         </div>
                     </div>
-                    <div class="message_contents">
-                        <label class="form-control-label"><u>Note:</u></label>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Fill all fields as required!</p>
                         <p>- Edit the supplier bill.</p>
                     </div>
@@ -3123,8 +3119,8 @@ function checkPresnt($array, $string){
                     <h6 class="text-center">View Payment Request</h6>
                 </div>
                 <div class="conts">
-                    <div class="message_contents">
-                        <label class="form-control-label"><u>Note:</u></label>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Fill all fields as required!</p>
                         <p>- Edit the supplier bill.</p>
                     </div>
@@ -3240,8 +3236,8 @@ function checkPresnt($array, $string){
                     <h6 class="text-center">Make Payments</h6>
                 </div>
                 <div class="conts">
-                    <div class="message_contents">
-                        <label class="form-control-label"><u>Note:</u></label>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Fill all fields as required!</p>
                     </div>
                     <form class="add_expense" >
@@ -3379,8 +3375,8 @@ function checkPresnt($array, $string){
                     <h6 class="text-center">Add Votehead</h6>
                 </div>
                 <div class="conts" id="">
-                    <div class="message_contents">
-                        <label class="form-control-label"><u>Note:</u></label>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Adding of a votehead for regular will result to an immediate change in student`s balances and an increase or decrease of what is charged.</p>
                     </div>
                     <form class="add_expense" id="exp_names">
@@ -3956,8 +3952,8 @@ function checkPresnt($array, $string){
                     <h6 class="text-center" >Set Up Email <span class="hide" id="load_email_setup2"><img src="images/ajax_clock_small.gif" id=""></span></h6>
                 </div>
                 <div class="conts" id="">
-                    <div class="message_contents">
-                        <label class="form-control-label"><u>Note:</u></label>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Provide the correct data for the emails to work.</p>
                     </div>
                     <form class="add_expense" id="non12">
@@ -4023,8 +4019,8 @@ function checkPresnt($array, $string){
                     <h6>Update Votehead Information</h6>
                 </div>
                 <div class="conts" id="">
-                    <div class="conts">
-                        <label class="form-control-label"><u>Note:</u></label>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Changing of votehead amount will result to an immediate change in student`s balances or and an increase or decrease of what is charged.</p>
                     </div>
                     <form class="add_expense" id="exp_names1">
@@ -4090,8 +4086,8 @@ function checkPresnt($array, $string){
                 <div class="container" id="">
                     <div class="container p-0 mx-0 my-2">
                         <h6>Set Grades for <b id="subject_grades_names">Subject Name</b></h6>
-                        <h6><b>Note</b></h6>
-                        <p>1 Add the grade list first before saving</p>
+                        <div class="instructions"><p><strong>Hint:</strong></p>
+                        <p>1 Add the grade list first before saving</p></div>
                         <p class="hide" id="my_grades_lists"></p>
                     </div>
                     <div class="row">
@@ -4149,8 +4145,8 @@ function checkPresnt($array, $string){
                 <div class="container" id="">
                     <div class="container p-0 mx-0 my-2">
                         <h6>Set Grades for <b id="edit_grades_subject_name">Subject Name</b></h6>
-                        <h6><b>Note</b></h6>
-                        <p>1 Add the grade list first before saving</p>
+                        <div class="instructions"><p><strong>Hint:</strong></p>
+                        <p>1 Add the grade list first before saving</p></div>
                         <p class="hide" id="my_grades_edits"></p>
                     </div>
                     <div class="row">
@@ -4284,8 +4280,8 @@ function checkPresnt($array, $string){
                     <p class="funga" id="close_add_course_win">&times</p>
                     <h6 class="text-center">Add Course</h6>
                 </div>
-                <div class="message_contents my-2">
-                    <label class="form-control-label"><u>Note:</u></label>
+                <div class="instructions my-2">
+                    <p><strong>Hint:</strong></p>
                     <p>- Provide the correct data for the course.</p>
                 </div>
                 <div class="container mx-2 border border-dark rounded p-2 row add_expense" style="width: 90%;">

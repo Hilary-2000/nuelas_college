@@ -674,9 +674,27 @@ h4{
     margin: auto;
     overflow: auto;
 }
+/* Hint callout, used at the top of module screens and popups.
+   Soft grey card with a teal heading line. */
 .instructions{
-    border-bottom: 1px dashed black ;
-    margin-bottom: 10px;
+    background: #f8fafb;
+    border: 1px solid #eef1f2;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #4a5b5e;
+}
+.instructions > p{
+    margin: 3px 0;
+}
+.instructions > p:first-child{
+    color: rgb(3,131,135);
+    font-weight: 600;
+}
+.instructions > .conts{
+    margin-top: 10px;
 }
 .middle1 .body2 table, .middle1 .body2 td ,
 .registerbody table , .registerbody td,

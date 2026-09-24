@@ -7,8 +7,8 @@
             <p>Subject Selection</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p><strong>Note</strong></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you are previledged to manage the subjects that every student has chosen.</p>
                 <p>- Ensure you save your data before you leave this page.</p>
             </div>

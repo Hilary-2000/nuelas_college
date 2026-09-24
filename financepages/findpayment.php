@@ -16,11 +16,12 @@
         <div class="middle1">
             <div class="ontop">
                 <div class="top">
-                    <strong>Note:</strong>
-                    <p>- At this window you can trace for any transaction done by the system</p>
-                    <p>- Start by filtering it to suite your search</p>
-                    <p>- Select <strong>By class</strong> and select a class to print fee reminders.</p>
-                    <p id='look'></p>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
+                        <p>- At this window you can trace for any transaction done by the system</p>
+                        <p>- Start by filtering it to suite your search</p>
+                        <p>- Select <strong>By class</strong> and select a class to print fee reminders.</p>
+                    </div><p id='look'></p>
                 </div>
                 <div class="tops">
                     <div class="conts">

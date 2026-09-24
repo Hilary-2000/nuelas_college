@@ -11,10 +11,9 @@
             </div>
         </div>
         <div class="middle1">
-            <div class="row">
-                <div class="notice1 col-md-12">
+            <div class="instructions">
                     <div class="notify">
-                        <p><strong>Important:</strong></p>
+                        <p><strong>Hint:</strong></p>
                     </div>
                     <ul>
                         <li> At this window you will be able to view, edit and update credit notes for students that have existing staffs as parents in school.</li>
@@ -22,7 +21,6 @@
                         <li> Ensure that the student assigned the amount is the correct one.</li>
                     </ul>
                     <button type='button' id='back_to_fees_payment' ><i class="fa fa-arrow-left"></i> Back to Fees Payment</button>
-                </div>
             </div>
             <div class="container">
                 <div id="credit_note_window">
@@ -175,7 +173,7 @@
 
                                 <div class="container hide border border-secondary rounded my-2" id="set_time_cr_nt">
                                     <h6><u>Select Time</u></h6>
-                                    <p><b>Note:</b> <br>Change time and date only if the transaction was made before.</p>
+                                    <p class="instructions"><strong>Hint:</strong><br>Change time and date only if the transaction was made before.</p>
                                     <hr>
                                     <label for="date_of_payments_fees_cr_nt" class="form-label">Date of payments</label>
                                     <input type="date"  class="form-control" id="date_of_payments_fees_cr_nt" value="<?php echo date("Y-m-d");?>" max="<?php echo date("Y-m-d");?>">

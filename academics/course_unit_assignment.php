@@ -7,8 +7,8 @@
             <p>Course Unit Assignment</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p><strong>Information</strong></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you will be able to allign the course units on the year and module its to be done.</p>
                 <p>- This is very important when setting up the exams, because it will highlight what units are examined for what students.</p>
                 <p>- Example: Communication skills and Calculus 1 is done by Computer Science Students in Year 1 Sem 1, so all students in year 1 sem 1 will do the two units as their exams.</p>

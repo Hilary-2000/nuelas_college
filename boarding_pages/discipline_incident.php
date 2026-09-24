@@ -14,7 +14,8 @@
             </div>
         </div>
         <div class="middle1">
-            <p><b>Note:</b></p>
+            <div class="instructions">
+            <p><strong>Hint:</strong></p>
             <p>In this window you`ll be able to manage students misconducts and incidents.
             <br>You will be able to record, update and delete misconducts and incidents flowlessly.
             <br>Example:
@@ -24,7 +25,7 @@
                 <li>Student suffers minor injury during sports → their ankle was dislocated and they were taken to the school clinic.</li>
             </ul>
             </p>
-            <hr class="my-1">
+            </div>
             <ul class="nav nav-tabs" id="discipline_incident_tabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="btn btn-sm btn-primary active" id="discipline_tab" data-bs-toggle="tab" data-bs-target="#discipline_window" type="button" role="tab" aria-controls="discipline_window" aria-selected="true">Discipline/Incidents Management</button>

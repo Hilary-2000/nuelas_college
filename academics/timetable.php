@@ -7,9 +7,9 @@
             <p>Timetable</p>
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
-                    <p><strong>Important:</strong></p>
+                    <p><strong>Hint:</strong></p>
                 </div>
                 <p>- Create your timetable.</p>
                 <p>- View your timetable.</p>
@@ -212,7 +212,7 @@
             <div class="conts hide" id="view_tt_inxide">
                 <div class="conts">
                     <h5 style='text-align:center;'>View My Timetable </h5>
-                    <p><b>Note</b><br><span class='text-danger'>(All your TT requests will be generated after every 10 maximum)</span></p>
+                    <p class="instructions"><strong>Hint:</strong><br><span class='text-danger'>(All your TT requests will be generated after every 10 maximum)</span></p>
                 </div>
                 <div class="conts animate" id="table_lists">
                     <p id="timetable_lists"></p>
@@ -306,11 +306,11 @@
                     <div class="conts">
                         <input type="hidden" name="" id="timetable_ids_holders">
                         <span id="error_handler_customize_tt"></span><br>
-                        <b>Note:</b><br>
+                        <div class="instructions"><strong>Hint:</strong><br>
                         <span>- When changing lessons in the table the system will pick lesson that will best fit that period without causing any conflict. </span><br>
                         <span>- You can also pick blank lesson to indicate free lesson or physical education </span><br>
                         <span>- Ensure you save the changes before leaving this page</span>
-                        <hr>
+                        </div>
                         <h6 style='text-align:center;'>Customize Timetable: <b><span id="customize_my_tables_tt"></span></b></h6>
                     </div>
                     <div class="container">
