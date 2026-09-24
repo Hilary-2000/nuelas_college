@@ -11,7 +11,7 @@
                 <div class="school_logo">
                     <img src="images/settings.png" id="" alt="">
                 </div>
-                <div class="conts" style="text-align:center;border-bottom:1px dashed black;">
+                <div class="conts" style="text-align:center;">
                     <h3><?php echo $_SESSION['fullnames']; ?></h3>
                     <p> <b><u>My Settings</u></b></p>
                 </div>

@@ -12,7 +12,7 @@
                 <p>- At this window will see the list of students enrolled in hostels.</p>
                 <p>- Start by searching for a students who are enrolled for boarding.</p>
             </div>
-            <div class="conts my-2">
+            <div class="conts section_card">
                 <span id="display_all_students_present" class="btn btn-sm btn-success"><i class="fas fa-sync-alt"></i> Refresh List</span>
                 <div id="student_enrolled_list">
                 </div>

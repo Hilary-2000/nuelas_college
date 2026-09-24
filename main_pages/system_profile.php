@@ -12,10 +12,11 @@
                     <img src="images/board.jpg" id="sch_logos2" alt="">
                     <span class="roundedbtn" id="change_sch_dp"> <i class='fa fa-pen'></i></span>
                 </div>
-                <div class="conts" style="text-align:center;border-bottom:1px dashed black;">
+                <div class="conts" style="text-align:center;">
                     <h3><?php echo $_SESSION['schoolname'];?></h3>
-                    <p> <b><u> Update School Information</u></b></p>
                 </div>
+                <div class="section_card">
+                <p class="card_heading">Update School Information</p>
                 <p id="store_sch_information" class="hide"></p>
                 <div class="container">
                     <div class="titles">
@@ -149,6 +150,7 @@
                 </div>
                 <div class="btns">
                     <button type='button' id='update_school_in4'><i class="fas fa-upload"></i> Update</button>
+                </div>
                 </div>
             </div>
         </div>

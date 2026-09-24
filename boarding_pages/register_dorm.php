@@ -7,11 +7,12 @@
             <p>Register Hostel</p>
         </div>
         <div class="middle1">
-            <div class="conts" style="border-bottom:1px dashed black;">
-                <div class="instructions">
-                    <p><strong>Hint:</strong></p>
-                    <p>- At this window you are previledged to register hostels that are present in school and view their information including students who inhibit the dorms.</p>
-                </div>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
+                <p>- At this window you are previledged to register hostels that are present in school and view their information including students who inhibit the dorms.</p>
+            </div>
+            <div class="section_card">
+                <p class="card_heading">Register Hostel</p>
                 <div class="conts">
                     <p>Start by doing either of the following:</p>
                     <button type="button" id="register_exams" ><i class="fas fa-save"></i> Register New Hostel</button>
@@ -20,7 +21,7 @@
                     <p><a href="mailto://hilaryme45@gmail.com">Mail me.</a></p>-->
                 </div>
             </div>
-            <div class="conts">
+            <div class="conts section_card">
                 <p id="dorm_list_messenger"></p>
                 <p id="dormitory_list">
                     <!--<table>
