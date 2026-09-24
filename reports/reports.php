@@ -1634,19 +1634,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                     echo "<p style='color:red;'><b>Note:</b><br>Please select the student course level to display the students information";
                 }
             } elseif ($select_student_option == "students_admitted") {
-                if (strlen($select_report_class) > 0 && strlen($select_date) > 0) {
-                    $select = "SELECT * FROM `student_data` WHERE `D_O_A` = ? AND `stud_class` = ?";
+                // admission date filter: a single date or a date range
+                $admitted_date_mode = isset($_POST['admitted_date_mode']) ? $_POST['admitted_date_mode'] : "single";
+                $doa_from = $admitted_date_mode == "range" ? $from_date_report : $select_date;
+                $doa_to = $admitted_date_mode == "range" ? $to_date_report : $select_date;
+                if (strlen($doa_from) > 0 && strlen($doa_to) > 0 && $doa_from > $doa_to) {
+                    $swap_date = $doa_from;
+                    $doa_from = $doa_to;
+                    $doa_to = $swap_date;
+                }
+                $doa_label = $doa_from == $doa_to ? "on " . date("dS M Y", strtotime($doa_from)) : "between " . date("dS M Y", strtotime($doa_from)) . " and " . date("dS M Y", strtotime($doa_to));
+                $doa_sheet_label = $doa_from == $doa_to ? "Admitted on " . date("dS M Y", strtotime($doa_from)) : date("d-m-Y", strtotime($doa_from)) . " to " . date("d-m-Y", strtotime($doa_to));
+                if (strlen($select_report_class) > 0 && strlen($doa_from) > 0 && strlen($doa_to) > 0) {
+                    $select = "SELECT * FROM `student_data` WHERE `D_O_A` BETWEEN ? AND ? AND `stud_class` = ?";
 
                     // add gender option
                     $select_gender_option = $_POST['select_gender_option'];
-                    $gender_option = $select_gender_option == "all" ? "" : " AND `gender` = '".$select_gender_option."'";
+                    $gender_option = $select_gender_option == "all" ? "" : " AND `gender` = ?";
                     $select .= $gender_option;
 
                     if ($select_report_class != "all") {
                         // display the student data per class
-                        $tittle = classNameReport($select_report_class) . " admitted on " . date("dS M Y", strtotime($select_date));
+                        $tittle = classNameReport($select_report_class) . " admitted " . $doa_label;
                         $stmt = $conn2->prepare($select);
-                        $stmt->bind_param("ss", $select_date, $select_report_class);
+                        if ($select_gender_option == "all") {
+                            $stmt->bind_param("sss", $doa_from, $doa_to, $select_report_class);
+                        } else {
+                            $stmt->bind_param("ssss", $doa_from, $doa_to, $select_report_class, $select_gender_option);
+                        }
                         $stmt->execute();
                         $result = $stmt->get_result();
                         $student_data = [];
@@ -1768,16 +1783,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             echo "Please set the student course details and the date of admission to view the students information";
                         }
                     } else {
-                        $select = "SELECT * FROM `student_data` WHERE `D_O_A` = '" . $select_date . "' AND `stud_class` != '-1'";
+                        $select = "SELECT * FROM `student_data` WHERE `D_O_A` BETWEEN ? AND ? AND `stud_class` != '-1'";
 
                         // add gender option
                         $select_gender_option = $_POST['select_gender_option'];
-                        $gender_option = $select_gender_option == "all" ? "" : " AND `gender` = '".$select_gender_option."'";
+                        $gender_option = $select_gender_option == "all" ? "" : " AND `gender` = ?";
                         $select .= $gender_option;
 
                         // echo $select_report_class;
-                        $tittle = "Students registered on " . date("dS M Y", strtotime($select_date));
+                        $tittle = "Students registered " . $doa_label;
                         $stmt = $conn2->prepare($select);
+                        if ($select_gender_option == "all") {
+                            $stmt->bind_param("ss", $doa_from, $doa_to);
+                        } else {
+                            $stmt->bind_param("sss", $doa_from, $doa_to, $select_gender_option);
+                        }
                         $stmt->execute();
                         $result = $stmt->get_result();
                         $student_data = [];
@@ -2846,19 +2866,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                         $all_department = isJson_report($rows['valued']) ? json_decode($rows['valued']) : [];
                     }
                 }
-                if (strlen($select_report_class) > 0 && strlen($select_date) > 0) {
-                    $select = "SELECT * FROM `student_data` WHERE `D_O_A` = ? AND `stud_class` = ?";
+                // admission date filter: a single date or a date range
+                $admitted_date_mode = isset($_POST['admitted_date_mode']) ? $_POST['admitted_date_mode'] : "single";
+                $doa_from = $admitted_date_mode == "range" ? $from_date_report : $select_date;
+                $doa_to = $admitted_date_mode == "range" ? $to_date_report : $select_date;
+                if (strlen($doa_from) > 0 && strlen($doa_to) > 0 && $doa_from > $doa_to) {
+                    $swap_date = $doa_from;
+                    $doa_from = $doa_to;
+                    $doa_to = $swap_date;
+                }
+                $doa_label = $doa_from == $doa_to ? "on " . date("dS M Y", strtotime($doa_from)) : "between " . date("dS M Y", strtotime($doa_from)) . " and " . date("dS M Y", strtotime($doa_to));
+                $doa_sheet_label = $doa_from == $doa_to ? "Admitted on " . date("dS M Y", strtotime($doa_from)) : date("d-m-Y", strtotime($doa_from)) . " to " . date("d-m-Y", strtotime($doa_to));
+                if (strlen($select_report_class) > 0 && strlen($doa_from) > 0 && strlen($doa_to) > 0) {
+                    $select = "SELECT * FROM `student_data` WHERE `D_O_A` BETWEEN ? AND ? AND `stud_class` = ?";
 
                     // gender select option
                     $select_gender_option = $_POST['select_gender_option'];
-                    $gender_option = $select_gender_option == "all" ? "" : " AND `gender` = '".$select_gender_option."'";
+                    $gender_option = $select_gender_option == "all" ? "" : " AND `gender` = ?";
                     $select .= $gender_option;
 
                     if ($select_report_class != "all") {
                         // display the student data per class
-                        $tittle = classNameReport($select_report_class) . " admitted on " . date("dS M Y", strtotime($select_date));
+                        $tittle = classNameReport($select_report_class) . " admitted " . $doa_label;
                         $stmt = $conn2->prepare($select);
-                        $stmt->bind_param("ss", $select_date, $select_report_class);
+                        if ($select_gender_option == "all") {
+                            $stmt->bind_param("sss", $doa_from, $doa_to, $select_report_class);
+                        } else {
+                            $stmt->bind_param("ssss", $doa_from, $doa_to, $select_report_class, $select_gender_option);
+                        }
                         $stmt->execute();
                         $result = $stmt->get_result();
                         $student_data = [];
@@ -2941,7 +2976,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             
                             // Add data
                             $worksheet = $spreadsheet->getActiveSheet();
-                            $worksheet->setTitle("Admitted on ".date("dS M Y", strtotime($select_date)));
+                            $worksheet->setTitle(substr($doa_sheet_label, 0, 31));
                             // set the statistics
                             $worksheet->setCellValue("A1", "Population");
                             $worksheet->setCellValue("A2", "Male");
@@ -2988,16 +3023,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             echo "Please set the student course details and the date of admission to view the students information";
                         }
                     } else {
-                        $select = "SELECT * FROM `student_data` WHERE `D_O_A` = '" . $select_date . "' AND `stud_class` != '-1'";
+                        $select = "SELECT * FROM `student_data` WHERE `D_O_A` BETWEEN ? AND ? AND `stud_class` != '-1'";
                     
                         // gender select option
                         $select_gender_option = $_POST['select_gender_option'];
-                        $gender_option = $select_gender_option == "all" ? "" : " AND `gender` = '".$select_gender_option."'";
-                        $condition .= $gender_option;
+                        $gender_option = $select_gender_option == "all" ? "" : " AND `gender` = ?";
+                        $select .= $gender_option;
                         
                         // echo $select_report_class;
-                        $tittle = "Students registered on " . date("dS M Y", strtotime($select_date));
+                        $tittle = "Students registered " . $doa_label;
                         $stmt = $conn2->prepare($select);
+                        if ($select_gender_option == "all") {
+                            $stmt->bind_param("ss", $doa_from, $doa_to);
+                        } else {
+                            $stmt->bind_param("sss", $doa_from, $doa_to, $select_gender_option);
+                        }
                         $stmt->execute();
                         $result = $stmt->get_result();
                         $student_data = [];
@@ -3070,7 +3110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                             
                             // Add data
                             $worksheet = $spreadsheet->getActiveSheet();
-                            $worksheet->setTitle("Admitted on ".date("dS M Y", strtotime($select_date)));
+                            $worksheet->setTitle(substr($doa_sheet_label, 0, 31));
                             // set the statistics
                             $worksheet->setCellValue("A1", "Population");
                             $worksheet->setCellValue("A2", "Male");
