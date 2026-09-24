@@ -70,15 +70,15 @@
         </div>
         <hr class="w-75 mx-auto my-2">
         <div class="middle1">
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
+                <p><i>Always confirm that youve checked the students present before submitting.</i></p>
+                <p><i>After submitting the attendance you can view the attendance list.</i></p>
+            </div>
             <div class="register" id='mains'>
                 <div class="registerbodytop rounded-lg p-2">
-                    <div class="conts">
-                        <p><strong>Note:</strong></p>
-                        <p><i>Always confirm that youve checked the students present before submitting.</i></p>
-                        <p><i>After submitting the attendance you can view the attendance list.</i></p>
-                        <input type="hidden" name="" id="hidden_course_level_selected">
-                        <input type="hidden" name="" id="hidden_course_name_selected">
-                    </div>
+                    <input type="hidden" name="" id="hidden_course_level_selected">
+                    <input type="hidden" name="" id="hidden_course_name_selected">
                     <div class="conts ">
                         <p style=''>You are logged in as <?php 
                         if(isset($_SESSION['auth'])){

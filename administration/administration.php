@@ -18,8 +18,8 @@
         <div class="middle1 ">
             <div class="row">
                 <div class="col-md-9">
-                    <div class="top">
-                        <p style="text-align: center; font-size:16px;"><strong>Instructions</strong></p>
+            <div class="top instructions">
+                <p><strong>Hint:</strong></p>
                         <p>1. Fill all the required fields to complete the student registration</p>
                         <p>2. The Important field fields are marked with <span style = 'color:red;'>*</span>, the rest are optional</p>
                         <p>3. After filling all the fields click the submit button to save the information to the database</p>

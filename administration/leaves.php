@@ -14,8 +14,10 @@
             </div>
         </div>
         <div class="middle1">
-            <p><b>Note:</b></p>
-            <p>Welcome <?php echo ucwords(strtolower($_SESSION['fullnames']));?> to the Employees Leave management window, At this window you will be able to apply for leaves and also view your leave application history.</p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
+                <p>Welcome <?php echo ucwords(strtolower($_SESSION['fullnames']));?> to the Employees Leave management window, At this window you will be able to apply for leaves and also view your leave application history.</p>
+            </div>
             <hr class="my-1">
             <div class="container border border-secondary p-2 hide my_leaves_view" id="apply_leaves_windows">
                 <h4 class="text-centre">Apply for Leave</h4>

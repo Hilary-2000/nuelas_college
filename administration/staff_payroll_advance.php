@@ -14,10 +14,11 @@
             </div>
         </div>
         <div class="middle1">
-            <p><b>Note:</b></p>
-            <p>Welcome <b><?php echo ucwords(strtolower($_SESSION['fullnames']));?></b> to this window, 
-            <br>You will be able to view advances you applied for and your payroll information.</p>
-            <hr class="my-1">
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
+                <p>Welcome <b><?php echo ucwords(strtolower($_SESSION['fullnames']));?></b> to this window, 
+                <br>You will be able to view advances you applied for and your payroll information.</p>
+            </div>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="btn btn-sm btn-primary active" id="monthly-payslip-tab" data-bs-toggle="tab" data-bs-target="#monthly-payslip-window" type="button" role="tab" aria-controls="monthly-payslip-window" aria-selected="true">Monthly Payroll</button>
@@ -32,20 +33,20 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="monthly-payslip-window" role="tabpanel" aria-labelledby="monthly-payslip-tab">
                     <h5 class="title text-center"><u>Monthly Payslip</u></h5>
-                    <p><b>Note:</b></p>
+                    <div class="instructions"><strong>Hint:</strong>
                     <ul>
                         <li>Hover your mouse over the deductions column to see the respective deductions.</li>
-                    </ul>
+                    </ul></div>
                     <div class="tableme" id="monthly_payslip_holder">
                         
                     </div>
                 </div>
                 <div class="tab-pane fade" id="advance-window" role="tabpanel" aria-labelledby="advance-history-tab">
                     <h5 class="title text-center"><u>Advance History</u></h5>
-                    <p><b>Note:</b></p>
+                    <div class="instructions"><strong>Hint:</strong>
                     <ul>
                         <li>Hover your mouse over the instalments column to see the payment history.</li>
-                    </ul>
+                    </ul></div>
                     <div class="tableme" id="my_advance_application_history">
                         
                     </div>

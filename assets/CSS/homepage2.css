@@ -1362,3 +1362,45 @@ select option.hide,
 select option[hidden]{
     display: none !important;
 }
+
+/* ===== Hint cards =====
+   Every window's hint now uses the .instructions card from the inventory pages (soft grey
+   card, teal heading line). These rules cover the variations of it used across the app:
+   a heading written as an inline <strong>, the older .notify heading and bullet lists. */
+.instructions > strong:first-child,
+.instructions > .notify p{
+    display: block;
+    color: rgb(3,131,135);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    margin: 0 0 3px;
+}
+.instructions{
+    font-size: 14px;
+    line-height: 20px;
+}
+.instructions > strong:first-child + br{
+    display: none;
+}
+.instructions > .notify{
+    background: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+.instructions > .notify + p,
+.instructions > .notify ~ .notify{
+    margin-top: 3px;
+}
+.instructions ul{
+    margin: 3px 0 3px 4px;
+    padding-left: 16px;
+}
+.instructions p.instructions,
+p.instructions{
+    margin-bottom: 14px;
+}
+.instructions hr{
+    margin: 8px 0;
+}

@@ -70,10 +70,8 @@
         </div>
         <hr class="w-75 mx-auto my-2">
         <div class="middle1">
-            <div class="notice1">
-                <div class="notify">
-                    <p><strong>Important:</strong></p>
-                </div>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you will view the MPESA transactions recieved by the system</p>
                 <p>- There are two types of payments at this window, The <strong>Assigned Payments</strong> and the <strong>Unassigned Payment</strong>.</p>
                 <p>- The assigned payment are the payments that were correctly assigned to according to the student`s admission number.</p>

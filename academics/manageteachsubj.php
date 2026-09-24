@@ -7,8 +7,8 @@
             <p>Manage teacher and subjects</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p><strong>Information</strong></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you are previledged to alter the subject each teacher teaches.</p>
                 <p>- When altering the subject taught by the respective teacher, previledges the teacher has over the subject can be removed or assigned to them. </p>
             </div>

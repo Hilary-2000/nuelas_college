@@ -8,8 +8,8 @@
         </div>
         <div class="middle1">
             <div class="conts" style="border-bottom:1px dashed black;">
-                <div class="conts">
-                    <p><strong>Information:</strong></p>
+                <div class="instructions">
+                    <p><strong>Hint:</strong></p>
                     <p>- At this window you are previledged to assign boarders a dormitory.</p>
                     <p>- Start by searching for a students who are enrolled for boarding.</p>
                 </div>

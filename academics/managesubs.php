@@ -7,8 +7,8 @@
             <p>Manage subjects</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p><strong>Information</strong></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- Update and delete subject information at this window</p>
                 <p>- Changes done at the subject will cause major effects to how the system works including teachers access, exams and system timetable</p>
                 <p>- When changes are done a new timetable needs to be generated!</p>
