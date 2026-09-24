@@ -11,7 +11,7 @@
                 <p><strong>Hint:</strong></p>
                 <p>- At this window you are previledged to register exams and view their information.</p>
             </div>
-            <div class="body4">
+            <div class="body4 section_card">
                 <p>Start by doing either of the following:</p>
                 <p class="block_btn" id="registerexamsbtn"><i class="fas fa-save"></i> Register New Exam</p>
                 <p class="block_btn" id="viewexams"><i class="fas fa-eye"></i> View Exams</p>
@@ -361,7 +361,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="container hide" id="exams_details_window">
+                <div class="section_card hide" id="exams_details_window">
                     <!-- get the exams details class-->
                     <h5 class="text-center my-2">Exams Details <img src="images/ajax_clock_small.gif" class="hide" id="exams_details_loader"></h5>
                     <span class="link" id="back_exams_list"><i class="fas fa-arrow-left"></i> Back Exam List</span>

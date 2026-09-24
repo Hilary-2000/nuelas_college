@@ -12,7 +12,7 @@
                 <p>- At this window you are previledged to manage the subjects that every student has chosen.</p>
                 <p>- Ensure you save your data before you leave this page.</p>
             </div>
-            <div class="body4">
+            <div class="body4 section_card">
                 <div class="container">
                     <button id="back_to_teacher_data" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Back</button>
                     <div class="row">
