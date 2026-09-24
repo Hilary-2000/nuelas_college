@@ -24,7 +24,7 @@
             </div>
             <div class="conts">
                 <div class="staff_information" id="route_information">
-                    <div class="enroll_staf " id="route_list">
+                    <div class="enroll_staf section_card" id="route_list">
                         <div class="conts">
                             <h6 style="text-align:center;"><b>Transport Routes</b> <img class="hide" src="images/ajax_clock_small.gif" id="routes_loader"></h6>
                         </div>
@@ -100,7 +100,7 @@
                         </div>
                         
                     </div>
-                    <div class="enroll_staf hide" id="register_route">
+                    <div class="enroll_staf section_card hide" id="register_route">
                         <h6 class="text-center"><b>Register Route</b></h6>
                         <p class="block_btn" id="back_to_routes"><i class="fas fa-arrow-left"></i> Back to route list</p>
                         <div class="cont">
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="enroll_staf hide" id="view_route_infor">
+                    <div class="enroll_staf section_card hide" id="view_route_infor">
                         <h6 class="text-center"><b>View route information</b> <img class="hide" src="images/ajax_clock_small.gif" id="view_route_loader"></h6>
                         <p class="hide" id="routes_in4"></p>
                         <p class="block_btn" id="back_to_routes2"><i class="fas fa-arrow-left"></i> Back to route list</p>
@@ -180,10 +180,9 @@
                         </row>
                     </div>
                 </div>
-                <hr>
                 <div class="staff_information" id="vans_information">
                     <!-- view vans available in school -->
-                    <div class="enroll_staf" id="viewRegisteredCars">
+                    <div class="enroll_staf section_card" id="viewRegisteredCars">
                         <div class="conts">
                             <h6 style="text-align:center;"><b>School Vans</b> <img class="hide" src="images/ajax_clock_small.gif" id="van_loader"></h6>
                         </div>
@@ -263,7 +262,7 @@
                         </div>
                     </div>
                     <!-- get the school van data -->
-                    <div class="enroll_staff hide" id="save_van_window">
+                    <div class="enroll_staff section_card hide" id="save_van_window">
                         <h6 class="text-center"><u><b>Register School Van</b></u></h6>
                         <p class="block_btn" id="back_to_vans"><i class="fas fa-arrow-left"></i> Back to van list</p>
                         <div class="cont">
@@ -318,7 +317,7 @@
                         </div>
                     </div>
                     <!-- get the school van data -->
-                    <div class="enroll_staff hide" id="update_van_window">
+                    <div class="enroll_staff section_card hide" id="update_van_window">
                         <h6 class="text-center"><u><b>Update / View School Van</b></u> <img class="hide" src="images/ajax_clock_small.gif" id="van_loader1"> </h6>
                         <p class="block_btn" id="back_to_vans1"><i class="fas fa-arrow-left"></i> Back to van list</p>
                         <p class="hide" id="update_data"></p>

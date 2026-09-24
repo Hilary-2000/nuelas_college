@@ -21,15 +21,14 @@
                 <p>- ADD, UPDATE AND REMOVE students IN the Transport system.</p>
             </div>
             <div class="conts">
-                <div class="staff_information" >
+                <div class="staff_information section_card">
                     <p class="hide" id="statistics_trans"></p>
                     <h6>Statistics <img src="images/ajax_clock_small.gif" class="hide" id="statistics_loader"></h6>
                     <p><strong>Students enrolled : </strong> <span id="students_enrolled">25 Student(s)</span></p>
                     <p><strong>Routes Available : </strong> <span id="routes_counted">4 Route(s)</span></p>
                     <p><strong>School Vans : </strong> <span id="vans_counted">5 Van(s)</span></p>
                 </div>
-                <hr>
-                <div class="staff_information " id="students_trans_enrolled">
+                <div class="staff_information section_card" id="students_trans_enrolled">
                     <h6 class="text-center"><strong>Students List</strong> <span class="hide" id="student_trans_loader"><i class="fas fa-spinner fa-spin"></i></span></h6>
                     <p class="block_btn" id="enroll_student_tr"><i class="fas fa-plus"></i> Enroll Student</p>
                     <div class="conts">
@@ -101,7 +100,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="staff_information hide" id="enroll_stud_transport">
+                <div class="staff_information section_card hide" id="enroll_stud_transport">
                     <h6 class="text-center" ><strong>Register Student</strong></h6>
                     <p class="block_btn" id="back_to_std_trans_list"><i class="fas fa-arrow-left"></i> Back to Student list</p>
                     <div class="instructions">
@@ -161,7 +160,7 @@
                     </div>
                 </div>
                 <!-- the window to view student information -->
-                <div class="staff_information hide" id="view_student_infor_trans">
+                <div class="staff_information section_card hide" id="view_student_infor_trans">
                     <h6 class="text-center"><strong>View / Update Student`s Information</strong></h6>
                     <p class="block_btn" id="back_to_std_trans_list2"><i class="fas fa-arrow-left"></i> Back to Student list</p>
                     <div class="instructions">
