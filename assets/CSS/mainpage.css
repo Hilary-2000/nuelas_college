@@ -3290,10 +3290,12 @@ select{
 input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=reset]):not([type=range]):not([type=color]):not([type=image]):not([type=hidden]):not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *),
 select:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *),
 textarea:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *) {
-    border: 1px solid #9a9a9a !important;
-    border-radius: 5px !important;
+    border: 1px solid #d5dee3 !important;
+    border-radius: 10px !important;
     background-color: #fff !important;
     color: #2b3a3a !important;
+    font-family: "Nunito", "Calibri", sans-serif;
+    font-size: 14px;
     font-weight: 400 !important;
     box-shadow: none !important;
     transition: border-color .15s ease, box-shadow .15s ease !important;
