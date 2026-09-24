@@ -9,7 +9,7 @@
         </div>
 
         <!-- Student statistics -->
-        <div id="manage_student_stats_holder" class="w-75 mx-auto" style="margin:15px 0 20px 0;">
+        <div id="manage_student_stats_holder" class="section_card stats_card">
             <p style="font-weight:700; font-size:15px; margin-bottom:12px;">
                 <i class="fas fa-user-graduate" style="color:cadetblue;"></i>&nbsp; Student Enrolment
             </p>
@@ -73,7 +73,6 @@
                 </div>
             </div>
         </div>
-        <hr class="w-75 mx-auto my-2">
         <div class="middle1">
             <div class="topsearch2" id="alumni_candidates_banner">
                 <div class="cont">
@@ -85,7 +84,7 @@
                     </span>
                 </div>
             </div>
-            <div class="topsearch">
+            <div class="topsearch section_card">
                 <div class="topsearch1 instructions">
                     <p><strong>Hint:</strong></p>
                     <p>- Student information can be retrieved, changed and deleted at this window. <br>- Start by finding the student by the available options</p>
@@ -287,7 +286,7 @@
                 </div>
             </div>
             <div class="">
-                <div class="otherbtn hide" id="resultsbody">
+                <div class="otherbtn section_card hide" id="resultsbody">
                 </div>
                     <div class="back_button animate hide" id="back_btns" title="Click to dismis">
                         <button class = "my_back_button"  type="button" id="go_back_1" ><i class="fas fa-arrow-left"></i></button>
@@ -305,7 +304,7 @@
                             </div>
                         </div> -->
                         <div class="studentdetails">
-                            <div class="cont">
+                            <div class="cont section_card">
                                 <div class="row my-1">
                                     <div class="col-md-6">
                                         <div class="sm-toggle-card mt-1 mb-1" style="max-width:380px;">

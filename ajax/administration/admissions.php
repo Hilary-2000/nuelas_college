@@ -4280,7 +4280,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $stmt->execute();
             $res = $stmt->get_result();
             if($res){
-                $tablein4 = "<div class='tableme'><table class='table table-striped align-items-center '><tr><th>No.</th><th>Class</th><th><i class='fa fa-male'></i> Male</th><th><i class='fa fa-female'></i> Female</th><th><i class='fa fa-male'></i> + <i class='fa fa-female'></i> Total</th><th>Action</th></tr>";
+                // dataTables_wrapper + dataTable give these static tables the same look as the Manage Students list
+                $tablein4 = "<div class='dataTables_wrapper'><div class='tableme'><table class='table table-striped dataTable'><thead><tr><th>No.</th><th>Class</th><th><i class='fa fa-male'></i> Male</th><th><i class='fa fa-female'></i> Female</th><th><i class='fa fa-male'></i> + <i class='fa fa-female'></i> Total</th><th>Action</th></tr></thead><tbody>";
                 $classes = getClasses($conn2);
                 $classholder = array();
                 $classholdermale = array();
@@ -4318,17 +4319,19 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     if (strlen($daros)==1){
                         $daros = "Class ".$classes[$i];
                     }
-                    $tablein4.="<tr><td>".($i+1)."</td><td style='font-size:13px;font-weight:bold;'>".$daros."</td><td>".$classholdermale[$i]." Student(s)</td><td>".$classholderfemale[$i]." Student(s)</td><td>".$classholder[$i]." Student(s)</td><td>"."<span class='link promoteclass' style='font-size:12px;' id='pm".$classes[$i]."'><i class='fa fa-arrow-up'></i> Promote Class</span>"."</td></tr>";
+                    $tablein4.="<tr><td>".($i+1)."</td><td>".$daros."</td><td>".$classholdermale[$i]." Student(s)</td><td>".$classholderfemale[$i]." Student(s)</td><td>".$classholder[$i]." Student(s)</td><td>"."<span class='link promoteclass' style='font-size:12px;' id='pm".$classes[$i]."'><i class='fa fa-arrow-up'></i> Promote Class</span>"."</td></tr>";
                 }
-                $tablein4.="</table></div>";
-                $table_2 = "<div class = 'table_holders'><table class='align-items-center'>
-                            <tr><th>Gender</th><th>Total</th></tr>
+                $tablein4.="</tbody></table></div></div>";
+                $table_2 = "<div class='dataTables_wrapper'><div class='table_holders'><table class='table table-striped dataTable'>
+                            <thead><tr><th>Gender</th><th>Total</th></tr></thead>
+                            <tbody>
                             <tr><td><i class='fa fa-male'></i> - Male</td><td>".$males."</td></tr>
                             <tr><td><i class='fa fa-female'></i> - Female</td><td>".$female."</td></tr>
-                            <tr><td><b>Total</b></td><td><b>".$totaled."</b></td></tr>
-                            </table></div>";
-                $datas = "<h6 class='text-center w-100'>Displaying all students recognized by the system</h6><br><span style='text-align:center;'><u>Gender count table</u> ".$table_2." <br> </span>";
-                echo $datas." <p><u>Student count table</u></p>".$tablein4;
+                            </tbody>
+                            <tfoot><tr><td>Total</td><td>".$totaled."</td></tr></tfoot>
+                            </table></div></div>";
+                $datas = "<h6 class='text-center w-100'>Displaying all students recognized by the system</h6><div class='section_card'><h6 style='font-size:17px;text-align:center;font-weight:500;margin-top:0;margin-bottom:8px;'>Gender count</h6>".$table_2."</div>";
+                echo $datas."<div class='section_card'><h6 style='font-size:17px;text-align:center;font-weight:500;margin-top:0;margin-bottom:8px;'>Student count</h6>".$tablein4."</div>";
             }else {
                 
             }
@@ -4341,7 +4344,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $stmt->execute();
             $result = $stmt->get_result();
             if($result){
-                $data_to_display = "<input type='hidden' id='theClass' value='".$className."'><button class='btn btn-secondary btn-sm my-2' id='goBack3'><i class='fas fa-arrow-left'></i> Back</button><table class='table'><tr><th>No.</th><th>Fullnames</th><th>Date Of Admissions</th><th>Student Class</th><th>Gender</th><th>Select All <input type='checkbox' id='promoSelect'></th></tr>";
+                $data_to_display = "<input type='hidden' id='theClass' value='".$className."'><button class='btn btn-secondary btn-sm my-2' id='goBack3'><i class='fas fa-arrow-left'></i> Back</button><div class='section_card'><div class='dataTables_wrapper'><div class='tableme'><table class='table table-striped dataTable'><thead><tr><th>No.</th><th>Fullnames</th><th>Date Of Admissions</th><th>Student Class</th><th>Gender</th><th>Select All <input type='checkbox' id='promoSelect'></th></tr></thead><tbody>";
                 $counter = 1;
                 while ($row = $result->fetch_assoc()) {
                     $data_to_display.="<tr><td>".$counter."</td><td>".ucwords(strtolower($row['first_name']." ".$row['second_name']." ".$row['surname']))." - {".$row['adm_no']."}</td>";
@@ -4352,7 +4355,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $counter++;
                 }
                 if ($counter > 1) {
-                    $data_to_display.="</table><button class='btn btn-secondary btn-sm my-2' id='promoteStudents'><i class='fas fa-arrow-up'></i> Promote Selected students</button><div class='container'><span id='errHandler44'></span></div>";
+                    $data_to_display.="</tbody></table></div></div><button class='btn btn-secondary btn-sm my-2' id='promoteStudents'><i class='fas fa-arrow-up'></i> Promote Selected students</button><div class='container'><span id='errHandler44'></span></div></div>";
                     echo $data_to_display;
                 }else {
                     echo "<button class='btn btn-secondary btn-sm my-2' id='goBack3'><i class='fas fa-arrow-left'></i> Back</button><br><span class='text-danger'>No students to be promoted at the moment in Class : ".myClassName($className)."</span>";

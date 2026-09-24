@@ -1,10 +1,8 @@
 .subjectAndTeacher{
-    width: 80%;
+    width: 100%;
     position: relative;
-    border: 1px solid gray;
-    border-radius: 10px;
-    margin: 10px auto;
-    padding: 10px;
+    margin: 10px 0;
+    padding: 0;
 }
 .setting_s label{
     font-size: 14px; /**changed from 12px**/
@@ -1403,4 +1401,165 @@ p.instructions{
 }
 .instructions hr{
     margin: 8px 0;
+}
+
+/* ===== Admit Student: the student and parent columns as rounded cards ===== */
+.admit_card,
+.section_card{
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #e4eaee;
+    border-radius: 16px;
+    padding: 18px 20px 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 14px rgba(31,45,51,0.06);
+}
+.admit_card{
+    height: 100%;
+}
+.admit_card > p:first-child{
+    color: rgb(3,131,135) !important;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4eaee;
+}
+
+/* ===== Manage Students: the same rounded card from the stats to the filters, the student
+   list and the student details ===== */
+#findstudents .topsearch{
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 18px 20px 12px;
+    border-radius: 16px;
+}
+#findstudents .otherbtn.section_card{
+    padding: 18px 20px 12px;
+}
+#findstudents #viewinformation{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+#findstudents #viewinformation .conts{
+    margin: 0;
+}
+#findstudents #viewinformation .studentdetails > hr{
+    display: none;
+}
+#findstudents #viewinformation .card{
+    border: 1px solid #e4eaee !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 14px rgba(31,45,51,0.06) !important;
+    margin-bottom: 16px !important;
+}
+#findstudents #viewinformation .card-title{
+    color: rgb(3,131,135) !important;
+    font-size: 16px;
+    font-weight: 700;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4eaee;
+}
+#findstudents .topsearch2{
+    border: 0;
+    margin-bottom: 8px;
+}
+/* the "Student Personal Data" tag was a legend for the old bordered box, and floats loose now */
+#findstudents #viewinformation .titlesd{
+    display: none;
+}
+
+/* ===== The same card layout on Student Attendance, Register Staff, Manage Staff and
+   Promote Students ===== */
+.section_card > p.sections{
+    color: rgb(3,131,135) !important;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4eaee;
+}
+.admit_card > p.sections{
+    text-decoration: none;
+}
+/* legacy rules (.middle1 .registerbody and friends) set their own padding and margin */
+#classregister .registerbodytop,
+#classregister .registerbody,
+#classregister .informationtoview,
+#classregister .view > .conts{
+    width: 100%;
+    padding: 18px 20px 12px;
+    margin: 0 0 16px;
+}
+/* a card that has not received its content yet stays hidden instead of showing empty */
+#classregister #tableinformation:not(:has(*)),
+#classregister #atendanceinfor:not(:has(*)),
+#classregister #display_student_attendance:not(:has(*)){
+    display: none;
+}
+/* the staff list is loaded INTO #stafferrors, so look for content inside it */
+#managestaff #constable:not(:has(#stafferrors > *)){
+    display: none;
+}
+.promote_undo_redo_box{
+    border: 1px solid #e4eaee;
+    border-radius: 12px;
+}
+#promoteStdd .section_card .tableme{
+    padding: 0;
+}
+/* staff details, styled like the student details */
+#informationwindow.staffinformed{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+#informationwindow .card{
+    border: 1px solid #e4eaee !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 14px rgba(31,45,51,0.06) !important;
+    margin-bottom: 16px !important;
+}
+#informationwindow .card-title{
+    color: rgb(3,131,135) !important;
+    font-size: 16px;
+    font-weight: 700;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4eaee;
+}
+
+/* the stats banners above a window's content sit outside .middle1, so they get the same side
+   spacing as the cards below them */
+.stats_card{
+    margin: 16px 16px 16px;
+}
+
+/* ===== Card headings for windows where the heading sits deeper than the card's first child ===== */
+.card_heading{
+    color: rgb(3,131,135) !important;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4eaee;
+}
+.card_heading img{
+    height: 16px;
+    vertical-align: middle;
+}
+
+/* ===== Register Staff: one card instead of three ===== */
+/* .staffdatas (the form) is display:flex; it used to have two .col-md-6
+   flex children that Bootstrap sized to 50% each, so it never needed a
+   width of its own. Now it has one .section_card child with no flex-grow,
+   which shrinks to its content instead of filling the row. */
+#regstaff .staffdatas > .section_card{
+    width: 100%;
 }

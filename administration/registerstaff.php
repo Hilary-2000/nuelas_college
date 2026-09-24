@@ -25,8 +25,10 @@
             <div class="bodywindow">
                 <p id='errors'></p>
                 <form class="staffdatas" id="staffdatas">
+                    <div class="section_card">
+                    <div class="row">
                     <div class="col-md-6 form-group">
-                        <p class="sections">Employee`s Personal Data:</p>
+                        <p class="card_heading">Employee`s Personal Data</p>
                         <div class="conts my-2">
                             <label class="form-control-label" for="fullnames"><b>Full Name:</b><span style = 'color:red;'>*</span></label>
                             <input class="form-control" style="width: 90%;" type="text" name="fullnames" id="fullnames" placeholder = "Enter fullname">
@@ -92,7 +94,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <p class="sections"><b>User`s Credentials:</b></p>
+                        <p class="card_heading">User`s Credentials</p>
                         <div class="conts my-2">
                             <label for="username"><b>Username:</b><span style = 'color:red;'>*</span> <br> </label>
                             <input class="form-control" style="width: 90%;" type="text" name="username" id="username" placeholder = "Enter Username - Phone Number Recommended!">
@@ -107,7 +109,7 @@
                             <label for="pword2"><b>Re-enter password:</b><span style = 'color:red;'>*</span> <br> </label>
                             <input class="form-control" style="width: 90%;" type="password" name="pword2" id="pword2" placeholder = "Re-enter Password">
                         </div>
-                        <p class="sections"><b>Next Of Kin:</b></p>
+                        <p class="card_heading">Next Of Kin</p>
                         <div class="conts my-2">
                             <label for="kin_fullname"><b>FullName:</b><br> </label>
                             <input class="form-control" style="width: 90%;" type="text" name="kin_fullname" id="kin_fullname" placeholder = "Kin Fullname">
@@ -131,6 +133,8 @@
                             <label for="kin_location"><b>Kin Location:</b><br> </label>
                             <input class="form-control" style="width: 90%;" type="text" name="kin_location" id="kin_location" placeholder = "Kin Location">
                         </div>
+                    </div>
+                    </div>
                     </div>
                 </form>
                 <div class="row">
