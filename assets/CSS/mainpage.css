@@ -4,7 +4,7 @@
     font-family: "Nunito", sans-serif;
 }
 :root{
-    --maincolors:rgb(0, 29, 192);
+    --maincolors:rgb(3, 131, 135);
 }
 html{
     scroll-behavior: smooth;
@@ -686,19 +686,15 @@ h4{
 .middle1 .body1 table, .middle1 .body1 td,
 .middle1 table,.middle1 td
 {
-    border: 1px solid black;
-    border-collapse: collapse;
+    /* border, collapse and colour come from the modern table rules in homepage2.css */
     font-size: 14px; /**changed from 12px**/
-    /* font-weight: 500; */
     margin: 10px auto;
-    color: black;
 }
 #geterrorpay{
     margin: 10px 0;
 }
 .middle1 .body2 table , .registerbody table, .informationtoview table,.middle1 .contstable table{
     min-width: 300px;
-    border-radius: 10px 10px 0 0;
     margin: 5px auto;
 }
 .middle1 .topsearch2 label{
