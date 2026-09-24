@@ -7,11 +7,12 @@
             <p>Register dormitory</p>
         </div>
         <div class="middle1">
-            <div class="conts" style="border-bottom:1px dashed black;">
-                <div class="instructions">
-                    <p><strong>Hint:</strong></p>
-                    <p>- At this window you are previledged to register dormitories that are present in school and view their information including students who inhibit the dorms.</p>
-                </div>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
+                <p>- At this window you are previledged to register dormitories that are present in school and view their information including students who inhibit the dorms.</p>
+            </div>
+            <div class="section_card">
+                <p class="card_heading">Register Dormitory</p>
                 <div class="conts">
                     <p>Start by doing either of the following:</p>
                     <button type="button" id="register_exams" ><i class="fas fa-save"></i> Register New Dormitory</button>
@@ -20,7 +21,7 @@
                     <p><a href="mailto://hilaryme45@gmail.com">Mail me.</a></p>-->
                 </div>
             </div>
-            <div class="conts">
+            <div class="conts section_card">
                 <p id="dormitory_list">
                     <!--<table>
                         <tr>

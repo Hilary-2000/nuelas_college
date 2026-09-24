@@ -14,8 +14,8 @@
                 <p>At this window you are previledged to generate reports of the whole school starting from the basic student information to the complex financial statements.</p>
                 <p>We have different sections that generate different reports</p>
             </div>
-            <div class="container border border-secondary rounded my-2 p-2">
-                <h5 class="text-center">Administration Section Reports</h5>
+            <div class="section_card">
+                <p class="card_heading">Administration Section Reports</p>
                 <form method="POST" action="reports/reports.php" target="_blank" class="form-group row">
                     <div class="col-md-4">
                         <label for="select_entity" class="form-label"><b>Select Entity</b></label>
@@ -130,9 +130,8 @@
                     </div>
                 </form>
             </div>
-            <hr>
-            <div class="container border border-secondary rounded my-2 p-2">
-                <h5 class="text-center">Finance Reports</h5>
+            <div class="section_card">
+                <p class="card_heading">Finance Reports</p>
                 <div id="fees_reminder_message" class="hide">
                     <div class="container">
                         <p style="color: red;"><b> Please Note:</b></p>

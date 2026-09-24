@@ -13,11 +13,12 @@
                     <button type="button" id="change_dp_btns"><i class="fas fa-pen-fancy"></i> Change</button>
                     <p id="dp_err_handler"></p>
                 </div>
-                <div class="conts" style="text-align:center;border-bottom:1px dashed black;">
+                <div class="conts" style="text-align:center;">
                     <h5><?php echo $_SESSION['fullnames'];?></h5>
-                    <p> <b><u> Update Personal Information</u></b></p>
                 </div>
                     <p id="my_information_inner"></p>
+                <div class="section_card">
+                <p class="card_heading">Update Personal Information</p>
                 <div class="basic_details">
                     <div class="titles">
                         <p>Basic Information</p>
@@ -78,10 +79,10 @@
                     <div class="btns">
                         <button type='button' id="change_my_information"><i class="fas fa-pen-fancy"></i> Change Information</button>
                     </div>
+                </div>
+                <div class="section_card">
+                <p class="card_heading">Change Credentials</p>
                 <div class="administrator_contact">
-                    <div class="titles">
-                        <p>Change Credentials</p>
-                    </div>
                     <div class="conts">
                         <label for="old_pass">Old password: <span style="color:red;">*</span>  <br></label>
                         <input class="form-control" type="password" name="old_pass" id="old_pass" placeholder ="Old Password">
@@ -100,6 +101,7 @@
                 </div>
                 <div class="btns">
                     <button type='button' id="change_my_pass"><i class="fas fa-pen-fancy"></i> Change Credentials</button>
+                </div>
                 </div>
             </div>
         </div>
