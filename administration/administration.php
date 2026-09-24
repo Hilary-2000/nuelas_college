@@ -44,6 +44,7 @@
             </div>
             <form class="body row" id="admitform">
                 <div class="col-md-6">
+                    <div class="admit_card">
                     <p class="titled_sections"><strong> Student information </strong></p>
                     <div class="conts">
                         <label for="surname">Enter surname: <span class="examples">eg: Onyango or Kamau </span> <br> </label>
@@ -263,8 +264,10 @@
                             <input type="text" name="heard_others_specify" id="heard_others_specify" class="form-control" placeholder="Please specify">
                         </div>
                     </div>
+                    </div>
                 </div>
                 <div class="col-md-6">
+                    <div class="admit_card">
                     <p class="text-danger"><strong>Student Contacts</strong></p>
                     <!-- The first parent -->
                     <p style="color:maroon;font-size:12px;"><u>Student Contact Information</u></p>
@@ -372,6 +375,7 @@
                     </div>
                     <div class="conts">
                         <p id="erroradm"></p>
+                    </div>
                     </div>
                 </div>
             </form>

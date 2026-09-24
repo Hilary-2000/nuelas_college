@@ -10,7 +10,8 @@
         </div>
         <div class="middle1">
             <div class="row">
-                <div class="conts col-md-9">
+                <div class="instructions col-md-9">
+                    <p><strong>Hint:</strong></p>
                     <p>At this window you are able to manage your staff information<br>This include <br>1. Updating and deleting their information <br>2. Activate or deactivate them as users <br>3. Assign class teacher a class <br>4. Click either of the options below to start<br><br></p>
                     <p>You can start off by selectiing the following options: <br></p>
                     <select class="d-none" name="manage_tr_option" id="manage_tr_option">
@@ -23,8 +24,7 @@
                     <span id="manage_departments" class="block_btn"><i class="fas fa-cogs"></i> Manage Departments</span>
                 </div>
             </div>
-            <hr>
-            <div class="contstable hide" id="constable">
+            <div class="contstable section_card hide" id="constable">
                 <p id = 'stafferrors' ></p>
             </div>
             <?php include("empinfor.php")?>
