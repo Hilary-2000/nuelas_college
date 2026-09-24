@@ -27,7 +27,7 @@
                 <div class="conts">
                     <h6 style='text-align:center;'>Create Timetable</h6>
                 </div>
-                <div class="body3 animate hide" id="create_tt_inside">
+                <div class="body3 section_card animate hide" id="create_tt_inside">
                     <h6 style='text-align:center;'>Step 1: Select Class</h6>
                     <div class="left">
                         <div class="conts">
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="body3 hide animate hind"  id="create_tt_inside2">
+                <div class="body3 section_card hide animate hind"  id="create_tt_inside2">
                     <h6 style='text-align:center;'>Step 2 : Select Units</h6>
                     <div class="left">
                         <div class="conts">
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="body3 hide animate hind" id="create_tt_inside3">
+                <div class="body3 section_card hide animate hind" id="create_tt_inside3">
                     <h6 style='text-align:center;'>Step 3: First Preview</h6>
                     <div class="left">
                         <div class="conts">
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="body3 hide animate hind" id="create_tt_inside4">
+                <div class="body3 section_card hide animate hind" id="create_tt_inside4">
                     <h6 style='text-align:center;'>Step 4: Number of lessons a day</h6>
                     <div class="left">
                         <div class="conts">
@@ -118,7 +118,7 @@
                     </div>
                 </div>
 
-                <div class="body3 hide animate hind" id="create_tt_inside5">
+                <div class="body3 section_card hide animate hind" id="create_tt_inside5">
                     <h6 style='text-align:center;'>Step 5: Morning hours units</h6>
                     <div class="left">
                         <div class="conts">
@@ -149,7 +149,7 @@
                     </div>
                 </div>
 
-                <div class="body3 hide animate hind" id="create_tt_inside6">
+                <div class="body3 section_card hide animate hind" id="create_tt_inside6">
                     <h6 style='text-align:center;'>Step 6: Select Days of the week</h6>
                     <div class="left">
                         <div class="conts">
@@ -188,7 +188,7 @@
                     </div>
                 </div>
 
-                <div class="body3 hide animate hind" id="create_tt_inside7">
+                <div class="body3 section_card hide animate hind" id="create_tt_inside7">
                     <h6 style='text-align:center;'>Step 7: FInal preview and Generate timetable</h6>
                     <div class="left">
                         <div class="conts">
@@ -214,7 +214,7 @@
                     <h5 style='text-align:center;'>View My Timetable </h5>
                     <p class="instructions"><strong>Hint:</strong><br><span class='text-danger'>(All your TT requests will be generated after every 10 maximum)</span></p>
                 </div>
-                <div class="conts animate" id="table_lists">
+                <div class="conts section_card animate" id="table_lists">
                     <p id="timetable_lists"></p>
                     <!-- <div class="table_holders">
                         <table>

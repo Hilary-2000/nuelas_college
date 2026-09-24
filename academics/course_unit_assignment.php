@@ -13,7 +13,7 @@
                 <p>- This is very important when setting up the exams, because it will highlight what units are examined for what students.</p>
                 <p>- Example: Communication skills and Calculus 1 is done by Computer Science Students in Year 1 Sem 1, so all students in year 1 sem 1 will do the two units as their exams.</p>
             </div>
-            <div class="body4">
+            <div class="body4 section_card">
                 <!-- <button id="setup_new_assignment_"><i class="fas fa-plus"></i> Add New Hall</button> -->
                 <p id="course_unit_assignment_error"></p>
                 <div class="conts" id="course_list_holder_unit_assignment">

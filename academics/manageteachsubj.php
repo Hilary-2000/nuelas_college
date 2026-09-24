@@ -13,7 +13,7 @@
                 <p>- Once a unit has been assigned they will be able to manage the unit scores for each exam.</p>
                 <p>- Additionally, they will also be scheduled appropriately on the timetable based on the units you assign to them.</p>
             </div>
-            <div class="body4">
+            <div class="body4 section_card">
                 <div class="row d-none">
                     <div class="col-md-9">
                         <label for="option_ed form-control-label">Start of by either of the following option : <br></label>
@@ -54,7 +54,7 @@
                     <p id='managesubstr'></p>
                 </div>
                 <div class="boddy1">
-                    <div class="boddy3 hide" id='editsubinfor'>
+                    <div class="conts hide" id='editsubinfor'>
                         <div class="conts">
                             <h6 style='text-align:center;'>Assign Teacher Units</h6>
                         </div>

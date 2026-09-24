@@ -13,7 +13,7 @@
                 <p>- During timetable generation this hall listed will be available for Lecture assignment.</p>
                 <p>- Fill all fields required!</p>
             </div>
-            <div class="body4">
+            <div class="body4 section_card">
                 <button id="add_lecture_hall"><i class="fas fa-plus"></i> Add New Hall</button>
                 <p id="lecture_hall_error_handler"></p>
                 <div class="conts" id="lecture_hall_list_holder">

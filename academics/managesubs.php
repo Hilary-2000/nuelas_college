@@ -16,7 +16,7 @@
             <div class="conts hide">
                 <p id='subinform'></p>
             </div>
-            <div class="body4">
+            <div class="body4 section_card">
                 <label class="form-control-label d-none" for="subjects_option">Start by either <br></label>
                 <select class="form-control d-none" name="subjects_option" id="subjects_option">
                     <option value="" hidden>Select an option</option>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="boddy1">
                     <p id="resulthold"></p>
-                    <form class="boddy3 hide" id ='subjectdets'>
+                    <form class="conts hide" id ='subjectdets'>
                         <div class="conts">
                             <h3 style='text-align:center;' >Unit Details</h3>
                         </div>

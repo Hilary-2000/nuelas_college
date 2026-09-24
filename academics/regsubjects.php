@@ -16,11 +16,9 @@
                     <p>- When registering a Course Units its recomended that the Courses that share the same course units be checked instead of adding the same unit over & over for different courses.</p>
                 </div>
             </div>
-            <div class="body1">
-                <div class="conts" style='padding:10px 0;'>
-                    <h5 style="text-align:center;">Register Course Unit</h5>
-                </div>
-                <div class="body3">
+            <div class="body1 section_card">
+                <h5 style="text-align:center;">Register Course Unit</h5>
+                <div class="conts">
                     <form class="left" id="formpay">
                         <div class="conts my-3">
                             <label class="form-control-label" for="unit_unique_name"><b>Enter Unit Name: </b><small>Eg. 'Communication Skills Diploma'</small> <span class="text-danger">(Unique only)</span> <br></label>

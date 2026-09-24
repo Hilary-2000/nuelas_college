@@ -16,7 +16,7 @@
                     <li>Students Yearly Transcripts</li>
                 </ul>
             </div>
-            <div class="body4">
+            <div class="body4 section_card">
                 <p>Use the filters below:</p>
                 <form class="row" target="_blank" method="post" action="reports/reports.php">
                     <div class="col-md-4">

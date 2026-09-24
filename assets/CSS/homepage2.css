@@ -1607,7 +1607,6 @@ p.instructions{
     padding: 0;
 }
 #findtransaction .body1{
-    border-top: 0;
     margin: 0 0 16px;
     padding: 18px 20px 12px;
 }
@@ -1653,3 +1652,19 @@ p.instructions{
     display: none;
 }
 
+
+/* ===== Academic windows, and any legacy .body1/.body3/.body4/.body5 box used as a card =====
+   Each of those classes has its own border, width and padding in mainpage.css
+   (.middle1 .body1 and friends) that out-specifies .section_card on its own, so a
+   box that is both gets the card look restated here with enough weight to win. */
+.middle1 .section_card.body1,
+.middle1 .section_card.body3,
+.middle1 .section_card.body4,
+.middle1 .section_card.body5{
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 18px 20px 12px;
+    border: 1px solid #e4eaee;
+    border-radius: 16px;
+    overflow: visible;
+}
