@@ -15,9 +15,9 @@
         </div>
         <div class="middle1">
             <div class="row mt-2">
-                <div class="notice1 col-md-8">
+                <div class="instructions col-md-8">
                     <div class="notify">
-                        <p><strong>Important:</strong></p>
+                        <p><strong>Hint:</strong></p>
                     </div>
                     <p>- At this window you are allowed to pay fees</p>
                     <p>- Please capture the information you enter correctly.</p>
@@ -131,7 +131,7 @@
                 </div>
                 <div class="payments p-2 hide" id="show_date_time">
                     <h6><u>Select Time</u></h6>
-                    <p><b>Note:</b> <br>Change time and date only if the transaction was made before.</p>
+                    <p class="instructions"><strong>Hint:</strong><br>Change time and date only if the transaction was made before.</p>
                     <hr>
                     <label for="date_of_payments_fees" class="form-label"><b>Date of payments</b></label>
                     <input type="date"  class="form-control" id="date_of_payments_fees" value="<?php echo date("Y-m-d");?>" max="<?php echo date("Y-m-d");?>">

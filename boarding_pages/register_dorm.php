@@ -8,8 +8,8 @@
         </div>
         <div class="middle1">
             <div class="conts" style="border-bottom:1px dashed black;">
-                <div class="conts">
-                    <p><strong>Information:</strong></p>
+                <div class="instructions">
+                    <p><strong>Hint:</strong></p>
                     <p>- At this window you are previledged to register dormitories that are present in school and view their information including students who inhibit the dorms.</p>
                 </div>
                 <div class="conts">

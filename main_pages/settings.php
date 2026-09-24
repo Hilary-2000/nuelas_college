@@ -264,7 +264,7 @@
                     <span class="hide" id="load_changes_roles">loading ...</span>
                     <span class="hide" id="show_changes_roles">loading ...</span>
                     <h6>User Roles</h6>
-                    <p class="my-2"><strong>Note</strong>: <span class="text-danger">Please note do not use one Role name twice</span></p>
+                    <p class="instructions"><strong>Hint:</strong> <span class="text-danger">Please note do not use one Role name twice</span></p>
                     <p class="hide" id="show_roles"></p>
                     <p id="roles_errors"></p>
                     <p style="width: fit-content;" class="link" id="add_user_type"><i class="fa fa-plus"></i> Add User Roles</p>
@@ -282,7 +282,7 @@
                     <h6>Departments & Clubs</h6>
                     <p class="" id="clubs_sport_houses"></p>
                     <p id="clubs_errors"></p>
-                    <p><b>Note:</b> Add Departments or clubs that will be assigned to students during admission</p>
+                    <p class="instructions"><strong>Hint:</strong> Add Departments or clubs that will be assigned to students during admission</p>
                     <p style="width: fit-content;" class="link" id="add_sports_clubs"><i class="fa fa-plus"></i> Add Department</p>
                     <div class="container" id="clubs_house_tables">
 
@@ -298,8 +298,11 @@
                     <br>
                     <p class="hide" id="email_errors"></p>
                     <p id="email_main_errors"></p>
-                    <p><b>Note:</b> <span class="text-danger"><br> Your email password is encrypted it will not be visible to anyone.</span></p>
-                    <p>Kindly test the configurations you set before proceeding, this will allow you to know if the mail configuration is okay.</p>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
+                        <p class="text-danger">Your email password is encrypted it will not be visible to anyone.</p>
+                        <p>Kindly test the configurations you set before proceeding, this will allow you to know if the mail configuration is okay.</p>
+                    </div>
                     <div class="container my-2 hide" id="email_not_setup">
                         <p style="width: fit-content;" class="link" id="setup_email_windows"><i class="fa fa-plus"></i> Set-up Email</p>
                         <div class="p-1 border border-danger text-danger fx-10 my-2 w-50 text-left align-left">
@@ -364,9 +367,11 @@
                     <p class="text-center text-white">Payment Options <span class="hide" id="payment_options_loaders"><img src="images/ajax_clock_small.gif" id=""></span></p>
                 </div>
                 <div class="conts p-1 m-1">
-                    <p>- Describe your available payment options in under 50 words. This will be included on your invoices and student`s reciept</p>
-                    <p class="text-danger"><b>Note:</b></p>
-                    <p>- when the check box is selected the entry will appear in your invoices and reciepts</p>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
+                        <p>- Describe your available payment options in under 50 words. This will be included on your invoices and student`s reciept</p>
+                        <p>- when the check box is selected the entry will appear in your invoices and reciepts</p>
+                    </div>
                     <input type="hidden" name="" id="payment_description">
                     <p class="hide" id="payment_details_blocks"></p>
                     <div class="container my-1">

@@ -14,9 +14,9 @@
             </div>
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
-                    <p><strong>Important:</strong></p>
+                    <p><strong>Hint:</strong></p>
                 </div>
                 <p>- Pay your staff using the payroll system.</p>
                 <p>- Select different option to accomplish your task.</p>

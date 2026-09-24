@@ -12,10 +12,10 @@
         </div>
         <div class="middle1">
             <div class="row">
-                <div class="notice1 col-md-12">
+                <div class="instructions col-md-12">
                     <!-- <button type='button' id='back_to_fees_payment_2'><i class="fa fa-arrow-left"></i> Back to Fees Payment</button> -->
                     <div class="notify">
-                        <p><strong>Important:</strong></p>
+                        <p><strong>Hint:</strong></p>
                     </div>
                     <ul>
                         <li> VIEW, UPDATE AND DELETE THE SCHOOL ASSETS.</li>

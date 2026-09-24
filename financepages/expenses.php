@@ -14,9 +14,9 @@
             </div>
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
-                    <p><strong>Important:</strong></p>
+                    <p><strong>Hint:</strong></p>
                 </div>
                 <p>- At this window you are allowed to record expenses and liabilities from both operating and non-operating activities.</p>
                 <p>- Please capture the information you enter correctly.</p>

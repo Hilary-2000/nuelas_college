@@ -7,7 +7,7 @@
             <p>Student Groups</p>
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
                     <p><strong>What is a Group?</strong></p>
                 </div>

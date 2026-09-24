@@ -7,8 +7,8 @@
             <p>Exams Management</p>
         </div>
         <div class="middle1">
-            <div class="conts">
-                <p><strong>Information:</strong></p>
+            <div class="instructions">
+                <p><strong>Hint:</strong></p>
                 <p>- At this window you are previledged to register exams and view their information.</p>
             </div>
             <div class="body4">
@@ -81,8 +81,7 @@
                         <div class="slides p-2 hide">
                             <h6 class="text-center">Step 2: Select Terms</h6>
                             <div class="form-group">
-                                <p class="border border-secondary p-2 text-secondary my-1">
-                                    <b>Note:</b> <br> The current term and the terms that have already been covered are the ones that are to be displayed only!
+                                <p class="instructions"><strong>Hint:</strong><br> The current term and the terms that have already been covered are the ones that are to be displayed only!
                                 </p>
                                 <label for="exams_report_class" class="form-control-label">Select Terms to be included in the report cards</label><img src="images/ajax_clock_small.gif" class="hide" id="exams_report_terms_loader">
                                 <div class="bg-white rounded d-flex flex-column w-50" id="display_terms_present"></div>
@@ -92,8 +91,7 @@
                         <div class="slides p-2 hide">
                             <h6 class="text-center">Step 3: Select Exams</h6>
                             <div class="form-group">
-                                <p class="border border-secondary p-2 text-secondary">
-                                    <b>Note:</b> <br> Select exams you want the system to include in the reports. <br> All exams will be displayed including those that the student did not attempt.
+                                <p class="instructions"><strong>Hint:</strong><br> Select exams you want the system to include in the reports. <br> All exams will be displayed including those that the student did not attempt.
                                 </p>
                                 <label for="exams_report_class" class="form-control-label">Select Exams</label><img src="images/ajax_clock_small.gif" class="hide" id="exams_report_exams_done_loader">
                                 <div class="bg-white rounded d-flex flex-column w-50" id="display_exams_attempted_in_those_terms"></div>
@@ -103,8 +101,7 @@
                         <div class="slides p-2 hide">
                             <h6 class="text-center">Step 4: Define Academic Year</h6>
                             <div class="form-group">
-                                <p class="border border-secondary p-2 text-secondary">
-                                    <b>Note:</b> <br> Leave blank if you do not want to define the academic year
+                                <p class="instructions"><strong>Hint:</strong><br> Leave blank if you do not want to define the academic year
                                 </p>
                                 <label for="academic_year_reports" class="form-control-label">Define Academic Year</label>
                                 <input type="text" class="form-control" id="academic_year_reports" placeholder="Eg: 2021/2022">
@@ -114,8 +111,7 @@
                         <div class="slides p-2 hide">
                             <h6 class="text-center">Step 5: Directors comment</h6>
                             <div class="form-group">
-                                <div class="border border-secondary p-2 text-secondary">
-                                    <b>Note:</b> <br>Directors comment will appear on every students report card. <br> You can include tags to make the comments more specific to the students <br>Leave Blank to exclude the directors comment<br>
+                                <div class="instructions"><strong>Hint:</strong><br>Directors comment will appear on every students report card. <br> You can include tags to make the comments more specific to the students <br>Leave Blank to exclude the directors comment<br>
                                     <b><u>Tags Include</u></b>
                                     <ul>
                                         <li>{fullname} : Display the students fullname.</li>
@@ -201,8 +197,7 @@
                         <div class="slides p-2 hide">
                             <h6 class="text-center">Step 6: Additional Data</h6>
                             <div class="form-group">
-                                <div class="border border-secondary p-2 text-secondary">
-                                    <b>Note:</b> <br> To exclude the next opening date leave the field black.
+                                <div class="instructions"><strong>Hint:</strong><br> To exclude the next opening date leave the field black.
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -301,8 +296,7 @@
                                     <input type="text" class="form-control" placeholder="E-mail Subject" value="<?php echo 'Student Exam Report Card'?>" name="email_subject_exams_report" id="email_subject_exams_report">
 
                                     
-                                    <div class="border border-secondary p-2 text-secondary my-2">
-                                        <b>Note:</b> <br>Compose email message below that will accompany the report card attachment. <br> Include tags to make the message more personalised to the parents <br>Leave Blank to exclude the message<br>
+                                    <div class="instructions"><strong>Hint:</strong><br>Compose email message below that will accompany the report card attachment. <br> Include tags to make the message more personalised to the parents <br>Leave Blank to exclude the message<br>
                                         <b><u>Tags Include</u></b>
                                         <ul>
                                             <li>{fullname} : Display the students fullname.</li>

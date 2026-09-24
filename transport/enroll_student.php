@@ -14,9 +14,9 @@
             </div>
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
-                    <p><strong>Important:</strong></p>
+                    <p><strong>Hint:</strong></p>
                 </div>
                 <p>- ADD, UPDATE AND REMOVE students IN the Transport system.</p>
             </div>
@@ -104,8 +104,8 @@
                 <div class="staff_information hide" id="enroll_stud_transport">
                     <h6 class="text-center" ><strong>Register Student</strong></h6>
                     <p class="block_btn" id="back_to_std_trans_list"><i class="fas fa-arrow-left"></i> Back to Student list</p>
-                    <div class="cont">
-                        <p><strong>Important</strong></p>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Start by finding the students by either their name or admission number</p>
                         <p>- Select from the drop down (will appear when you type on the search box) the student you want to enroll.</p>
                         <p>- Their admission number will be auto filled in the search box. Click the search button the students data will be populated in the fields below</p>
@@ -164,10 +164,11 @@
                 <div class="staff_information hide" id="view_student_infor_trans">
                     <h6 class="text-center"><strong>View / Update Student`s Information</strong></h6>
                     <p class="block_btn" id="back_to_std_trans_list2"><i class="fas fa-arrow-left"></i> Back to Student list</p>
-                    <div class="cont">
-                        <p><strong>Important</strong></p>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
                         <p>- Update students information from this window</p>
-                        <hr>
+                    </div>
+                    <div class="cont">
                         <?php
                             include_once("connections/conn2.php");
                             function getTermDetails($conn2){

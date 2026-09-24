@@ -7,7 +7,7 @@
             <p>Charged Accounts</p>
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
                     <p><strong>What is a Charged Account?</strong></p>
                 </div>

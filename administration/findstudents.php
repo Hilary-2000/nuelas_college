@@ -86,8 +86,8 @@
                 </div>
             </div>
             <div class="topsearch">
-                <div class="topsearch1">
-                    <p><Strong>What you need to know:</Strong></p>
+                <div class="topsearch1 instructions">
+                    <p><strong>Hint:</strong></p>
                     <p>- Student information can be retrieved, changed and deleted at this window. <br>- Start by finding the student by the available options</p>
                     <p>- Its recomended that the student is searched by their admission number <small>(the results are accurate)</small></p>
                 </div>

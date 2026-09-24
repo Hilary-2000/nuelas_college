@@ -122,7 +122,7 @@
                     <p class="text-center text-white">Send broadcast message.</p>
                 </div>
                 <div class="conts p-1" id = "print_reminded">
-                    <div class="p-1 my-2 text-primary border border-primary w-100"><b>Note:</b> <br> - Broadcast messages will only allow you to send messages to either your <b>staff</b> or <b>Parent</b> </div> <br>
+                    <div class="instructions"><p><strong>Hint:</strong></p><p>- Broadcast messages will only allow you to send messages to either your <b>staff</b> or <b>Parent</b></p></div>
                     <label for="select_recipients2">Select recipients: <br></label><br>
                     <select class="form-control" name="select_recipients2" id="select_recipients2">
                         <option value="" hidden>Select recipient..</option>
@@ -130,7 +130,7 @@
                         <option value="parents">Parents and Students</option>
                     </select>
                     <div class="conts hide" id="staffs_list_ms">
-                        <div class="p-1 my-2 text-success border border-success w-50"><b>Note:</b> <br>- Select staff you  want to send message to:</div>
+                        <div class="instructions"><p><strong>Hint:</strong></p><p>- Select staff you want to send message to:</p></div>
                         <label for="">To My staff Except: <br></label>
                         <p id="staff_my_lists"></p>
                         <!--<div class="staff_list">
@@ -294,8 +294,8 @@
                             <option value="secondary">Secondary Parent</option>
                         </select>
                     </div>
-                    <div class="p-2 my-2 text-primary border border-primary w-100">
-                        <b>Note:</b> Compose separately for each channel below. Recipients whose preferred channel is SMS get the SMS Message tab's content; recipients whose preferred channel is Email get the Email Message tab's content. <b>Always check and preview the Email tab before sending</b> &mdash; it is easy to fill in only the SMS box and forget the Email one.
+                    <div class="instructions">
+                        <strong>Hint:</strong> Compose separately for each channel below. Recipients whose preferred channel is SMS get the SMS Message tab's content; recipients whose preferred channel is Email get the Email Message tab's content. <b>Always check and preview the Email tab before sending</b> &mdash; it is easy to fill in only the SMS box and forget the Email one.
                     </div>
                     <ul class="nav nav-tabs" id="broadcastComposeTab" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -330,10 +330,10 @@
                     </div>
                     <div class="cont border border-secondary p-1 my-2 mx-2 d-none" id="message_tags_window">
                         <h6 class="text-center"><b>Message Tags</b></h6>
-                        <span class="text-primary"><b>Note:</b> <br>
+                        <div class="instructions"><strong>Hint:</strong><br>
                         <small>- Below are tags that hold dynamic data that can be inserted in a message to make it more informative and more specific to the recipient. <br>
                             - Always include the curly braces when inserting tags in the message and always check the preview before sending the message.
-                        </small></span>
+                        </small></div>
                         <div class="row w-90 mx-2">
                             <div class="conts p-2 bg-white my-2 col-md-6">
                                 <span><b>1. Student Fullname: </b> <span class="mx-2">{stud_fullname}</span> <span id="insert_tag1" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
@@ -371,9 +371,9 @@
             </div>
             <div class="setting_s d-none">
                 <h6 style='text-align:center;color:cadetblue;' ><u>Send staff notice/Message.</u> </h6>
-                <div class="conts">
-                    <p><strong>Note:</strong></p>
-                    <p style = 'color:brown;'>The message you send will appear as a notice in the staff portal.</p> <br>
+                <div class="instructions">
+                    <p><strong>Hint:</strong></p>
+                    <p>The message you send will appear as a notice in the staff portal.</p>
                 </div>
                 <div class="conts">
                     <label class="form-control-label" for="select_staff_infors">Select staff: </label><br>

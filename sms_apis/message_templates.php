@@ -226,7 +226,7 @@
                     </div>
                 </div>
                 <div class="tab-pane fade p-1 m-1" id="email_templates_tab" role="tabpanel" aria-labelledby="rather_email_templates_btn">
-                    <div class="p-2 my-2 text-primary border border-primary w-100"><b>Note:</b> An email is only sent instead of an SMS for a student, primary parent, or secondary parent whose preferred communication channel is set to Email. Leave a message here blank to skip sending an email for that event.</div>
+                    <div class="instructions"><strong>Hint:</strong> An email is only sent instead of an SMS for a student, primary parent, or secondary parent whose preferred communication channel is set to Email. Leave a message here blank to skip sending an email for that event.</div>
                     <div class="setting_s">
                         <div class="bg-secondary mt-0 rounded">
                             <p class="text-center text-white">Set Student welcome message (Email) <span class="template_status_dot" id="student_welcome_message_status_email" title="Not set"><i class="fas fa-circle text-secondary"></i></span></p>

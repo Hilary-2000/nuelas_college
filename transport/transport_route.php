@@ -14,9 +14,9 @@
             </div>
         </div>
         <div class="middle1">
-            <div class="notice1">
+            <div class="instructions">
                 <div class="notify">
-                    <p><strong>Important:</strong></p>
+                    <p><strong>Hint:</strong></p>
                 </div>
                 <p>- Add, update and delete routes at this window.</p>
                 <p>- Add, update and delete the school vans owned by the schools.</p>
