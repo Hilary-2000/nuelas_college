@@ -22,7 +22,7 @@
                 <p>- Manage your Employees Leave Information.</p>
                 <p>- Manage your Employees employment information.</p>
             </div>
-            <div class="container">
+            <div class="section_card">
                 <label for="hr_options" class="form-control-label"><b>Select an Option</b></label>
                 <select name="hr_options" id="hr_options" class="form-control">
                     <option value="" hidden>Select an option</option>
@@ -31,7 +31,7 @@
                 </select>
             </div>
             <hr class="my-1">
-            <div class="container border border-secondary p-2 my-2 hide" id="leave_management_window">
+            <div class="section_card hide" id="leave_management_window">
                 <h4 class="text-center ">Manage Leaves</h4>
                 <!-- options for leaves are below -->
                 <p class="instructions"><strong>Hint:</strong><br> Kindly select an action before proceeding</p>
@@ -44,7 +44,7 @@
                 </select>
                 <hr class="my-1">
                 <!-- manage leave categories -->
-                <div class="leave_displays container my-2 animate border border-secondary p-2 hide" id="leave_diplay_windows">
+                <div class="leave_displays my-2 animate hide" id="leave_diplay_windows">
                     <h5 class="text-center" >Leave Categories<img class="hide" src="images/ajax_clock_small.gif" id="load_leaves_table"></h5>
                     <div class="row">
                         <div class="col-md-8">
@@ -75,7 +75,7 @@
                     </table>
                     <p>Showing 1 to 6 of 6 records</p> -->
                 </div>
-                <div class="leave_displays container my-2 animate border border-secondary p-2 hide" id="add_leave_cat_window">
+                <div class="leave_displays my-2 animate hide" id="add_leave_cat_window">
                     <h5 class="text-center">Add Leave Categories</h5>
                     <p class="block_btn" id="go_back_leave_list"><i class="fas fa-arrow-left"></i> Back</p>
                     <div class="row">
@@ -144,7 +144,7 @@
                     <p id="save_leave_cat"></p>
                     <p class="block_btn my-2" id="save_leave_category"><i class="fas fa-save"></i> Save <img class="hide" src="images/ajax_clock_small.gif" id="save_leave_cat_loader"></p>
                 </div>
-                <div class="leave_displays container my-2 animate border border-secondary p-2 hide" id="edit_leave_cat_window">
+                <div class="leave_displays my-2 animate hide" id="edit_leave_cat_window">
                     <h5 class="text-center">Edit Leave Categories</h5>
                     <p class="block_btn" id="go_back_leave_list2"><i class="fas fa-arrow-left"></i> Back</p>
                     <p><b>Note:</b> <br>- Make changes where neccessary</p><hr class="my-1">
@@ -216,7 +216,7 @@
                     <p id="save_leave_cat2"></p>
                     <p class="block_btn my-2" id="update_leave_category"><i class="fas fa-save"></i> Update <img class="hide" src="images/ajax_clock_small.gif" id="save_leave_cat_loader"></p>
                 </div>
-                <div class="leave_displays container my-2 animate border border-secondary p-2 hide" id="all_leaves_application">
+                <div class="leave_displays my-2 animate hide" id="all_leaves_application">
                     <h5 class="text-center">Leave Applications<img class="hide" src="images/ajax_clock_small.gif" id="leaves_application_loaders"></h5>
                     <p class="hide" id="my_leaves_application"></p>
                     <div class="row" id="search_option_sms">
@@ -297,7 +297,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="leave_displays container my-2 animate border border-secondary p-2 hide" id="view_applied_leaves_windows">
+                <div class="leave_displays my-2 animate hide" id="view_applied_leaves_windows">
                     <h5 class="text-center">View Leave Details<img class="hide" src="images/ajax_clock_small.gif" id="view_leaves"></h5>
                     <div class="container">
                         <div class="row">
@@ -375,10 +375,10 @@
                     </div>
                 </div>
             </div>
-            <div class="container border border-secondary p-2 my-2 hide" id="employees_management_window">
+            <div class="section_card hide" id="employees_management_window">
                 <h4 class="text-center">Manage Employees</h4>
             </div>
-            <div class="container border border-secondary p-2 my-2 hide" id="error_hr_selection">
+            <div class="section_card hide" id="error_hr_selection">
                 <h4 class="text-center text-danger">Select a valid option</h4>
             </div>
         </div>

@@ -19,7 +19,7 @@
                 <p>Welcome <?php echo ucwords(strtolower($_SESSION['fullnames']));?> to the Employees Leave management window, At this window you will be able to apply for leaves and also view your leave application history.</p>
             </div>
             <hr class="my-1">
-            <div class="container border border-secondary p-2 hide my_leaves_view" id="apply_leaves_windows">
+            <div class="section_card hide my_leaves_view" id="apply_leaves_windows">
                 <h4 class="text-centre">Apply for Leave</h4>
                 <p class="block_btn" id="back_to_list_emp_leave_list"><i class="fas fa-arrow-left"></i> Back to list</p>
                 <div class="row my-4">
@@ -65,7 +65,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container border border-secondary my_leaves_view" id="display_my_applied_leaves">
+            <div class="section_card my_leaves_view" id="display_my_applied_leaves">
                 <h5 class="text-center">Leave Application Table<img class="hide" src="images/ajax_clock_small.gif" id="my_leave_list_loader"></h5>
                 <div class="row">
                     <div class="col-md-6">
@@ -96,7 +96,7 @@
                     </table>
                 </div>
             </div>
-            <div class="container border border-secondary p-2 hide my_leaves_view" id="view_leave_details_emp">
+            <div class="section_card hide my_leaves_view" id="view_leave_details_emp">
                 <h4 class="text-centre">Leave Details <img class="hide" src="images/ajax_clock_small.gif" id="load_leave_details"></h4>
                 <p class="hide" id="leave_details_result"></p>
                 <p class="block_btn" id="back_to_list_emp_leave_list_2"><i class="fas fa-arrow-left"></i> Back to list</p>

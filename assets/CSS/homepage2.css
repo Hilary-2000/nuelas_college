@@ -1563,3 +1563,37 @@ p.instructions{
 #regstaff .staffdatas > .section_card{
     width: 100%;
 }
+
+/* ===== Leave Management, My Leaves and Payroll as cards ===== */
+#payrolled_win .body3,
+#payrolled_win .body5,
+#payrolled_win .enroll_staf.section_card,
+#payrolled_win #advance_management{
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 18px 20px 12px;
+    border: 1px solid #e4eaee;
+    border-radius: 16px;
+    overflow: visible;
+}
+/* the enrol form's two panels and its banner take the same rounding and border */
+.payroll_staff_card,
+.payroll_calc_card{
+    border-color: #e4eaee;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 4px 14px rgba(31,45,51,0.06);
+}
+.payroll_form_header{
+    border-radius: 16px;
+}
+.payroll_card_title{
+    border-bottom: 1px solid #e4eaee;
+}
+/* the sub-windows of Manage Leaves sit inside one card, so they need no box of their own */
+#leave_management_window .leave_displays{
+    border: 0;
+    padding: 0;
+}
+
+/* a header holding a select-all checkbox keeps the label and the box on one line */

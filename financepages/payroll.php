@@ -22,7 +22,7 @@
                 <p>- Select different option to accomplish your task.</p>
             </div>
             <div class="conts">
-                <div class="conts border border-primary p-1 my-1">
+                <div class="section_card">
                     <p class="block_btn" id="enroll_staff_btn"><i class=" fa fa-plus"></i> Enroll staff</p>
                     <p class="block_btn" id="see_enrolled"><i class=" fa fa-eye"></i> View enrolled staff</p>
                     <p class="block_btn" id="advance_pay_view"><i class=" fa fa-cog"></i> Manage Advances</p>
@@ -343,7 +343,7 @@
                         </div>
                     </form>
                     <!-- view staff enrolled -->
-                    <div class="enroll_staf hide" id="viewEnrolledPay">
+                    <div class="enroll_staf section_card hide" id="viewEnrolledPay">
                         <div class="conts">
                             <h6 style="text-align:center;">Enrolled Staff</h6>
                         </div>
@@ -387,7 +387,7 @@
                             </table> -->
                         </div>
                     </div>
-                    <div class="body3 hide" id="pay_salary_staff">
+                    <div class="body3 section_card hide" id="pay_salary_staff">
                         <div class="left">
                             <div class="conts">
                                 <h6 style='text-align:center;margin-bottom:10px;'>Pay Staff</h6>
@@ -439,7 +439,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="body5 p-0 hide" id="salary_infor">
+                    <div class="body5 section_card hide" id="salary_infor">
                         <div class="conts my-2">
                             <h6 style='text-align:center;'>Edit Information</h6>
                             <p class="hide" id="salary_infor_br"></p>
@@ -933,7 +933,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="container border border-secondary rounded p-2 hide" id="advance_management">
+                    <div class="section_card hide" id="advance_management">
                         <div class="container advances" id="view_all_advances_window">
                             <h6 class="text-center"><u>Advances Registered</u> <img class="hide" src="images/ajax_clock_small.gif" id="advance_registers_loaders"></h6>
                             <div class="row">
