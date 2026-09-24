@@ -16,11 +16,9 @@
                     <p>- When registering a subject its recomended that the classes the subject is taught should be checked under the same subject name unlike inserting the subject name more than once and assigning a class on each registration.</p>
                 </div>
             </div>
-            <div class="body1">
-                <div class="conts" style='padding:10px 0;'>
-                    <h5 style="text-align:center;">Register Subjects</h5>
-                </div>
-                <div class="body3">
+            <div class="body1 section_card">
+                <h5 style="text-align:center;">Register Subjects</h5>
+                <div class="conts">
                     <form class="left" id="formpay">
                         <div class="conts">
                             <label class="form-control-label" for="subname"><b>Enter Subject Name: </b><small>Eg. 'Kiswahili Class 4 & 5'</small> <span class="text-danger">(Unique only)</span> <br></label>

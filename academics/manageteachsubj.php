@@ -12,7 +12,7 @@
                 <p>- At this window you are previledged to alter the subject each teacher teaches.</p>
                 <p>- When altering the subject taught by the respective teacher, previledges the teacher has over the subject can be removed or assigned to them. </p>
             </div>
-            <div class="body4">
+            <div class="body4 section_card">
                 <div class="row">
                     <div class="col-md-9">
                         <label for="option_ed form-control-label">Start of by either of the following option : <br></label>
@@ -53,7 +53,7 @@
                     <p id='managesubstr'></p>
                 </div>
                 <div class="boddy1">
-                    <div class="boddy3 hide" id='editsubinfor'>
+                    <div class="conts hide" id='editsubinfor'>
                         <div class="conts">
                             <h6 style='text-align:center;'>Edit Teacher subjects</h6>
                         </div>

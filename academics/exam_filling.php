@@ -14,7 +14,7 @@
                 <p>- Start by selecting either of the three options</p>
                 <p>- The results displayed by the system will only be accurate if the all the student marks are filled and have the same grading system</p>
             </div>
-            <div class="body4" style='border-bottom:1px dashed rgb(25, 113, 137);' id="finded">
+            <div class="body4 section_card" id="finded">
                 <div class="conts">
                     <label class="form-control-label" for="option_exams">Select an option: <br></label>
                     <select name="option_exams" class="form-control" id="option_exams">
@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </div>
-            <div class="conts hide"  id="resulters">
+            <div class="conts section_card hide"  id="resulters">
                 <div class="conts" id="record_exams_id">
                     <!--<div class="table_fill">
                         <div class="table_header">
