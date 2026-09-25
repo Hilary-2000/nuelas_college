@@ -5506,33 +5506,12 @@
             echo json_encode($revenue_data);
 
         }elseif(isset($_POST['get_suppliers'])){
-            $get_suppliers = $_POST['get_suppliers'];
-            // get the page limit
-            $page_req = $_POST['get_suppliers'];
-            $limit_1 = $_POST['get_suppliers'] * 1 > 1 ? (($_POST['get_suppliers']*1) - 1) * 50 : 0;
-            $limit_2 = $_POST['get_suppliers'] * 1 > 1 ? (($_POST['get_suppliers']*1)) * 50 : 50;
-
             // save text
             include("../../connections/conn1.php");
             include("../../connections/conn2.php");
 
-            // get the page numbers and current page
-            $select = "SELECT COUNT(*) AS 'Total' FROM `suppliers`";
-            $stmt = $conn2->prepare($select);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $count = 0;
-            if($result){
-                if($row = $result->fetch_assoc()){
-                    $count = $row['Total'];
-                }
-            }
-
-            $total_pages = round($count/50);
-            $total_pages += $count%50 == 0 ? 0 : 1;
-
-            // select
-            $select = "SELECT * FROM `suppliers` ORDER BY `supplier_id` DESC LIMIT $limit_1,$limit_2";
+            // all suppliers, the table pages them with DataTables
+            $select = "SELECT * FROM `suppliers` ORDER BY `supplier_id` DESC";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -5564,49 +5543,17 @@
                     array_push($suppliers,$row);
                 }
             }
-            $data = array("suppliers" => $suppliers, "total_pages" => $total_pages);
+            $data = array("suppliers" => $suppliers);
 
             // return the json encoded string to the front end
             echo json_encode($data);
         }elseif(isset($_POST['get_payment_requests'])){
-            $get_payment_requests = $_POST['get_payment_requests'];
-            // get the page limit
-            $page_req = $_POST['get_payment_requests'];
-            $limit_1 = $_POST['get_payment_requests'] * 1 > 1 ? (($_POST['get_payment_requests']*1) - 1) * 50 : 0;
-            $limit_2 = $_POST['get_payment_requests'] * 1 > 1 ? (($_POST['get_payment_requests']*1)) * 50 : 50;
-
             // save text
             include("../../connections/conn1.php");
             include("../../connections/conn2.php");
 
-            // get the page numbers and current page
-            $select = "SELECT COUNT(*) AS 'Total' FROM `suppliers`";
-            $stmt = $conn2->prepare($select);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $count = 0;
-            if($result){
-                if($row = $result->fetch_assoc()){
-                    $count = $row['Total'];
-                }
-            }
-
-            // GET THE TOTAL PAGES
-            $select = "(SELECT payment_id, (SELECT `bill_name` FROM `supplier_bills` WHERE `bill_id` = payment_for) AS 'exp_name', (SELECT `expense_name` FROM `expense_category` WHERE `expense_id` = (SELECT `expense_category` FROM `supplier_bills` WHERE `bill_id` = payment_for)) AS 'exp_category', amount,date_paid,document_number,`payment_description`, CONCAT('supplier') AS 'table_name' FROM supplier_bill_payments WHERE approval_status = '0' UNION ALL SELECT expid, exp_name, (SELECT expense_name FROM expense_category WHERE expense_id = exp_category) AS 'exp_category', exp_amount, CONCAT(expense_date,' ',exp_time) AS 'time', document_number, expense_description, CONCAT('running_expense') AS 'table_name' FROM expenses WHERE  approval_status = '0')";
-            $stmt = $conn2->prepare($select);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result) {
-                while($row = $result->fetch_assoc()){
-                    $count++;
-                }
-            }
-
-            $total_pages = round($count/50);
-            $total_pages += $count%50 == 0 ? 0 : 1;
-
-            // select
-            $select = "(SELECT payment_id, (SELECT `bill_name` FROM `supplier_bills` WHERE `bill_id` = payment_for) AS 'exp_name', (SELECT `expense_name` FROM `expense_category` WHERE `expense_id` = (SELECT `expense_category` FROM `supplier_bills` WHERE `bill_id` = payment_for)) AS 'exp_category', amount,date_paid,document_number,`payment_description`, CONCAT('supplier') AS 'table_name' FROM supplier_bill_payments WHERE approval_status = '0' UNION ALL SELECT expid, exp_name, (SELECT expense_name FROM expense_category WHERE expense_id = exp_category) AS 'exp_category', exp_amount, CONCAT(expense_date,' ',exp_time) AS 'time', document_number, expense_description, CONCAT('running_expense') AS 'table_name' FROM expenses WHERE  approval_status = '0') ORDER BY `payment_id` DESC LIMIT $limit_1,$limit_2";
+            // all pending requests, the table pages them with DataTables
+            $select = "(SELECT payment_id, (SELECT `bill_name` FROM `supplier_bills` WHERE `bill_id` = payment_for) AS 'exp_name', (SELECT `expense_name` FROM `expense_category` WHERE `expense_id` = (SELECT `expense_category` FROM `supplier_bills` WHERE `bill_id` = payment_for)) AS 'exp_category', amount,date_paid,document_number,`payment_description`, CONCAT('supplier') AS 'table_name' FROM supplier_bill_payments WHERE approval_status = '0' UNION ALL SELECT expid, exp_name, (SELECT expense_name FROM expense_category WHERE expense_id = exp_category) AS 'exp_category', exp_amount, CONCAT(expense_date,' ',exp_time) AS 'time', document_number, expense_description, CONCAT('running_expense') AS 'table_name' FROM expenses WHERE  approval_status = '0') ORDER BY `payment_id` DESC";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -5618,38 +5565,17 @@
                     array_push($pay_requests,$row);
                 }
             }
-            $data = array("pay_requests" => $pay_requests, "total_pages" => $total_pages);
+            $data = array("pay_requests" => $pay_requests);
 
             // return the json encoded string to the front end
             echo json_encode($data);
         }elseif(isset($_POST['get_assets'])){
-            $get_assets = $_POST['get_assets'];
-            // get the page limit
-            $page_req = $_POST['get_assets'];
-            $limit_1 = $_POST['get_assets'] * 1 > 1 ? (($_POST['get_assets']*1) - 1) * 50 : 0;
-            $limit_2 = $_POST['get_assets'] * 1 > 1 ? (($_POST['get_assets']*1)) * 50 : 50;
-
             // save text
             include("../../connections/conn1.php");
             include("../../connections/conn2.php");
 
-            // get the page numbers and current page
-            $select = "SELECT COUNT(*) AS 'Total' FROM `asset_table`";
-            $stmt = $conn2->prepare($select);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $count = 0;
-            if($result){
-                if($row = $result->fetch_assoc()){
-                    $count = $row['Total'];
-                }
-            }
-
-            $total_pages = round($count/50);
-            $total_pages += $count%50 == 0 ? 0 : 1;
-
-            // select
-            $select = "SELECT * FROM `asset_table` ORDER BY `asset_id` DESC LIMIT $limit_1,$limit_2";
+            // all assets, the table pages them with DataTables
+            $select = "SELECT * FROM `asset_table` ORDER BY `asset_id` DESC";
             $stmt = $conn2->prepare($select);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -5706,7 +5632,7 @@
                     array_push($assets,$row);
                 }
             }
-            $data = array("assets" => $assets, "total_pages" => $total_pages);
+            $data = array("assets" => $assets);
 
             // return the json encoded string to the front end
             echo json_encode($data);
