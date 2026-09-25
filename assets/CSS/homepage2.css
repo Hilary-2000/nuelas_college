@@ -1712,3 +1712,12 @@ p.instructions{
     padding: 12px 14px;
     margin: 8px 0;
 }
+
+/* ===== Student Groups: the collapsible filter panel header ===== */
+.filter_panel_toggle{
+    cursor: pointer;
+    margin-bottom: 0;
+}
+.filter_panel_toggle + div:not(.hide){
+    margin-top: 12px;
+}
