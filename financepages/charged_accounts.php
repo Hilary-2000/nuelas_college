@@ -21,7 +21,8 @@
             </div>
 
             <!-- ============== CREATE CHARGE PANEL ============== -->
-            <div id="create_charge_panel" class="border border-secondary rounded p-3">
+            <div id="create_charge_panel" class="section_card">
+                <p class="card_heading">Create Charge</p>
                 <p id="charge_groups_holder" class="hide"></p>
                 <p id="charge_lookup_holder" class="hide"></p>
                 <div class="mb-3">
@@ -78,7 +79,8 @@
             </div>
 
             <!-- ============== CHARGE HISTORY PANEL ============== -->
-            <div id="charge_history_panel" class="hide">
+            <div id="charge_history_panel" class="section_card hide">
+                <p class="card_heading">Charge History</p>
                 <div id="charge_batches_list_holder"></div>
             </div>
         </div>
