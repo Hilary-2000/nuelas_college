@@ -22,22 +22,23 @@
             </div>
 
             <!-- ============== CREATE GROUP PANEL ============== -->
-            <div id="create_group_panel">
+            <div id="create_group_panel" class="section_card">
+                <p class="card_heading">Create New Group</p>
                 <p id="group_filter_options_holder" class="hide"></p>
 
-                <div class="d-flex flex-wrap align-items-center gap-3 my-2 p-2 bg-light border rounded" style="font-size:13px;">
+                <div class="inner_card_box d-flex flex-wrap align-items-center gap-3" style="font-size:13px;">
                     <span class="text-secondary">Showing after filters: <strong id="group_filtered_count">-</strong></span>
                     <span class="text-muted">|</span>
                     <span class="text-secondary">Selected: <strong class="text-primary" id="group_selected_count">0</strong></span>
                 </div>
 
                 <!-- Filter Panel -->
-                <div class="border border-primary rounded my-2" id="group_filter_panel">
-                    <div class="bg-primary text-white px-3 py-2 d-flex align-items-center justify-content-between" style="cursor:pointer;border-radius:4px 4px 0 0;" id="group_filter_panel_toggle">
-                        <span><i class="fas fa-filter mr-2"></i><strong>Filter Students</strong></span>
+                <div class="inner_card_box" id="group_filter_panel">
+                    <div class="card_subheading filter_panel_toggle d-flex align-items-center justify-content-between" id="group_filter_panel_toggle">
+                        <span><i class="fas fa-filter mr-2"></i> Filter Students</span>
                         <i class="fas fa-chevron-up" id="group_filter_panel_chevron"></i>
                     </div>
-                    <div id="group_filter_panel_body" class="p-3">
+                    <div id="group_filter_panel_body">
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <label class="form-control-label" style="font-weight:600;font-size:13px;">Gender</label>
@@ -131,9 +132,8 @@
 
                 <!-- Matching students -->
                 <div id="group_student_list_wrap" class="hide">
-                    <hr class="my-2">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                        <span class="text-primary" style="font-weight:600;font-size:13px;">Select the students to include in this group</span>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap mb-2 mt-3">
+                        <span class="card_subheading mb-0">Select the students to include in this group</span>
                         <div>
                             <button type="button" class="btn btn-sm btn-outline-primary mr-1" id="group_select_all_btn">
                                 <i class="fas fa-check-square mr-1"></i> Select All
@@ -144,9 +144,9 @@
                         </div>
                     </div>
                     <input type="text" class="form-control form-control-sm mb-2" id="group_search_box" placeholder="Search this list by name or admission number...">
-                    <div id="group_students_holder" style="max-height:400px;overflow-y:auto;border:1px solid #eee;border-radius:6px;"></div>
+                    <div id="group_students_holder" style="max-height:400px;overflow-y:auto;border:1px solid #e4eaee;border-radius:12px;"></div>
 
-                    <hr class="my-2">
+                    <p class="card_subheading mt-3">Group Details</p>
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label class="form-control-label"><b>Group Name</b></label>
@@ -163,7 +163,8 @@
             </div>
 
             <!-- ============== MANAGE GROUPS PANEL ============== -->
-            <div id="manage_groups_panel" class="hide">
+            <div id="manage_groups_panel" class="section_card hide">
+                <p class="card_heading">Manage Groups</p>
                 <p id="manage_groups_feedback"></p>
                 <div id="student_groups_list_holder"></div>
             </div>
