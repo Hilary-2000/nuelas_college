@@ -29,9 +29,7 @@
                     <button class="hide" id="find_exp_da"><i class="fas fa-search"></i> Find Expenses</button>
                 </div>
                 <div class="find_exp hide" id="find_exp_date">
-                    <div class="conts">
-                        <h6>Find Expense</h6>
-                    </div>
+                    <p class="card_subheading">Find Expense</p>
                     <div class="conts">
                         <label class="form-control-label" for="view-options-date">Select options: <br></label>
                         <select class="form-control" name="view-options-date" id="view-options-date">
@@ -79,15 +77,13 @@
                     </div>
                 </div>
                 <div class="conts hide" id="recordexp">
-                    <div class="conts">
-                        <h6 class="text-center"><u>Add Expense</u></h6>
+                    <p class="card_subheading">Add Expense</p>
+                    <div class="instructions">
+                        <p><strong>Hint:</strong></p>
+                        <p>- All expenses must be approved by the principal.</p>
+                        <p>- It starts by you making a request and from the principal side they`ll approve all expense requests!</p>
                     </div>
-                    <div class="message_contents mt-3">
-                        <p>- All expenses must be approved by the pricipal</p>
-                        <p>- It starts by you making a request and from the pricipal side they`ll approve all expense requests!</p>
-                    </div>
-                    <hr>
-                    <div class="row border border-secondary m-1 p-1" >
+                    <div class="row">
                         <div class="conts col-md-4">
                             <label class="form-control-label" for="exp_named"><b>Expense Name:</b> <br></label>
                             <input class="form-control w-100" type="text" name="exp_named" id="exp_named" placeholder = "Expense Name">

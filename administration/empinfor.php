@@ -7,19 +7,13 @@
         <p>Employeed id: <span id = 'staffid'>14</span></p>
         <p class="link" style="width: fit-content;" id="delete_staff_permanently"><i class="fas fa-trash"></i> Delete Staff permanently</p>
     </div>
-    <div class="notification">
-        <div class="titles">
-            <p><strong>Notice:</strong></p>
-        </div>
-        <div class="conts">
-            <p><i>Please be sure with the information you are updating.</i></p>
-            <p><i>If possible let the staff update their own information from their portal.</i></p>
-        </div>
+    <div class="instructions">
+        <p><strong>Hint:</strong></p>
+        <p><i>Please be sure with the information you are updating.</i></p>
+        <p><i>If possible let the staff update their own information from their portal.</i></p>
     </div>
-    <div class="trnames">
-        <div class="titles">
-            <p><strong>Personal information:</strong></p>
-        </div>
+    <div class="trnames section_card">
+        <p class="card_heading">Personal information</p>
         <div class="row">
             <div class="col-md-4">
                 <label class="form-control-label" for="fullnamed"><b>Full names: </b><br></label>
@@ -58,10 +52,8 @@
             </div>
         </div>
     </div>
-    <div class="credentials">
-        <div class="titles">
-            <p><strong>Human Resource Details</strong></p>
-        </div>
+    <div class="credentials section_card">
+        <p class="card_heading">Human Resource Details</p>
         <div class="row">
             <div class="col-md-4">
                 <label class="form-control-label" for="d_o_e_input"><b>Date of employment: </b><br></label>
@@ -106,10 +98,8 @@
             </div>
         </div>
     </div>
-    <div class="credentials">
-        <div class="titles">
-            <p><strong>Credentials</strong></p>
-        </div>
+    <div class="credentials section_card">
+        <p class="card_heading">Credentials</p>
         <div class="conts">
             <label class="form-control-label" for="usenames"><b>Usename: <small>(not case sensitive)</small></b></label>
             <p id='usererrors'></p>
@@ -121,10 +111,8 @@
             <button type='button' id ='changepwd'><i class="fas fa-pen-fancy"></i> Change password</button>
         </div>
     </div>
-    <div class="credentials">
-        <div class="titles">
-            <p><strong>Next Of Kin</strong></p>
-        </div>
+    <div class="credentials section_card">
+        <p class="card_heading">Next Of Kin</p>
         <div class="conts">
             <label class="form-control-label" for="kin_fullnames"><b>Kin Fullname: </b></label>
             <input class="form-control" placeholder="Kin Fullname" type="text" name="kin_fullnames" id="kin_fullnames" >
@@ -142,10 +130,8 @@
             <input class="form-control" placeholder="Kin Location" type="text" name="kin_location_edit" id="kin_location_edit" >
         </div>
     </div>
-    <div class="statuses">
-        <div class="titles">
-            <p><strong>Status</strong></p>
-        </div>
+    <div class="statuses section_card">
+        <p class="card_heading">Status</p>
         <div class="conts">
             <p class="hide" id="staff_detail_out"></p>
             <label class="form-control-label" for="auths"><b>Authority: <span id="myauthorities"></span> </b><br> <span class="hide" id="load_roles43"><img src="images/ajax_clock_small.gif" id=""></span></label>
