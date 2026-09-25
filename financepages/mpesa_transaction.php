@@ -105,13 +105,14 @@
                 </div>
             </div>
             <!-- the assigne fees window -->
-            <div class="container hide" id="payment_information">
+            <div class="hide" id="payment_information">
                 <!-- display the payment information -->
                 <div class="back mt-2">
                     <p class="link" id="goback_link" style="text-align: left;"><i class="fas fa-arrow-left"></i> Go back</p>
                 </div>
-                <div class="row rounded-25 border border-secondary p-2 my-2 mx-auto">
-                    <h5 class="text-center"><u>Assign Transaction</u></h5>
+                <div class="section_card">
+                    <p class="card_heading">Assign Transaction</p>
+                    <div class="row">
                     <div class="col-md-6">
                         <h6 class="text-primary">Transaction information</h6>
                         <p class="hide" id="output_mpesa_transactions"></p>
@@ -138,10 +139,11 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                 </div>
-                <hr>
-                <div class="container my-2 hide" id="result_holder">
-                    <div class="container-fluid" id="student_results">
+                <div class="section_card hide" id="result_holder">
+                    <p class="card_heading">Assign to Student</p>
+                    <div id="student_results">
                     </div>
                     <div class="conts my-2">
                         <label for="payment_for_option" class="form-control-label"><b>Select what the payment is for</b></label>
