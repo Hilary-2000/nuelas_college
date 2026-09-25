@@ -2178,6 +2178,7 @@ function viewstaffavailablebtn() {
                     const element = collectbtn[index];
                     setListenertblstaff(element.id);
                 }
+                $('#all_staff_table').DataTable();
                 //removePleasewait();
                 stopInterval(ids);
             }
