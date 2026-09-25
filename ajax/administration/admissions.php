@@ -1887,15 +1887,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 $xs =0;
                 $data="<h6 style='font-size:17px;text-align:center;font-weight:550;font-family:'Rockwell';'>My Staff List</h6>";
                 $data.="<p style='display:none;' id='errorsviewing'>Pop</p>";
-                $data.="<div class='container'><table class='table output1' >";
-                $data.="<tr><th>No.</th>";
+                $data.="<div class='container'><table class='table output1' id='all_staff_table'>";
+                $data.="<thead><tr><th>No.</th>";
                 $data.="<th>Fullname</th>";
                 $data.="<th>Role</th>";
                 $data.="<th>Gender</th>";
                 $data.="<th>National id</th>";
                 $data.="<th>Employee Type</th>";
                 $data.="<th>Activated</th>";
-                $data.="<th>Option</th></tr>";
+                $data.="<th>Option</th></tr></thead><tbody>";
                 $xs2=0;
                 $number = 1;
                 while ($rowed = $result->fetch_assoc()) {
@@ -1939,6 +1939,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                         }else {
                             $data.="<td style='color:red;'>"."Not active"."</td>";
                         }
+                    }else {
+                        $data.="<td>"."N/A"."</td>";
                     }
                     
                     // my user id
@@ -1947,7 +1949,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $number++;
                     $data.="<td>"."<p class='link viewtr' style='font-size:12px;' id='".$my_user_ids."'><i class='fa fa-eye'></i> View</p>"."</td></tr>";
                 }
-                $data.="</table></div>";
+                $data.="</tbody></table></div>";
                 echo $data;
             }
         }elseif(isset($_GET['get_admission_prefix'])){
