@@ -22,74 +22,21 @@
                     </ul>
                 </div>
             </div>
-            <div class="container" id="asset-list">
+            <div class="section_card" id="asset-list">
+                <p class="card_heading">Asset List</p>
                 <button class="nav-bar-btns" id="register-new-asset"><i class="fa fa-plus"></i> Register New Asset <img class="hide" src="images/ajax_clock_small.gif" id="new-asset-loader"></button>
                 <div id="asset-lists-notifier"></div>
                 <div class="hide" id="asset-data"></div>
                 <div class="table_container">
-                    <h6 class="text-center my-2"><u>Asset List</u></h6>
-                    <input type="hidden" name="" value="1" id="asset-page">
-                    <input type="hidden" name="" value="1" id="maximum-page-asset">
-                    <div class="row">
-                        <div class="col-md-6"></div>
-                        <div class="col-md-6">
-                            <input type="text" class="text form-control w-100" id="search-assets" placeholder="Enter Keyword Here">
-                        </div>
-                    </div>
                     <p id="asset-notices-2"></p>
-                    <div id="asset-data-table">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Assets Name</th>
-                                    <th>Asset Category</th>
-                                    <th>Date Acquired.</th>
-                                    <th>Value</th>
-                                    <th>rate</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Toyota KBX 207 A</td>
-                                    <td>Motor Vehicle & Machinery</td>
-                                    <td>21st Jun 2023 @ 13:04PM.</td>
-                                    <td>Kes 3,000,000</td>
-                                    <td>56% <i class="fas fa-arrow-up text-success"></i></td>
-                                    <td><span style="font-size:12px;" class="link view_students" id="view1"><i class="fa fa-pen-fancy"></i> Edit </span></td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Toyota KBX 207 A</td>
-                                    <td>Motor Vehicle & Machinery</td>
-                                    <td>21st Jun 2023 @ 13:04PM.</td>
-                                    <td>Kes 1,000,000</td>
-                                    <td>56% <i class="fas fa-arrow-down text-danger"></i></td>
-                                    <td><span style="font-size:12px;" class="link view_students" id="view1"><i class="fa fa-pen-fancy"></i> Edit </span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row w-50">
-                        <div class="col-sm-4">
-                            <span class="btn btn-secondary btn-sm disabled" id="previous-asset-page"><i class="fa fa-arrow-left"></i><i class="fa fa-arrow-left"></i></span>
-                        </div>
-                        <div class="col-sm-4">
-                            <span id="asset-current-page" class="text-center">Page 1 of 2</span>
-                        </div>
-                        <div class="col-sm-4">
-                            <span class="btn btn-secondary btn-sm disabled" id="next-asset-page"><i class="fa fa-arrow-right"></i><i class="fa fa-arrow-right"></i></span>
-                        </div>
-                    </div>
+                    <div id="asset-data-table"></div>
                 </div>
             </div>
-            <div class="container hide" id="register-asset">
+            <div class="section_card hide" id="register-asset">
                 <button id="back-to-assets"><i class="fa fa-arrow-left"></i> Back to Assets </button>
                 <div class="row my-2">
-                    <div class="col-md-12 my-2">
-                        <h6 class="text-center"><u>Register Asset</u></h6>
+                    <div class="col-md-12">
+                        <p class="card_heading">Register Asset</p>
                     </div>
                     <div class="col-md-4 form-group">
                         <label for="asset-name" class="form-label"><b>Asset Name</b></label>
@@ -140,16 +87,16 @@
                     </div>
                 </div>
             </div>
-            <div class="container p-1 mx-auto hide" id="edit-assets">
+            <div class="section_card hide" id="edit-assets">
                 <button id="back-to-assets-edit"><i class="fa fa-arrow-left"></i> Back to Assets </button>
                 <div class="row my-2">
-                    <div class="col-md-12 my-2">
-                        <h6 class="text-center"><u>Edit Asset</u> <img class="hide" src="images/ajax_clock_small.gif" id="asset_data_loader"></h6>
+                    <div class="col-md-12">
+                        <p class="card_heading">Edit Asset <img class="hide" src="images/ajax_clock_small.gif" id="asset_data_loader"></p>
                         <p class="hide" id="asset_data_holder"></p>
                     </div>
                     <form class="col-md-12" target="_blank" method="POST" action="reports/reports.php">
-                        <div class="border border-secondary rounded mx-auto w-75 py-2 px-2 my-2">
-                            <h6 class="text-secondary text-center"><u>Print Statement of Asset Accounts</u></h6>
+                        <div class="inner_card_box">
+                            <p class="card_subheading">Print Statement of Asset Accounts</p>
                             <input type="hidden" name="print_statement_of_account" value="true">
                             <input type="hidden" name="asset_id" id="asset-id">
                             <div class="row">
@@ -252,10 +199,9 @@
                         <button id="update-assets-btn"><i class="fa fa-save"></i> Update Asset <img class="hide" src="images/ajax_clock_small.gif" id="save-assets-loader-edit"></button>
                     </div>
                 </div>
-                <hr class="my-2 py-1">
                 <div class="row my-2">
                     <div class="col-md-12">
-                        <h6 class="text-center">Asset Depreciation Account <img class="hide" src="images/ajax_clock_small.gif" id="asset-account-loaders"></h6>
+                        <p class="card_heading mt-3">Asset Depreciation Account <img class="hide" src="images/ajax_clock_small.gif" id="asset-account-loaders"></p>
                         <div class="hide" id="asset-accounts-holder"></div>
                     </div>
                     <div class="col-md-6 mx-auto" id="asset_transaction_table">
