@@ -1668,3 +1668,47 @@ p.instructions{
     border-radius: 16px;
     overflow: visible;
 }
+
+/* ===== Manage Staff: the staff details sections as cards ===== */
+#informationwindow .trnames.section_card,
+#informationwindow .credentials.section_card,
+#informationwindow .statuses.section_card{
+    width: 100%;
+    margin: 0 0 16px;
+    padding: 18px 20px 12px;
+    border: 1px solid #e4eaee;
+    align-items: flex-start;
+}
+#informationwindow .section_card > .card_heading{
+    flex-basis: 100%;
+}
+#informationwindow .section_card > .row{
+    width: 100%;
+}
+/* the "Employee Information" tag was a legend for the old bordered box */
+#informationwindow .titlesd{
+    position: static;
+    background: none;
+    padding: 0;
+    margin: 10px 0;
+    font-size: 17px;
+    text-align: center;
+}
+
+/* ===== A heading for a part of a card, e.g. the Find Expense and Add Expense panels that
+   open inside the Expenses card in place of its buttons ===== */
+.card_subheading{
+    color: rgb(3,131,135);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 10px;
+}
+
+/* ===== Suppliers, Assets and Payment Approval ===== */
+/* a box inside a card, e.g. the print and dispose options of an asset */
+.inner_card_box{
+    border: 1px solid #e4eaee;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin: 8px 0;
+}

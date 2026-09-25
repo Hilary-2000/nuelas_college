@@ -5151,8 +5151,8 @@ cObj("save_suppliers").onclick = function () {
     }
 }
 
-function display_supplier(page = 1){
-    var datapass = "get_suppliers="+page;
+function display_supplier(){
+    var datapass = "get_suppliers=true";
     sendDataPost("POST","ajax/finance/financial.php",datapass,cObj("show_supplier_list"),cObj("show_supplier_loader"));
     setTimeout(() => {
         var timeout = 0;
@@ -5165,98 +5165,21 @@ function display_supplier(page = 1){
             if (cObj("show_supplier_loader").classList.contains("hide")) {
                 var data_to_display = hasJsonStructure(cObj("show_supplier_list").innerText) ? JSON.parse(cObj("show_supplier_list").innerText) : {"suppliers" : [],"total_pages" : 0};
                 display_all_supplier(data_to_display.suppliers);
-                cObj("supplier_page_index").innerText = "Page "+page+" of "+data_to_display.total_pages;
-                cObj("supplier_page").value = page;
-                cObj("maximum_supplier_page").value = data_to_display.total_pages;
                 stopInterval(ids);
             }
-
-            // navigation buttons
-            cObj("next_supplier_page").addEventListener("click",navigate_right);
-            cObj("previous_supplier_page").addEventListener("click",navigate_left);
         }, 100);
     }, 200);
-}
-
-function search_school_suppliers() {
-    var keyword = this.value.toLowerCase();
-    var row = cObj("supplier_table_list").children;
-
-    // new row
-    var new_row = row;
-    for (let index = 0; index < 4; index++) {
-        new_row = new_row.length > 0 ? (new_row[0].tagName == "TR" ? new_row : new_row[0].children) : [];
-        if (new_row.length > 0) {
-            if (new_row[0].tagName == "TR") {
-                break;
-            }else{
-                new_row = new_row[0].children;
-            }
-        }else{
-            new_row = [];
-        }
-    }
-
-    // row length
-    row = new_row;
-    for (let index = 1; index < row.length; index++) {
-        const element = row[index];
-        var columns = element.children;
-
-        // check if in this row the column has what the keyword shows
-        var present = 0;
-        for (let index = 1; index < (columns.length-1); index++) {
-            const elem = columns[index];
-            if (elem.innerText.toLowerCase().includes(keyword)) {
-                present++;
-            }
-        }
-
-        // if the keyword is present show the row
-        if (present > 0) {
-            element.classList.remove("hide");
-        }else{
-            element.classList.add("hide");
-        }
-    }
-}
-
-function navigate_left() {
-    if (valObj("maximum_supplier_page") == valObj("supplier_page")) {
-        // add disabled
-        this.classList.add("disabled");
-    }else{
-        // remove disabled
-        this.classList.remove("disabled");
-        var supplier_page = valObj("supplier_page");
-
-        cObj("supplier_page").value = supplier_page-1;
-        display_supplier((supplier_page-1));
-    }
-}
-function navigate_right() {
-    if (valObj("maximum_supplier_page") == valObj("supplier_page")) {
-        // add disabled
-        this.classList.add("disabled");
-    }else{
-        // remove disabled
-        this.classList.remove("disabled");
-        var supplier_page = valObj("supplier_page");
-
-        cObj("supplier_page").value = supplier_page+1;
-        display_supplier((supplier_page+1));
-    }
 }
 
 function display_all_supplier(data_to_display) {
     var data_in_display = "";
     if (data_to_display.length > 0) {
-        data_in_display = "<table id='supplier_table_list' class='table'><tr><th>No.</th><th>Supplier Name</th><th>Amount Owed</th><th>Date Registered.</th><th>Company Name</th><th>Contact</th><th>Action</th></tr>";
+        data_in_display = "<table id='supplier_table_list' class='table'><thead><tr><th>No.</th><th>Supplier Name</th><th>Amount Owed</th><th>Date Registered.</th><th>Company Name</th><th>Contact</th><th>Action</th></tr></thead><tbody>";
         for (let index = 0; index < data_to_display.length; index++) {
             const element = data_to_display[index];
             data_in_display+="<tr><td><input type='hidden' id='supplier_details_"+element.supplier_id+"' value='"+JSON.stringify(element)+"'>"+(index+1)+"</td><td>"+element.supplier_name+"</td><td>Kes "+element.amount_owed+"</td><td>"+element.date_registered+"</td><td>"+element.company_name+"</td><td>"+element.supplier_phone+"</td><td><span style='font-size:12px;' class='link view_suppliers' id='view_supplier_"+element.supplier_id+"'><i class='fa fa-eye'></i> View </span></td></tr>";        
         }
-        data_in_display+="</table>";
+        data_in_display+="</tbody></table>";
     }else{
         data_in_display="<p class='text-danger'>No supplier data found!</p>";
     }
@@ -5271,8 +5194,9 @@ function display_all_supplier(data_to_display) {
         element.addEventListener("click",view_supplier);
     }
 
-    // search keyword
-    cObj("search_school_suppliers").addEventListener("keyup",search_school_suppliers);
+    if (cObj("supplier_table_list") != undefined) {
+        $('#supplier_table_list').DataTable();
+    }
 }
 
 // view suppliers
@@ -6054,8 +5978,8 @@ cObj("back-to-assets").onclick = function () {
     cObj("asset-list").classList.remove("hide");
     cObj("edit-assets").classList.add("hide");
 }
-function display_assets(page = 1){
-    var datapass = "get_assets="+page;
+function display_assets(){
+    var datapass = "get_assets=true";
     sendDataPost("POST","ajax/finance/financial.php",datapass,cObj("asset-data"),cObj("new-asset-loader"));
     setTimeout(() => {
         var timeout = 0;
@@ -6068,16 +5992,8 @@ function display_assets(page = 1){
             if (cObj("new-asset-loader").classList.contains("hide")) {
                 var data_to_display = hasJsonStructure(cObj("asset-data").innerText) ? JSON.parse(cObj("asset-data").innerText) : {"assets" : [],"total_pages" : 0};
                 display_all_assets(data_to_display.assets);
-                
-                cObj("asset-current-page").innerText = "Page "+page+" of "+data_to_display.total_pages;
-                cObj("asset-page").value = page;
-                cObj("maximum-page-asset").value = data_to_display.total_pages;
                 stopInterval(ids);
             }
-
-            // navigation buttons
-            // cObj("next_supplier_page").addEventListener("click",navigate_right);
-            // cObj("previous_supplier_page").addEventListener("click",navigate_left);
         }, 100);
     }, 200);
 }
@@ -6092,7 +6008,7 @@ function display_all_assets(data_to_display) {
             var status = element.disposed_status == "1" ? "<small class='badge bg-danger'>-D</small>" : "";
             data_in_display+="<tr><td><input type='hidden' id='assets-values-"+element.asset_id+"' value='"+JSON.stringify(element)+"'>"+(index+1)+" "+status+" </td><td>"+element.asset_name+"</td><td>"+element.asset_category+"</td><td>"+element.date_of_acquiry+"</td><td>Kes "+element.orginal_value+"</td><td>Kes "+element.new_value+" <small>("+element.years+" years later)</small></td><td>"+element.acquisition_rate+"% "+show+"</td><td><span style='font-size:12px;' class='link view-assets' id='view-assets-"+element.asset_id+"'><i class='fa fa-eye'></i> View </span></td></tr>";        
         }
-        data_in_display+="</table>";
+        data_in_display+="</tbody></table>";
     }else{
         data_in_display="<p class='text-danger'>No Asset data found!</p>";
     }
@@ -6107,8 +6023,9 @@ function display_all_assets(data_to_display) {
         element.addEventListener("click",view_assets);
     }
 
-    // // search keyword
-    cObj("search-assets").addEventListener("keyup",search_school_assets);
+    if (cObj("assets-table-list") != undefined) {
+        $('#assets-table-list').DataTable();
+    }
 }
 
 function view_assets() {
@@ -6216,49 +6133,6 @@ cObj("back-to-assets-edit").onclick = function () {
 
     // display assets
     display_assets();
-}
-
-function search_school_assets() {
-    var keyword = this.value.toLowerCase();
-    var row = cObj("assets-table-list").children;
-
-    // new row
-    var new_row = row;
-    for (let index = 0; index < 4; index++) {
-        new_row = new_row.length > 0 ? (new_row[0].tagName == "TR" ? new_row : new_row[0].children) : [];
-        if (new_row.length > 0) {
-            if (new_row[0].tagName == "TR") {
-                break;
-            }else{
-                new_row = new_row[0].children;
-            }
-        }else{
-            new_row = [];
-        }
-    }
-
-    // row length
-    row = new_row;
-    for (let index = 1; index < row.length; index++) {
-        const element = row[index];
-        var columns = element.children;
-
-        // check if in this row the column has what the keyword shows
-        var present = 0;
-        for (let index = 1; index < (columns.length-1); index++) {
-            const elem = columns[index];
-            if (elem.innerText.toLowerCase().includes(keyword)) {
-                present++;
-            }
-        }
-
-        // if the keyword is present show the row
-        if (present > 0) {
-            element.classList.remove("hide");
-        }else{
-            element.classList.add("hide");
-        }
-    }
 }
 
 cObj("update-assets-btn").onclick = function () {
@@ -6400,8 +6274,8 @@ function get_asset_data(asset_id) {
     }, 200);
 }
 
-function display_payment_requests(page = 1){
-    var datapass = "get_payment_requests="+page;
+function display_payment_requests(){
+    var datapass = "get_payment_requests=true";
     sendDataPost("POST","ajax/finance/financial.php",datapass,cObj("payment_request_holder"),cObj("payment_request_table_loader"));
     setTimeout(() => {
         var timeout = 0;
@@ -6414,15 +6288,8 @@ function display_payment_requests(page = 1){
             if (cObj("payment_request_table_loader").classList.contains("hide")) {
                 var data_to_display = hasJsonStructure(cObj("payment_request_holder").innerText) ? JSON.parse(cObj("payment_request_holder").innerText) : {"payment_requests" : [],"total_pages" : 0};
                 display_all_payment_requests(data_to_display.pay_requests);
-                cObj("payment_requests_index").innerText = "Page "+page+" of "+data_to_display.total_pages;
-                cObj("payment_request_page").value = page;
-                cObj("maximum_payment_request").value = data_to_display.total_pages;
                 stopInterval(ids);
             }
-
-            // navigation buttons
-            // cObj("next_supplier_page").addEventListener("click",navigate_right);
-            // cObj("previous_supplier_page").addEventListener("click",navigate_left);
         }, 100);
     }, 200);
 }
@@ -6430,13 +6297,13 @@ function display_payment_requests(page = 1){
 function display_all_payment_requests(data_to_display) {
     var data_in_display = "";
     if (data_to_display.length > 0) {
-        data_in_display = "<table id='payment_application_table' class='table'><tr><th>No.</th><th>Payment for</th><th>Expense Categories</th><th>Expense Amount.</th><th>Date Paid</th><th>Document Number</th><th>Action</th></tr>";
+        data_in_display = "<table id='payment_application_table' class='table'><thead><tr><th>No.</th><th>Payment for</th><th>Expense Categories</th><th>Expense Amount.</th><th>Date Paid</th><th>Document Number</th><th>Action</th></tr></thead><tbody>";
         for (let index = 0; index < data_to_display.length; index++) {
             const element = data_to_display[index];
             var flag = element.table_name == "running_expense" ? " <small class='badge bg-success' data-bs-toggle='tooltip' data-bs-placement='top' title='Running Expenses'>E</small>" : " <small class='badge bg-warning' data-bs-toggle='tooltip' data-bs-placement='top' title='Suppliers'>S</small>";
             data_in_display+="<tr><td><input type='hidden' id='payment_request_"+element.payment_id+"' value='"+JSON.stringify(element)+"'>"+(index+1)+" "+flag+"</td><td>"+element.exp_name+"</td><td>"+element.exp_category+"</td><td>"+element.amount+"</td><td>"+element.date_paid+"</td><td>"+element.document_number+"</td><td><span style='font-size:12px;' class='link view_payment_requests' id='view_pay_req_"+element.payment_id+"'><i class='fa fa-eye'></i> View </span> <br> <span style='font-size:12px;' class='link accept_pay_request' id='accept_"+element.payment_id+"'><i class='fa fa-check'></i> Accept </span> <br> <span style='font-size:12px; color:red;' class='link decline_pay_request' id='decline_"+element.payment_id+"'><b>X</b> Decline </span></td></tr>";
         }
-        data_in_display+="</table>";
+        data_in_display+="</tbody></table>";
     }else{
         data_in_display="<p class='text-danger'>No Payment requests data found!</p>";
     }
@@ -6463,8 +6330,9 @@ function display_all_payment_requests(data_to_display) {
         element.addEventListener("click", decline_pay_requests);
     }
 
-    // search keyword
-    cObj("search_payment_approvals").addEventListener("keyup",search_payment_approvals);
+    if (cObj("payment_application_table") != undefined) {
+        $('#payment_application_table').DataTable();
+    }
 
     // set tool tip
     initiateTooltip();
@@ -6492,49 +6360,6 @@ function view_payment_request() {
 
 cObj("cancel_accept_payment_request").onclick = function () {
     cObj("confirm_payment_request_window").classList.add("hide");
-}
-
-function search_payment_approvals() {
-    var keyword = this.value.toLowerCase();
-    var row = cObj("payment_application_table").children;
-
-    // new row
-    var new_row = row;
-    for (let index = 0; index < 4; index++) {
-        new_row = new_row.length > 0 ? (new_row[0].tagName == "TR" ? new_row : new_row[0].children) : [];
-        if (new_row.length > 0) {
-            if (new_row[0].tagName == "TR") {
-                break;
-            }else{
-                new_row = new_row[0].children;
-            }
-        }else{
-            new_row = [];
-        }
-    }
-
-    // row length
-    row = new_row;
-    for (let index = 1; index < row.length; index++) {
-        const element = row[index];
-        var columns = element.children;
-
-        // check if in this row the column has what the keyword shows
-        var present = 0;
-        for (let index = 1; index < (columns.length-1); index++) {
-            const elem = columns[index];
-            if (elem.innerText.toLowerCase().includes(keyword)) {
-                present++;
-            }
-        }
-
-        // if the keyword is present show the row
-        if (present > 0) {
-            element.classList.remove("hide");
-        }else{
-            element.classList.add("hide");
-        }
-    }
 }
 
 cObj("back_to_expenses_view").onclick = function () {
