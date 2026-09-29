@@ -4567,37 +4567,102 @@
             }
             echo json_encode($stats);
         }elseif (isset($_GET['mpesaTransaction'])) {
-            $select = "SELECT mpesa_transactions.*, CONCAT(student_data.first_name,' ',student_data.second_name) AS 'student_fullname' FROM `mpesa_transactions` LEFT JOIN student_data ON student_data.adm_no = mpesa_transactions.std_adm ORDER BY transaction_id DESC LIMIT 1000;";
-            $stmt = $conn2->prepare($select);
+            // server-side paging for the DataTables list: only the requested page is fetched
+            $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+            $start = isset($_GET['start']) ? max(0, (int)$_GET['start']) : 0;
+            $length = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+            if ($length < 1 || $length > 100) {
+                $length = 10;
+            }
+            $search = isset($_GET['search']['value']) ? trim($_GET['search']['value']) : "";
+
+            // map the DataTables column index to a safe ORDER BY expression
+            $order_columns = [
+                0 => "mpesa_transactions.transaction_id",
+                1 => "mpesa_transactions.mpesa_id",
+                2 => "CAST(mpesa_transactions.amount AS DECIMAL(15,2))",
+                3 => "mpesa_transactions.fullname",
+                4 => "student_fullname",
+                5 => "mpesa_transactions.transaction_time"
+            ];
+            $order_index = isset($_GET['order'][0]['column']) ? (int)$_GET['order'][0]['column'] : 0;
+            $order_by = isset($order_columns[$order_index]) ? $order_columns[$order_index] : $order_columns[0];
+            $order_dir = (isset($_GET['order'][0]['dir']) && strtolower($_GET['order'][0]['dir']) == "asc") ? "ASC" : "DESC";
+
+            $from = " FROM `mpesa_transactions` LEFT JOIN student_data ON student_data.adm_no = mpesa_transactions.std_adm";
+
+            // total records
+            $records_total = 0;
+            $stmt = $conn2->prepare("SELECT COUNT(*) AS 'total' FROM `mpesa_transactions`");
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($result) {
-                $data_to_display = "";
-                $data_to_display_2 = "<table class='table' id='mpesa_transactions_table'><thead><tr><th>No.</th><th>Transaction No.</th><th>Amount</th><th>Paid By</th><th>Student Name</th><th>Time Of Transaction</th><th>Action</th></tr></thead><tbody>";
-                $index = 1;
-                while ($row = $result->fetch_assoc()) {
-                    $paymentDate = $row['transaction_time'];
-                    $year = substr($paymentDate, 0, 4);
-                    $month = substr($paymentDate, 4, 2);
-                    $day = substr($paymentDate, 6, 2);
-                    $hour = substr($paymentDate, 8, 2);
-                    $min = substr($paymentDate, 10, 2);
-                    $sec = substr($paymentDate, 12, 2);
-                    $d = mktime($hour, $min, $sec, $month, $day, $year);
-                    $transactionDate =  date("D-dS-M-Y  h.i.s A", $d);
-                    if ($row['transaction_status'] == 0) {
-                        $action = "<span class='link text-danger assign_payment' id='assign_payment_".$row['transaction_id']."'><i class='fas fa-eye'></i> Assign</span>";
-                    } else {
-                        $action = "<span class='link text-success unassign_payment' id='unassign_payment_".$row['transaction_id']."'><i class='fas fa-eye'></i> Un-Assign</span>";
-                    }
-                    $data_to_display .= $row['mpesa_id'] . ":" . $row['amount'] . ":" . getName1($row['std_adm']) . " (" . $row['std_adm'] . "):" . $transactionDate . ":" . $row['short_code'] . ":" . $row['payment_number'] . ":" . $row['fullname'] . ":" . $row['transaction_status'] . ":" . $row['transaction_id'] . "|";
-                    $data_to_display_2 .= "<tr><td>".$index."</td><td>".$row['mpesa_id']."</td><td>Kes ".number_format($row['amount'])."</td><td>".ucwords(strtolower($row['fullname']))."</td><td>".ucwords(strtolower($row['student_fullname']))." (".$row['std_adm'].")</td><td>".$transactionDate."</td><td>".$action."</td></tr>";
-                    $index++;
-                }
-                $data_to_display_2.= "</tbody></table>";
-                $data_to_display = substr($data_to_display, 0, (strlen($data_to_display) - 1));
-                echo $data_to_display_2;
+            if ($row = $result->fetch_assoc()) {
+                $records_total = (int)$row['total'];
             }
+
+            // filtered records
+            $where = "";
+            $search_params = [];
+            if (strlen($search) > 0) {
+                $where = " WHERE (mpesa_transactions.mpesa_id LIKE ? OR mpesa_transactions.amount LIKE ? OR mpesa_transactions.fullname LIKE ? OR mpesa_transactions.std_adm LIKE ? OR mpesa_transactions.payment_number LIKE ? OR CONCAT(student_data.first_name,' ',student_data.second_name) LIKE ?)";
+                $like = "%".$search."%";
+                $search_params = [$like, $like, $like, $like, $like, $like];
+            }
+            $records_filtered = $records_total;
+            if (strlen($where) > 0) {
+                $stmt = $conn2->prepare("SELECT COUNT(*) AS 'total'".$from.$where);
+                $stmt->bind_param(str_repeat("s", count($search_params)), ...$search_params);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($row = $result->fetch_assoc()) {
+                    $records_filtered = (int)$row['total'];
+                }
+            }
+
+            // the current page
+            $select = "SELECT mpesa_transactions.*, CONCAT(student_data.first_name,' ',student_data.second_name) AS 'student_fullname'".$from.$where." ORDER BY ".$order_by." ".$order_dir." LIMIT ? OFFSET ?";
+            $stmt = $conn2->prepare($select);
+            $page_params = array_merge($search_params, [$length, $start]);
+            $stmt->bind_param(str_repeat("s", count($search_params))."ii", ...$page_params);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            $data = [];
+            $index = $start + 1;
+            while ($row = $result->fetch_assoc()) {
+                $paymentDate = $row['transaction_time'];
+                $year = substr($paymentDate, 0, 4);
+                $month = substr($paymentDate, 4, 2);
+                $day = substr($paymentDate, 6, 2);
+                $hour = substr($paymentDate, 8, 2);
+                $min = substr($paymentDate, 10, 2);
+                $sec = substr($paymentDate, 12, 2);
+                $d = mktime($hour, $min, $sec, $month, $day, $year);
+                $transactionDate =  date("D-dS-M-Y  h.i.s A", $d);
+                if ($row['transaction_status'] == 0) {
+                    $action = "<span class='link text-danger assign_payment' id='assign_payment_".$row['transaction_id']."'><i class='fas fa-eye'></i> Assign</span>";
+                } else {
+                    $action = "<span class='link text-success unassign_payment' id='unassign_payment_".$row['transaction_id']."'><i class='fas fa-eye'></i> Un-Assign</span>";
+                }
+                $data[] = [
+                    $index,
+                    htmlspecialchars($row['mpesa_id'] ?? "", ENT_QUOTES),
+                    "Kes ".number_format((float)$row['amount']),
+                    htmlspecialchars(ucwords(strtolower($row['fullname'] ?? "")), ENT_QUOTES),
+                    htmlspecialchars(ucwords(strtolower($row['student_fullname'] ?? ""))." (".$row['std_adm'].")", ENT_QUOTES),
+                    $transactionDate,
+                    $action
+                ];
+                $index++;
+            }
+
+            header("Content-Type: application/json");
+            echo json_encode([
+                "draw" => $draw,
+                "recordsTotal" => $records_total,
+                "recordsFiltered" => $records_filtered,
+                "data" => $data
+            ]);
         }elseif(isset($_GET['un_assign_payment'])){
             // transaction
             $transaction_id = $_GET['transaction_id'];

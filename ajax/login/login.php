@@ -104,7 +104,7 @@ function verifyTurnstile($token) {
                                             }
                                             $check_domain = $_GET['domain'];
                                             $_SESSION['domain'] = $check_domain;
-                                            if($check_domain != $domain && $check_domain != "192.168.86.10"){
+                                            if($check_domain != $domain && $check_domain != "192.168.86.13"){
                                                 echo "<p style = 'color:red;'>You are using the wrong domain, you should be using <a href='https://".$domain."'>".$domain."</a>!</p>";
                                                 return 0;
                                             }
