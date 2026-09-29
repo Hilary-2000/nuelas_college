@@ -283,8 +283,9 @@ if (session_status() === PHP_SESSION_NONE) {
                                             $text_message = $message_parent_1;
                                             $message_desc = strlen($message_parent_1) > 45 ? substr($message_parent_1,0,45)."..." : $message_parent_1;
                                             $date = date("Y-m-d");
-                                            $select = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`sender_no`,`message_description`,`message`,`message_status`) VALUES ('$message_count','$date','$message_count','$message_count','$message_type','$recipient_no','$message_desc','$text_message','sent')";
+                                            $select = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`sender_no`,`message_description`,`message`,`message_status`) VALUES (?,?,?,?,?,?,?,?,'sent')";
                                             $stmt = $conn2->prepare($select);
+                                            $stmt->bind_param("ssssssss", $message_count, $date, $message_count, $message_count, $message_type, $recipient_no, $message_desc, $text_message);
                                             $stmt->execute();
                                         }
                                         
@@ -299,8 +300,9 @@ if (session_status() === PHP_SESSION_NONE) {
                                             $text_message = $message_parent_2;
                                             $message_desc = strlen($message_parent_2) > 45 ? substr($message_parent_2,0,45)."..." : $message_parent_2;
                                             $date = date("Y-m-d");
-                                            $select = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`sender_no`,`message_description`,`message`,`message_status`) VALUES ('$message_count','$date','$message_count','$message_count','$message_type','$recipient_no','$message_desc','$text_message','sent')";
+                                            $select = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`sender_no`,`message_description`,`message`,`message_status`) VALUES (?,?,?,?,?,?,?,?,'sent')";
                                             $stmt = $conn2->prepare($select);
+                                            $stmt->bind_param("ssssssss", $message_count, $date, $message_count, $message_count, $message_type, $recipient_no, $message_desc, $text_message);
                                             $stmt->execute();
                                         }
                                         
@@ -315,8 +317,9 @@ if (session_status() === PHP_SESSION_NONE) {
                                             $text_message = $message_student;
                                             $message_desc = strlen($message_student) > 45 ? substr($message_student,0,45)."..." : $message_student;
                                             $date = date("Y-m-d");
-                                            $select = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`sender_no`,`message_description`,`message`,`message_status`) VALUES ('$message_count','$date','$message_count','$message_count','$message_type','$recipient_no','$message_desc','$text_message','sent')";
+                                            $select = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`sender_no`,`message_description`,`message`,`message_status`) VALUES (?,?,?,?,?,?,?,?,'sent')";
                                             $stmt = $conn2->prepare($select);
+                                            $stmt->bind_param("ssssssss", $message_count, $date, $message_count, $message_count, $message_type, $recipient_no, $message_desc, $text_message);
                                             $stmt->execute();
                                         }
                                         echo '{
@@ -379,8 +382,9 @@ if (session_status() === PHP_SESSION_NONE) {
                                     $date = date("Y-m-d");
                                     $recepient = $phone_number;
                                     $recipient_no = $phone_number;
-                                    $select = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`sender_no`,`message_description`,`message`,`number_collection`,`message_status`) VALUES ('$message_count','$date','$message_count','$message_count','$message_type','$recipient_no','$message_desc','$text_message','$recepient','sent')";
+                                    $select = "INSERT INTO `sms_table` (`message_count`,`date_sent`,`message_sent_succesfully`,`message_undelivered`,`message_type`,`sender_no`,`message_description`,`message`,`number_collection`,`message_status`) VALUES (?,?,?,?,?,?,?,?,?,'sent')";
                                     $stmt = $conn2->prepare($select);
+                                    $stmt->bind_param("sssssssss", $message_count, $date, $message_count, $message_count, $message_type, $recipient_no, $message_desc, $text_message, $recepient);
                                     $stmt->execute();
                                 }
                             } else {
