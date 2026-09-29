@@ -89,7 +89,6 @@
                             <div class="col-sm-7">
                                 <!-- Add the loading element here -->
                                 <div class="container d-flex align-content-center justify-content-left p-2 hide">
-                                    <p  id="completedTransHolder" >Loading <i class="fas fa-star fa-spin"></i><i class="fas fa-star fa-spin"></i><i class="fas fa-star fa-spin"></i></p>
                                     <p id="data_error_holder"></p>
                                 </div>
                             </div>
