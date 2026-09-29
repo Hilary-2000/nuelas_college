@@ -19,7 +19,7 @@ cObj("registersub").onclick = function () {
         var hold_course_selected = hasJsonStructure(valObj("hold_course_selected")) ? JSON.parse(valObj("hold_course_selected")) : [];
         if (hold_course_selected.length > 0) {
             var set_my_grades_list = cObj("set_my_grades_list").innerText;
-            var datastring = "addsubject=true&unit_name="+valObj("unit_unique_name")+"&subject_max_marks="+valObj("subject_max_marks")+"&course_list="+JSON.stringify(hold_course_selected)+"&unit_code="+valObj("unit_code")+"&grades_lists="+set_my_grades_list+"&subject_display_name="+valObj("subject_display_name")+"&year_of_study="+valObj("unit_year_of_study");
+            var datastring = "addsubject=true&unit_name="+encodeURIComponent(valObj("unit_unique_name"))+"&subject_max_marks="+encodeURIComponent(valObj("subject_max_marks"))+"&course_list="+encodeURIComponent(JSON.stringify(hold_course_selected))+"&unit_code="+encodeURIComponent(valObj("unit_code"))+"&grades_lists="+encodeURIComponent(set_my_grades_list)+"&subject_display_name="+encodeURIComponent(valObj("subject_display_name"))+"&year_of_study="+encodeURIComponent(valObj("unit_year_of_study"));
             sendDataPost("POST","ajax/academic/academic.php",datastring,cObj("errregsub"), cObj("loadings"), function () {
                 if (cObj("error_adding_unit") == undefined) {
                     cObj("formpay").reset();
@@ -40,7 +40,7 @@ cObj("registersub").onclick = function () {
     }
 }
 cObj("unit_unique_name").onblur = function () {
-    var data = "?findname=true&name="+this.value;
+    var data = "?findname=true&name="+encodeURIComponent(this.value);
     if (this.value.length>0) {
         sendData("GET","academic/academic.php",data,cObj("subnameerr"));
     }else{
@@ -48,7 +48,7 @@ cObj("unit_unique_name").onblur = function () {
     }
 }
 cObj("unit_code").onblur = function () {
-    var data = "?findname=true&name="+this.value+"&unit_code=true";
+    var data = "?findname=true&name="+encodeURIComponent(this.value)+"&unit_code=true";
     if (this.value.length>0) {
         sendData("GET","academic/academic.php",data,cObj("unit_code_error"));
     }else{
@@ -77,14 +77,14 @@ cObj("finder").onclick = function () {
         if (val1=="byname") {
             err+=checkBlank("subnamed");
             if (err==0) {
-                datapass+=""+val1+"&subjename="+valObj("subnamed");   
+                datapass+=""+val1+"&subjename="+encodeURIComponent(valObj("subnamed"));   
             }
         }else if (val1=="byclass") {
             if (typeof(cObj("classtaughts")) != 'undefined' || cObj("classtaughts") != null) {
                 err+=checkBlank(cObj("classtaughts").id);
 
                 if (err==0) {
-                    datapass+=""+val1+"&class="+valObj("classtaughts");
+                    datapass+=""+val1+"&class="+encodeURIComponent(valObj("classtaughts"));
                 }
             }else{
                 cObj("errorhand").innerHTML = "<p style='color:red;' >Contact your administrator your system needs classes configuration.</p>";
@@ -136,7 +136,7 @@ function setTableListenersub(id) {
 }
 function finders() {
     var subjectid = this.id.substr(5);
-    var datapass = "?subjectids="+subjectid;
+    var datapass = "?subjectids="+encodeURIComponent(subjectid);
     sendData1("GET","academic/academic.php",datapass,cObj("subinform"), function () {
         var dats =  cObj("subinform").innerText;
         if (hasJsonStructure(dats)) {
@@ -182,7 +182,7 @@ cObj("updatesubs").onclick = function () {
         }
         cObj("errhandlers").innerHTML = "";
         var subject_grade = cObj("subjects_grades_hidden").innerText;
-        var datapass = "updatesubjects=true&unit_name="+valObj("subject_name_edit")+"&unit_code="+valObj("unit_code_edit")+"&unit_max_marks="+valObj("subject_max_marks_edit")+"&course_list="+cObj("hold_course_selected_edit").value+"&unit_id="+cObj("unit_id_edit").innerText+"&unit_grades="+subject_grade+"&unit_display_name="+valObj("sub_display_name_edit")+"&year_of_study="+valObj("unit_year_of_study_edit");
+        var datapass = "updatesubjects=true&unit_name="+encodeURIComponent(valObj("subject_name_edit"))+"&unit_code="+encodeURIComponent(valObj("unit_code_edit"))+"&unit_max_marks="+encodeURIComponent(valObj("subject_max_marks_edit"))+"&course_list="+encodeURIComponent(cObj("hold_course_selected_edit").value)+"&unit_id="+encodeURIComponent(cObj("unit_id_edit").innerText)+"&unit_grades="+encodeURIComponent(subject_grade)+"&unit_display_name="+encodeURIComponent(valObj("sub_display_name_edit"))+"&year_of_study="+encodeURIComponent(valObj("unit_year_of_study_edit"));
         sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("errhandlers"), cObj("loadings"), function () {
             var infor = cObj("errhandlers").innerText.substring(0,7);
             if (infor=="Subject") {
@@ -233,7 +233,7 @@ function displayAllSubjects (filters = []) {
         var datapas = "?findsubjects=true";
         for (let index = 0; index < filters.length; index++) {
             const element = filters[index];
-            datapas+= "&"+element.key+"="+element.value;
+            datapas+= "&"+element.key+"="+encodeURIComponent(element.value);
         }
         sendData1("GET","academic/academic.php",datapas,cObj("resulthold"), function () {
             // view subject list
@@ -280,9 +280,9 @@ cObj("findersd").onclick = function () {
         cObj("managesubsteacherr").innerHTML = "<p style='color:red;'></p>";
         var datapass = "?seachby=";
         if (options=="byname") {
-            datapass+="byname&name="+cObj("nameds").value;
+            datapass+="byname&name="+encodeURIComponent(cObj("nameds").value);
         }else if (options=="byidno") {
-            datapass+="byidno&idnos="+cObj("idnumbers").value;
+            datapass+="byidno&idnos="+encodeURIComponent(cObj("idnumbers").value);
         }
         sendData1("GET","academic/academic.php",datapass,cObj("managesubstr"));
         setTimeout(() => {
@@ -312,7 +312,7 @@ function setListenes(id) {
 }
 function setClassAndsubj() {
     var object_id = this.id;
-    var datapass = "?getbyid="+this.id+"&teacher_id="+this.id.substr(3);
+    var datapass = "?getbyid="+encodeURIComponent(this.id)+"&teacher_id="+encodeURIComponent(this.id.substr(3));
     sendData1("GET","academic/academic.php",datapass,cObj("outputsubs"), function () {
         cObj("teachname").value = cObj("tr_fullname_"+object_id.substr(3)).innerText;
         cObj("editsubinfor").classList.remove("hide");
@@ -353,7 +353,7 @@ function setClassAndsubj() {
 }
 
 cObj("academic_super_admin").onchange = function () {
-    var datapass = "?update_academic_super_user_status=true&teacher_id="+cObj("teacher_id_unit_assignment").value+"&status="+this.value;
+    var datapass = "?update_academic_super_user_status=true&teacher_id="+encodeURIComponent(cObj("teacher_id_unit_assignment").value)+"&status="+encodeURIComponent(this.value);
     sendData2("GET", "academic/academic.php", datapass, cObj("err_holder_super_user_assignment"), cObj("academic_super_admin_spinner"), function () {
         setTimeout(() => {
             cObj("err_holder_super_user_assignment").innerHTML = "";
@@ -376,7 +376,7 @@ if (cObj("filter_option") != null) cObj("filter_option").onchange = function () 
         if (typeof(cObj("exam_list_option")) == 'undefined' || cObj("exam_list_option") == null){
             get_exam_list_report();
         }else{
-            var datapass = "?get_exam_cats_list=true&exam_id="+valObj("exam_list_option")+"&object_id=cat_list_option";
+            var datapass = "?get_exam_cats_list=true&exam_id="+encodeURIComponent(valObj("exam_list_option"))+"&object_id=cat_list_option";
             sendData1("GET", "academic/academic.php", datapass, cObj("cat_list_filter_holder"), function () {
                 $("#cat_list_option").select2({
                     width: '100%'
@@ -417,7 +417,7 @@ function get_course_level_filter() {
     cObj("exam_ids_printing_2").value = cObj("exam_list_option").value;
     // Scoped to the course levels actually examined in this exam (exam_unit)
     // instead of every course level in the system.
-    var datapass = "?getexams_classes="+cObj("exam_list_option").value+"&object_id=course_level_option";
+    var datapass = "?getexams_classes="+encodeURIComponent(cObj("exam_list_option").value)+"&object_id=course_level_option";
     sendData1("GET", "academic/academic.php", datapass, cObj("course_level_filter_holder"), function () {
         if (cObj("course_level_option") != undefined) {
             $("#course_level_option").select2({
@@ -432,7 +432,7 @@ function display_course_list_report() {
     cObj("classes_for_exams_2").value = cObj("course_level_option").value;
     // Scoped to the courses actually examined on this exam/course level
     // (exam_unit) instead of every course offered at that level.
-    var datapass = "?get_course_list=true&exam_id="+valObj("exam_list_option")+"&course_level="+this.value+"&object_id=course_list_option";
+    var datapass = "?get_course_list=true&exam_id="+encodeURIComponent(valObj("exam_list_option"))+"&course_level="+encodeURIComponent(this.value)+"&object_id=course_list_option";
     sendData2("GET","academic/academic.php",datapass,cObj("course_list_filter_holder"),cObj("loadings"), function () {
         if (cObj("course_list_option") != undefined) {
             $("#course_list_option").select2({
@@ -445,18 +445,18 @@ function display_course_list_report() {
 
 function display_course_unit_report() {
     cObj("courses_for_exams_3").value = cObj("course_list_option").value;
-    var datapass = "?get_course_module_terms="+cObj("course_list_option").value+"&object_id=module_list_option";
+    var datapass = "?get_course_module_terms="+encodeURIComponent(cObj("course_list_option").value)+"&object_id=module_list_option";
     sendData2("GET","administration/admissions.php", datapass, cObj("module_list_filter_holder"), cObj("loadings"), function () {
         if (cObj("module_list_option") != undefined){
             cObj("module_list_option").onchange = function () {
                 cObj("course_modules_for_exams_2").value = this.value;
-                var datapass = "?get_course_modular_units=true&module_id="+valObj("module_list_option")+"&course_id="+valObj("course_list_option")+"&exam_id="+valObj("exam_list_option")+"&object_id=unit_list_option";
+                var datapass = "?get_course_modular_units=true&module_id="+encodeURIComponent(valObj("module_list_option"))+"&course_id="+encodeURIComponent(valObj("course_list_option"))+"&exam_id="+encodeURIComponent(valObj("exam_list_option"))+"&object_id=unit_list_option";
                 sendData1("GET", "academic/academic.php", datapass, cObj("unit_list_filter_holder"), function () {
                     if (cObj("unit_list_option") != undefined) {
                         cObj("unit_list_option").onchange = function () {
                             cObj("course_units_for_exams_2").value = this.value;
                             if (valObj("filter_option") == "student_cat_perfomance") {
-                                var datapass = "?get_exam_cats_list=true&exam_id="+valObj("exam_list_option")+"&object_id=cat_list_option";
+                                var datapass = "?get_exam_cats_list=true&exam_id="+encodeURIComponent(valObj("exam_list_option"))+"&object_id=cat_list_option";
                                 sendData1("GET", "academic/academic.php", datapass, cObj("cat_list_filter_holder"), function () {
                                     $("#cat_list_option").select2({
                                         width: '100%'
@@ -498,7 +498,7 @@ cObj("display_course_reports").onclick = function () {
     if (err == 0) {
         cObj("unit_report_display_holder").innerHTML = "";
         if (valObj("filter_option") == "student_perfomance") {
-            var datapass = "?display_unit_report=true&filter_option="+valObj("filter_option")+"&exam_id="+valObj("exam_list_option")+"&course_level="+valObj("course_level_option")+"&course_id="+valObj("course_list_option")+"&module_id="+valObj("module_list_option")+"&unit_id="+valObj("unit_list_option");
+            var datapass = "?display_unit_report=true&filter_option="+encodeURIComponent(valObj("filter_option"))+"&exam_id="+encodeURIComponent(valObj("exam_list_option"))+"&course_level="+encodeURIComponent(valObj("course_level_option"))+"&course_id="+encodeURIComponent(valObj("course_list_option"))+"&module_id="+encodeURIComponent(valObj("module_list_option"))+"&unit_id="+encodeURIComponent(valObj("unit_list_option"));
             sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
                 if(cObj("report_exam_table")!=null && cObj("report_exam_table")!=undefined){
                     $('#report_exam_table').DataTable({
@@ -508,7 +508,7 @@ cObj("display_course_reports").onclick = function () {
                 }
             });
         }else if(valObj("filter_option") == "student_cat_perfomance"){
-            var datapass = "?display_cat_report=true&filter_option="+valObj("filter_option")+"&exam_id="+valObj("exam_list_option")+"&course_level="+valObj("course_level_option")+"&course_id="+valObj("course_list_option")+"&module_id="+valObj("module_list_option")+"&unit_id="+valObj("unit_list_option")+"&cat_id="+valObj("cat_list_option");
+            var datapass = "?display_cat_report=true&filter_option="+encodeURIComponent(valObj("filter_option"))+"&exam_id="+encodeURIComponent(valObj("exam_list_option"))+"&course_level="+encodeURIComponent(valObj("course_level_option"))+"&course_id="+encodeURIComponent(valObj("course_list_option"))+"&module_id="+encodeURIComponent(valObj("module_list_option"))+"&unit_id="+encodeURIComponent(valObj("unit_list_option"))+"&cat_id="+encodeURIComponent(valObj("cat_list_option"));
             sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
                 if(cObj("table_cat_report")!=null && cObj("table_cat_report")!=undefined){
                     $('#table_cat_report').DataTable({
@@ -517,7 +517,7 @@ cObj("display_course_reports").onclick = function () {
                 }
             });
         }else if(valObj("filter_option") == "transcripts"){
-            // var datapass = "?display_cat_report=true&filter_option="+valObj("filter_option")+"&exam_id="+valObj("exam_list_option")+"&course_level="+valObj("course_level_option")+"&course_id="+valObj("course_list_option")+"&module_id="+valObj("module_list_option")+"&unit_id="+valObj("unit_list_option")+"&cat_id="+valObj("cat_list_option");
+            // var datapass = "?display_cat_report=true&filter_option="+encodeURIComponent(valObj("filter_option"))+"&exam_id="+encodeURIComponent(valObj("exam_list_option"))+"&course_level="+encodeURIComponent(valObj("course_level_option"))+"&course_id="+encodeURIComponent(valObj("course_list_option"))+"&module_id="+encodeURIComponent(valObj("module_list_option"))+"&unit_id="+encodeURIComponent(valObj("unit_list_option"))+"&cat_id="+encodeURIComponent(valObj("cat_list_option"));
             // sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
             //     if(cObj("table_cat_report")!=null && cObj("table_cat_report")!=undefined){
             //         $('#table_cat_report').DataTable({
@@ -526,7 +526,7 @@ cObj("display_course_reports").onclick = function () {
             //     }
             // });
         }else if(valObj("filter_option") == "report_card"){
-            // var datapass = "?display_cat_report=true&filter_option="+valObj("filter_option")+"&exam_id="+valObj("exam_list_option")+"&course_level="+valObj("course_level_option")+"&course_id="+valObj("course_list_option")+"&module_id="+valObj("module_list_option")+"&unit_id="+valObj("unit_list_option")+"&cat_id="+valObj("cat_list_option");
+            // var datapass = "?display_cat_report=true&filter_option="+encodeURIComponent(valObj("filter_option"))+"&exam_id="+encodeURIComponent(valObj("exam_list_option"))+"&course_level="+encodeURIComponent(valObj("course_level_option"))+"&course_id="+encodeURIComponent(valObj("course_list_option"))+"&module_id="+encodeURIComponent(valObj("module_list_option"))+"&unit_id="+encodeURIComponent(valObj("unit_list_option"))+"&cat_id="+encodeURIComponent(valObj("cat_list_option"));
             // sendData1("GET", "academic/academic.php", datapass, cObj("unit_report_display_holder"), function (){
             //     if(cObj("table_cat_report")!=null && cObj("table_cat_report")!=undefined){
             //         $('#table_cat_report').DataTable({
@@ -544,7 +544,7 @@ cObj("confirm_no_remove_assignment").onclick = function () {
     cObj("confirm_delete_assignment").classList.add("hide");
 }
 cObj("confirm_yes_remove_assignment").onclick = function () {
-    var datapass = "?remove_assignment=true&assignment_id="+valObj("assignment_id_holder");
+    var datapass = "?remove_assignment=true&assignment_id="+encodeURIComponent(valObj("assignment_id_holder"));
     sendData1("GET", "academic/academic.php", datapass, cObj("error_holder_unit_assignment"), function () {
         cObj("confirm_no_remove_assignment").click();
         cObj("sub"+cObj("teacher_id_unit_assignment").value).click();
@@ -559,7 +559,7 @@ function setListeners(id) {
 }
 function editbtns() {
     var indexes = this.id.substr(3);
-    var datapas = "?askClasses=true&subid="+indexes;
+    var datapas = "?askClasses=true&subid="+encodeURIComponent(indexes);
     sendData1("GET","academic/academic.php",datapas,cObj("claslistd"));
     setTimeout(() => {
         var timeout = 0;
@@ -623,7 +623,7 @@ cObj("changeclasslist").onclick = function () {
     }
     //teachers id
     //send the data to the database
-    var datapas = "?sendSubjectInform=true&finaldata="+finaldata+"&subjectid="+cObj("subidentity").innerText+"&teacherid="+selectedid;
+    var datapas = "?sendSubjectInform=true&finaldata="+encodeURIComponent(finaldata)+"&subjectid="+encodeURIComponent(cObj("subidentity").innerText)+"&teacherid="+encodeURIComponent(selectedid);
     sendData1("GET","academic/academic.php",datapas,cObj("geterrors"));
     setTimeout(() => {
         var timeout = 0;
@@ -692,7 +692,7 @@ function changeCheck() {
         cObj("selectclass1").classList.remove("hide");
         cObj("selectsub1").classList.add("hide");
         cObj("saves1").classList.remove("hide");
-        var datapass = "?getsubjectsclass=true&unit_id_edit="+subjectid;
+        var datapass = "?getsubjectsclass=true&unit_id_edit="+encodeURIComponent(subjectid);
         sendData2("GET","academic/academic.php",datapass,cObj("classlist_1"),cObj("loadings23"));
     }
 }
@@ -716,7 +716,7 @@ cObj("saves1").onclick = function () {
             var course_data_held = hasJsonStructure(cObj("course_list_holder_unit_assignment").innerText) ? JSON.parse(cObj("course_list_holder_unit_assignment").innerText) : [];
             if (course_data_held.length > 0) {
                 cObj("geterrors12").innerHTML = "";
-                var datapass = "assign_tr_units=true&units_selected="+cObj("course_list_holder_unit_assignment").innerText+"&staff_id="+cObj("teacher_id_unit_assignment").value;
+                var datapass = "assign_tr_units=true&units_selected="+encodeURIComponent(cObj("course_list_holder_unit_assignment").innerText)+"&staff_id="+encodeURIComponent(cObj("teacher_id_unit_assignment").value);
                 sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("geterrors12"), cObj("loadings"), function () {
                     cObj("sub"+cObj("useridentity").innerText).click();
                     cObj("close2").click();
@@ -811,7 +811,7 @@ cObj("nextexams").onclick = function () {
                 }
                 subjectids = subjectids.substr(0,subjectids.length-1);
                 subjectids+=")";
-                var datapass = "?getClassesWithSubject="+subjectids;
+                var datapass = "?getClassesWithSubject="+encodeURIComponent(subjectids);
                 sendData2("GET","academic/academic.php",datapass,cObj("classeslisted"),cObj("loadings214"));
             }else{
                 alert("Select a subject to proceed!");
@@ -840,7 +840,7 @@ cObj("saveexams").onclick = function () {
     if (err == 0) {
         if (cObj("exam_modal_action").value == "add") {
             cObj("error_handler_exams").innerHTML = "";
-            var datapass = "register_exams=true&exam_name="+valObj("examjina")+"&course_chosen="+encodeURIComponent(JSON.stringify(all_course_list))+"&exam_start_date="+valObj("examstartdate")+"&exam_end_date="+valObj("examenddate");
+            var datapass = "register_exams=true&exam_name="+encodeURIComponent(valObj("examjina"))+"&course_chosen="+encodeURIComponent(JSON.stringify(all_course_list))+"&exam_start_date="+encodeURIComponent(valObj("examstartdate"))+"&exam_end_date="+encodeURIComponent(valObj("examenddate"));
             sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("error_handler_exams"), cObj("loadings"), function () {
                 cObj("cancelexams").click();
                 getExams();
@@ -850,7 +850,7 @@ cObj("saveexams").onclick = function () {
             });
         }else{
             cObj("error_handler_exams").innerHTML = "";
-            var datapass = "update_exam_details=true&exam_id="+cObj("exam_id_edit").value+"&exam_name="+valObj("examjina")+"&course_chosen="+encodeURIComponent(JSON.stringify(all_course_list))+"&exam_start_date="+valObj("examstartdate")+"&exam_end_date="+valObj("examenddate");
+            var datapass = "update_exam_details=true&exam_id="+encodeURIComponent(cObj("exam_id_edit").value)+"&exam_name="+encodeURIComponent(valObj("examjina"))+"&course_chosen="+encodeURIComponent(JSON.stringify(all_course_list))+"&exam_start_date="+encodeURIComponent(valObj("examstartdate"))+"&exam_end_date="+encodeURIComponent(valObj("examenddate"));
             sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("error_handler_exams"), cObj("loadings"), function () {
                 cObj("cancelexams").click();
                 getExams();
@@ -915,7 +915,7 @@ cObj("registerexamsbtn").onclick = function () {
 
 function display_course_list_exam() {
     // get the course lists
-    var datapass = "?get_course_list=true&course_level="+this.value+"&object_id=course_exam_registration";
+    var datapass = "?get_course_list=true&course_level="+encodeURIComponent(this.value)+"&object_id=course_exam_registration";
     sendData2("GET","administration/admissions.php",datapass,cObj("course_list_holder_exam_reg"),cObj("loadings"), function () {
         if (cObj("course_exam_registration") != undefined) {
             $("#course_exam_registration").select2({
@@ -926,7 +926,7 @@ function display_course_list_exam() {
     });
 }
 function display_course_unit_list_exam_registration() {
-    var datapass = "?get_course_units_exams=true&course_level="+valObj("course_level_exam_registration")+"&course_id="+valObj("course_exam_registration");
+    var datapass = "?get_course_units_exams=true&course_level="+encodeURIComponent(valObj("course_level_exam_registration"))+"&course_id="+encodeURIComponent(valObj("course_exam_registration"));
     sendData1("GET","academic/academic.php",datapass,cObj("subjectslists"), function () {
         // return "";
         if (cObj("select_all_courses_exam_reg") != null) {
@@ -1094,14 +1094,14 @@ cObj("displaysubjects").onclick = function () {
         cObj("err123d").innerHTML = "";
         var option = cObj("option1").value;
         if (option == "allactive") {
-            var datapass = "?getExamination="+option;
+            var datapass = "?getExamination="+encodeURIComponent(option);
             sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"), exam_table_listener);
         }else if (option == "byname") {
             var er = 0;
             er+=checkBlank("usenames2");
             if (er == 0) {
                 cObj("err123d").innerHTML = "";
-                var datapass = "?getExamination="+option+"&subjectnames="+cObj("usenames2").value;
+                var datapass = "?getExamination="+encodeURIComponent(option)+"&subjectnames="+encodeURIComponent(cObj("usenames2").value);
                 sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"), exam_table_listener);
             }else{
                 cObj("err123d").innerHTML = "<p style='color:red;font-size:13px;text-align:left;'>Enter the subject name and try again!</p>";
@@ -1119,7 +1119,7 @@ cObj("displaysubjects").onclick = function () {
                     startdate = enddate;
                     enddate = sday;
                 }
-                var datapass = "?getExamination="+option+"&sdate="+startdate+"&enddate="+enddate;
+                var datapass = "?getExamination="+encodeURIComponent(option)+"&sdate="+encodeURIComponent(startdate)+"&enddate="+encodeURIComponent(enddate);
                 sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"), exam_table_listener);
             }else{
                 cObj("err123d").innerHTML = "<p style='color:red;font-size:13px;text-align:left;'>Fill both dates and try again!</p>";
@@ -1129,7 +1129,7 @@ cObj("displaysubjects").onclick = function () {
             er+=checkBlank("status1");
             if (er == 0) {
                 var status = cObj("status1").value;
-                var datapass = "?getExamination="+option+"&status="+status;
+                var datapass = "?getExamination="+encodeURIComponent(option)+"&status="+encodeURIComponent(status);
                 sendData1("GET","academic/academic.php",datapass,cObj("holdExaminfor"), exam_table_listener);
             }else{
                 cObj("err123d").innerHTML = "<p style='color:red;font-size:13px;text-align:left;'>Select an option and try again!</p>";
@@ -1181,7 +1181,7 @@ function exam_table_listener() {
 function manage_exam_cats() {
     cObj("show_exam_cats").classList.remove("hide");
     cObj("exams_table_list").classList.add("hide");
-    var datapass = "?get_exam_cats=true&exam_id="+this.id.substring(10);
+    var datapass = "?get_exam_cats=true&exam_id="+encodeURIComponent(this.id.substring(10));
     cObj("register_cat_exams_exam_id").value = this.id.substring(10);
     sendData1("GET", "academic/academic.php", datapass, cObj("cat_management_table"), function () {
         if (cObj("exam_cat_table") != null) {
@@ -1210,7 +1210,7 @@ cObj("no_delete_cat").onclick = function () {
     cObj("delete_cat_window").classList.add("hide");
 }
 cObj("yes_delete_cat").onclick = function () {
-    var datapass = "?delete_cat=true&cat_id="+valObj("delete_cat_id");
+    var datapass = "?delete_cat=true&cat_id="+encodeURIComponent(valObj("delete_cat_id"));
     sendData1("GET", "academic/academic.php", datapass, cObj("cat_exam_err_holders"), function () {
         cObj("no_delete_cat").click();
         cObj("exam_cats_"+cObj("register_cat_exams_exam_id").value).click();
@@ -1260,17 +1260,17 @@ function edit_examinees() {
     cObj("examinee_exam_id").innerText = exam_id;
     cObj("examinees_class").innerHTML = "<p class='class-success text-center'>Examinees list will appear here!<br>Select a course, level and module to proceed!</p>";
 
-    var datapass = "?getexams_classes="+exam_id+"&object_id=examinees_course_level";
+    var datapass = "?getexams_classes="+encodeURIComponent(exam_id)+"&object_id=examinees_course_level";
     sendData2("GET", "academic/academic.php", datapass, cObj("examinees_course_level_holder"), cObj("examinees_loader"), function () {
         if (cObj("examinees_course_level") != null) {
             $("#examinees_course_level").select2({ width: '100%' });
             cObj("examinees_course_level").onchange = function () {
-                var datapass = "?get_course_list=true&exam_id="+exam_id+"&course_level="+valObj("examinees_course_level")+"&object_id=examinees_course_list";
+                var datapass = "?get_course_list=true&exam_id="+encodeURIComponent(exam_id)+"&course_level="+encodeURIComponent(valObj("examinees_course_level"))+"&object_id=examinees_course_list";
                 sendData1("GET", "academic/academic.php", datapass, cObj("examinees_course_list_holder"), function () {
                     if (cObj("examinees_course_list") != undefined) {
                         $("#examinees_course_list").select2({ width: '100%' });
                         cObj("examinees_course_list").onchange = function () {
-                            var datapass = "?get_course_module_terms="+this.value+"&object_id=examinees_module_level";
+                            var datapass = "?get_course_module_terms="+encodeURIComponent(this.value)+"&object_id=examinees_module_level";
                             sendData2("GET", "administration/admissions.php", datapass, cObj("examinees_module_level_holder"), cObj("loadings"), function () {
                                 if (cObj("examinees_module_level") != undefined) {
                                     $("#examinees_module_level").select2({ width: '100%' });
@@ -1291,7 +1291,7 @@ cObj("display_examinees_for_classes").onclick = function () {
     err += checkBlank("examinees_module_level");
     if (err == 0) {
         cObj("examinees_error_handler").innerHTML = "";
-        var datapass = "?get_examinees_manage=true&exam_id="+cObj("examinee_exam_id").innerText+"&course_level="+valObj("examinees_course_level")+"&course_id="+valObj("examinees_course_list")+"&module_id="+valObj("examinees_module_level");
+        var datapass = "?get_examinees_manage=true&exam_id="+encodeURIComponent(cObj("examinee_exam_id").innerText)+"&course_level="+encodeURIComponent(valObj("examinees_course_level"))+"&course_id="+encodeURIComponent(valObj("examinees_course_list"))+"&module_id="+encodeURIComponent(valObj("examinees_module_level"));
         sendData2("GET", "academic/academic.php", datapass, cObj("examinees_class"), cObj("examinees_loader"), function () {
             var examinee_toggle = document.getElementsByClassName("examinee_toggle");
             for (let index = 0; index < examinee_toggle.length; index++) {
@@ -1322,7 +1322,7 @@ cObj("display_examinees_for_classes").onclick = function () {
 
 function toggleExaminee() {
     var adm_no = this.getAttribute("data-adm");
-    var datapass = "toggle_examinee=true&exam_id="+cObj("examinee_exam_id").innerText+"&student_id="+adm_no+"&module_id="+valObj("examinees_module_level")+"&course_level="+valObj("examinees_course_level")+"&course_id="+valObj("examinees_course_list")+"&checked="+(this.checked ? "1" : "0");
+    var datapass = "toggle_examinee=true&exam_id="+encodeURIComponent(cObj("examinee_exam_id").innerText)+"&student_id="+encodeURIComponent(adm_no)+"&module_id="+encodeURIComponent(valObj("examinees_module_level"))+"&course_level="+encodeURIComponent(valObj("examinees_course_level"))+"&course_id="+encodeURIComponent(valObj("examinees_course_list"))+"&checked="+(this.checked ? "1" : "0");
     sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("examinee_toggle_status_"+adm_no), cObj("loadings"), function () {
         setTimeout(() => {
             cObj("examinee_toggle_status_"+adm_no).innerHTML = "";
@@ -1350,7 +1350,7 @@ cObj("register_cat_exams_save_btn").onclick = function () {
     err += checkBlank("cat_maximum_marks");
     if (err == 0) {
         if(cObj("register_cat_exams_action").value == "add"){
-            var datapass = "?register_cat=true&cat_name="+valObj("cat_name")+"&exam_id="+valObj("register_cat_exams_exam_id")+"&cat_maximum_marks="+valObj("cat_maximum_marks")+"&include_in_exam="+valObj("include_in_final_exam");
+            var datapass = "?register_cat=true&cat_name="+encodeURIComponent(valObj("cat_name"))+"&exam_id="+encodeURIComponent(valObj("register_cat_exams_exam_id"))+"&cat_maximum_marks="+encodeURIComponent(valObj("cat_maximum_marks"))+"&include_in_exam="+encodeURIComponent(valObj("include_in_final_exam"));
             sendData1("GET", "academic/academic.php", datapass, cObj("error_cat_register"), function () {
                 cObj("register_cat_exams_close_btn").click();
                 cObj("exam_cats_"+cObj("register_cat_exams_exam_id").value).click();
@@ -1359,7 +1359,7 @@ cObj("register_cat_exams_save_btn").onclick = function () {
                 }, 2000);
             });
         }else{
-            var datapass = "?update_cat_details=true&cat_id="+valObj("edit_cat_id")+"&cat_name="+valObj("cat_name")+"&exam_id="+valObj("register_cat_exams_exam_id")+"&cat_maximum_marks="+valObj("cat_maximum_marks")+"&include_in_exam="+valObj("include_in_final_exam");
+            var datapass = "?update_cat_details=true&cat_id="+encodeURIComponent(valObj("edit_cat_id"))+"&cat_name="+encodeURIComponent(valObj("cat_name"))+"&exam_id="+encodeURIComponent(valObj("register_cat_exams_exam_id"))+"&cat_maximum_marks="+encodeURIComponent(valObj("cat_maximum_marks"))+"&include_in_exam="+encodeURIComponent(valObj("include_in_final_exam"));
             sendData1("GET", "academic/academic.php", datapass, cObj("error_cat_register"), function () {
                 cObj("register_cat_exams_close_btn").click();
                 cObj("exam_cats_"+cObj("register_cat_exams_exam_id").value).click();
@@ -1390,7 +1390,7 @@ cObj("display_exams_for_classes").onclick = function () {
         }
         if (err == 0) {
             if(valObj("exam_result_options") == "exam"){
-                var datapass = "?get_perfomance_for_class=true&course_level="+valObj("class_label_exams_result")+"&course_name="+valObj("course_list_view_results")+"&course_module="+valObj("course_module_level")+"&exam_id="+cObj("exams_id_result").innerText+"&unit_id="+valObj("course_unit_exam_result");
+                var datapass = "?get_perfomance_for_class=true&course_level="+encodeURIComponent(valObj("class_label_exams_result"))+"&course_name="+encodeURIComponent(valObj("course_list_view_results"))+"&course_module="+encodeURIComponent(valObj("course_module_level"))+"&exam_id="+encodeURIComponent(cObj("exams_id_result").innerText)+"&unit_id="+encodeURIComponent(valObj("course_unit_exam_result"));
                 sendData2("GET","academic/academic.php",datapass,cObj("exams_window_display"),cObj("exams_details_loader"), function () {
                     // SHOW 50 PER PAGE
                     console.log("We are here!");
@@ -1402,7 +1402,7 @@ cObj("display_exams_for_classes").onclick = function () {
                     }
                 });
             }else{
-                var datapass = "?get_cat_perfomance_for_class=true&course_level="+valObj("class_label_exams_result")+"&course_name="+valObj("course_list_view_results")+"&course_module="+valObj("course_module_level")+"&exam_id="+cObj("exams_id_result").innerText+"&unit_id="+valObj("course_unit_exam_result")+"&cat_id="+valObj("exam_cat_list");
+                var datapass = "?get_cat_perfomance_for_class=true&course_level="+encodeURIComponent(valObj("class_label_exams_result"))+"&course_name="+encodeURIComponent(valObj("course_list_view_results"))+"&course_module="+encodeURIComponent(valObj("course_module_level"))+"&exam_id="+encodeURIComponent(cObj("exams_id_result").innerText)+"&unit_id="+encodeURIComponent(valObj("course_unit_exam_result"))+"&cat_id="+encodeURIComponent(valObj("exam_cat_list"));
                 sendData2("GET","academic/academic.php",datapass,cObj("exams_window_display"),cObj("exams_details_loader"), function () {
                     // SHOW 50 PER PAGE
                     console.log("We are here!");
@@ -1425,26 +1425,26 @@ function printExamsFunc() {
     var ids = this.id.substring(12);
     cObj("exsms_name").innerText = cObj("exams_names_edit"+ids).innerText;
     cObj("printer_window").classList.remove("hide");
-    var datapass = "?getexams_classes="+ids;
+    var datapass = "?getexams_classes="+encodeURIComponent(ids);
     cObj("exam_ids_printing").value = ids;
     sendData1("GET","academic/academic.php",datapass,cObj("all_classes_here"), function () {
         if (cObj("classes_for_exams") != null) {
             cObj("classes_for_exams").onchange = function () {
                 // get the course list
-                var datapass = "?get_course_list=true&exam_id="+ids+"&course_level="+valObj("classes_for_exams");
+                var datapass = "?get_course_list=true&exam_id="+encodeURIComponent(ids)+"&course_level="+encodeURIComponent(valObj("classes_for_exams"));
                 sendData1("GET", "academic/academic.php", datapass, cObj("all_couse_lists_print_holder"), function () {
                     if (cObj("courses_for_exams") != undefined) {
                         cObj("courses_for_exams").onchange = function () {
-                            var datapass = "?get_course_module_terms="+this.value+"&object_id=course_modules_for_exams";
+                            var datapass = "?get_course_module_terms="+encodeURIComponent(this.value)+"&object_id=course_modules_for_exams";
                             sendData2("GET","administration/admissions.php", datapass, cObj("course_modules_list_holder"), cObj("loadings"), function () {
                                 if (cObj("course_modules_for_exams") != undefined){
                                     cObj("course_modules_for_exams").onchange = function () {
-                                        var datapass = "?get_course_modular_units=true&module_id="+valObj("course_modules_for_exams")+"&course_id="+valObj("courses_for_exams")+"&exam_id="+valObj("exam_ids_printing")+"&object_id=course_units_for_exams";
+                                        var datapass = "?get_course_modular_units=true&module_id="+encodeURIComponent(valObj("course_modules_for_exams"))+"&course_id="+encodeURIComponent(valObj("courses_for_exams"))+"&exam_id="+encodeURIComponent(valObj("exam_ids_printing"))+"&object_id=course_units_for_exams";
                                         sendData1("GET", "academic/academic.php", datapass, cObj("course_units_list_holder"), function () {
                                             if (cObj("course_units_for_exams") != undefined) {
                                                 cObj("course_units_for_exams").onchange = function () {
                                                     if (valObj("what_to_print") == "examinees_cat_mark_list" || valObj("what_to_print") == "exams_cat_marks") {
-                                                        var datapass = "?get_exam_cats_list=true&exam_id="+valObj("exam_ids_printing")+"&object_id=course_cats_for_exams";
+                                                        var datapass = "?get_exam_cats_list=true&exam_id="+encodeURIComponent(valObj("exam_ids_printing"))+"&object_id=course_cats_for_exams";
                                                         sendData1("GET", "academic/academic.php", datapass, cObj("course_cats_list_holder"));
                                                     }
                                                 }
@@ -1520,7 +1520,7 @@ function viewExamslistener() {
     cObj("exam_registration_title").innerText = "Edit exams";
     // get the exam units
     cObj("exam_id_edit").value = examid;
-    var datapass = "?get_exam_unit_list=true&exam_id="+examid;
+    var datapass = "?get_exam_unit_list=true&exam_id="+encodeURIComponent(examid);
     sendData1("GET","academic/academic.php",datapass,cObj("course_list_holder_exam_registration"), function () {
         var course_list = hasJsonStructure(cObj("course_list_holder_exam_registration").innerText) ? JSON.parse(cObj("course_list_holder_exam_registration").innerText) : [];
         cObj("selected_units_exams_reg").innerHTML = "<small>Selected Course : "+course_list.length+"</small>";
@@ -1532,7 +1532,7 @@ function setDeleteSubject(id){
 function deleteSubject() {
     var subjectid = this.id.substr(5);
     var examid = cObj("examidsd").innerText;
-    var datapass = "?removeSubject="+subjectid+"&examinationId="+examid;
+    var datapass = "?removeSubject="+encodeURIComponent(subjectid)+"&examinationId="+encodeURIComponent(examid);
     sendData1("GET","academic/academic.php",datapass,cObj("errhandlers12031"));
     setTimeout(() => {
         var timeout = 0;
@@ -1579,7 +1579,7 @@ cObj("addsubjbtn").onclick = function () {
     cObj("addsubjects").classList.remove("hide");
     //get the exam id
     var examid = cObj("examidsd").innerText;
-    var datapass = "?getnewsubjectdata="+examid;
+    var datapass = "?getnewsubjectdata="+encodeURIComponent(examid);
     sendData2("GET","academic/academic.php",datapass,cObj("subjectslists2"),cObj("loadings2132"));
     setTimeout(() => {
         var timeout = 0;
@@ -1615,7 +1615,7 @@ function addSubjectNew() {
         cObj("part2").classList.remove("hide");
         cObj("part1").classList.add("hide"); 
         cObj("savebuttons2").classList.remove("hide");
-        var datapass = "?getAddsubjectClass="+subjectid;
+        var datapass = "?getAddsubjectClass="+encodeURIComponent(subjectid);
         sendData2("GET","academic/academic.php",datapass,cObj("classlist45332"),cObj("loadings2132ss"));
     }
 }
@@ -1652,7 +1652,7 @@ cObj("saveexams2").onclick = function () {
             }
         }
         classes = classes.substr(0,classes.length-1);
-        var datapass = "?subject_id="+subjectid+"&class_selected="+classes+"&exam_id="+cObj("examidsd").innerText;
+        var datapass = "?subject_id="+encodeURIComponent(subjectid)+"&class_selected="+encodeURIComponent(classes)+"&exam_id="+encodeURIComponent(cObj("examidsd").innerText);
         sendData1("GET","academic/academic.php",datapass,cObj("errorhandler1203"));
         setTimeout(() => {
             var timeout = 0;
@@ -1686,7 +1686,7 @@ cObj("saveexams2").onclick = function () {
     }
 }
 function reloadClassAndSubjects(examid) {
-    var datapass = "?getExamsSubjects="+examid;
+    var datapass = "?getExamsSubjects="+encodeURIComponent(examid);
     sendData2("GET","academic/academic.php",datapass,cObj("subjectslists1"),cObj("loadings2131"));
     setTimeout(() => {
         var timeout = 0;
@@ -1708,7 +1708,7 @@ function reloadClassAndSubjects(examid) {
         }, 100);
     }, 200);
     //reload classes
-    var datapass = "?getExamsClasses="+examid;
+    var datapass = "?getExamsClasses="+encodeURIComponent(examid);
     sendData2("GET","academic/academic.php",datapass,cObj("classeslisted1"),cObj("loadings2141"));
     setTimeout(() => {
         var timeout = 0;
@@ -1735,7 +1735,7 @@ function setDeleteClass(ids) {
 }
 function deleteClass() {
     var clas_s = this.id.substr(3);
-    var datapass = "?remove_class="+clas_s+"&exam_s_id="+cObj("examidsd").innerText;
+    var datapass = "?remove_class="+encodeURIComponent(clas_s)+"&exam_s_id="+encodeURIComponent(cObj("examidsd").innerText);
     sendData1("GET","academic/academic.php",datapass,cObj("err102_op"));
     setTimeout(() => {
         var timeout = 0;
@@ -1763,7 +1763,7 @@ cObj("addclassbtn").onclick = function () {
     //set eaxm id 
     cObj("exam_sid").innerText = cObj("examidsd").innerText;
     //get class data from the database
-    var datapass = "?exam_id_s="+cObj("examidsd").innerText;
+    var datapass = "?exam_id_s="+encodeURIComponent(cObj("examidsd").innerText);
     sendData2("GET","academic/academic.php",datapass,cObj("classlist45221"),cObj("loadingskh87"));
     cObj("addclasswin").classList.remove("hide");
 }
@@ -1787,7 +1787,7 @@ cObj("saveexams232").onclick = function () {
             }
         }
         class_list = class_list.substr(0,class_list.length-1);
-        var datapass = "?add_classes="+class_list+"&ex_am_id="+cObj("examidsd").innerText;
+        var datapass = "?add_classes="+encodeURIComponent(class_list)+"&ex_am_id="+encodeURIComponent(cObj("examidsd").innerText);
         sendData1("GET","academic/academic.php",datapass,cObj("errorhandler78h7"));
         setTimeout(() => {
             var timeout = 0;
@@ -1830,7 +1830,7 @@ cObj("populate_btn").onclick = function () {
 
         // get the exams examinees
         if (cObj("option_exams").value == "fill_in_exams") {
-            var datapass = "?get_examinees=true&exam_option=add&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            var datapass = "?get_examinees=true&exam_option=add&exam_id="+encodeURIComponent(valObj("exam_list"))+"&course_level="+encodeURIComponent(valObj("sub_jectlists"))+"&course_id="+encodeURIComponent(valObj("course_list_exam_filling"))+"&module_id="+encodeURIComponent(valObj("module_list_exam_filling"))+"&unit_id="+encodeURIComponent(valObj("unit_list_exam_filling"));
             sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
                 var student_grading_class = document.getElementsByClassName("student_grading_class");
                 for (let index = 0; index < student_grading_class.length; index++) {
@@ -1848,7 +1848,7 @@ cObj("populate_btn").onclick = function () {
                             var input_value = (valObj("student_grading_class_"+this.id.substring(19))*1);
                             var total_cat_marks = cObj("total_cat_marks_"+this.id.substring(19)).value*1;
                             if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= (input_value) && input_value >= 0) {
-                                var datapass = "?add_student_grades=true&unit_score="+valObj("student_grading_class_"+this.id.substring(19))+"&unit_grade="+cObj("student_grade_holder_"+this.id.substring(19)).innerText+"&exam_id="+valObj("exam_list")+"&student_adm_no="+this.id.substring(19)+"&examinee_id="+valObj("examinees_id_"+this.id.substring(19))+"&unit_id="+valObj("unit_list_exam_filling");
+                                var datapass = "?add_student_grades=true&unit_score="+encodeURIComponent(valObj("student_grading_class_"+this.id.substring(19)))+"&unit_grade="+encodeURIComponent(cObj("student_grade_holder_"+this.id.substring(19)).innerText)+"&exam_id="+encodeURIComponent(valObj("exam_list"))+"&student_adm_no="+encodeURIComponent(this.id.substring(19))+"&examinee_id="+encodeURIComponent(valObj("examinees_id_"+this.id.substring(19)))+"&unit_id="+encodeURIComponent(valObj("unit_list_exam_filling"));
                                 sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_"+this.id.substring(19)), function () {
                                     cObj("populate_btn").click();
                                 });
@@ -1866,7 +1866,7 @@ cObj("populate_btn").onclick = function () {
                 }
             });
         }else if(cObj("option_exams").value == "fill_in_cat_marks"){
-            var datapass = "?get_examinees_cat=true&cat_option=add&cat_id="+valObj("cat_list_exam_filling")+"&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            var datapass = "?get_examinees_cat=true&cat_option=add&cat_id="+encodeURIComponent(valObj("cat_list_exam_filling"))+"&exam_id="+encodeURIComponent(valObj("exam_list"))+"&course_level="+encodeURIComponent(valObj("sub_jectlists"))+"&course_id="+encodeURIComponent(valObj("course_list_exam_filling"))+"&module_id="+encodeURIComponent(valObj("module_list_exam_filling"))+"&unit_id="+encodeURIComponent(valObj("unit_list_exam_filling"));
             sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
                 var student_grading_class = document.getElementsByClassName("student_grading_class_cat");
                 for (let index = 0; index < student_grading_class.length; index++) {
@@ -1881,7 +1881,7 @@ cObj("populate_btn").onclick = function () {
                         var err = checkBlank("student_grading_class_cat_"+this.id.substring(23));
                         if (err == 0) {
                             if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= valObj("student_grading_class_cat_"+this.id.substring(23))*1 && (valObj("student_grading_class_cat_"+this.id.substring(23))*1) >= 0) {
-                                var datapass = "?add_student_cat_scores=true&unit_score="+valObj("student_grading_class_cat_"+this.id.substring(23))+"&unit_grade="+cObj("student_grade_holder_cat_"+this.id.substring(23)).innerText+"&exam_id="+valObj("exam_list")+"&student_adm_no="+this.id.substring(23)+"&examinee_id="+valObj("examinees_id_cat_"+this.id.substring(23))+"&unit_id="+valObj("unit_list_exam_filling")+"&cat_id="+valObj("cat_list_exam_filling");
+                                var datapass = "?add_student_cat_scores=true&unit_score="+encodeURIComponent(valObj("student_grading_class_cat_"+this.id.substring(23)))+"&unit_grade="+encodeURIComponent(cObj("student_grade_holder_cat_"+this.id.substring(23)).innerText)+"&exam_id="+encodeURIComponent(valObj("exam_list"))+"&student_adm_no="+encodeURIComponent(this.id.substring(23))+"&examinee_id="+encodeURIComponent(valObj("examinees_id_cat_"+this.id.substring(23)))+"&unit_id="+encodeURIComponent(valObj("unit_list_exam_filling"))+"&cat_id="+encodeURIComponent(valObj("cat_list_exam_filling"));
                                 sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_cat_"+this.id.substring(23)), function () {
                                     cObj("populate_btn").click();
                                 });
@@ -1899,7 +1899,7 @@ cObj("populate_btn").onclick = function () {
                 }
             });
         }else if(cObj("option_exams").value == "view_exams"){
-            var datapass = "?get_examinees=true&exam_option=edit&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            var datapass = "?get_examinees=true&exam_option=edit&exam_id="+encodeURIComponent(valObj("exam_list"))+"&course_level="+encodeURIComponent(valObj("sub_jectlists"))+"&course_id="+encodeURIComponent(valObj("course_list_exam_filling"))+"&module_id="+encodeURIComponent(valObj("module_list_exam_filling"))+"&unit_id="+encodeURIComponent(valObj("unit_list_exam_filling"));
             sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
                 var student_grading_class = document.getElementsByClassName("student_grading_class");
                 for (let index = 0; index < student_grading_class.length; index++) {
@@ -1917,7 +1917,7 @@ cObj("populate_btn").onclick = function () {
                             var input_value = (valObj("student_grading_class_"+this.id.substring(19))*1);
                             var total_cat_marks = cObj("total_cat_marks_"+this.id.substring(19)).value*1;
                             if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= (input_value) && input_value >= 0) {
-                                var datapass = "?update_student_grades=true&result_id="+valObj("result_id_"+this.id.substring(19))+"&unit_score="+valObj("student_grading_class_"+this.id.substring(19))+"&unit_grade="+cObj("student_grade_holder_"+this.id.substring(19)).innerText;
+                                var datapass = "?update_student_grades=true&result_id="+encodeURIComponent(valObj("result_id_"+this.id.substring(19)))+"&unit_score="+encodeURIComponent(valObj("student_grading_class_"+this.id.substring(19)))+"&unit_grade="+encodeURIComponent(cObj("student_grade_holder_"+this.id.substring(19)).innerText);
                                 sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_"+this.id.substring(19)), function () {
                                     cObj("populate_btn").click();
                                 });
@@ -1938,7 +1938,7 @@ cObj("populate_btn").onclick = function () {
                 for (let index = 0; index < delete_student_score.length; index++) {
                     const element = delete_student_score[index];
                     element.addEventListener("click", function () {
-                        var datapass = "?delete_student_score=true&result_id="+valObj("result_id_"+this.id.substring(21));
+                        var datapass = "?delete_student_score=true&result_id="+encodeURIComponent(valObj("result_id_"+this.id.substring(21)));
                         sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_"+this.id.substring(21)), function () {
                             cObj("populate_btn").click();
                         });
@@ -1946,7 +1946,7 @@ cObj("populate_btn").onclick = function () {
                 }
             });
         }else if(cObj("option_exams").value == "view_cat"){
-            var datapass = "?get_examinees_cat=true&cat_option=edit&cat_id="+valObj("cat_list_exam_filling")+"&exam_id="+valObj("exam_list")+"&course_level="+valObj("sub_jectlists")+"&course_id="+valObj("course_list_exam_filling")+"&module_id="+valObj("module_list_exam_filling")+"&unit_id="+valObj("unit_list_exam_filling");
+            var datapass = "?get_examinees_cat=true&cat_option=edit&cat_id="+encodeURIComponent(valObj("cat_list_exam_filling"))+"&exam_id="+encodeURIComponent(valObj("exam_list"))+"&course_level="+encodeURIComponent(valObj("sub_jectlists"))+"&course_id="+encodeURIComponent(valObj("course_list_exam_filling"))+"&module_id="+encodeURIComponent(valObj("module_list_exam_filling"))+"&unit_id="+encodeURIComponent(valObj("unit_list_exam_filling"));
             sendData1("GET", "academic/academic.php", datapass, cObj("record_exams_id"), function () {
                 var student_grading_class = document.getElementsByClassName("student_grading_class_cat");
                 for (let index = 0; index < student_grading_class.length; index++) {
@@ -1962,7 +1962,7 @@ cObj("populate_btn").onclick = function () {
                         var err = checkBlank("student_grading_class_cat_"+this.id.substring(23));
                         if (err == 0) {
                             if (cObj("max_marks_for_unit") != undefined && cObj("max_marks_for_unit").value*1 >= valObj("student_grading_class_cat_"+this.id.substring(23))*1 && (valObj("student_grading_class_cat_"+this.id.substring(23))*1) >= 0) {
-                                var datapass = "?edit_student_cat_scores=true&result_id="+valObj("result_id_"+this.id.substring(23))+"&unit_score="+valObj("student_grading_class_cat_"+this.id.substring(23));
+                                var datapass = "?edit_student_cat_scores=true&result_id="+encodeURIComponent(valObj("result_id_"+this.id.substring(23)))+"&unit_score="+encodeURIComponent(valObj("student_grading_class_cat_"+this.id.substring(23)));
                                 sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_cat_"+this.id.substring(23)), function () {
                                     cObj("populate_btn").click();
                                 });
@@ -1983,7 +1983,7 @@ cObj("populate_btn").onclick = function () {
                 for (let index = 0; index < delete_student_cat_score.length; index++) {
                     const element = delete_student_cat_score[index];
                     element.addEventListener("click", function () {
-                        var datapass = "?delete_student_cat_scores=true&result_id="+valObj("result_id_"+this.id.substring(25));
+                        var datapass = "?delete_student_cat_scores=true&result_id="+encodeURIComponent(valObj("result_id_"+this.id.substring(25)));
                         sendData1("GET", "academic/academic.php", datapass, cObj("student_grade_holder_cat_"+this.id.substring(25)), function () {
                             cObj("populate_btn").click();
                         });
@@ -2005,7 +2005,7 @@ cObj("populate_btn").onclick = function () {
             cObj("finded").classList.add("hide");
             cObj("exam_record_err").innerHTML = "<p style='color:red;font-size:13px'></p>";
             //send the data to the database and retrieve the class requested
-            var datapass = "?get_class_for_exams="+cObj("cls_lists").value+"&subject__id="+cObj("sub_jectlists").value+"&exam__id="+cObj("exam_list").value+"&grd_mode="+cObj("grade_mode").value;
+            var datapass = "?get_class_for_exams="+encodeURIComponent(cObj("cls_lists").value)+"&subject__id="+encodeURIComponent(cObj("sub_jectlists").value)+"&exam__id="+encodeURIComponent(cObj("exam_list").value)+"&grd_mode="+encodeURIComponent(cObj("grade_mode").value);
             sendData1("GET","academic/academic.php",datapass,cObj("record_exams_id"));
             setTimeout(() => {
                 var ids = setInterval(() => {
@@ -2202,7 +2202,7 @@ function viewClassListener() {
         if (err == 0) {
             var subject_marks = manual_grades.length > 0 ? cObj("input_2"+idds).value : cObj("input"+idds).value;
             var grade_modes_holder = (cObj("grade_modes_holder") != null && cObj("grade_modes_holder") != undefined) ? valObj("grade_modes_holder") : "844";
-            var datapassing = "?save_student_marks="+subject_marks+"&examidds="+cObj("exam_list").value+"&subjectidds="+cObj("sub_jectlists").value+"&subject_grade="+data+"&grade_method="+cObj("grade_mode").value+"&student_ids="+idds+"&class_name="+cObj("class_siter").innerText+"&grade_modes_holder="+grade_modes_holder;
+            var datapassing = "?save_student_marks="+encodeURIComponent(subject_marks)+"&examidds="+encodeURIComponent(cObj("exam_list").value)+"&subjectidds="+encodeURIComponent(cObj("sub_jectlists").value)+"&subject_grade="+encodeURIComponent(data)+"&grade_method="+encodeURIComponent(cObj("grade_mode").value)+"&student_ids="+encodeURIComponent(idds)+"&class_name="+encodeURIComponent(cObj("class_siter").innerText)+"&grade_modes_holder="+encodeURIComponent(grade_modes_holder);
             sendData2("GET","academic/academic.php",datapassing,cObj("errhandler_"+idds),cObj("imagered"+idds));
             if (manual_grades.length > 0) {
                 cObj("input_2"+idds).classList.add("hide");
@@ -2259,7 +2259,7 @@ cObj("saveexams1").onclick = function () {
     }
     if (err == 0) {
         cObj("error_1201").innerHTML = "";
-        var datapassing = "?update_exams=true&exam_i_d="+cObj("examidsd").innerText+"&exam_name="+cObj("examjina1").value+"&exam_enddate="+cObj("examenddate1").value+"&exam_curriculum="+cObj("curriculum1").value+"&target_ms="+targems;
+        var datapassing = "?update_exams=true&exam_i_d="+encodeURIComponent(cObj("examidsd").innerText)+"&exam_name="+encodeURIComponent(cObj("examjina1").value)+"&exam_enddate="+encodeURIComponent(cObj("examenddate1").value)+"&exam_curriculum="+encodeURIComponent(cObj("curriculum1").value)+"&target_ms="+encodeURIComponent(targems);
         sendData1("GET","academic/academic.php",datapassing,cObj("error_1201"));
         setTimeout(() => {
             var timeout = 0;
@@ -2329,7 +2329,7 @@ function selectListeners() {
     cObj("subject_list").classList.remove("hide");
     
     var exam_id = this.value;
-    var datapass = "?getexams_classes="+exam_id+"&object_id=sub_jectlists";
+    var datapass = "?getexams_classes="+encodeURIComponent(exam_id)+"&object_id=sub_jectlists";
     sendData1("GET","academic/academic.php",datapass,cObj("course_level_holder_exam_filling"), function () {
         if (cObj("sub_jectlists") != null) {
             cObj("sub_jectlists").onchange = function () {
@@ -2343,20 +2343,20 @@ function selectListeners() {
                     cObj("cat_list_window").classList.remove("hide");
                 }
                 // get the course list
-                var datapass = "?get_course_list=true&exam_id="+exam_id+"&course_level="+valObj("sub_jectlists")+"&object_id=course_list_exam_filling";
+                var datapass = "?get_course_list=true&exam_id="+encodeURIComponent(exam_id)+"&course_level="+encodeURIComponent(valObj("sub_jectlists"))+"&object_id=course_list_exam_filling";
                 sendData1("GET", "academic/academic.php", datapass, cObj("course_list_exam_filling_holder"), function () {
                     if (cObj("course_list_exam_filling") != undefined) {
                         cObj("course_list_exam_filling").onchange = function () {
-                            var datapass = "?get_course_module_terms="+this.value+"&object_id=module_list_exam_filling";
+                            var datapass = "?get_course_module_terms="+encodeURIComponent(this.value)+"&object_id=module_list_exam_filling";
                             sendData2("GET","administration/admissions.php", datapass, cObj("module_list_exam_filling_holder"), cObj("loadings"), function () {
                                 if (cObj("module_list_exam_filling") != undefined){
                                     cObj("module_list_exam_filling").onchange = function () {
-                                        var datapass = "?get_course_modular_units=true&module_id="+valObj("module_list_exam_filling")+"&course_id="+valObj("course_list_exam_filling")+"&exam_id="+exam_id+"&object_id=unit_list_exam_filling";
+                                        var datapass = "?get_course_modular_units=true&module_id="+encodeURIComponent(valObj("module_list_exam_filling"))+"&course_id="+encodeURIComponent(valObj("course_list_exam_filling"))+"&exam_id="+encodeURIComponent(exam_id)+"&object_id=unit_list_exam_filling";
                                         sendData1("GET", "academic/academic.php", datapass, cObj("unit_list_exam_filling_holder"), function () {
                                             if (cObj("unit_list_exam_filling") != undefined) {
                                                 cObj("unit_list_exam_filling").onchange = function () {
                                                     if (valObj("option_exams") == "fill_in_cat_marks" || valObj("option_exams") == "view_cat") {
-                                                        var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=cat_list_exam_filling";
+                                                        var datapass = "?get_exam_cats_list=true&exam_id="+encodeURIComponent(exam_id)+"&object_id=cat_list_exam_filling";
                                                         sendData1("GET", "academic/academic.php", datapass, cObj("cat_list_exam_filling_holder"), function () {
                                                             
                                                         });
@@ -2378,7 +2378,7 @@ function selectListeners() {
     });
     return;
     var exam_id = this.value;
-    var datapass = "?get_exam_class=" + exam_id;
+    var datapass = "?get_exam_class=" + encodeURIComponent(exam_id);
     sendData1("GET", "academic/academic.php", datapass, cObj("subject_list"));
     setTimeout(() => {
         var timeout = 0;
@@ -2405,7 +2405,7 @@ function selectSubject() {
     //show classes available 
     var subject_id = this.value;
     var exam_id = cObj("exam_list").value;
-    var datapass = "?subjects_id_ds=" + subject_id + "&exams_id_ids=" + exam_id;
+    var datapass = "?subjects_id_ds=" + encodeURIComponent(subject_id) + "&exams_id_ids=" + encodeURIComponent(exam_id);
     sendData1("GET", "academic/academic.php", datapass, cObj("classes_list"));
 }
 function displayExams() {
@@ -2455,7 +2455,7 @@ function termSelection() {
     cObj("display_results").classList.add("hide");
     var timestart = this.value.split("|")[0];
     var timeend = this.value.split("|")[1];
-    var datapass = "?get_exams_attempt=true&time_start="+timestart+"&time_ends="+timeend;
+    var datapass = "?get_exams_attempt=true&time_start="+encodeURIComponent(timestart)+"&time_ends="+encodeURIComponent(timeend);
     sendData1("GET","academic/academic.php",datapass,cObj("exam_attempt"));
     setTimeout(() => {
         var timeout = 0;
@@ -2480,7 +2480,7 @@ function examSelection() {
     cObj("display_results").classList.add("hide");
     //get the subjects done so that we can get the classes that sat for the exam
     var exam_id = this.value.substr(8);
-    var datapass = "?get_exam_subjects="+exam_id;
+    var datapass = "?get_exam_subjects="+encodeURIComponent(exam_id);
     sendData1("GET","academic/academic.php",datapass,cObj("subjects_done"),cObj("anonymus"));
     setTimeout(() => {
         var timeout = 0;
@@ -2505,7 +2505,7 @@ function classSelection() {
     cObj("display_results").classList.add("hide");
     var exam_id = cObj("exam_selected").value.substr(8);
     var subjectid = this.value;
-    var datapass = "?get_subject_class=true&subject_exam_id="+subjectid+"&exam_ids_sub="+exam_id;
+    var datapass = "?get_subject_class=true&subject_exam_id="+encodeURIComponent(subjectid)+"&exam_ids_sub="+encodeURIComponent(exam_id);
     sendData2("GET","academic/academic.php",datapass,cObj("class_sitters"),cObj("anonymus"));
     setTimeout(() => {
         var timeout = 0;
@@ -2541,7 +2541,7 @@ cObj("display_results").onclick = function () {
             cObj("resulters").classList.remove("hide");
             cObj("finded").classList.add("hide");
             cObj("error_handlers").innerHTML = "";
-            var datapass= "?ex_am_ids="+cObj("exam_selected").value.substr(8)+"&sub_ject_ids="+cObj("subjects_done_mine").value+"&class_sit_ting="+cObj("classes_sitting").value;
+            var datapass= "?ex_am_ids="+encodeURIComponent(cObj("exam_selected").value.substr(8))+"&sub_ject_ids="+encodeURIComponent(cObj("subjects_done_mine").value)+"&class_sit_ting="+encodeURIComponent(cObj("classes_sitting").value);
             sendData1("GET","academic/academic.php",datapass,cObj("display_result"));
             setTimeout(() => {
                 var timeout = 0;
@@ -2749,18 +2749,18 @@ cObj("close_change_marks2").onclick = function () {
 cObj("save_marks_change").onclick = function () {
     //get the marks of the student
     var over_err = 0;
-    var datapass = "?change_marks="+cObj("record_id").innerText;
+    var datapass = "?change_marks="+encodeURIComponent(cObj("record_id").innerText);
     if (cObj("cbcmode1").classList.contains("hide")) {
         var err = checkBlank("844_mode1");
         if (err == 0) {
-            datapass+="&valued="+cObj("844_mode1").value+"&grade="+cObj("grade_scored").innerText;
+            datapass+="&valued="+encodeURIComponent(cObj("844_mode1").value)+"&grade="+encodeURIComponent(cObj("grade_scored").innerText);
             over_err = 1;
         }
     }else if(cObj("cbcmode2").classList.contains("hide")){
         var err = checkBlank("change_cbc_marks");
         err += checkBlank("cbc_mode1");
         if (err == 0) {
-            datapass+="&valued="+cObj("change_cbc_marks").value;
+            datapass+="&valued="+encodeURIComponent(cObj("change_cbc_marks").value);
             var graded = cObj("cbc_mode1").value;
             if (graded == "4") {
                 datapass+="&grade=E.E";
@@ -2831,7 +2831,7 @@ cObj("confirm_no").onclick = function () {
     cObj("confirm_delete").classList.add("hide");
 }
 cObj("confirm_yes").onclick = function () {
-    var datapass = "?deleteData="+cObj("record_id").innerText;
+    var datapass = "?deleteData="+encodeURIComponent(cObj("record_id").innerText);
     sendData1("GET","academic/academic.php",datapass,cObj("set_class_err2"));
     setTimeout(() => {
         var timeout = 0;
@@ -2884,7 +2884,7 @@ function showExamsSelect() {
     var newdata = this.value;
     var starttime = newdata.split("|")[0];
     var endtime = newdata.split("|")[1];
-    var datapass = "?return_examlist=true&startedtime="+starttime+"&endingtimes="+endtime;
+    var datapass = "?return_examlist=true&startedtime="+encodeURIComponent(starttime)+"&endingtimes="+encodeURIComponent(endtime);
     sendData1("GET","academic/academic.php",datapass,cObj("select_one_exams"));
     setTimeout(() => {
         var timeout = 0;
@@ -2906,7 +2906,7 @@ function showExamsSelect() {
 function showClassesSitting() {
     cObj("select_one_class_siting").classList.remove("hide");
     cObj("display_btns").classList.remove("hide");
-    var datapass = "?get_classes_sitting="+this.value;
+    var datapass = "?get_classes_sitting="+encodeURIComponent(this.value);
     sendData1("GET","academic/academic.php",datapass,cObj("select_one_class_siting"));
 }
 cObj("display_results_per_class").onclick = function () {
@@ -2918,7 +2918,7 @@ cObj("display_results_per_class").onclick = function () {
         if (err == 0) {
             cObj("resulters").classList.remove("hide");
             cObj("finded").classList.add("hide");
-            var datapass = "?get_perfomance_for_class=true&class_sat="+cObj("classes_sat").value+"&exam_id="+cObj("examination_selection").value;
+            var datapass = "?get_perfomance_for_class=true&class_sat="+encodeURIComponent(cObj("classes_sat").value)+"&exam_id="+encodeURIComponent(cObj("examination_selection").value);
             sendData1("GET","academic/academic.php",datapass,cObj("display_class_result"));
         }else{
             cObj("view_subjects_err").innerHTML = "<p style='color:red;font-size:12px;font-weight:600;'>Select a class!</p>";
@@ -3046,7 +3046,7 @@ cObj("delete-subject").onclick = function () {
     cObj("delsubconfirmwin").classList.remove("hide");
 }
 cObj("delsubyes").onclick = function () {
-    var datapass = "?deletesubject=true&subjectid="+cObj("unit_id_edit").innerText;
+    var datapass = "?deletesubject=true&subjectid="+encodeURIComponent(cObj("unit_id_edit").innerText);
     sendData1("GET","academic/academic.php",datapass,cObj("errhandlers"));
     cObj("delsubconfirmwin").classList.add("hide");
     setTimeout(() => {
@@ -3117,7 +3117,7 @@ cObj("next_infor").onclick = function () {
         }
         classes = classes.substr(0,classes.length-1);
         //get the subjects
-        var datapass = "?get_class_subjects="+classes;
+        var datapass = "?get_class_subjects="+encodeURIComponent(classes);
         sendData1("GET","academic/academic.php",datapass,cObj("class_datas_13"));
         //create an animation to fade out and in the other window
         cObj("create_tt_inside").classList.add("hide");
@@ -3161,7 +3161,7 @@ cObj("next_infor2").onclick = function () {
         //get subjects_list choosen
         subjects_list = subjects_list.substr(0,subjects_list.length-1);
         // alert(subjects_list);
-        var datapass = "?preview_data=true&subject_list="+subjects_list+"&classlist="+classes;
+        var datapass = "?preview_data=true&subject_list="+encodeURIComponent(subjects_list)+"&classlist="+encodeURIComponent(classes);
         sendData1("GET","academic/academic.php",datapass,cObj("class_datas_14"));
         setTimeout(() => {
             var timeout = 0;
@@ -3314,7 +3314,7 @@ cObj("next_infor6").onclick = function () {
         }
     }
     daysof_the_week = daysof_the_week.substr(0,daysof_the_week.length-1);
-    var datapass = "?generate_tt=true&class_selected="+classes+"&subjects_in="+subject_in+"&morning_hours="+morninghours+"&number_of_lessons="+numberoflessons+"&daysoftheweek="+daysof_the_week;
+    var datapass = "?generate_tt=true&class_selected="+encodeURIComponent(classes)+"&subjects_in="+encodeURIComponent(subject_in)+"&morning_hours="+encodeURIComponent(morninghours)+"&number_of_lessons="+encodeURIComponent(numberoflessons)+"&daysoftheweek="+encodeURIComponent(daysof_the_week);
     // alert(datapass);
     sendData1("GET","academic/academic.php",datapass,cObj("class_datas_16"));
 
@@ -3371,7 +3371,7 @@ cObj("create_tt_complete").onclick = function () { //send all the data recieved 
     if (err > 0) {
         alert("Insert the timetable name first before generating!");
     }else{
-        var datapass = "?generate_tt_insidein=true&class_selected="+classes+"&subjects_in="+subject_in+"&morning_hours="+morninghours+"&number_of_lessons="+numberoflessons+"&daysoftheweek="+daysof_the_week+"&ttnames="+cObj("tt_named").value;
+        var datapass = "?generate_tt_insidein=true&class_selected="+encodeURIComponent(classes)+"&subjects_in="+encodeURIComponent(subject_in)+"&morning_hours="+encodeURIComponent(morninghours)+"&number_of_lessons="+encodeURIComponent(numberoflessons)+"&daysoftheweek="+encodeURIComponent(daysof_the_week)+"&ttnames="+encodeURIComponent(cObj("tt_named").value);
         // alert(datapass);
         sendData1("GET","academic/academic.php",datapass,cObj("class_in_87"));
         setTimeout(() => {
@@ -3459,7 +3459,7 @@ function regenerate_timetable() {
 }
 
 cObj("confirm_regen").onclick = function () {
-    var datapass = "?regenerate_tt="+valObj("regen_id");
+    var datapass = "?regenerate_tt="+encodeURIComponent(valObj("regen_id"));
     sendData2("GET","academic/academic.php",datapass,cObj("name_tags"),cObj("load_regen_tt"));
     setTimeout(() => {
         var timeout = 0;
@@ -3497,7 +3497,7 @@ function deletedTT() {
 }
 cObj("promptyesttt").onclick = function () {
     var id = cObj("ttimetableid").innerText;
-    var datapass = "?deletedtt=true&timetable_id="+id;
+    var datapass = "?deletedtt=true&timetable_id="+encodeURIComponent(id);
     sendData1("GET","academic/academic.php",datapass,cObj("name_tags"));
     setTimeout(() => {
         var timeout = 0;
@@ -3520,7 +3520,7 @@ cObj("promptyesttt").onclick = function () {
 }
 function viewMyTimetable() {
     cObj("timetable_ids_holders").value = this.id;
-    var datapass = "?display_tt=true&tt_ids="+this.id;
+    var datapass = "?display_tt=true&tt_ids="+encodeURIComponent(this.id);
     sendData1("GET","academic/academic.php",datapass,cObj("view_my_tt_ids"));
     setTimeout(() => {
         var timeout = 0;
@@ -3675,7 +3675,7 @@ cObj("what_tt").onchange = function () {
     }
 }
 function viewMyTimetable2(timetable_id) {
-    var datapass = "?display_tt=true&tt_ids="+timetable_id;
+    var datapass = "?display_tt=true&tt_ids="+encodeURIComponent(timetable_id);
     sendData1("GET","academic/academic.php",datapass,cObj("view_my_tt_ids"));
     setTimeout(() => {
         var timeout = 0;
@@ -4900,7 +4900,7 @@ cObj("save_custom_tt2").onclick = function () {
 
 cObj("save_changestt_yees").onclick = function () {
     cObj("dialogholder2").classList.add("hide");
-    var datapass = "new_tt_data="+cObj("timetable_blocks").innerText+"";
+    var datapass = "new_tt_data="+encodeURIComponent(cObj("timetable_blocks").innerText)+"";
     sendDataPost("POST","ajax/academic/academic.php",datapass,cObj("error_handler_customize_tt"),cObj("loadings"));
     setTimeout(() => {
         var timeout = 0;
@@ -5178,7 +5178,7 @@ cObj("next_exams_btn").onclick = function () {
                 selected_exams.push(element.value);
             }
         }
-        var datapass = "display_students_in_exams="+valObj("students_class_reports")+"&exams_done="+JSON.stringify(selected_exams);
+        var datapass = "display_students_in_exams="+encodeURIComponent(valObj("students_class_reports"))+"&exams_done="+encodeURIComponent(JSON.stringify(selected_exams));
         sendDataPost("POST","ajax/administration/admissions.php",datapass,cObj("students_commentators"),cObj("err_handler_step_5"));
         setTimeout(() => {
             var timeout = 0;
@@ -5245,7 +5245,7 @@ cObj("next_exams_btn").onclick = function () {
                 }
             }
 
-            var datapass = "?get_exams_done=true&terms_selected="+JSON.stringify(terms_selected)+"&class_selected="+class_selected;
+            var datapass = "?get_exams_done=true&terms_selected="+encodeURIComponent(JSON.stringify(terms_selected))+"&class_selected="+encodeURIComponent(class_selected);
             sendData2("GET","administration/admissions.php",datapass,cObj("display_exams_attempted_in_those_terms"),cObj("exams_report_exams_done_loader"));
             
             goNextExams();
@@ -5454,7 +5454,7 @@ cObj("execute_exams_report_cards").onclick = function () {
             cObj("generate_report_btns").value = "Email Termly Reports";
         }
 
-        // var datapass = "generate_students_exams_report=true&class_select="+class_selected+"&terms_selected="+JSON.stringify(terms_selected)+"&exams_selected="+JSON.stringify(selected_exams)+"&academic_year="+valObj("academic_year_reports")+"&directors_comments="+student_comments+"&next_yr_opening="+valObj("next_open_date")+"&actions="+valObj("select_exams_actions");
+        // var datapass = "generate_students_exams_report=true&class_select="+encodeURIComponent(class_selected)+"&terms_selected="+encodeURIComponent(JSON.stringify(terms_selected))+"&exams_selected="+encodeURIComponent(JSON.stringify(selected_exams))+"&academic_year="+encodeURIComponent(valObj("academic_year_reports"))+"&directors_comments="+encodeURIComponent(student_comments)+"&next_yr_opening="+encodeURIComponent(valObj("next_open_date"))+"&actions="+encodeURIComponent(valObj("select_exams_actions"));
         // sendDataPost("POST","reports/reports.php",datapass,cObj("err_handler_step_7"),cObj("exam_report_generator"));
     }else{
         cObj("err_handler_step_7").innerHTML = "<p class='text-danger border border-danger p-2 my-2'>Select an option before proceeding!</p>";
@@ -5501,7 +5501,7 @@ function display_course_level_edit(dropdown_value) {
 }
 
 function display_course_list() {
-    var datapass = "?display_course_list=true&course_level="+this.value;
+    var datapass = "?display_course_list=true&course_level="+encodeURIComponent(this.value);
     sendData2("GET", "academic/academic.php", datapass, cObj("course_list_unit_holder"), cObj("course_list_loader"), function () {
         if (cObj("select_all_courses") != null) {
             var subjectclass = document.getElementsByClassName("subjectclass");
@@ -5654,7 +5654,7 @@ function display_course_list() {
 }
 
 function display_course_list_edit() {
-    var datapass = "?display_course_list_edit=true&course_level="+cObj("select_course_level_unit_edit").value;
+    var datapass = "?display_course_list_edit=true&course_level="+encodeURIComponent(cObj("select_course_level_unit_edit").value);
     sendData2("GET", "academic/academic.php", datapass, cObj("course_list_unit_holder_edit"), cObj("course_list_loader_edit"), function () {
         if (cObj("select_all_courses_edit") != null) {
             var subjectclass = document.getElementsByClassName("subjectclass_edit");
@@ -5821,7 +5821,7 @@ function getCourseLevelListUnit() {
 
 function display_course_list_filter() {
     // get the course lists
-    var datapass = "?get_course_list=true&course_level="+this.value+"&object_id=course_list_unit_filter";
+    var datapass = "?get_course_list=true&course_level="+encodeURIComponent(this.value)+"&object_id=course_list_unit_filter";
     sendData1("GET", "administration/admissions.php", datapass, cObj("course_list_unit_filter_holder"), function () {
             $("#course_list_unit_filter").select2({
                 width: "100%"
@@ -5846,7 +5846,7 @@ function getCourseLevelListUnitAssignment() {
     });
 
     // get the courses that the staff is teaching
-    var datapass = "?get_my_unit_list=true&staff_id="+cObj("teacher_id_unit_assignment").value;
+    var datapass = "?get_my_unit_list=true&staff_id="+encodeURIComponent(cObj("teacher_id_unit_assignment").value);
     sendData1("GET", "academic/academic.php", datapass, cObj("course_list_holder_unit_assignment"), function () {
         var hold_course_selected = hasJsonStructure(cObj("course_list_holder_unit_assignment").innerText) ? JSON.parse(cObj("course_list_holder_unit_assignment").innerText) : [];
         cObj("show_selected_units").innerHTML = "<small>Selected Course : "+hold_course_selected.length+"</small>";
@@ -5855,7 +5855,7 @@ function getCourseLevelListUnitAssignment() {
 
 function display_course_list_unit_assignment() {
     // get the course lists
-    var datapass = "?get_course_list=true&course_level="+this.value+"&object_id=course_list_unit_assignment";
+    var datapass = "?get_course_list=true&course_level="+encodeURIComponent(this.value)+"&object_id=course_list_unit_assignment";
     sendData1("GET", "administration/admissions.php", datapass, cObj("course_list_unit_assignment_holder"), function () {
         $("#course_list_unit_assignment").select2({
             width: "100%"
@@ -5870,7 +5870,7 @@ function display_course_list_unit_assignment() {
 }
 
 function display_course_unit_list() {
-    var datapass = "?getsubjects=true&course_level="+valObj("course_level_unit_assignment")+"&course_id="+valObj("course_list_unit_assignment");
+    var datapass = "?getsubjects=true&course_level="+encodeURIComponent(valObj("course_level_unit_assignment"))+"&course_id="+encodeURIComponent(valObj("course_list_unit_assignment"));
     sendData1("GET","academic/academic.php",datapass,cObj("subslist"), function () {
         if (cObj("select_all_courses_unit_assign") != null) {
             var subjectclass = document.getElementsByClassName("subjectclass_unit_assign");
@@ -6071,7 +6071,7 @@ function display_lecture_halls() {
 }
 
 cObj("yes_delete_lecture_hall").onclick = function () {
-    var datapass = "?delete_lecture_hall=true&hall_id="+valObj("lecture_hall_id");
+    var datapass = "?delete_lecture_hall=true&hall_id="+encodeURIComponent(valObj("lecture_hall_id"));
     sendData1("GET", "academic/academic.php", datapass, cObj("lecture_hall_error_handler"), function () {
         display_lecture_halls();
         cObj("no_delete_lecture_hall").click();
@@ -6111,7 +6111,7 @@ cObj("add_new_lecture_hall").onclick = function () {
         // err += checkBlank("hall_description");
         if (err == 0) {
             cObj("new_lecture_hall_err_handler").innerHTML = "";
-            var datapass = "?new_lecture_hall=true&lecture_hall_name="+valObj("lecture_hall_name")+"&hall_capacity="+valObj("lecture_hall_capacity")+"&hall_availability="+valObj("lecture_hall_availability")+"&hall_description="+valObj("hall_description");
+            var datapass = "?new_lecture_hall=true&lecture_hall_name="+encodeURIComponent(valObj("lecture_hall_name"))+"&hall_capacity="+encodeURIComponent(valObj("lecture_hall_capacity"))+"&hall_availability="+encodeURIComponent(valObj("lecture_hall_availability"))+"&hall_description="+encodeURIComponent(valObj("hall_description"));
             sendData1("GET", "academic/academic.php", datapass, cObj("new_lecture_hall_err_handler"), function () {
                 setTimeout(() => {
                     cObj("new_lecture_hall_err_handler").innerHTML = "";
@@ -6126,7 +6126,7 @@ cObj("add_new_lecture_hall").onclick = function () {
         // err += checkBlank("hall_description");
         if (err == 0) {
             cObj("new_lecture_hall_err_handler").innerHTML = "";
-            var datapass = "?update_lecture_hall=true&lecture_hall_name="+valObj("lecture_hall_name")+"&hall_capacity="+valObj("lecture_hall_capacity")+"&hall_availability="+valObj("lecture_hall_availability")+"&hall_description="+valObj("hall_description")+"&hall_id="+valObj("lecture_hall_id");
+            var datapass = "?update_lecture_hall=true&lecture_hall_name="+encodeURIComponent(valObj("lecture_hall_name"))+"&hall_capacity="+encodeURIComponent(valObj("lecture_hall_capacity"))+"&hall_availability="+encodeURIComponent(valObj("lecture_hall_availability"))+"&hall_description="+encodeURIComponent(valObj("hall_description"))+"&hall_id="+encodeURIComponent(valObj("lecture_hall_id"));
             sendData1("GET", "academic/academic.php", datapass, cObj("new_lecture_hall_err_handler"), function () {
                 setTimeout(() => {
                     cObj("new_lecture_hall_err_handler").innerHTML = "";
@@ -6153,7 +6153,7 @@ function getAllCourses() {
                 var unit_assignment_data = hasJsonStructure(valObj("course_unit_assignment_data")) ? JSON.parse(valObj("course_unit_assignment_data")) : null;
                 var no_of_terms = unit_assignment_data != null  ? unit_assignment_data.no_of_terms*1 : 0;
                 cObj("course_unit_assignment_id").value = this.id.substring(27);
-                var datapass = "?get_course_assignment_list=true&course_id="+this.id.substring(27)+"&course_length="+no_of_terms;
+                var datapass = "?get_course_assignment_list=true&course_id="+encodeURIComponent(this.id.substring(27))+"&course_length="+encodeURIComponent(no_of_terms);
                 sendData1("GET", "academic/academic.php", datapass, cObj("course_module_list_assignment"), function () {
                     display_table_unit_course_assignment();
                 })
@@ -6231,7 +6231,7 @@ function edit_module_units_func() {
     var unit_assignment_data = hasJsonStructure(valObj("course_unit_assignment_data")) ? JSON.parse(valObj("course_unit_assignment_data")) : null;
     var course_level = unit_assignment_data != null ? unit_assignment_data.course_level : "0";
     var course_id = unit_assignment_data != null ? unit_assignment_data.id : "0";
-    var datapass = "?get_course_units=true&course_level="+course_level+"&course_id="+course_id;
+    var datapass = "?get_course_units=true&course_level="+encodeURIComponent(course_level)+"&course_id="+encodeURIComponent(course_id);
     var module_number = (this.id.substring(18)*1 + 1);
     cObj("module_unit_list_holder").innerText = cObj("module_data_"+this.id.substring(18)).value;
     sendData1("GET","academic/academic.php",datapass,cObj("course_unit_list"), function (){
@@ -6404,7 +6404,7 @@ cObj("close_module_unit_selector").onclick = function () {
 }
 
 cObj("save_module_selector").onclick = function () {
-    var datapass = "add_new_module_units=true&module_units="+cObj("module_unit_list_holder").innerText;
+    var datapass = "add_new_module_units=true&module_units="+encodeURIComponent(cObj("module_unit_list_holder").innerText);
     sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("module_selector_error_list"), cObj("loadings"), function () {
         cObj("close_module_unit_selector").click();
         cObj("course_unit_assignment_btn_"+cObj("course_unit_assignment_id").value).click();
@@ -6425,7 +6425,7 @@ cObj("confirm_no_assignment_id_holder_unit").onclick = function () {
 }
 
 cObj("confirm_yes_assignment_id_holder_unit").onclick = function () {
-    var datapass = "?remove_assignment_id=true&assignment_id="+valObj("assignment_id_holder_unit");
+    var datapass = "?remove_assignment_id=true&assignment_id="+encodeURIComponent(valObj("assignment_id_holder_unit"));
     sendData1("GET", "academic/academic.php", datapass, cObj("course_module_lists_error_handler"), function () {
         setTimeout(() => {
             cObj("course_module_lists_error_handler").innerHTML = "";
