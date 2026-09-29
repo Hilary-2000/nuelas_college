@@ -2635,27 +2635,41 @@ var startpage = 1; // this is where we start counting the page number
 function getMpesaPayments() {
     // get the exams that are already done
     rowsColStudents = [];
-    var datapass = "?mpesaTransaction=true";
-    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("transDataReciever"), cObj("completedTransHolder"), function () {
-        // get the arrays
-        // set the listener for the assign button
-        var assign_payment = document.getElementsByClassName("assign_payment");
-        for (let index = 0; index < assign_payment.length; index++) {
-            const element = assign_payment[index];
-            element.addEventListener("click", find_Payment)
+    if ($.fn.DataTable.isDataTable('#mpesa_transactions_table')) {
+        $('#mpesa_transactions_table').DataTable().destroy();
+    }
+    cObj("transDataReciever").innerHTML = "<table class='table' id='mpesa_transactions_table'><thead><tr><th>No.</th><th>Transaction No.</th><th>Amount</th><th>Paid By</th><th>Student Name</th><th>Time Of Transaction</th><th>Action</th></tr></thead><tbody></tbody></table>";
+
+    // the server returns one page at a time
+    $('#mpesa_transactions_table').DataTable({
+        serverSide: true,
+        processing: true,
+        searchDelay: 500,
+        order: [[0, "desc"]],
+        columnDefs: [{ targets: 6, orderable: false }],
+        ajax: {
+            url: "ajax/finance/financial.php",
+            data: function (d) {
+                d.mpesaTransaction = true;
+            }
+        },
+        language: {
+            emptyTable: "No M-Pesa transactions have been captured yet!"
+        },
+        drawCallback: function () {
+            // set the listeners for the assign and un-assign buttons on this page
+            var assign_payment = document.getElementsByClassName("assign_payment");
+            for (let index = 0; index < assign_payment.length; index++) {
+                const element = assign_payment[index];
+                element.addEventListener("click", find_Payment)
+            }
+
+            var unassign_payment = document.getElementsByClassName("unassign_payment");
+            for (let index = 0; index < unassign_payment.length; index++) {
+                const element = unassign_payment[index];
+                element.addEventListener("click", un_assign_payments);
+            }
         }
-
-        var unassign_payment = document.getElementsByClassName("unassign_payment");
-        for (let index = 0; index < unassign_payment.length; index++) {
-            const element = unassign_payment[index];
-            element.addEventListener("click", un_assign_payments);
-        }
-
-
-        // set the datatable
-        $(document).ready(function() {
-            $('#mpesa_transactions_table').DataTable();  // Just one line!
-        });
     });
 }
 
@@ -2671,23 +2685,10 @@ cObj("decline_unassign_payments").onclick = function () {
 
 cObj("confirm_unassign_payments").onclick = function () {
     var datapass = "?un_assign_payment=true&transaction_id="+valObj("un_assign_payments_id");
-    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("data_error_holder"), cObj("completedTransHolder"));
-    setTimeout(() => {
-        var timeout = 0;
-        var idms = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(idms);
-            }
-            if (cObj("completedTransHolder").classList.contains("hide")) {
-                // get the arrays
-                cObj("decline_unassign_payments").click();
-                cObj("mpesaTrans").click();
-                stopInterval(idms);
-            }
-        }, 100);
-    }, 100);
+    sendData2("GET", "../ajax/finance/financial.php", datapass, cObj("data_error_holder"), cObj("loadings"), function () {
+        cObj("decline_unassign_payments").click();
+        cObj("mpesaTrans").click();
+    });
 }
 
 // here we find payments 
