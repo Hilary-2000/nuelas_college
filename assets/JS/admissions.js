@@ -1295,7 +1295,7 @@ cObj("confirm_del_exams_yes").onclick = function () {
     var err = checkBlank("exams_ids_delete");
     if (err == 0) {
         var exams_id = valObj("exams_ids_delete");
-        var datapass = "?delete_exams=true&exams_id="+exams_id;
+        var datapass = "?delete_exams=true&exams_id="+encodeURIComponent(exams_id);
         sendData2("GET", "academic/academic.php", datapass, cObj("exams_data_windows"), cObj("delete_exams_loaders"));
         setTimeout(() => {
             var timeout = 0;
@@ -1326,7 +1326,7 @@ function getExamsInfor() {
     // switch the windows first
     cObj("exams_table_list").classList.add("hide");
     cObj("exams_details_window").classList.remove("hide");
-    var datapass = "?get_exams_results=" + this.id.substr(16);
+    var datapass = "?get_exams_results=" + encodeURIComponent(this.id.substr(16));
     var exam_id = this.id.substring(16);
     cObj("exams_id_result").innerText = this.id.substr(16);
     sendData2("GET", "academic/academic.php", datapass, cObj("exams_details_holder"), cObj("exams_details_loader"), function () {
@@ -1336,18 +1336,18 @@ function getExamsInfor() {
             });
             cObj("class_label_exams_result").onchange = function () {
                 // get the course list
-                var datapass = "?get_course_list=true&exam_id="+exam_id+"&course_level="+valObj("class_label_exams_result")+"&object_id=course_list_view_results";
+                var datapass = "?get_course_list=true&exam_id="+encodeURIComponent(exam_id)+"&course_level="+encodeURIComponent(valObj("class_label_exams_result"))+"&object_id=course_list_view_results";
                 sendData1("GET", "academic/academic.php", datapass, cObj("course_list_holder_view_results"), function () {
                     if (cObj("course_list_view_results") != undefined) {
                         $("#course_list_view_results").select2({
                             width: '100%'
                         })
                         cObj("course_list_view_results").onchange = function () {
-                            var datapass = "?get_course_module_terms="+this.value+"&object_id=course_module_level";
+                            var datapass = "?get_course_module_terms="+encodeURIComponent(this.value)+"&object_id=course_module_level";
                             sendData2("GET","administration/admissions.php", datapass, cObj("course_module_level_holder"), cObj("loadings"), function () {
                                 if (cObj("course_module_level") != undefined) {
                                     cObj("course_module_level").onchange = function () {
-                                        var datapass = "?get_course_modular_units=true&module_id="+valObj("course_module_level")+"&course_id="+valObj("course_list_view_results")+"&exam_id="+exam_id+"&object_id=course_unit_exam_result";
+                                        var datapass = "?get_course_modular_units=true&module_id="+encodeURIComponent(valObj("course_module_level"))+"&course_id="+encodeURIComponent(valObj("course_list_view_results"))+"&exam_id="+encodeURIComponent(exam_id)+"&object_id=course_unit_exam_result";
                                         sendData1("GET", "academic/academic.php", datapass, cObj("course_unit_exam_result_holder"), function () {
                                             if (cObj("course_unit_exam_result") != undefined) {
                                                 cObj("course_unit_exam_result").onchange = function () {
@@ -1355,7 +1355,7 @@ function getExamsInfor() {
                                                     // shows - the C.A.T list needs to be ready the moment the user
                                                     // switches to "View C.A.T Results", whichever order they picked
                                                     // things in, otherwise it's blank/missing right when it's needed.
-                                                    var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=exam_cat_list";
+                                                    var datapass = "?get_exam_cats_list=true&exam_id="+encodeURIComponent(exam_id)+"&object_id=exam_cat_list";
                                                     sendData1("GET", "academic/academic.php", datapass, cObj("exam_cat_result_holder"), function () {
                                                         if (cObj("exam_cat_list") != undefined){
                                                             $("#exam_cat_list").select2({
@@ -1399,7 +1399,7 @@ cObj("exam_result_options").onchange = function () {
         cObj("cat_option_list_window").classList.remove("hide");
         if (cObj("course_unit_exam_result") != null && cObj("course_unit_exam_result") != undefined && valObj("course_unit_exam_result").length > 0) {
             var exam_id = cObj("exams_id_result").innerText;
-            var datapass = "?get_exam_cats_list=true&exam_id="+exam_id+"&object_id=exam_cat_list";
+            var datapass = "?get_exam_cats_list=true&exam_id="+encodeURIComponent(exam_id)+"&object_id=exam_cat_list";
             sendData1("GET", "academic/academic.php", datapass, cObj("exam_cat_result_holder"), function () {
                 if (cObj("exam_cat_list") != undefined){
                     $("#exam_cat_list").select2({
@@ -7521,7 +7521,7 @@ cObj("confirmyes_roled").onclick = function () {
         var new_object = JSON.stringify(data_to_upload);
         
         // send data to be uploaded
-        var datapass = "delete_roles=" + role_name + "&raw_data=" + new_object;
+        var datapass = "delete_roles=" + encodeURIComponent(role_name) + "&raw_data=" + encodeURIComponent(new_object);
         sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("roles_errors"), cObj("load_roles"), function () {
             cObj("set_btns").click();
             setTimeout(() => {
