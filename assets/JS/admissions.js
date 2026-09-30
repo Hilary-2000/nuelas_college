@@ -1231,7 +1231,7 @@ function selectListeners() {
     cObj("grading_methods").classList.add("hide");
     cObj("subject_list").classList.remove("hide");
     var exam_id = this.value;
-    var datapass = "?get_exam_class=" + exam_id;
+    var datapass = "?get_exam_class=" + encodeURIComponent(exam_id);
     sendData1("GET", "academic/academic.php", datapass, cObj("subject_list"));
     setTimeout(() => {
         var timeout = 0;
@@ -1258,7 +1258,7 @@ function selectSubject() {
     //show classes available 
     var subject_id = this.value;
     var exam_id = cObj("exam_list").value;
-    var datapass = "?subjects_id_ds=" + subject_id + "&exams_id_ids=" + exam_id;
+    var datapass = "?subjects_id_ds=" + encodeURIComponent(subject_id) + "&exams_id_ids=" + encodeURIComponent(exam_id);
     sendData1("GET", "academic/academic.php", datapass, cObj("classes_list"));
 }
 cObj("examanagement").onclick = function () {
@@ -1320,7 +1320,7 @@ cObj("confirm_del_exams_yes").onclick = function () {
     var err = checkBlank("exams_ids_delete");
     if (err == 0) {
         var exams_id = valObj("exams_ids_delete");
-        var datapass = "?delete_exams=true&exams_id=" + exams_id;
+        var datapass = "?delete_exams=true&exams_id=" + encodeURIComponent(exams_id);
         sendData2("GET", "academic/academic.php", datapass, cObj("exams_data_windows"), cObj("delete_exams_loaders"));
         setTimeout(() => {
             var timeout = 0;
@@ -1351,7 +1351,7 @@ function getExamsInfor() {
     // switch the windows first
     cObj("exams_table_list").classList.add("hide");
     cObj("exams_details_window").classList.remove("hide");
-    var datapass = "?get_exams_results=" + this.id.substr(16);
+    var datapass = "?get_exams_results=" + encodeURIComponent(this.id.substr(16));
     cObj("exams_id_result").innerText = this.id.substr(16);
     sendData2("GET", "academic/academic.php", datapass, cObj("exams_details_holder"), cObj("exams_details_loader"));
     // cObj("exams_window_display").innerHTML = "";
@@ -7345,7 +7345,7 @@ cObj("confirmyes_roled").onclick = function () {
         data_to_upload = data_to_upload.substring(0, (data_to_upload.length - 1)) + "]";
         if (counted > 0) {
             // send data to be uploaded
-            var datapass = "delete_roles=" + role_name + "&raw_data=" + data_to_upload;
+            var datapass = "delete_roles=" + encodeURIComponent(role_name) + "&raw_data=" + encodeURIComponent(data_to_upload);
             sendDataPost("POST", "ajax/academic/academic.php", datapass, cObj("roles_errors"), cObj("load_roles"));
             cObj("confirmno_roled").click();
             setTimeout(() => {
@@ -7368,7 +7368,7 @@ cObj("confirmyes_roled").onclick = function () {
         } else {
             data_to_upload = "";
             // send data to be uploaded
-            var datapass = "?delete_roles=" + role_name + "&raw_data=" + data_to_upload;
+            var datapass = "?delete_roles=" + encodeURIComponent(role_name) + "&raw_data=" + encodeURIComponent(data_to_upload);
             sendData2("GET", "academic/academic.php", datapass, cObj("roles_errors"), cObj("load_roles"));
             cObj("confirmno_roled").click();
             setTimeout(() => {
