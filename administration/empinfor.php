@@ -12,6 +12,15 @@
         <p><i>Please be sure with the information you are updating.</i></p>
         <p><i>If possible let the staff update their own information from their portal.</i></p>
     </div>
+    <!-- Signature card (assets/JS/signatures.js shows it for the principal and deputy principals) -->
+    <div class="section_card hide" id="staff_signature_card">
+        <p class="card_heading">Signature</p>
+        <p class="mb-2" style="font-size:12px;color:#666;">Printed on receipts and other documents that need this staff member's signature.</p>
+        <div class="sig_card_preview" id="staff_signature_preview"><span class="sig_empty">No signature yet</span></div>
+        <p id="staff_signature_status" class="mb-1" style="font-size:12px;"></p>
+        <button type="button" id="staff_signature_change" class="btn btn-sm btn-outline-secondary"><i class="fas fa-signature"></i> Add / Change Signature</button>
+        <button type="button" id="staff_signature_remove" class="btn btn-sm btn-outline-danger hide"><i class="fas fa-trash"></i> Remove</button>
+    </div>
     <div class="trnames section_card">
         <p class="card_heading">Personal information</p>
         <div class="row">

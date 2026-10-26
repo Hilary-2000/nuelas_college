@@ -2299,6 +2299,7 @@ function clicks() {
                         cObj("reason_for_staff_inactive").classList.add("hide");
                     }
                     cObj("staffid").innerText = splitdata[13];
+                    if (typeof loadStaffSignatureCard == "function") loadStaffSignatureCard(splitdata[13]);
                     // cObj("auths"+splitdata[11]).selected = true;
 
                     cObj("kin_fullnames").value = splitdata[20];

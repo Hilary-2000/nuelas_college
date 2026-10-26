@@ -17,6 +17,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
 require('fpdf.php');
 require('sector.php');
+require_once('../ajax/signatures/signature_lib.php');
+require_once('receipt_lib.php');
 
 session_start();
 date_default_timezone_set('Africa/Nairobi');
@@ -7545,6 +7547,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $date_of_payments_fees = $fees_payment_opt_holder == "set" ? date("D dS-M-Y",strtotime($_POST['date_of_payments_fees'])) : date("D dS-M-Y");
         $time_of_payment_fees = $fees_payment_opt_holder == "set" ? date("H:i:s",strtotime($_POST['time_of_payment_fees'].":00")) : date("H:i:s");
         // echo $fees_payment_opt_holder;
+
+        // the new receipt design (receipt_lib.php); the classic receipt below is kept for
+        // colleges that choose it under Settings, or in the print window
+        if (rc_receipt_style($conn2) == 'new' && ($reciept_size == "A4" || $reciept_size == "A51")) {
+            // the fees table sends the name as "Name {REG NO}"; the reg no has its own field
+            $receipt_name = trim(preg_replace('/\s*[\{\(][^\}\)]*[\}\)]\s*$/', '', $students_names));
+            $reprint = isset($_POST['reprint']) && $_POST['reprint'] != "false";
+            $served_by_id = $_SESSION['userids'];
+            if ($reprint) {
+                $stmt = $conn2->prepare("SELECT `payBy` FROM `finance` WHERE `transaction_id` = ? LIMIT 1");
+                $stmt->bind_param("s", $_POST['last_receipt_id_take']);
+                $stmt->execute();
+                if ($paid_row = $stmt->get_result()->fetch_assoc()) {
+                    $served_by_id = $paid_row['payBy'];
+                }
+                $paid_at = strtotime($_POST['masiku'] . " " . $_POST['masaa']);
+            } elseif ($fees_payment_opt_holder == "set") {
+                $paid_at = strtotime($_POST['date_of_payments_fees'] . " " . $_POST['time_of_payment_fees'] . ":00");
+            } else {
+                $paid_at = time();
+            }
+            $student_rows = student_data($student_admission_no, $conn2);
+            $receipt = rc_receipt_student($conn2, [
+                'receipt_no' => $last_receipt_id_take,
+                'date' => date("D jS M Y", $paid_at), 'time' => date("h:i A", $paid_at),
+                'name' => $receipt_name, 'adm_no' => $student_admission_no,
+                'course' => rc_receipt_course($conn2, count($student_rows) > 0 ? $student_rows[0] : null),
+                'amount' => returnNumbers($amount_paid_by_student) * 1, 'balance' => returnNumbers($new_student_balance) * 1,
+                'payments_for' => $_POST['payments_for'],
+                'mode' => rc_receipt_mode_text($mode_of_payments),
+                'code' => $transaction_codes, 'served_by' => rc_receipt_served_by($conn, $served_by_id),
+            ]);
+            $layouts = ['A4' => ['full', ['STUDENT COPY']], 'A51' => ['both', ['STUDENT COPY', 'COLLEGE COPY']]];
+            [$layout, $labels] = $layouts[$reciept_size];
+            $pdf = rc_receipt_pdf();
+            $pdf->SetTitle($receipt_name . " " . $student_admission_no . " Fees Receipt");
+            rc_receipt_sheet($pdf, $conn, $conn2, rc_receipt_school($conn), $receipt, $layout, $labels);
+            $pdf->Output();
+            return;
+        }
 
         // var_dump($_POST);
         // return;
@@ -16068,6 +16110,21 @@ function print_A5_receipt($receipt_id, $database)
     // connections
     include("../connections/conn1.php");
     include("../connections/conn2.php");
+
+    // the new receipt design follows the college default from Settings
+    if (rc_receipt_style($conn2) == 'new') {
+        $school = rc_receipt_school($conn, $database);
+        $r = count($school) > 0 ? rc_receipt_from_finance($conn, $conn2, $receipt_id) : null;
+        if ($r === null) {
+            echo "<p style='color:red;'>Invalid URL, contact the school and try again!</p>";
+            return 0;
+        }
+        $pdf = rc_receipt_pdf();
+        $pdf->SetTitle("Receipt No. " . $r['receipt_no']);
+        rc_receipt_sheet($pdf, $conn, $conn2, $school, $r, "top", ["STUDENT COPY"]);
+        $pdf->Output();
+        return 0;
+    }
 
     // get the payment details
     $select = "SELECT * FROM `finance` WHERE `transaction_id` = '" . $receipt_id . "'";

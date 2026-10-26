@@ -26,3 +26,7 @@ Thumbs.db
 
 # Uploaded user files (large binary content)
 images/uploads/
+
+# Staff signatures and the college stamp (the .htaccess that blocks web access is kept)
+signatures_store/*
+!signatures_store/.htaccess

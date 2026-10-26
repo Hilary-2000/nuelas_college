@@ -1721,3 +1721,69 @@ p.instructions{
 .filter_panel_toggle + div:not(.hide){
     margin-top: 12px;
 }
+
+
+/* ==================== Signatures & college stamp (assets/JS/signatures.js) ==================== */
+/* checkered background so the see-through parts of a signature or stamp are visible */
+.sig_card_preview, .sig_preview_canvas {
+    background-color: #fff;
+    background-image: linear-gradient(45deg, #eef1f3 25%, transparent 25%), linear-gradient(-45deg, #eef1f3 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #eef1f3 75%), linear-gradient(-45deg, transparent 75%, #eef1f3 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+.sig_card_preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 320px;
+    height: 110px;
+    border: 1px solid #d5dee3;
+    border-radius: 10px;
+    margin: 6px 0;
+    overflow: hidden;
+}
+.sig_card_preview.sig_stamp_preview { height: 160px; max-width: 220px; }
+.sig_card_preview img { max-width: 92%; max-height: 92%; }
+.sig_card_preview .sig_empty { color: #9aa8a8; font-size: 13px; }
+.sig_editor_tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+#sig_editor_popup .sig_editor_tabs .sig_tab {
+    border: 1px solid #d5dee3 !important;
+    background: #fff !important;
+    color: #2b3a3a !important;
+    border-radius: 8px !important;
+    padding: 6px 12px;
+}
+#sig_editor_popup .sig_editor_tabs .sig_tab.sig_tab_active {
+    background: rgb(3, 131, 135) !important;
+    border-color: rgb(3, 131, 135) !important;
+    color: #fff !important;
+}
+.sig_hint { font-size: 13px; color: #555; margin-bottom: 6px; }
+.sig_caption { font-size: 13px; font-weight: 600; margin: 4px 0; }
+.sig_draw_canvas {
+    width: 100%;
+    max-width: 700px;
+    aspect-ratio: 700 / 220;
+    border: 1px dashed #b8c6cd;
+    border-radius: 10px;
+    background: #fff linear-gradient(to top, transparent 24%, #cbd6dc 24%, #cbd6dc calc(24% + 1px), transparent calc(24% + 1px));
+    touch-action: none;
+    cursor: crosshair;
+}
+.sig_source_canvas, .sig_preview_canvas {
+    /* keep tall (rotated) photos from stretching the popup */
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 320px;
+    border: 1px solid #d5dee3;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+}
+.sig_source_canvas { cursor: crosshair; touch-action: none; }
+.sig_tools { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 6px; font-size: 13px; }
+.sig_tools label { margin: 0; }
+.sig_inline_select { width: auto !important; display: inline-block; }
