@@ -3094,7 +3094,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
         }elseif (isset($_GET['active_exams_lts'])) {
             $select = "SELECT COUNT(*) AS 'Total' FROM `exams_tbl` WHERE `end_date` > ?";
             $stmt = $conn2->prepare($select);
-            $date = date("Y-m-d", strtotime("3 hour"));
+            $date = date("Y-m-d");
             $stmt->bind_param("s",$date);
             $stmt->execute();
             $result = $stmt->get_result();
