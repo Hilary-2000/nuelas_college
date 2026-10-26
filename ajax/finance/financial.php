@@ -9953,7 +9953,7 @@
                     $final_message = str_replace("{title_2}", (((strtolower($student_data[$index]['parent_relation']) == "guardian") ? "" : "check") == "check") ? (strtolower($student_data[$index]['parent_relation']) == "father" ? "Sir" : "Madam") : "", $final_message);
                     $today = date("D dS M, Y");
                     $final_message = str_replace("{today}", $today, $final_message);
-                    $link = $transaction_id != null ? get_short_url($transaction_id) : "Null";
+                    $link = $transaction_id != null ? get_short_url($transaction_id, $conn2) : "Null";
                     $final_message = str_replace("{receipt_url}", $link, $final_message);
                 }
             }
@@ -9990,7 +9990,7 @@
                     $final_message = str_replace("{title_2}", (((strtolower($student_data[$index]['parent_relation2']) == "guardian") ? "" : "check") == "check") ? (strtolower($student_data[$index]['parent_relation2']) == "father" ? "Sir" : "Madam") : "", $final_message);
                     $today = date("D dS M, Y");
                     $final_message = str_replace("{today}", $today, $final_message);
-                    $link = $transaction_id != null ? get_short_url($transaction_id) : "Null";
+                    $link = $transaction_id != null ? get_short_url($transaction_id, $conn2) : "Null";
                     $final_message = str_replace("{receipt_url}", $link, $final_message);
                 }
             }
@@ -10013,13 +10013,16 @@
         return $student_data;
     }
 
-    function get_short_url($transaction_id) {
-        
+    function get_short_url($transaction_id, $conn2) {
+        // the signature stops one receipt link from opening the others (receipt_link.php)
+        require_once(__DIR__ . "/receipt_link.php");
+        $signature = receipt_link_signature($conn2, $transaction_id . "", $_SESSION['databasename']);
+
         // encode the url code
         $transaction_id = base64_encode($transaction_id . "");
 
         // transaction link
-        $link = "https://nuelas.ladybirdsmis.com/reports/reports.php?receipt=" . $transaction_id . "&p_code=" . base64_encode($_SESSION['databasename']);
+        $link = "https://nuelas.ladybirdsmis.com/reports/reports.php?receipt=" . $transaction_id . "&p_code=" . base64_encode($_SESSION['databasename']) . "&sig=" . $signature;
 
         $curl = curl_init();
         
