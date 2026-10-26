@@ -70,11 +70,11 @@
                     <div class="btndates ">
                         <div class="conts ">
                             <label class="form-control-label" for="startdate">From: <br></label>
-                            <input class="form-control" type="date" name="startdate" id="startdate" placeholder="start date" max=<?php echo date("Y-m-d", strtotime("3 hour")); ?>>
+                            <input class="form-control" type="date" name="startdate" id="startdate" placeholder="start date" max=<?php echo date("Y-m-d"); ?>>
                         </div>
                         <div class="conts">
                             <label class="form-control-label" for="enddate">To: <br></label>
-                            <input class="form-control" type="date" name="enddate" id="enddate" placeholder="end date" max=<?php echo date("Y-m-d", strtotime("3 hour")); ?>>
+                            <input class="form-control" type="date" name="enddate" id="enddate" placeholder="end date" max=<?php echo date("Y-m-d"); ?>>
                         </div>
                     </div>
                 </div>

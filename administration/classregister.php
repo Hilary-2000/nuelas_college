@@ -157,7 +157,7 @@
                         </div>
                         <div class="option2 hide" id="moreopt2">
                             <label class="form-control-label" for="sel_att_date"><b>Select date: </b><br></label>
-                            <input class="form-control" type="date" id="sel_att_date" value = <?php echo date("Y-m-d", strtotime("3 hour"));?> max = <?php echo date("Y-m-d", strtotime("3 hour"));?> ><br>
+                            <input class="form-control" type="date" id="sel_att_date" value = <?php echo date("Y-m-d");?> max = <?php echo date("Y-m-d");?> ><br>
                             <p id="err_date_handled"></p>
                             <button type="button" id="display_attendance_class"><i class="fas fa-search"></i> Display</button>
                         </div>
@@ -221,7 +221,7 @@
                     <div class="container">
                         <p style='padding-left:20px;'>At this window there are two tables. <br>1. The first table shows the student present <br>2. The second table shows student absent </p>
                         <label style="font-size:14px;color:black; font-weight:600;">Select a date to show attendance: <br></label>
-                        <input type="date" style="max-width:150px;" name="date_selected" id="date_selected" value = <?php echo date("Y-m-d", strtotime("3 hour"));?>  max =<?php echo date("Y-m-d",strtotime("3 hour"));?> >
+                        <input type="date" style="max-width:150px;" name="date_selected" id="date_selected" value = <?php echo date("Y-m-d");?>  max =<?php echo date("Y-m-d");?> >
                         <br>
                         <div class="conts">
                             <button type="button" id="display_attendance"><i class="fas fa-search"></i> Display</button>

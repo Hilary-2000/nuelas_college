@@ -18436,7 +18436,7 @@ function reminderMsg($stud_data, $message, $conn2)
 }
 function getTermV2_exams($conn2)
 {
-    $date = date("Y-m-d", strtotime("3 hour"));
+    $date = date("Y-m-d");
     $select = "SELECT `term` FROM `academic_calendar` WHERE `end_time` >= ? AND `start_time` <= ?";
     // include("../../connections/conn2.php");
     $stmt = $conn2->prepare($select);

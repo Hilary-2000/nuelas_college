@@ -887,7 +887,7 @@
                     // save the email address sent
                     $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
                     $stmt = $conn2->prepare($insert);
-                    $dates = date("YmdHis",strtotime("3 hours"));
+                    $dates = date("YmdHis");
                     $stmt->bind_param("sssssss",$email_username,$secondary_mail,$bcc,$dates,$subject,$messages,$cc);
                     $stmt->execute();
                 }
@@ -902,7 +902,7 @@
                     // save the email address sent
                     $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
                     $stmt = $conn2->prepare($insert);
-                    $dates = date("YmdHis",strtotime("3 hours"));
+                    $dates = date("YmdHis");
                     $stmt->bind_param("sssssss",$email_username,$student_email,$bcc,$dates,$subject,$messages,$cc);
                     $stmt->execute();
                 }

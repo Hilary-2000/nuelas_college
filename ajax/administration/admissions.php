@@ -7056,7 +7056,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                     if (strlen($message) > 43) {
                                         $message_desc = substr($message,0,45)."...";
                                     }
-                                    $date = date("Y-m-d", strtotime("3 hour"));
+                                    $date = date("Y-m-d");
                                     // !st parent
                                     $recepient = "[\"".$row['parent_contact2']."\"]";
                                     $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$row['parent_contact2'],$message,$recepient);
@@ -7094,7 +7094,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             if (strlen($message) > 43) {
                                 $message_desc = substr($message,0,45)."...";
                             }
-                            $date = date("Y-m-d", strtotime("3 hour"));
+                            $date = date("Y-m-d");
                             // !st parent
                             $recepient = "[\"".$student_contact."\"]";
                             $stmt->bind_param("sssssssss",$message_count,$date,$message_count,$message_undelivered,$message_type,$message_desc,$student_contact,$message,$recepient);
@@ -8782,7 +8782,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             // save the email address sent
             $insert = "INSERT INTO `email_address` (`sender_from`,`recipient_to`,`bcc`,`date_time`,`message_subject`,`message`,`cc`) VALUES (?,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
-            $dates = date("YmdHis",strtotime("3 hours"));
+            $dates = date("YmdHis");
             $stmt->bind_param("sssssss",$email_username,$send_mail_to,$bcc,$dates,$email_header,$message,$cc);
             $stmt->execute();
 
