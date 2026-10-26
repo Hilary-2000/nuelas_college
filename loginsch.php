@@ -73,7 +73,29 @@
                     <input type="password" name="pass" id="pass" placeholder="Enter password">
                     <i class="fas fa-eye auth-toggle-pass" id="toggle_pass"></i>
                 </div>
-                <button class="auth-btn" id="subpwd" type="button"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <div class="auth-channels">
+                    <label class="auth-channels-label">Send verification code via</label>
+                    <?php
+                        // email and whatsapp only show up on servers that have their config file
+                        $otp_channels = ['sms' => '<i class="fas fa-sms"></i> SMS'];
+                        if (file_exists(__DIR__."/connections/mailConn.php")) {
+                            $otp_channels['email'] = '<i class="fas fa-envelope"></i> Email';
+                        }
+                        if (file_exists(__DIR__."/connections/whatsappConn.php")) {
+                            $otp_channels['whatsapp'] = '<i class="fab fa-whatsapp"></i> WhatsApp';
+                        }
+                        $otp_pref = isset($_SESSION['otp_channel_pref']) && isset($otp_channels[$_SESSION['otp_channel_pref']]) ? $_SESSION['otp_channel_pref'] : 'sms';
+                    ?>
+                    <div class="auth-channel-opts">
+                        <?php foreach ($otp_channels as $channel => $channel_label) { ?>
+                        <label class="auth-channel-opt">
+                            <input type="radio" name="otp_channel" value="<?php echo $channel; ?>" <?php if($otp_pref == $channel){ echo "checked"; } ?>>
+                            <span><?php echo $channel_label; ?></span>
+                        </label>
+                        <?php } ?>
+                    </div>
+                </div>
+                <button class="auth-btn" id="subpwd" type="button"><i class="fas fa-sign-in-alt"></i> Login <span class="hide" id="loader"><i class="fa fa-spinner fa-spin"></i></span></button>
             </div>
         </div>
     </div>
@@ -85,42 +107,30 @@
         cObj("subpwd").onclick = function () {
             let passwds = valObj("pass");
             if(passwds.length>1){
+                // disable button to prevent a double click sending two codes
+                this.disabled = true;
                 cObj("errors").classList.add("hide");
                 cObj("errors").innerHTML = ""
                 grayBorder(cObj("pass"));
-                let datapas = "?password="+passwds+"&usernames="+valObj("uname")+"&domain="+(document.domain);
-                sendData('GET','login/login.php',datapas,cObj("errors"));
+                let otp_channel = document.querySelector('input[name="otp_channel"]:checked').value;
+                let datapas = "?password="+passwds+"&usernames="+valObj("uname")+"&domain="+(document.domain)+"&otp_channel="+otp_channel;
+                sendData2('GET','login/login.php',datapas,cObj("errors"), cObj("loader"));
                 setTimeout(() => {
                     var timeout = 0;
                     var ids = setInterval(() => {
                         timeout++;
                         //after two minutes of slow connection the next process wont be executed
                         if (timeout==1200) {
+                            this.disabled = false;
                             stopInterval(ids);
                         }
-                        //set data recieved from the database
-                        let fback = cObj("errors").innerText;
-                        let substrs = fback.substr(0,7);
-                        if(fback.length>0){
+                        if (cObj("loader").classList.contains("hide")) {
+                            this.disabled = false;
                             cObj("errors").classList.remove("hide");
-                        }
-                        if(substrs=="Correct"){
-                            let datapassed = "?newvalues=true";
-                            sendData2("GET","login/changevalues.php",datapassed,cObj("subpwd"),cObj("anonymus"));
-                            setTimeout(() => {
-                                var timeout = 0;
-                                var ids2 = setInterval(() => {
-                                    timeout++;
-                                    //after two minutes of slow connection the next process wont be executed
-                                    if (timeout==1200) {
-                                        stopInterval(ids2);                        
-                                    }
-                                    if (cObj("anonymus").classList.contains("hide")) {
-                                        redirect("homepage.php");
-                                        stopInterval(ids2);
-                                    }
-                                }, 100);
-                            }, 200);
+                            // the code has been sent, go and enter it
+                            if(cObj("correct_credentials") != null){
+                                redirect("verification_code.php");
+                            }
                             stopInterval(ids);
                         }
                     }, 100);
@@ -145,4 +155,4 @@
 
     </script>
 </body>
-</html>
+</html>
