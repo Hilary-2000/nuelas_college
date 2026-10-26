@@ -16036,16 +16036,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
 
 function print_A5_receipt($receipt_id, $database)
 {
-    $receipt_id = base64_decode($_GET['receipt']);
-    $database = base64_decode($_GET['p_code']);
+    $receipt_id = base64_decode((string) $_GET['receipt'], true);
+    $database = base64_decode((string) $_GET['p_code'], true);
 
-
-    // database name
-    $_SESSION['databasename'] = $database;
-
-    // connections
+    // anyone with the link can open it, so only a whole-number receipt and a college
+    // database registered in school_information are accepted
+    if ($receipt_id === false || !ctype_digit($receipt_id) || $database === false || !preg_match('/^[A-Za-z0-9_]+$/', $database)) {
+        echo "<p style='color:red;'>Invalid URL, contact the school and try again!</p>";
+        return 0;
+    }
     include("../connections/conn1.php");
+    $stmt = $conn->prepare("SELECT `database_name` FROM `school_information` WHERE `database_name` = ? LIMIT 1");
+    $stmt->bind_param("s", $database);
+    $stmt->execute();
+    if (!$stmt->get_result()->fetch_assoc()) {
+        echo "<p style='color:red;'>Invalid URL, contact the school and try again!</p>";
+        return 0;
+    }
+
+    // conn2.php connects to the database named in the session. Point it at this college
+    // only while connecting, so the visitor's session is never left holding a database
+    // (which is what marks a session as logged in).
+    $previous_database = $_SESSION['databasename'] ?? null;
+    $_SESSION['databasename'] = $database;
     include("../connections/conn2.php");
+    if ($previous_database === null) {
+        unset($_SESSION['databasename']);
+    } else {
+        $_SESSION['databasename'] = $previous_database;
+    }
 
     // the new receipt design follows the college default from Settings
     if (rc_receipt_style($conn2) == 'new') {
@@ -16063,8 +16082,9 @@ function print_A5_receipt($receipt_id, $database)
     }
 
     // get the payment details
-    $select = "SELECT * FROM `finance` WHERE `transaction_id` = '" . $receipt_id . "'";
+    $select = "SELECT * FROM `finance` WHERE `transaction_id` = ?";
     $stmt = $conn2->prepare($select);
+    $stmt->bind_param("s", $receipt_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $finance_data = [];
@@ -16080,8 +16100,9 @@ function print_A5_receipt($receipt_id, $database)
         $finance_data = $finance_data[0];
 
         // get student data
-        $select = "SELECT * FROM `student_data` WHERE `adm_no` = '" . $finance_data['stud_admin'] . "'";
+        $select = "SELECT * FROM `student_data` WHERE `adm_no` = ?";
         $stmt = $conn2->prepare($select);
+        $stmt->bind_param("s", $finance_data['stud_admin']);
         $stmt->execute();
         $student_data = [];
         $result = $stmt->get_result();
@@ -16103,8 +16124,9 @@ function print_A5_receipt($receipt_id, $database)
 
         // get the school data
         $school_data = [];
-        $select = "SELECT * FROM `school_information` WHERE `database_name` = '" . $database . "'";
+        $select = "SELECT * FROM `school_information` WHERE `database_name` = ?";
         $stmt = $conn->prepare($select);
+        $stmt->bind_param("s", $database);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result) {
@@ -16330,8 +16352,9 @@ function print_A5_receipt($receipt_id, $database)
                 $pdf->Cell(45, 7, "Kes " . number_format($payments_for[$index]['amount_paid'], 2), "BR", 1, "R", false);
             }
         } else {
-            $select = "SELECT * FROM `fees_structure` WHERE `expenses` = '" . $finance_data['payment_for'] . "'";
+            $select = "SELECT * FROM `fees_structure` WHERE `expenses` = ?";
             $stmt = $conn2->prepare($select);
+            $stmt->bind_param("s", $finance_data['payment_for']);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result) {
