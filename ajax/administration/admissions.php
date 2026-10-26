@@ -2243,7 +2243,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
         }elseif (isset($_GET['schoolfeesrecieved'])) {
-            $select = "SELECT sum(`amount`) AS 'Amount' FROM `finance` WHERE date_of_transaction = ?";
+            // reversed payments (status 1) and the negative rows that reverse them don't count as received
+            $select = "SELECT sum(`amount`) AS 'Amount' FROM `finance` WHERE date_of_transaction = ? AND `status` = 0 AND `mode_of_pay` <> 'reverse'";
             include("../../comma.php");
             $stmt = $conn2->prepare($select);
             $date = date("Y-m-d");
