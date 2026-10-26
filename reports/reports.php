@@ -17,6 +17,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
 require('fpdf.php');
 require('sector.php');
+require_once('../ajax/signatures/signature_lib.php');
+require_once('receipt_lib.php');
+require_once('transcript_lib.php');
+require_once('marksheet_lib.php');
 
 session_start();
 date_default_timezone_set('Africa/Nairobi');
@@ -7546,6 +7550,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         $time_of_payment_fees = $fees_payment_opt_holder == "set" ? date("H:i:s",strtotime($_POST['time_of_payment_fees'].":00")) : date("H:i:s");
         // echo $fees_payment_opt_holder;
 
+        // the new receipt design (receipt_lib.php); the classic receipt below is kept for
+        // colleges that choose it under Settings, or in the print window
+        if (rc_receipt_style($conn2) == 'new' && ($reciept_size == "A4" || $reciept_size == "A51")) {
+            // the fees table sends the name as "Name {REG NO}"; the reg no has its own field
+            $receipt_name = trim(preg_replace('/\s*[\{\(][^\}\)]*[\}\)]\s*$/', '', $students_names));
+            $reprint = isset($_POST['reprint']) && $_POST['reprint'] != "false";
+            $served_by_id = $_SESSION['userids'];
+            if ($reprint) {
+                $stmt = $conn2->prepare("SELECT `payBy` FROM `finance` WHERE `transaction_id` = ? LIMIT 1");
+                $stmt->bind_param("s", $_POST['last_receipt_id_take']);
+                $stmt->execute();
+                if ($paid_row = $stmt->get_result()->fetch_assoc()) {
+                    $served_by_id = $paid_row['payBy'];
+                }
+                $paid_at = strtotime($_POST['masiku'] . " " . $_POST['masaa']);
+            } elseif ($fees_payment_opt_holder == "set") {
+                $paid_at = strtotime($_POST['date_of_payments_fees'] . " " . $_POST['time_of_payment_fees'] . ":00");
+            } else {
+                $paid_at = time();
+            }
+            $student_rows = student_data($student_admission_no, $conn2);
+            $receipt = rc_receipt_student($conn2, [
+                'receipt_no' => $last_receipt_id_take,
+                'date' => date("D jS M Y", $paid_at), 'time' => date("h:i A", $paid_at),
+                'name' => $receipt_name, 'adm_no' => $student_admission_no,
+                'course' => rc_receipt_course($conn2, count($student_rows) > 0 ? $student_rows[0] : null),
+                'amount' => returnNumbers($amount_paid_by_student) * 1, 'balance' => returnNumbers($new_student_balance) * 1,
+                'payments_for' => $_POST['payments_for'],
+                'mode' => rc_receipt_mode_text($mode_of_payments),
+                'code' => $transaction_codes, 'served_by' => rc_receipt_served_by($conn, $served_by_id),
+            ]);
+            $layouts = ['A4' => ['full', ['STUDENT COPY']], 'A51' => ['both', ['STUDENT COPY', 'COLLEGE COPY']]];
+            [$layout, $labels] = $layouts[$reciept_size];
+            $pdf = rc_receipt_pdf();
+            $pdf->SetTitle($receipt_name . " " . $student_admission_no . " Fees Receipt");
+            rc_receipt_sheet($pdf, $conn, $conn2, rc_receipt_school($conn), $receipt, $layout, $labels);
+            $pdf->Output();
+            return;
+        }
+
         // var_dump($_POST);
         // return;
 
@@ -8853,36 +8897,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 }
 
                 if (count($student_data) > 0) {
-                    $pdf = new PDF('P', 'mm', 'A4');
-                    $pdf->setHeaderPos(200);
-                    $doc_title = $is_blank ? " Exams Sheet." : " Exam Marks Sheet.";
-                    $pdf->set_document_title(ucwords(strtolower($exams_names)) . " " . className_exam($classes_for_exams) . " " . $unit_info['unit_name'] . $doc_title);
-                    $pdf->setSchoolLogo("../../" . schoolLogo($conn));
-                    $pdf->set_school_name($_SESSION['schname']);
-                    $pdf->set_school_po($_SESSION['po_boxs']);
-                    $pdf->set_school_box_code($_SESSION['box_codes']);
-                    $pdf->set_school_contact($_SESSION['school_contact']);
-                    $pdf->AddPage();
-                    $pdf->SetFont('Helvetica', 'B', 10);
-                    $pdf->Cell(190, 6, $unit_info['unit_name'] . " {" . $unit_info['unit_code'] . "}", 0, 1, 'C', false);
-                    $pdf->Ln(2);
-                    renderExamineesTable_report($pdf, ["Score", "Grade"], [35, 30], $student_data, function ($student) use ($is_blank) {
-                        if ($is_blank) {
-                            return ["", ""];
-                        }
-                        return [$student['_display_score'], $student['_display_grade']];
-                    });
-                    $pdf->Ln(10);
-                    $pdf->SetFont('Helvetica', 'U', 10);
-                    $pdf->Cell(30, 5, "Head of Academic Remarks", 0, 1, 'L', false);
-                    $pdf->Cell(190, 5, "", 'B', 1, 'C', false);
-                    $pdf->Ln(10);
-                    $pdf->Cell(30, 5, "Head of Academic Signature", 0, 1, 'L', false);
-                    $pdf->Cell(60, 10, "", 'B', 1, 'C', false);
-                    $pdf->Ln(10);
-                    $pdf->Cell(50, 5, "Head Teacher / Principal Signature", 0, 1, 'L', false);
-                    $pdf->Cell(60, 10, "", 'B', 1, 'C', false);
-                    $pdf->Output();
+                    // navy and gold sheet with signatures and the stamp (marksheet_lib.php)
+                    ms_print_exam_sheet($conn, $conn2, $exams_names, $exam_ids_printing, $classes_for_exams, $course_id, $module_id, $unit_id, $is_blank, $student_data);
                 } else {
                     echo "<p style='color:red;'><b>Note: </b><br>No examinees have been registered for this exam on the selected course/level/module yet!</p>";
                 }
@@ -8905,31 +8921,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 $cat_info = getCatInfo_report($conn2, $cat_id);
                 $student_data = getExaminees_report($conn2, $exam_ids_printing, $classes_for_exams, $course_id, $module_id);
                 if (count($student_data) > 0) {
-                    $pdf = new PDF('P', 'mm', 'A4');
-                    $pdf->setHeaderPos(200);
-                    $doc_title = $is_blank ? " C.A.T Sheet." : " C.A.T Marks Sheet.";
-                    $pdf->set_document_title(ucwords(strtolower($exams_names)) . " " . className_exam($classes_for_exams) . " " . $unit_info['unit_name'] . $doc_title);
-                    $pdf->setSchoolLogo("../../" . schoolLogo($conn));
-                    $pdf->set_school_name($_SESSION['schname']);
-                    $pdf->set_school_po($_SESSION['po_boxs']);
-                    $pdf->set_school_box_code($_SESSION['box_codes']);
-                    $pdf->set_school_contact($_SESSION['school_contact']);
-                    $pdf->AddPage();
-                    $pdf->SetFont('Helvetica', 'B', 10);
-                    $pdf->Cell(190, 6, $unit_info['unit_name'] . " {" . $unit_info['unit_code'] . "} - " . $cat_info['cat_name'] . " (" . $cat_info['max_marks'] . " Mks)", 0, 1, 'C', false);
-                    $pdf->Ln(2);
-                    renderExamineesTable_report($pdf, ["Score (" . $cat_info['max_marks'] . " Mks)"], [45], $student_data, function ($student) use ($conn2, $cat_id, $is_blank) {
-                        if ($is_blank) {
-                            return [""];
-                        }
-                        $score = getCatScore_report($conn2, $cat_id, $student['examinee_id']);
-                        return [strlen((string)$score) > 0 ? $score : "-"];
-                    });
-                    $pdf->Output();
+                    // navy and gold sheet with signatures and the stamp (marksheet_lib.php)
+                    ms_print_cat_sheet($conn, $conn2, $exams_names, $classes_for_exams, $course_id, $module_id, $unit_id, $cat_id, $is_blank, $student_data);
                 } else {
                     echo "<p style='color:red;'><b>Note: </b><br>No examinees have been registered for this exam on the selected course/level/module yet!</p>";
                 }
             }
+        } elseif ($what_to_print == "transcripts" || $what_to_print == "report_card") {
+            // semester-wise and year-wise transcripts (transcript_lib.php)
+            include("../connections/conn2.php");
+            include("../connections/conn1.php");
+            tr_print_transcripts($conn, $conn2, $what_to_print, $classes_for_exams, $_POST['courses_for_exams'] ?? '', $_POST['course_modules_for_exams'] ?? '', $_POST['transcript_year'] ?? '', $_POST['transcript_reg_no'] ?? '');
         } elseif ($what_to_print == "student_report_card") {
             include("../connections/conn2.php");
             include("../connections/conn1.php");
@@ -16044,6 +16046,21 @@ function print_A5_receipt($receipt_id, $database)
     // connections
     include("../connections/conn1.php");
     include("../connections/conn2.php");
+
+    // the new receipt design follows the college default from Settings
+    if (rc_receipt_style($conn2) == 'new') {
+        $school = rc_receipt_school($conn, $database);
+        $r = count($school) > 0 ? rc_receipt_from_finance($conn, $conn2, $receipt_id) : null;
+        if ($r === null) {
+            echo "<p style='color:red;'>Invalid URL, contact the school and try again!</p>";
+            return 0;
+        }
+        $pdf = rc_receipt_pdf();
+        $pdf->SetTitle("Receipt No. " . $r['receipt_no']);
+        rc_receipt_sheet($pdf, $conn, $conn2, $school, $r, "top", ["STUDENT COPY"]);
+        $pdf->Output();
+        return 0;
+    }
 
     // get the payment details
     $select = "SELECT * FROM `finance` WHERE `transaction_id` = '" . $receipt_id . "'";

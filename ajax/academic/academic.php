@@ -1280,6 +1280,44 @@ use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
             }
             $data_to_display .= "</select>";
             echo $data_to_display;
+        }elseif(isset($_GET['get_transcript_course_levels'])){
+            // every course level the college offers (transcripts are not tied to one exam)
+            $object_id = isset($_GET['object_id']) ? preg_replace('/[^A-Za-z0-9_]/', '', $_GET['object_id']) : "course_level_option";
+            $stmt = $conn2->prepare("SELECT `valued` FROM `settings` WHERE `sett` = 'class' LIMIT 1");
+            $stmt->execute();
+            $row = $stmt->get_result()->fetch_assoc();
+            $levels = ($row && isJson_report($row['valued'])) ? json_decode($row['valued']) : [];
+            $data_to_display = "<select required name='$object_id' id='$object_id' class='form-control'><option value='' hidden>Select option</option>";
+            foreach ($levels as $level) {
+                $data_to_display .= "<option value='".htmlspecialchars($level->classes, ENT_QUOTES)."'>".htmlspecialchars($level->classes)."</option>";
+            }
+            $data_to_display .= "</select>";
+            echo $data_to_display;
+        }elseif(isset($_GET['get_transcript_courses'])){
+            // courses offered at a course level; courses list their level by its id in the 'class' setting
+            $object_id = isset($_GET['object_id']) ? preg_replace('/[^A-Za-z0-9_]/', '', $_GET['object_id']) : "course_list_option";
+            $course_level = $_GET['course_level'] ?? '';
+            $stmt = $conn2->prepare("SELECT `sett`, `valued` FROM `settings` WHERE `sett` IN ('class', 'courses')");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $levels = [];
+            $courses = [];
+            while ($result && $row = $result->fetch_assoc()) {
+                $decoded = isJson_report($row['valued']) ? json_decode($row['valued']) : [];
+                if ($row['sett'] == 'class') $levels = $decoded;
+                else $courses = $decoded;
+            }
+            $level_id = null;
+            foreach ($levels as $level) {
+                if ((string) $level->classes === (string) $course_level) $level_id = (string) $level->id;
+            }
+            $data_to_display = "<select required name='$object_id' id='$object_id' class='form-control'><option value='' hidden>Select option</option>";
+            foreach ($courses as $course) {
+                if ($level_id !== null && (string) ($course->course_level ?? '') !== $level_id) continue;
+                $data_to_display .= "<option value='".htmlspecialchars($course->id, ENT_QUOTES)."'>".htmlspecialchars(ucwords(strtolower($course->course_name)))."</option>";
+            }
+            $data_to_display .= "</select>";
+            echo $data_to_display;
         }elseif(isset($_GET['get_course_list'])){
             $course_level = $_GET['course_level'];
             $exam_id = $_GET['exam_id'];

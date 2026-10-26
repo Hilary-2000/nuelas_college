@@ -47,7 +47,7 @@
                         <label for="course_list_option" class="form-control-label">Course List</label>
                         <span id="course_list_filter_holder"><p class="text-success p-1 my-2 border border-success rounded">Course List Will appear here!</p></span>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" id="module_list_holder_window">
                         <label for="module_list_option" class="form-control-label">Module List</label>
                         <span id="module_list_filter_holder"><p class="text-success p-1 my-2 border border-success rounded">Module List Will appear here!</p></span>
                     </div>
@@ -58,6 +58,19 @@
                     <div class="col-md-4 d-none" id="cat_list_option_window">
                         <label for="cat_list_option" class="form-control-label">CAT List</label>
                         <span id="cat_list_filter_holder"><p class="text-success p-1 my-2 border border-success rounded">CAT List Will appear here!</p></span>
+                    </div>
+                    <div class="col-md-4 d-none" id="transcript_year_window">
+                        <label for="transcript_year" class="form-control-label">Year</label>
+                        <select name="transcript_year" id="transcript_year" class="form-control">
+                            <option value="" hidden>Select year</option>
+                            <?php for ($transcript_year = (int) date("Y") + 1; $transcript_year >= (int) date("Y") - 8; $transcript_year--) { echo "<option value='" . $transcript_year . "'>" . $transcript_year . "</option>"; } ?>
+                        </select>
+                        <small class="text-secondary">Covers every module the student started in this year.</small>
+                    </div>
+                    <div class="col-md-4 d-none" id="transcript_student_window">
+                        <label for="transcript_reg_no" class="form-control-label">Single student (optional)</label>
+                        <input type="text" name="transcript_reg_no" id="transcript_reg_no" class="form-control" placeholder="Reg No.">
+                        <small class="text-secondary">Leave blank to print transcripts for the whole course.</small>
                     </div>
                     <div class="col-md-12">
                         <button type="button" id="display_course_reports"><i class="fas fa-eye"></i> Display</button>

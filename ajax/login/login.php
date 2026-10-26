@@ -69,6 +69,7 @@ function verifyTurnstile($token) {
                             if ($checkcoded) {
                                 $allowed = allowedIn($userauth,$conn,$schcode);
                                 if($allowed){
+                                    unset($_SESSION['idle_locked']);
                                     $_SESSION['username'] = $usernames;
                                     $_SESSION['schcode'] = $schcode;
                                     $_SESSION['authority'] = $userauth;

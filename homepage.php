@@ -729,6 +729,14 @@ function checkPresnt($array, $string){
                             <option hidden value="thermal1">Thermal paper size 80mm Sample 1</option>
                         </select>
                     </p>
+                    <p>
+                        <label class="form-control-label"><b>Receipt style</b></label>
+                        <select name="receipt_style" class="form-control">
+                            <option value="default" selected>College default</option>
+                            <option value="new">New (navy and gold)</option>
+                            <option value="classic">Classic</option>
+                        </select>
+                    </p>
                     <input type="hidden" name="student_admission_no" id="student_admission_no_transfer">
                     <input type="hidden" name="amount_paid_by_student" id="amount_paid_by_student_transfer">
                     <input type="hidden" name="new_student_balance" id="new_student_balance_transfer">
@@ -777,6 +785,14 @@ function checkPresnt($array, $string){
                             <option value="A4">A4 Size Full</option>
                             <option value="A51">A5 Size Sample 1</option>
                             <option value="thermal1">Thermal paper size 80mm Sample 1</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label class="form-control-label"><b>Receipt style</b></label>
+                        <select name="receipt_style" class="form-control">
+                            <option value="default" selected>College default</option>
+                            <option value="new">New (navy and gold)</option>
+                            <option value="classic">Classic</option>
                         </select>
                     </p>
                     <input type="hidden" name="student_admission_no" id="student_admission_no">
@@ -4924,10 +4940,98 @@ function checkPresnt($array, $string){
         </div>
     </div>
     </div>
+    <!-- Idle screen lock: shown after the school's idle timeout, see assets/JS/idleLock.js -->
+    <div class="confirmpaymentwindow idle_lock_backdrop<?php echo empty($_SESSION['idle_locked']) ? ' hide' : ''; ?>" id="idle_lock_window" role="dialog" aria-modal="true" aria-labelledby="idle_lock_title">
+        <div class="changesubwindow editexams animate idle_lock_card">
+            <div class="idle_lock_header">
+                <div class="idle_lock_icon"><i class="fas fa-lock"></i></div>
+                <h5 id="idle_lock_title">Screen Locked</h5>
+                <p>Your session is paused, not ended</p>
+            </div>
+            <div class="conts idle_lock_body">
+                <p class="idle_lock_greeting">Hi <b><?php echo htmlspecialchars(ucwords(strtolower($_SESSION['username'] ?? '')), ENT_QUOTES, 'UTF-8'); ?></b>, the screen was locked after <b id="idle_lock_minutes_label">5 minutes</b> of inactivity. Enter your password to continue where you left off.</p>
+                <label class="form-control-label" for="idle_lock_password">Password</label>
+                <div class="idle_lock_input">
+                    <i class="fas fa-key"></i>
+                    <input class="form-control w-100" type="password" id="idle_lock_password" placeholder="Enter your password" autocomplete="current-password">
+                </div>
+                <p class="text-danger" id="idle_lock_error"></p>
+                <span class="hide" id="idle_lock_loader"><img src="images/ajax_clock_small.gif"> Verifying...</span>
+                <p class="hide idle_lock_hint" id="idle_lock_settings_hint"><i class="fas fa-info-circle"></i> You can change how long the system waits before locking under <b>Settings &gt; Idle Screen Lock</b>.</p>
+            </div>
+            <div class="btns">
+                <button type="button" id="idle_lock_unlock"><i class="fas fa-unlock"></i> Unlock</button>
+                <button type="button" id="idle_lock_logout"><i class="fas fa-sign-out-alt"></i> Log out</button>
+            </div>
+        </div>
+    </div>
+    <!-- Signature / college stamp editor (assets/JS/signatures.js) -->
+    <div class="confirmpaymentwindow hide" style="overflow: auto;" id="sig_editor_popup">
+        <div class="changesubwindow window_lg animate">
+            <div class="conts">
+                <p class="funga" id="close_sig_editor">&times</p>
+                <h6 id="sig_editor_title">Signature</h6>
+            </div>
+            <div class="conts">
+                <div class="sig_editor_tabs" id="sig_editor_tabs">
+                    <button type="button" class="sig_tab sig_tab_active" id="sig_tab_draw"><i class="fas fa-pen-nib"></i> Draw</button>
+                    <button type="button" class="sig_tab" id="sig_tab_upload"><i class="fas fa-image"></i> Upload a photo</button>
+                </div>
+
+                <div id="sig_draw_panel">
+                    <p class="sig_hint">Sign inside the box with your mouse, touchpad or finger.</p>
+                    <canvas id="sig_draw_canvas" class="sig_draw_canvas" width="700" height="220"></canvas>
+                    <div class="sig_tools">
+                        <label for="sig_draw_color">Ink colour:</label>
+                        <select id="sig_draw_color" class="form-control sig_inline_select">
+                            <option value="#1a3a8f">Blue</option>
+                            <option value="#111111">Black</option>
+                        </select>
+                        <span class="link" id="sig_draw_clear"><i class="fas fa-eraser"></i> Clear</span>
+                    </div>
+                </div>
+
+                <div id="sig_upload_panel" class="hide">
+                    <p class="sig_hint" id="sig_upload_hint">Take a clear photo of the ink on plain white paper, then drag on the photo to crop around it.</p>
+                    <input type="file" accept="image/*" class="form-control" id="sig_upload_file">
+                    <div class="row mt-2 hide" id="sig_upload_work">
+                        <div class="col-md-6">
+                            <p class="sig_caption">Photo <small>(drag to crop)</small></p>
+                            <canvas id="sig_source_canvas" class="sig_source_canvas"></canvas>
+                            <div class="sig_tools">
+                                <span class="link" id="sig_rotate_left"><i class="fas fa-undo"></i> Rotate</span>
+                                <span class="link" id="sig_rotate_right"><i class="fas fa-redo"></i> Rotate</span>
+                                <span class="link" id="sig_crop_reset"><i class="fas fa-expand"></i> Undo crop</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="sig_caption">Result <small>(checkered areas are see-through)</small></p>
+                            <canvas id="sig_preview_canvas" class="sig_preview_canvas"></canvas>
+                            <label for="sig_strength" class="mt-2">Paper removal: <b id="sig_strength_value">40</b></label>
+                            <input type="range" id="sig_strength" min="0" max="100" value="40" class="w-100">
+                            <label for="sig_ink_mode">Ink colour:</label>
+                            <select id="sig_ink_mode" class="form-control">
+                                <option value="original">Keep the original colour</option>
+                                <option value="#1a3a8f">Clean blue</option>
+                                <option value="#111111">Clean black</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <p id="sig_editor_error"></p>
+            </div>
+            <div class="btns">
+                <button type="button" id="save_sig_editor"><i class="fas fa-save"></i> Save</button>
+                <button type="button" id="close_sig_editor2">Close</button>
+            </div>
+        </div>
+    </div>
     <div class="copyright">
         <p> Last System Update: 28th October 2025 @ 10:01AM || Ladybird SMIS Copyright © 2020 - <?php echo date("Y"); ?> | All rights reserved</p>
     </div>
     <script src="assets/JS/functions.js"></script>
+    <script src="assets/JS/idleLock.js"></script>
+    <script src="assets/JS/signatures.js"></script>
     <script src="assets/JS/print.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>

@@ -366,6 +366,9 @@ if (cObj("filter_option") != null) cObj("filter_option").onchange = function () 
     cObj("exam_list_option_filter_holder").classList.remove("hide");
     cObj("unit_list_holder_window").classList.remove("d-none");
     cObj("display_course_reports").classList.remove("d-none");
+    cObj("module_list_holder_window").classList.remove("d-none");
+    cObj("transcript_year_window").classList.add("d-none");
+    cObj("transcript_student_window").classList.add("d-none");
     if (this.value == "student_perfomance") {
         if (typeof(cObj("exam_list_option")) == 'undefined' || cObj("exam_list_option") == null){
             get_exam_list_report();
@@ -388,17 +391,60 @@ if (cObj("filter_option") != null) cObj("filter_option").onchange = function () 
         }
         cObj("what_to_print_2").value = "exams_cat_marks";
     }else if(this.value == "transcripts" || this.value == "report_card"){
+        // transcripts cover every exam the student sat, so there is no exam or unit to pick:
+        // course level, then course, then the module (semester-wise) or the year (year-wise)
         cObj("what_to_print_2").value = this.value;
         cObj("display_course_reports").classList.add("d-none");
         cObj("exam_list_option_filter_holder").classList.add("hide");
         cObj("unit_list_holder_window").classList.add("d-none");
         cObj("exam_list_option_filter_holder").innerHTML = '<p class="text-success p-1 my-2 border border-success rounded">Exam List appear here!</p>';
-
-        // display course levels
-        if(cObj("course_level_option") == undefined){
-            get_course_level_filter();
+        cObj("transcript_student_window").classList.remove("d-none");
+        if (this.value == "report_card") {
+            cObj("module_list_holder_window").classList.add("d-none");
+            cObj("transcript_year_window").classList.remove("d-none");
         }
+        cObj("course_list_filter_holder").innerHTML = '<p class="text-success p-1 my-2 border border-success rounded">Course List Will appear here!</p>';
+        cObj("module_list_filter_holder").innerHTML = '<p class="text-success p-1 my-2 border border-success rounded">Module List Will appear here!</p>';
+        get_transcript_course_levels();
     }
+}
+
+function get_transcript_course_levels() {
+    var datapass = "?get_transcript_course_levels=true&object_id=course_level_option";
+    sendData1("GET", "academic/academic.php", datapass, cObj("course_level_filter_holder"), function () {
+        if (cObj("course_level_option") != undefined) {
+            $("#course_level_option").select2({
+                width: "100%"
+            });
+            cObj("course_level_option").onchange = get_transcript_courses;
+        }
+    });
+}
+
+function get_transcript_courses() {
+    cObj("classes_for_exams_2").value = cObj("course_level_option").value;
+    var datapass = "?get_transcript_courses=true&course_level="+encodeURIComponent(cObj("course_level_option").value)+"&object_id=course_list_option";
+    sendData2("GET", "academic/academic.php", datapass, cObj("course_list_filter_holder"), cObj("loadings"), function () {
+        if (cObj("course_list_option") != undefined) {
+            $("#course_list_option").select2({
+                width: "100%"
+            });
+            cObj("course_list_option").onchange = function () {
+                cObj("courses_for_exams_3").value = this.value;
+                if (valObj("filter_option") != "transcripts") {
+                    return;
+                }
+                var datapass = "?get_course_module_terms="+encodeURIComponent(this.value)+"&object_id=module_list_option";
+                sendData2("GET", "administration/admissions.php", datapass, cObj("module_list_filter_holder"), cObj("loadings"), function () {
+                    if (cObj("module_list_option") != undefined) {
+                        cObj("module_list_option").onchange = function () {
+                            cObj("course_modules_for_exams_2").value = this.value;
+                        }
+                    }
+                });
+            }
+        }
+    });
 }
 
 function get_exam_list_report(){

@@ -79,6 +79,75 @@
                     <p id="add_course_err_handler"></p>
                 </div>
             </div>
+            <div class="setting_s" id="sig_settings_section">
+                <div class="bg-secondary mt-0">
+                    <p class="text-center text-white">Signatures &amp; College Stamp</p>
+                </div>
+                <div class="conts p-1 m-1">
+                    <span class="hide" id="sig_settings_loader"><img src="images/ajax_clock_small.gif"> Loading...</span>
+                    <p class="text-danger hide" id="sig_settings_readonly"><i class="fas fa-lock"></i> Your role can view these settings but not change them.</p>
+
+                    <h6>College Stamp</h6>
+                    <p>- Upload a photo of the college stamp. The paper behind it is removed so it prints cleanly on the documents you tick below.</p>
+                    <div class="sig_card_preview sig_stamp_preview" id="sig_stamp_preview"><span class="sig_empty">No stamp yet</span></div>
+                    <div class="my-2">
+                        <span class="btn btn-sm btn-outline-secondary sig_edit_only" id="sig_stamp_change"><i class="fas fa-stamp"></i> Upload / Change Stamp</span>
+                        <span class="btn btn-sm btn-outline-danger sig_edit_only hide" id="sig_stamp_remove"><i class="fas fa-trash"></i> Remove</span>
+                    </div>
+                    <p id="sig_stamp_status"></p>
+
+                    <p class="mb-1"><b>Show the stamp on:</b></p>
+                    <div class="tableme">
+                        <table class="table" id="sig_documents_table">
+                            <thead><tr><th>Document</th><th>Description</th><th>Show Stamp</th></tr></thead>
+                            <tbody id="sig_documents_body"></tbody>
+                        </table>
+                    </div>
+
+                    <h6 class="mt-3">Signatures</h6>
+                    <p>- The principal and deputy principals add their signature from their profile, or an administrator adds it from Manage Staff.</p>
+                    <label class="mb-2" style="cursor:pointer;">
+                        <input type="checkbox" id="sig_print_signatures"> Print signatures on receipts and transcripts
+                    </label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="sig_signing_headteacher">Principal whose signature is used:</label>
+                            <select class="form-control w-100" id="sig_signing_headteacher"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sig_signing_deputy">Deputy principal whose signature is used:</label>
+                            <select class="form-control w-100" id="sig_signing_deputy"></select>
+                            <p style="font-size:12px;" class="mb-0">Also used in place of the principal's signature when the principal has none.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label for="sig_receipt_style">Receipt style:</label>
+                            <select class="form-control w-100" id="sig_receipt_style">
+                                <option value="new">New (navy and gold)</option>
+                                <option value="classic">Classic</option>
+                            </select>
+                            <p style="font-size:12px;" class="mb-0">Used by default when printing receipts, and for receipts opened from the SMS link. Each print window can still choose a different style.</p>
+                        </div>
+                    </div>
+                    <p id="sig_settings_status" class="mt-2"></p>
+                    <span class="btn btn-success sig_edit_only" id="sig_settings_save"><i class="fas fa-save"></i> Save</span>
+                </div>
+            </div>
+            <div class="setting_s">
+                <div class="bg-secondary mt-0">
+                    <p class="text-center text-white">Idle Screen Lock</p>
+                </div>
+                <div class="conts p-1 m-1">
+                    <p>Lock the screen and ask for the user's password after this many minutes without any activity. Users stay logged in while locked.</p>
+                    <span class="hide" id="idle_lock_settings_loader"><img src="images/ajax_clock_small.gif"></span>
+                    <label for="idle_lock_timeout_input">Lock after (minutes): <br></label>
+                    <input class="form-control" type="number" id="idle_lock_timeout_input" min="1" max="1440" step="1" value="5" style="max-width:150px;">
+                    <small class="text-secondary">Default is 5 minutes. Maximum is 1440 (24 hours).</small>
+                    <div id="idle_lock_settings_output"></div>
+                    <button type="button" id="save_idle_lock_timeout"><i class="fas fa-save"></i> Save</button>
+                </div>
+            </div>
             <div class="setting_s">
                 <div class="bg-secondary mt-0">
                     <p class="text-center text-white">Course Update Option</p>

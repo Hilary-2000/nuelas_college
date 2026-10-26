@@ -80,6 +80,18 @@
                         <button type='button' id="change_my_information"><i class="fas fa-pen-fancy"></i> Change Information</button>
                     </div>
                 </div>
+                <?php if (in_array((string) ($_SESSION['auth'] ?? ''), ['1', '2', '3'], true)): ?>
+                <div class="section_card">
+                <p class="card_heading">My Signature</p>
+                <p style="font-size:13px;">Your signature is printed on receipts, transcripts and other documents that need it, in place of signing each one by hand.</p>
+                <div class="sig_card_preview" id="my_signature_preview"><span class="sig_empty">No signature yet</span></div>
+                <p id="my_signature_status" style="font-size:13px;"></p>
+                <div class="btns">
+                    <button type="button" id="my_signature_change"><i class="fas fa-signature"></i> Add / Change Signature</button>
+                    <button type="button" class="hide" id="my_signature_remove"><i class="fas fa-trash"></i> Remove</button>
+                </div>
+                </div>
+                <?php endif; ?>
                 <div class="section_card">
                 <p class="card_heading">Change Credentials</p>
                 <div class="administrator_contact">
