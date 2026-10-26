@@ -1,4 +1,60 @@
 <?php
+  // Sends an OTP code via the WhatsApp Business (Meta) Cloud API using a
+  // pre-approved authentication template. Free-form text is not permitted for
+  // business-initiated WhatsApp messages, so the code is passed as the
+  // template's body parameter. Authentication templates also carry a one-tap
+  // "copy code" button (rendered as a dynamic URL button by the Cloud API),
+  // which needs the same code passed as its own button component parameter -
+  // omitting it fails with "buttons: Button at index 0 of type Url requires a
+  // parameter".
+  function sendWhatsappToClient($phone_number, $code, $access_token, $phone_number_id, $template_name, $template_lang = "en")
+  {
+    $phone_number = preg_replace('/[^0-9]/', '', $phone_number);
+    if (strlen($phone_number) < 10) {
+      return false;
+    }
+
+    $url = "https://graph.facebook.com/v19.0/" . $phone_number_id . "/messages";
+    $payload = [
+      "messaging_product" => "whatsapp",
+      "to" => $phone_number,
+      "type" => "template",
+      "template" => [
+        "name" => $template_name,
+        "language" => ["code" => $template_lang],
+        "components" => [
+          [
+            "type" => "body",
+            "parameters" => [
+              ["type" => "text", "text" => $code],
+            ],
+          ],
+          [
+            "type" => "button",
+            "sub_type" => "url",
+            "index" => "0",
+            "parameters" => [
+              ["type" => "text", "text" => $code],
+            ],
+          ],
+        ],
+      ],
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+      "Authorization: Bearer " . $access_token,
+      "Content-Type: application/json",
+    ]);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+  }
+
   //another one
   function sendSmsToClient($phone_number,$message,$apikey,$partnerID,$shortcodes,$url = null){
     $partnerID = $partnerID;
@@ -79,4 +135,4 @@
           default: return "both_parent";
       }
   }
-?>
+?>

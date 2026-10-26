@@ -1,4 +1,4 @@
-/* Modern auth screens (login.php, loginsch.php). Deliberately namespaced
+/* Modern auth screens (login.php, loginsch.php, verification_code.php). Deliberately namespaced
    under .auth-* so none of this touches the .mainpage/.top/.login classes
    shared with other pages. */
 
@@ -155,6 +155,10 @@
     box-shadow: 0 2px 8px rgba(0,0,0,.12);
     flex-shrink: 0;
 }
+/* the logo sits on its own above the heading on verification_code.php */
+.auth-card > .auth-school-logo{
+    margin-bottom: 14px;
+}
 .auth-school-info{
     min-width: 0;
 }
@@ -250,11 +254,109 @@
 }
 /* IDs (rather than a plain class) so this keeps winning the cascade once
    the sitewide button design system lands in mainpage.css. */
-#submitUname, #subpwd{
+#submitUname, #subpwd, #submit_verification_code, #back_to_system, #landing_logout{
     padding: 12px 14px !important;
     border-radius: 12px !important;
     font-size: 14.5px !important;
 }
+.auth-channels{
+    margin-bottom: 20px;
+}
+.auth-channels > label.auth-channels-label{
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4c5c5d;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 8px;
+}
+.auth-channel-opts{
+    display: flex;
+    gap: 8px;
+}
+.auth-channel-opt{
+    flex: 1;
+    position: relative;
+}
+.auth-channel-opt input{
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+.auth-channel-opt span{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px 8px;
+    border: 1.5px solid #e3e9ea;
+    border-radius: 12px;
+    font-size: 11.5px;
+    color: #62787a;
+    text-align: center;
+    transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.auth-channel-opt span i{ font-size: 16px; }
+.auth-channel-opt input:checked + span{
+    border-color: rgb(3,131,135);
+    background: rgba(3,131,135,.07);
+    color: rgb(3,131,135);
+    font-weight: 600;
+}
+.auth-channel-opt input:focus-visible + span{
+    box-shadow: 0 0 0 3px rgba(3,131,135,.15);
+}
+
+/* ---------- OTP segmented input ---------- */
+.otp-boxes{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 4px 0 8px;
+}
+.otp-boxes input{
+    width: 52px;
+    height: 58px;
+    padding: 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #122;
+    border: 1.5px solid #e3e9ea;
+    border-radius: 12px;
+    background: #fbfcfc;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.otp-boxes input:focus{
+    border-color: rgb(3,131,135);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(3,131,135,.12);
+}
+.otp-boxes input.otp-error{
+    border-color: #d32f2f;
+    background: #fdecea;
+    color: #d32f2f;
+}
+.auth-resend{
+    text-align: center;
+    font-size: 13px;
+    margin: 12px 0 0;
+}
+.auth-resend a{
+    color: rgb(3,131,135);
+    text-decoration: none;
+    font-weight: 500;
+}
+.auth-resend a[disabled]{
+    color: #aab8b9;
+    pointer-events: none;
+}
+
 .auth-links{
     text-align: center;
     margin-top: 16px;
