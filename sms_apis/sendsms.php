@@ -410,7 +410,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-control-label" for="to_msg_sent">To:</label>
-                                    <input class="form-control" type="date" name="to_msg_sent" id="to_msg_sent" value = <?php echo date("Y-m-d", strtotime("3 hour"))?>><br>
+                                    <input class="form-control" type="date" name="to_msg_sent" id="to_msg_sent" value = <?php echo date("Y-m-d")?>><br>
                                 </div>
                                 <div class="col-md-4">
                                     <button role="button" id="view_sms_history"><i class="fas fa-eye"></i> View SMS history</button>

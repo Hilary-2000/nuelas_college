@@ -44,7 +44,7 @@
                         <div class="conts hide row w-100" id="btnperiods">
                             <div class="col-md-6">
                                 <label for="btnperiod" class="form-control-label">From: <br></label>
-                                <input type="date" class="form-control w-100" style="width: 100%;" name="btnperiod" id="btnperiod" max=<?php echo date("Y-m-d", strtotime("3 hour")); ?>>
+                                <input type="date" class="form-control w-100" style="width: 100%;" name="btnperiod" id="btnperiod" max=<?php echo date("Y-m-d"); ?>>
                             </div>
                             <div class="col-md-6">
                                 <label for="endsperiod" class="form-control-label">To: <br></label>
