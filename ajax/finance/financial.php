@@ -1832,7 +1832,7 @@
 
             $update = "UPDATE `fees_structure` SET `expenses` = ?,`TERM_1` = ? , `TERM_2` = ?, `TERM_3` = ?, `TERM_4` = ?, `classes` = ?, `course` = ?, `roles` = ? , `date_changed` = ? ,`term_1_old` = ? , `term_2_old` = ?, `term_3_old` = ? WHERE `ids` = ?";
             $stmt = $conn2->prepare($update);
-            $date_changed = date("Y-m-d",strtotime("3 hours"));
+            $date_changed = date("Y-m-d");
             $stmt->bind_param("sssssssssssss",$expensename,$t_one,$t_two,$t_three,$t_four,$course_level,$course,$roles,$date_changed,$term_1_old,$term_2_old,$term_3_old,$fee_ids);
             $execute = $stmt->execute();
             if ($execute) {
@@ -6720,7 +6720,7 @@
                 return $row['date_of_transaction'];
             }
         }
-        return date("Y-m-d",strtotime("3 hours"));
+        return date("Y-m-d");
     }
     function getPeriods($years,$conn2){
         $select = "";
