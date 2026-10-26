@@ -3,6 +3,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+// payments are dated in Kenyan time, whatever timezone the server runs in
+date_default_timezone_set('Africa/Nairobi');
 /**
  * These are the steps to follow when a transaction is recieved
  * 1. Check if the paybill number is registered
@@ -114,7 +116,7 @@ if (session_status() === PHP_SESSION_NONE) {
                             $stud_admin = $jsonMpesaResponse['BillRefNumber'];
                             $transactionCode = $jsonMpesaResponse['TransID'];
                             $TransAmount = $jsonMpesaResponse['TransAmount']*1;
-                            $time = date("H:i:s", strtotime("3 hour"));
+                            $time = date("H:i:s");
                             $date = date("Y-m-d");
                             $paymentFor = json_encode(getPaymentFor($conn2, $row, ($jsonMpesaResponse['TransAmount']*1)));
                             $paidBy = "mpesa";

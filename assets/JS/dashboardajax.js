@@ -73,7 +73,7 @@ if (auth == '1') {
     function loadFees() {
         sendData("GET", "administration/admissions.php", "?schoolfeesrecieved=true", _feesSink, function () {
             feesRealValue = _feesSink.innerText;
-            cObj("schoolfeesrecieved").innerText = "Ksh xxx";
+            cObj("schoolfeesrecieved").innerText = feesVisible ? feesRealValue : "Ksh xxx";
         });
     }
     loadFees();
