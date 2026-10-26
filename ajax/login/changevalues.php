@@ -27,7 +27,15 @@ date_default_timezone_set('Africa/Nairobi');
             $_SESSION['school_mails'] = $data;
             $_SESSION['school_mail'] = $data;
             $_SESSION['class_taughts'] = "N/A";
-        }elseif ($_GET['newvalues']) {
+            unset($_SESSION['otp_user_id'], $_SESSION['otp_verification_id'], $_SESSION['otp_attempts'], $_SESSION['otp_last_sent'], $_SESSION['otp_verified']);
+        }elseif (isset($_GET['newvalues'])) {
+            // the session only opens up once the login verification code has been confirmed
+            if (empty($_SESSION['otp_verified'])) {
+                http_response_code(403);
+                echo "<p style='color:red;'>Verify your login first.</p>";
+                exit();
+            }
+            unset($_SESSION['otp_verified'], $_SESSION['otp_user_id']);
             $_SESSION['fullnames'] =$_SESSION['username'];
             $_SESSION['schoolcode'] =$_SESSION['schcode'];
             $_SESSION['auth'] =$_SESSION['authority'];
@@ -44,4 +52,4 @@ date_default_timezone_set('Africa/Nairobi');
         }
 
     }
-?>
+?>
