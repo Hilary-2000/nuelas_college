@@ -28,6 +28,7 @@ date_default_timezone_set('Africa/Nairobi');
             $_SESSION['school_mail'] = $data;
             $_SESSION['class_taughts'] = "N/A";
             unset($_SESSION['otp_user_id'], $_SESSION['otp_verification_id'], $_SESSION['otp_attempts'], $_SESSION['otp_last_sent'], $_SESSION['otp_verified']);
+            unset($_SESSION['idle_locked']);
         }elseif (isset($_GET['newvalues'])) {
             // the session only opens up once the login verification code has been confirmed
             if (empty($_SESSION['otp_verified'])) {
