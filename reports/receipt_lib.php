@@ -508,3 +508,119 @@ function rc_receipt_sheet($pdf, $conn, $conn2, $school, $r, $layout, $labels = [
         rc_receipt_draw($pdf, $conn, $conn2, $school, $r, 8, 154, 194, 136, $labels[1]);
     }
 }
+
+// ── Thermal receipt: 80mm roll, black and white, page as long as the receipt ──
+
+define('RC_THERMAL_WIDTH', 80);
+define('RC_THERMAL_MARGIN', 4);
+
+// Draws the receipt down a strip RC_THERMAL_WIDTH wide and returns the y where it ends.
+function rc_receipt_thermal_draw($pdf, $school, $r)
+{
+    $x = RC_THERMAL_MARGIN;
+    $w = RC_THERMAL_WIDTH - 2 * RC_THERMAL_MARGIN;
+    $y = 4;
+    $line = function ($text, $style = '', $size = 8, $align = 'C', $h = 4) use ($pdf, $x, $w, &$y) {
+        $pdf->SetFont('Helvetica', $style, $size);
+        foreach (rc_wrap_lines($pdf, $text, $w) as $part) {
+            $pdf->SetXY($x, $y);
+            $pdf->Cell($w, $h, $part, 0, 0, $align);
+            $y += $h;
+        }
+    };
+    $pair = function ($label, $value, $style = '', $size = 8) use ($pdf, $x, $w, &$y) {
+        $pdf->SetFont('Helvetica', $style, $size);
+        $value_w = min($pdf->GetStringWidth($value) + 1, $w * 0.62);
+        $pdf->SetXY($x, $y);
+        rc_fit_text($pdf, $w - $value_w, 4.2, $label, 'L', 'Helvetica', $style, $size, 6);
+        $pdf->SetXY($x + $w - $value_w, $y);
+        rc_fit_text($pdf, $value_w, 4.2, $value, 'R', 'Helvetica', $style, $size, 6);
+        $y += 4.2;
+    };
+    $rule = function ($dashed = true) use ($pdf, $x, $w, &$y) {
+        $y += 1;
+        $pdf->SetDrawColor(0, 0, 0);
+        $pdf->SetLineWidth(0.2);
+        if ($dashed) {
+            for ($dx = $x; $dx < $x + $w; $dx += 2) $pdf->Line($dx, $y, min($dx + 1, $x + $w), $y);
+        } else {
+            $pdf->Line($x, $y, $x + $w, $y);
+        }
+        $y += 2;
+    };
+
+    // header: logo, college and contacts
+    $logo = isset($school['school_profile_image']) ? dirname(__FILE__) . "/../" . $school['school_profile_image'] : "";
+    if (strlen($logo) > 0 && is_file($logo)) {
+        try {
+            $pdf->Image($logo, $x + ($w - 16) / 2, $y, 16);
+            $y += 18;
+        } catch (Exception $e) {}
+    }
+    $line(strtoupper(trim($school['school_name'] ?? '')), 'B', 10, 'C', 4.6);
+    if (strlen(trim((string) ($school['school_motto'] ?? ''))) > 0) {
+        $line(ucfirst(strtolower(trim($school['school_motto']))), 'I', 7.5);
+    }
+    $line('P.O. Box ' . ($school['po_box'] ?? '') . '-' . ($school['box_code'] ?? '') . (strlen(trim((string) ($school['county'] ?? ''))) > 0 ? ', ' . $school['county'] : ''), '', 7.5);
+    $line('Tel: ' . ($school['school_contact'] ?? ''), '', 7.5);
+    if (strlen(trim((string) ($school['school_mail'] ?? ''))) > 0) $line($school['school_mail'], '', 7.5);
+    $rule(false);
+    $line($r['title'], 'B', 10, 'C', 4.8);
+    $line('No. ' . $r['receipt_no'], 'B', 9);
+    $rule();
+
+    // payment details
+    foreach ($r['fields'] as $field) {
+        $pair(ucwords(strtolower($field[0])), (string) $field[1]);
+    }
+    $rule();
+
+    // voteheads: name on the left, amount on the right
+    $pdf->SetFont('Helvetica', 'B', 8);
+    $pair('Votehead', 'Amount', 'B');
+    foreach ($r['rows'] as $row) {
+        $pair($row[1] . (strlen((string) $row[2]) > 0 ? ' (' . $row[2] . ')' : ''), $row[3]);
+    }
+    $rule();
+
+    // amount received, in figures and words, then the balances
+    $pair('AMOUNT PAID', 'Kes ' . number_format($r['amount'] * 1, 2), 'B', 10);
+    $words = new NUmbers();
+    $amount = $r['amount'] * 1;
+    $line(($amount < 0 ? "Negative " : "") . $words->convert_number(abs($amount)) . " Kenya Shillings Only", 'I', 7.5, 'L', 3.6);
+    $y += 1;
+    foreach ($r['totals'] as $total) {
+        if ($total[0] == 'Amount Paid') continue;
+        $pair($total[0], $total[1], ($total[2] ?? false) ? 'B' : '');
+    }
+
+    if (count($r['options']) > 0) {
+        $rule();
+        $line('PAYMENT OPTIONS', 'B', 7.5, 'L');
+        foreach ($r['options'] as $i => $option) {
+            $line(($i + 1) . '. ' . $option, '', 7.5, 'L', 3.6);
+        }
+    }
+    $rule();
+    $line('Received with thanks.', 'I', 8);
+    $line('Payment once made is not refundable.', '', 7);
+    $line('Printed on ' . date("D jS M Y, h:i A"), '', 7);
+    return $y + 4;
+}
+
+// The thermal receipt on a page cut to its own length.
+function rc_receipt_thermal_pdf($school, $r)
+{
+    // draw once on a throwaway page to measure, then on a page of exactly that length
+    $measure = new FPDF('P', 'mm', [RC_THERMAL_WIDTH, 2000]);
+    $measure->SetAutoPageBreak(false);
+    $measure->AddPage();
+    $height = rc_receipt_thermal_draw($measure, $school, $r);
+
+    $pdf = new FPDF('P', 'mm', [RC_THERMAL_WIDTH, max($height, RC_THERMAL_WIDTH + 10)]);
+    $pdf->SetMargins(0, 0, 0);
+    $pdf->SetAutoPageBreak(false);
+    $pdf->AddPage();
+    rc_receipt_thermal_draw($pdf, $school, $r);
+    return $pdf;
+}

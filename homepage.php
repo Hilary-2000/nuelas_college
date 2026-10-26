@@ -714,7 +714,7 @@ function checkPresnt($array, $string){
                             <option value="" hidden>Select reciept Size</option>
                             <option hidden value="A4">A4 Size Full</option>
                             <option value="A51">A5 Size Sample 1</option>
-                            <option hidden value="thermal1">Thermal paper size 80mm Sample 1</option>
+                            <option value="thermal1">Thermal paper size 80mm Sample 1</option>
                         </select>
                     </p>
                     <p>

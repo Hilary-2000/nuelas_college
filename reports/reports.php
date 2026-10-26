@@ -7549,8 +7549,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
         // echo $fees_payment_opt_holder;
 
         // the new receipt design (receipt_lib.php); the classic receipt below is kept for
-        // colleges that choose it under Settings, or in the print window
-        if (rc_receipt_style($conn2) == 'new' && ($reciept_size == "A4" || $reciept_size == "A51")) {
+        // colleges that choose it under Settings, or in the print window. The 80mm thermal
+        // receipt is the same in either style.
+        if ($reciept_size == "thermal1" || (rc_receipt_style($conn2) == 'new' && ($reciept_size == "A4" || $reciept_size == "A51"))) {
             // the fees table sends the name as "Name {REG NO}"; the reg no has its own field
             $receipt_name = trim(preg_replace('/\s*[\{\(][^\}\)]*[\}\)]\s*$/', '', $students_names));
             $reprint = isset($_POST['reprint']) && $_POST['reprint'] != "false";
@@ -7579,6 +7580,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['schname'])) {
                 'mode' => rc_receipt_mode_text($mode_of_payments),
                 'code' => $transaction_codes, 'served_by' => rc_receipt_served_by($conn, $served_by_id),
             ]);
+            if ($reciept_size == "thermal1") {
+                $pdf = rc_receipt_thermal_pdf(rc_receipt_school($conn), $receipt);
+                $pdf->SetTitle($receipt_name . " " . $student_admission_no . " Fees Receipt");
+                $pdf->Output();
+                return;
+            }
             $layouts = ['A4' => ['full', ['STUDENT COPY']], 'A51' => ['both', ['STUDENT COPY', 'COLLEGE COPY']]];
             [$layout, $labels] = $layouts[$reciept_size];
             $pdf = rc_receipt_pdf();
