@@ -16066,6 +16066,18 @@ function print_A5_receipt($receipt_id, $database)
         $_SESSION['databasename'] = $previous_database;
     }
 
+    // the link has to carry this receipt's signature, unless it was sent before links
+    // were signed (see ajax/finance/receipt_link.php)
+    require_once("../ajax/finance/receipt_link.php");
+    $stmt = $conn2->prepare("SELECT `date_of_transaction` FROM `finance` WHERE `transaction_id` = ? LIMIT 1");
+    $stmt->bind_param("s", $receipt_id);
+    $stmt->execute();
+    $payment = $stmt->get_result()->fetch_assoc();
+    if (!$payment || !receipt_link_allowed($conn2, $receipt_id, $database, $_GET['sig'] ?? '', $payment['date_of_transaction'])) {
+        echo "<p style='color:red;'>This receipt link is not valid. Please contact the college for your receipt.</p>";
+        return 0;
+    }
+
     // the new receipt design follows the college default from Settings
     if (rc_receipt_style($conn2) == 'new') {
         $school = rc_receipt_school($conn, $database);
