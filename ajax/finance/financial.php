@@ -1307,8 +1307,8 @@
                     // insert a new record showing the amount was reversed
                     $insert = "INSERT INTO `finance` (`stud_admin`,`time_of_transaction`,`date_of_transaction`,`transaction_code`,`amount`,`balance`,`payment_for`,`payBy`,`mode_of_pay`,`status`) VALUES (?,?,?,?,?,?,?,?,?,?)";
                     $stmt = $conn2->prepare($insert);
-                    $time = date("H:i:s",strtotime("3 hours"));
-                    $dates = date("Y-m-d",strtotime("3 hours"));
+                    $time = date("H:i:s");
+                    $dates = date("Y-m-d");
                     $transaction_code = "reverse";
                     $amount = "-".$amount;
                     $status = "1";
