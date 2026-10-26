@@ -2645,6 +2645,8 @@ function getMpesaPayments() {
         serverSide: true,
         processing: true,
         searchDelay: 500,
+        pageLength: 20,
+        lengthMenu: [10, 20, 50, 100],
         order: [[0, "desc"]],
         columnDefs: [{ targets: 6, orderable: false }],
         ajax: {

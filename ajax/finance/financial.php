@@ -4573,9 +4573,9 @@
             // server-side paging for the DataTables list: only the requested page is fetched
             $draw = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
             $start = isset($_GET['start']) ? max(0, (int)$_GET['start']) : 0;
-            $length = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+            $length = isset($_GET['length']) ? (int)$_GET['length'] : 20;
             if ($length < 1 || $length > 100) {
-                $length = 10;
+                $length = 20;
             }
             $search = isset($_GET['search']['value']) ? trim($_GET['search']['value']) : "";
 
