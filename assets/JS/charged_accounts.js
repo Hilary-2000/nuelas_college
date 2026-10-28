@@ -105,10 +105,12 @@ function wireChargedAccountsPanel() {
     cObj("show_create_charge_btn").onclick = function () {
         cObj("create_charge_panel").classList.remove("hide");
         cObj("charge_history_panel").classList.add("hide");
+        setChargeSwitch("show_create_charge_btn");
     };
     cObj("show_charge_history_btn").onclick = function () {
         cObj("create_charge_panel").classList.add("hide");
         cObj("charge_history_panel").classList.remove("hide");
+        setChargeSwitch("show_charge_history_btn");
         loadChargeBatches();
     };
 
@@ -380,15 +382,22 @@ function renderChargeAdmNoList() {
         holder.innerHTML = "<p class='text-muted' style='font-size:13px;'>No students added yet.</p>";
         return;
     }
-    var html = "<ul class='list-group'>";
+    var html = "<div class='ca_chips_title'>" + chargeAdmNos.length + " student(s) to charge</div><div class='ca_chips'>";
     chargeAdmNos.forEach(function (s) {
-        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>"
-            + s.name + " <small style='color:red;'>(" + s.adm_no + ")</small>"
-            + "<button type='button' class='btn btn-sm btn-outline-danger remove_charge_admno_btn' data-adm-no='" + s.adm_no + "'><i class='fas fa-times'></i></button>"
-            + "</li>";
+        html += "<span class='ca_chip'><i class='fas fa-user'></i> " + escHtml(s.name) + " <code>" + escHtml(s.adm_no) + "</code>"
+            + "<span class='remove_charge_admno_btn' role='button' tabindex='0' title='Remove' data-adm-no='" + escHtml(s.adm_no).replace(/'/g, "&#39;") + "'><i class='fas fa-times'></i></span>"
+            + "</span>";
     });
-    html += "</ul>";
+    html += "</div>";
     holder.innerHTML = html;
+}
+
+// Highlights the Create Charge / Charge History card that is showing.
+function setChargeSwitch(activeId) {
+    ["show_create_charge_btn", "show_charge_history_btn"].forEach(function (id) {
+        cObj(id).classList.toggle("active", id === activeId);
+        cObj(id).setAttribute("aria-pressed", id === activeId ? "true" : "false");
+    });
 }
 
 function createCharge() {

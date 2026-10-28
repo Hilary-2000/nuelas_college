@@ -2817,6 +2817,25 @@ function checkPresnt($array, $string){
             </div>
         </div>
 
+        <!-- ============== VIEW BATCH STUDENTS MODAL (Finance > Charged Accounts > Charge History) ============== -->
+        <div class="confirmpaymentwindow hide" id="view_batch_students_modal">
+            <div class="window_lg animate ca_batch_modal">
+                <div class="ca_batch_head">
+                    <span class="ca_batch_icon"><i class="fas fa-users"></i></span>
+                    <div><b>Students Charged</b><small>Everyone billed in this charge</small></div>
+                    <p class="funga" id="close_view_batch_students_modal">&times;</p>
+                </div>
+                <div class="ca_batch_search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-control w-100" id="batch_students_search_box" placeholder="Search by name or admission number...">
+                </div>
+                <div id="batch_students_holder"></div>
+                <div class="btns">
+                    <button type="button" id="close_view_batch_students_btn"><i class="fas fa-times"></i> Close</button>
+                </div>
+            </div>
+        </div>
+
         <!-- ============== EDIT CHARGE ITEM MODAL ============== -->
         <div class="confirmpaymentwindow hide" id="edit_charge_item_modal">
             <div class="confirmpayment animate edit-charge-modal">
@@ -4309,7 +4328,7 @@ function checkPresnt($array, $string){
     <script src="assets/JS/sms.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/sms.js'); ?>"></script>
     <script src="assets/JS/tagSuggest.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/tagSuggest.js'); ?>"></script>
     <script src="assets/JS/groups.js"></script>
-    <script src="assets/JS/charged_accounts.js"></script>
+    <script src="assets/JS/charged_accounts.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/charged_accounts.js'); ?>"></script>
     <script src="assets/JS/action_logs.js"></script>
     <script src="assets/JS/my_reports.js"></script>
     <script src="assets/JS/chart.min.js"></script>

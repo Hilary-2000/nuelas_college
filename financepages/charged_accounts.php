@@ -15,36 +15,45 @@
                 <p>- A charge is applied to specific students or to a saved Group. It shows up as a single "Charged Account" line, alongside the normal fee voteheads, wherever a student's payable items are listed.</p>
             </div>
 
-            <div class="d-flex" style="gap:8px;margin-bottom:12px;">
-                <button type="button" class="btn btn-sm btn-primary" id="show_create_charge_btn"><i class="fas fa-plus"></i> Create Charge</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="show_charge_history_btn"><i class="fas fa-history"></i> Charge History</button>
+            <div class="tmpl_channel_switch ca_switch" id="chargedAccountsTab">
+                <button type="button" class="tmpl_channel active" id="show_create_charge_btn" aria-pressed="true">
+                    <span class="tmpl_channel_icon"><i class="fas fa-plus"></i></span>
+                    <span class="tmpl_channel_text"><b>Create Charge</b><small>Bill students or a group a one-off fee</small></span>
+                    <i class="fas fa-check-circle tmpl_channel_tick"></i>
+                </button>
+                <button type="button" class="tmpl_channel" id="show_charge_history_btn" aria-pressed="false">
+                    <span class="tmpl_channel_icon"><i class="fas fa-history"></i></span>
+                    <span class="tmpl_channel_text"><b>Charge History</b><small>Past charges and the students billed</small></span>
+                    <i class="fas fa-check-circle tmpl_channel_tick"></i>
+                </button>
             </div>
 
             <!-- ============== CREATE CHARGE PANEL ============== -->
             <div id="create_charge_panel" class="section_card">
-                <p class="card_heading">Create Charge</p>
+                <p class="card_heading"><i class="fas fa-file-invoice-dollar"></i> Create Charge</p>
                 <p id="charge_groups_holder" class="hide"></p>
                 <p id="charge_lookup_holder" class="hide"></p>
-                <div class="mb-3">
-                    <label class="form-control-label"><b>Apply this charge to</b></label>
-                    <div class="d-flex mt-1" style="gap:24px;">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="charge_target_type" id="charge_target_students" value="students" checked>
-                            <label class="form-check-label" for="charge_target_students">Specific Student(s)</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="charge_target_type" id="charge_target_group" value="group">
-                            <label class="form-check-label" for="charge_target_group">Group</label>
-                        </div>
-                    </div>
+
+                <div class="ca_step"><span>1</span> Who is being charged?</div>
+                <div class="ca_targets">
+                    <label class="ca_target" for="charge_target_students">
+                        <input type="radio" name="charge_target_type" id="charge_target_students" value="students" checked>
+                        <span class="ca_target_icon"><i class="fas fa-user-graduate"></i></span>
+                        <span class="ca_target_text"><b>Specific Student(s)</b><small>Add students one by one by name or admission number</small></span>
+                    </label>
+                    <label class="ca_target" for="charge_target_group">
+                        <input type="radio" name="charge_target_type" id="charge_target_group" value="group">
+                        <span class="ca_target_icon"><i class="fas fa-users"></i></span>
+                        <span class="ca_target_text"><b>Group</b><small>Charge every student in a saved group</small></span>
+                    </label>
                 </div>
 
                 <!-- Students target -->
-                <div id="charge_students_target_panel" class="mb-3">
-                    <label class="form-control-label"><b>Student Name or Admission Number</b></label>
-                    <div class="d-flex" style="gap:8px;">
-                        <div class="autocomplete" style="max-width:400px;">
-                            <input type="text" class="form-control" id="charge_admno_input" placeholder="Type a name or admission number">
+                <div id="charge_students_target_panel" class="ca_target_panel">
+                    <label class="form-control-label" for="charge_admno_input"><b>Student Name or Admission Number</b></label>
+                    <div class="ca_add_row">
+                        <div class="autocomplete">
+                            <input type="text" class="form-control w-100" id="charge_admno_input" placeholder="Type a name or admission number">
                         </div>
                         <button type="button" class="btn btn-outline-primary" id="add_charge_admno_btn"><i class="fas fa-plus"></i> Add</button>
                     </div>
@@ -53,25 +62,29 @@
                 </div>
 
                 <!-- Group target -->
-                <div id="charge_group_target_panel" class="hide mb-3">
-                    <label class="form-control-label"><b>Select Group</b></label>
-                    <select class="form-control" id="charge_group_select">
+                <div id="charge_group_target_panel" class="ca_target_panel hide">
+                    <label class="form-control-label" for="charge_group_select"><b>Select Group</b></label>
+                    <select class="form-control w-100" id="charge_group_select">
                         <option value="" hidden>Select a group...</option>
                     </select>
                 </div>
 
+                <div class="ca_step"><span>2</span> What is the charge for?</div>
                 <div class="row">
-                    <div class="col-md-4 mb-2">
-                        <label class="form-control-label"><b>Description</b></label>
-                        <input type="text" class="form-control" id="charge_description" placeholder="e.g. Lost cardigan">
+                    <div class="col-md-5 mb-2">
+                        <label class="form-control-label" for="charge_description"><b>Description</b></label>
+                        <input type="text" class="form-control w-100" id="charge_description" placeholder="e.g. Lost cardigan">
                     </div>
                     <div class="col-md-4 mb-2">
-                        <label class="form-control-label"><b>Period</b></label>
-                        <input type="text" class="form-control" id="charge_period" placeholder="e.g. Term 2 2026">
+                        <label class="form-control-label" for="charge_period"><b>Period</b></label>
+                        <input type="text" class="form-control w-100" id="charge_period" placeholder="e.g. Term 2 2026">
                     </div>
-                    <div class="col-md-4 mb-2">
-                        <label class="form-control-label"><b>Amount (Kes)</b></label>
-                        <input type="number" class="form-control" id="charge_amount" placeholder="e.g. 500" min="1">
+                    <div class="col-md-3 mb-2">
+                        <label class="form-control-label" for="charge_amount"><b>Amount</b></label>
+                        <div class="ca_amount">
+                            <span>Kes</span>
+                            <input type="number" class="form-control w-100" id="charge_amount" placeholder="e.g. 500" min="1">
+                        </div>
                     </div>
                 </div>
                 <p id="create_charge_feedback"></p>
@@ -80,23 +93,8 @@
 
             <!-- ============== CHARGE HISTORY PANEL ============== -->
             <div id="charge_history_panel" class="section_card hide">
-                <p class="card_heading">Charge History</p>
+                <p class="card_heading"><i class="fas fa-history"></i> Charge History</p>
                 <div id="charge_batches_list_holder"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============== VIEW BATCH STUDENTS MODAL ============== -->
-    <div class="confirmpaymentwindow hide" id="view_batch_students_modal">
-        <div class="window_lg animate">
-            <div class="conts">
-                <p class="funga" id="close_view_batch_students_modal">&times;</p>
-                <h5 class="text-center"><b>Students Charged</b></h5>
-            </div>
-            <input type="text" class="form-control form-control-sm mb-2" id="batch_students_search_box" placeholder="Search by name or admission number...">
-            <div id="batch_students_holder"></div>
-            <div class="btns">
-                <button type="button" id="close_view_batch_students_btn"><i class="fas fa-times"></i> Close</button>
             </div>
         </div>
     </div>
