@@ -671,32 +671,47 @@ function checkPresnt($array, $string){
         </div>
 
         <div class="changepasswindow hide" id='changepasswin'>
-            <div class="changepass animate" id='changepass'>
-                <div class="conts">
-                    <h6>Change password</h6>
+            <div class="changepass animate" id='changepass' role="dialog" aria-modal="true" aria-labelledby="pw_title">
+                <div class="pw_head">
+                    <span class="pw_icon"><i class="fas fa-key"></i></span>
+                    <div class="pw_head_text">
+                        <b id="pw_title">Change password</b>
+                        <small>For <span id='namesdd'>this staff member</span></small>
+                    </div>
+                    <span class="pw_close" id="pw_close" role="button" tabindex="0" title="Close">&times;</span>
                 </div>
-                <div class="passwindows row" id='passwindows'>
-                    <div class="contse col-md-6">
-                        <p>You are previledged to change user`s passwords without the system asking for their current password</p>
-                        <p>If you proceed you will change <span id='namesdd'>users</span> password</p>
-                        <div class="contsbt">
-                            <button type='button' id='proceed'><i class="fas fa-check"></i> Proceed!</button>
-                            <button type='button' id='cancelchngebtn1'><i class="fas fa-times"></i> Cancel</button>
+                <div class="passwindows" id='passwindows'>
+                    <!-- step 1: confirm the override -->
+                    <div class="contse pw_step pw_step1">
+                        <div class="pw_notice">
+                            <i class="fas fa-shield-alt"></i>
+                            <p>As an administrator you can set a new password without the staff member's current password. They will sign in with the new password from now on, so share it with them securely.</p>
+                        </div>
+                        <div class="pw_actions">
+                            <button type='button' class="pw_btn_ghost" id='cancelchngebtn1'>Cancel</button>
+                            <button type='button' class="pw_btn" id='proceed'>Continue <i class="fas fa-arrow-right"></i></button>
                         </div>
                     </div>
-                    <div class="changepass1 col-md-6">
+                    <!-- step 2: the new password -->
+                    <div class="changepass1 pw_step pw_step2">
+                        <div class="pw_field">
+                            <label for="enterpass">New password</label>
+                            <div class="pw_input">
+                                <input class="form-control" type="password" name="enterpass" id="enterpass" placeholder="Enter the new password" autocomplete="new-password">
+                                <span class="pw_eye" data-target="enterpass" role="button" tabindex="0" title="Show password"><i class="fas fa-eye"></i></span>
+                            </div>
+                        </div>
+                        <div class="pw_field">
+                            <label for="reenterpass">Confirm password</label>
+                            <div class="pw_input">
+                                <input class="form-control" type="password" name="reenterpass" id="reenterpass" placeholder="Type it again" autocomplete="new-password">
+                                <span class="pw_eye" data-target="reenterpass" role="button" tabindex="0" title="Show password"><i class="fas fa-eye"></i></span>
+                            </div>
+                        </div>
                         <p id='passworderrors'></p>
-                        <div class="conts">
-                            <label class="form-control-label" for="enterpass">Enter password: <br></label>
-                            <input class="form-control w-75 px-2 text-xxs" type="password" name="enterpass" id="enterpass" placeholder='Enter Password'>
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="reenterpass">Re-enter password: <br></label>
-                            <input class="form-control w-75 px-2 text-xxs" type="password" name="reenterpass" id="reenterpass" placeholder='Re-enter password'>
-                        </div>
-                        <div class="contsbt">
-                            <button type='button' id='changebtns'><i class="fas fa-pen-fancy"></i> Change password</button>
-                            <button type='button' id='cancelchngebtn2'><i class="fas fa-times"></i> Cancel</button>
+                        <div class="pw_actions">
+                            <button type='button' class="pw_btn_ghost" id='cancelchngebtn2'>Cancel</button>
+                            <button type='button' class="pw_btn" id='changebtns'><i class="fas fa-check"></i> Change password</button>
                         </div>
                     </div>
                 </div>
