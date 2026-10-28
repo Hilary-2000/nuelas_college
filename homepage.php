@@ -4326,10 +4326,11 @@ function checkPresnt($array, $string){
     <script src="assets/JS/feesTable.js"></script>
     <script src="assets/JS/expense.js"></script>
     <script src="assets/JS/transport.js"></script>
-    <script src="assets/JS/academics.js"></script>
+    <script src="assets/JS/academics.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/academics.js'); ?>"></script>
     <script src="assets/JS/boarding.js"></script>
     <script src="assets/JS/sms.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/sms.js'); ?>"></script>
     <script src="assets/JS/tagSuggest.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/tagSuggest.js'); ?>"></script>
+    <script src="assets/JS/messagePreview.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/messagePreview.js'); ?>"></script>
     <script src="assets/JS/groups.js"></script>
     <script src="assets/JS/charged_accounts.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/charged_accounts.js'); ?>"></script>
     <script src="assets/JS/action_logs.js"></script>
@@ -4347,11 +4348,8 @@ function checkPresnt($array, $string){
         createQuillEditor('email_contents_exam_reports');
         quillInstances.email_contents_exam_reports.on('text-change', function () {
             var sample_message = getQuillData('email_contents_exam_reports');
-            if (sample_message.length > 0) {
-                cObj("email_contents_exam_reports_preview").innerHTML = sample_message;
-            }else{
-                cObj("email_contents_exam_reports_preview").innerHTML = "Sample Appear here ..";
-            }
+            // an empty editor leaves the sample blank so its placeholder shows
+            cObj("email_contents_exam_reports_preview").innerHTML = stripTags(sample_message).trim().length > 0 ? sample_message : "";
             html_messageData(sample_message);
         });
 

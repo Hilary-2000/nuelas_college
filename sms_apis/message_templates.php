@@ -97,8 +97,11 @@
                                     <textarea name="student_welcome_message_editor" id="student_welcome_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your welcome message here!'>Hello {title_1} {stud_fullname}, Welcome to {school_name}. Your admission number is {stud_adm}, welcome to the home of Fashion.</textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="student_welcome_message_viewer">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="sms">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-sms"></i> SMS</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble" id="student_welcome_message_viewer" data-placeholder="The sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="student_save_welcome_message"><i class="fas fa-save"></i> Save</span>
                                 <p id="student_welcome_message_template_holder"></p>
@@ -117,8 +120,11 @@
                                     <textarea name="welcome_message_editor" id="welcome_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your welcome message here!'>Hello {title_1} {par_fullname}, Welcome to {school_name}. Your {stud_noun}, {stud_fullname} has been successfully registered with admission number {stud_adm}.</textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="welcome_message_viewer">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="sms">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-sms"></i> SMS</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble" id="welcome_message_viewer" data-placeholder="The sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_welcome_message"><i class="fas fa-save"></i> Save</span>
                                 <p id="welcome_message_template_holder"></p>
@@ -137,8 +143,11 @@
                                     <textarea name="confirmation_message_editor" id="confirmation_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your fees confirmation message here!'>Confirmed Kes {amount_paid} has been successfully paid for {stud_fullname} - {stud_adm} - {stud_class}, New fee balance is Kes {stud_fees_balance} as at {time} on {today}.</textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="confirmation_message_viewer">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="sms">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-sms"></i> SMS</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble" id="confirmation_message_viewer" data-placeholder="The sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_confirmation_message"><i class="fas fa-save"></i> Save</span>
                                 <p id="confirmation_message_template_holder"></p>
@@ -157,8 +166,11 @@
                                     <textarea name="parent_confirmation_message_editor" id="parent_confirmation_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your fees confirmation message here!'>Confirmed we have received Kes {amount_paid} paid for your {children} children. Your new fee balance is Kes {stud_fees_balance} as at {time} on {today}.</textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="parent_confirmation_message_viewer">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="sms">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-sms"></i> SMS</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble" id="parent_confirmation_message_viewer" data-placeholder="The sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_parent_confirmation_message"><i class="fas fa-save"></i> Save</span>
                                 <p id="parent_confirmation_message_template_holder"></p>
@@ -197,8 +209,11 @@
                                     <textarea name="module_progression_message_editor" id="module_progression_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your module progression message here!'>Dear {title_1} {par_fullname}, {stud_fullname} ({stud_adm}) has now been moved to the next module. Their new fee balance is Kes {next_module_fees}. Thank you.</textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="module_progression_message_viewer">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="sms">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-sms"></i> SMS</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble" id="module_progression_message_viewer" data-placeholder="The sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_module_progression_message"><i class="fas fa-save"></i> Save</span>
                                 <p id="module_progression_message_template_holder"></p>
@@ -233,8 +248,11 @@
                                     <textarea name="student_module_progression_message_editor" id="student_module_progression_message_editor" cols="30" rows="10" class="form-control" placeholder='Type your student module progression message here!'>Hello {stud_first_name}, you have now been moved to the next module. Your new fee balance is Kes {next_module_fees}. Thank you.</textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="student_module_progression_message_viewer">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="sms">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-sms"></i> SMS</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble" id="student_module_progression_message_viewer" data-placeholder="The sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_student_module_progression_message"><i class="fas fa-save"></i> Save</span>
                                 <p id="student_module_progression_message_template_holder"></p>
@@ -261,8 +279,11 @@
                                     <div id="student_welcome_message_editor_email" style="min-height:200px;">Dear {stud_fullname},<br><br>Welcome to {school_name}. We are delighted to have you join us.<br><br>Your admission number is <b>{stud_adm}</b>. Please keep this for your records.<br><br>Warm regards,<br>{school_name}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="student_welcome_message_viewer_email">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="email">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-envelope"></i> Email</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble is_html" id="student_welcome_message_viewer_email" data-placeholder="The email sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="student_save_welcome_message_email"><i class="fas fa-save"></i> Save</span>
                                 <p id="student_welcome_message_template_holder_email"></p>
@@ -283,8 +304,11 @@
                                     <div id="welcome_message_editor_email" style="min-height:200px;">Dear {title_1} {par_fullname},<br><br>Welcome to {school_name}. We are pleased to inform you that your {stud_noun}, {stud_fullname}, has been successfully registered with us.<br><br>Admission Number: <b>{stud_adm}</b><br><br>We look forward to a great journey together.<br><br>Warm regards,<br>{school_name}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="welcome_message_viewer_email">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="email">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-envelope"></i> Email</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble is_html" id="welcome_message_viewer_email" data-placeholder="The email sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_welcome_message_email"><i class="fas fa-save"></i> Save</span>
                                 <p id="welcome_message_template_holder_email"></p>
@@ -305,8 +329,11 @@
                                     <div id="confirmation_message_editor_email" style="min-height:200px;">Dear {stud_fullname},<br><br>This is to confirm that a payment of <b>Kes {amount_paid}</b> has been received for your account ({stud_adm} - {stud_class}).<br><br>Your updated fee balance is <b>Kes {stud_fees_balance}</b> as at {time} on {today}.<br><br>Thank you,<br>{school_name}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="confirmation_message_viewer_email">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="email">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-envelope"></i> Email</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble is_html" id="confirmation_message_viewer_email" data-placeholder="The email sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_confirmation_message_email"><i class="fas fa-save"></i> Save</span>
                                 <p id="confirmation_message_template_holder_email"></p>
@@ -327,8 +354,11 @@
                                     <div id="parent_confirmation_message_editor_email" style="min-height:200px;">Dear Parent,<br><br>This is to confirm that we have received a payment of <b>Kes {amount_paid}</b>.<br><br>Your new fee balance is <b>Kes {stud_fees_balance}</b> as at {time} on {today}.<br><br>Thank you,<br>{school_name}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="parent_confirmation_message_viewer_email">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="email">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-envelope"></i> Email</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble is_html" id="parent_confirmation_message_viewer_email" data-placeholder="The email sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_parent_confirmation_message_email"><i class="fas fa-save"></i> Save</span>
                                 <p id="parent_confirmation_message_template_holder_email"></p>
@@ -369,8 +399,11 @@
                                     <div id="module_progression_message_editor_email" style="min-height:200px;">Dear {title_1} {par_fullname},<br><br>We are pleased to inform you that {stud_fullname} ({stud_adm}) has now progressed to the next module.<br><br>Their new fee balance is <b>Kes {next_module_fees}</b>.<br><br>Thank you,<br>{school_name}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="module_progression_message_viewer_email">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="email">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-envelope"></i> Email</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble is_html" id="module_progression_message_viewer_email" data-placeholder="The email sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_module_progression_message_email"><i class="fas fa-save"></i> Save</span>
                                 <p id="module_progression_message_template_holder_email"></p>
@@ -407,8 +440,11 @@
                                     <div id="student_module_progression_message_editor_email" style="min-height:200px;">Dear {stud_first_name},<br><br>Congratulations! You have now progressed to the next module.<br><br>Your new fee balance is <b>Kes {next_module_fees}</b>.<br><br>Thank you,<br>{school_name}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><b class="text-primary">Sample Message</b></p>
-                                    <small id="student_module_progression_message_viewer_email">Message Sample will appear here</small>
+                                    <div class="msg_preview" data-channel="email">
+                                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip"><i class="fas fa-envelope"></i> Email</span></div>
+                                        <div class="msg_preview_body"><div class="msg_bubble is_html" id="student_module_progression_message_viewer_email" data-placeholder="The email sample will appear here as you type."></div></div>
+                                        <div class="msg_preview_meta"></div>
+                                    </div>
                                 </div>
                                 <span class="my-2 mx-auto btn btn-sm w-75 btn-primary" id="save_student_module_progression_message_email"><i class="fas fa-save"></i> Save</span>
                                 <p id="student_module_progression_message_template_holder_email"></p>
