@@ -22,7 +22,7 @@
                                 <p>- View the statistics of the messages you have sent over time and their delivery reports</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 <?php echo allowed("message_templates"); ?>">
                             <u>Try Message Templates Now!</u>
                             <button type="button" id="message_templates_setup_btn">Message Templates</button>
                         </div>
