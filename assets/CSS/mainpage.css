@@ -5832,3 +5832,571 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 #payrolled_win .pr_report_table .pr_act{
     text-decoration: none;
 }
+
+/* ===== Expenses & Approvals (financepages/expenses.php, payment_approval.php,
+   assets/JS/expense.js). ex_ classes; ids the existing code uses are kept. ===== */
+#expenses_win .ex_card,
+#payment_approval_window .ex_card{
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+#expenses_win .ex_actions{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+}
+#expenses_win .ex_actions.hide{
+    display: none;
+}
+#expenses_win .ex_action{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+}
+#expenses_win .ex_action.d-none{
+    display: none;
+}
+#expenses_win .ex_action:hover,
+#expenses_win .ex_action:focus-visible{
+    border-color: rgb(3, 131, 135);
+    background: #f3f9f9;
+    outline: none;
+}
+#expenses_win .ex_action_icon,
+#expenses_win .ex_head_icon,
+#payment_approval_window .ex_head_icon{
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    font-size: 16px;
+}
+#expenses_win .ex_action_text{
+    display: flex;
+    flex-direction: column;
+}
+#expenses_win .ex_action_text b{
+    font-size: 14px;
+    color: #1f2d2e;
+}
+#expenses_win .ex_action_text small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#expenses_win .ex_head,
+#payment_approval_window .ex_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef3f3;
+}
+#expenses_win .ex_head > div,
+#payment_approval_window .ex_head > div{
+    display: flex;
+    flex-direction: column;
+}
+#expenses_win .ex_head b,
+#payment_approval_window .ex_head b{
+    font-size: 16px;
+    color: #1f2d2e;
+}
+#expenses_win .ex_head small,
+#payment_approval_window .ex_head small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#payment_approval_window #payment_request_table_loader.hide{
+    display: none;
+}
+#payment_approval_window .ex_back span{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#expenses_win .ex_group{
+    border: 1px solid #eef3f3;
+    background: #fbfcfc;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}
+#expenses_win .ex_group_title{
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: rgb(3, 131, 135);
+    margin-bottom: 10px;
+}
+#expenses_win .ex_group_title i{
+    margin-right: 4px;
+}
+#expenses_win #recordexp label.form-control-label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+    margin-bottom: 4px;
+}
+#expenses_win #recordexp .form-control,
+#expenses_win #recordexp select{
+    width: 100% !important;
+    margin: 0 !important;
+}
+#expenses_win .ex_money{
+    display: flex;
+    align-items: stretch;
+}
+#expenses_win .ex_money span{
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border: 1px solid #d7e9ea;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+}
+#expenses_win .ex_money input{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+#expenses_win .ex_form_actions{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+#expenses_win .ex_form_actions #error_message_expenses{
+    flex: 1;
+}
+#expenses_win .ex_form_actions #error_message_expenses p{
+    margin: 0;
+}
+#expenses_win button.ex_btn_ghost{
+    background: #fff !important;
+    color: rgb(3, 131, 135) !important;
+    border: 1px solid #c9dfe0 !important;
+    box-shadow: none !important;
+}
+#expenses_win .ex_hint,
+#payment_approval_window .ex_hint{
+    font-size: 12px;
+    color: #7a8b8c;
+    margin: 4px 0;
+}
+#expenses_win .ex_hint_warn{
+    color: #b26a00;
+}
+#expenses_win .ex_hint i{
+    margin-right: 4px;
+}
+#expenses_win .ex_stats{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+#expenses_win .ex_stats:empty{
+    display: none;
+}
+#expenses_win .ex_stat{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+#expenses_win .ex_stat_icon{
+    flex: 0 0 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+}
+#expenses_win .ex_stat small{
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #6b7b7c;
+}
+#expenses_win .ex_stat b{
+    display: block;
+    font-size: 17px;
+    color: #1f2d2e;
+}
+#expenses_win .ex_stat em{
+    font-style: normal;
+    font-size: 12px;
+    color: #8a9a9b;
+}
+#expenses_win .ex_stat_ok .ex_stat_icon{
+    background: #e8f6ec;
+    color: #1e8e3e;
+}
+#expenses_win .ex_stat_wait .ex_stat_icon{
+    background: #fff4e5;
+    color: #b26a00;
+}
+#expenses_win .ex_stat_bad .ex_stat_icon{
+    background: #fdecea;
+    color: #c5221f;
+}
+#expenses_win .ex_table td,
+#payment_approval_window .ex_table td{
+    vertical-align: middle;
+}
+#expenses_win .ex_name,
+#payment_approval_window .ex_name{
+    color: #1f2d2e;
+    font-weight: 600;
+}
+#expenses_win .ex_muted{
+    color: #9fb0b1;
+    font-style: italic;
+}
+#expenses_win .ex_type,
+#payment_approval_window .ex_type{
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border-radius: 10px;
+    padding: 1px 7px;
+    margin-left: 4px;
+}
+#payment_approval_window .ex_type_supplier{
+    color: #6d5a00;
+    background: #fff4d6;
+}
+#expenses_win .ex_status{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 3px 9px;
+    white-space: nowrap;
+    cursor: default;
+}
+#expenses_win .ex_status_ok{
+    color: #1e8e3e;
+    background: #e8f6ec;
+}
+#expenses_win .ex_status_wait{
+    color: #b26a00;
+    background: #fff4e5;
+}
+#expenses_win .ex_status_bad{
+    color: #c5221f;
+    background: #fdecea;
+}
+#expenses_win .ex_edit,
+#payment_approval_window .ex_act{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #fff;
+    border: 1px solid #c9dfe0;
+    border-radius: 20px;
+    padding: 3px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#expenses_win .ex_edit:hover,
+#expenses_win .ex_edit:focus-visible,
+#payment_approval_window .ex_act:hover,
+#payment_approval_window .ex_act:focus-visible{
+    background: #e7f4f4;
+    outline: none;
+}
+#payment_approval_window .ex_row_actions{
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+#payment_approval_window .ex_act_ok{
+    color: #fff;
+    background: #1e8e3e;
+    border-color: #1e8e3e;
+}
+#payment_approval_window .ex_act_ok:hover,
+#payment_approval_window .ex_act_ok:focus-visible{
+    background: #18733a;
+}
+#payment_approval_window .ex_act_bad{
+    color: #c5221f;
+    border-color: #f3c6c3;
+}
+#payment_approval_window .ex_act_bad:hover,
+#payment_approval_window .ex_act_bad:focus-visible{
+    background: #fdecea;
+}
+#payment_approval_window .ex_empty{
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    background: #f3faf5;
+    border: 1px dashed #b9e0c4;
+    border-radius: 14px;
+    padding: 16px 18px;
+}
+#payment_approval_window .ex_empty > span{
+    font-size: 26px;
+    color: #1e8e3e;
+}
+#payment_approval_window .ex_empty b{
+    font-size: 15px;
+    color: #1f2d2e;
+}
+#payment_approval_window .ex_empty p{
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: #51626b;
+}
+#expenses_win .ex_cat_grid{
+    display: grid;
+    grid-template-columns: minmax(240px, 360px) 1fr;
+    gap: 20px;
+    align-items: start;
+}
+#expenses_win .ex_chart{
+    width: 100% !important;
+    height: 300px !important;
+    margin: 0 !important;
+    position: relative;
+}
+/* the DataTables search box and page-length picker in these windows */
+#expenses_win .dataTables_filter input,
+#payment_approval_window .dataTables_filter input{
+    min-width: 220px;
+    margin-left: 0 !important;
+}
+#expenses_win .dataTables_length select,
+#payment_approval_window .dataTables_length select{
+    width: auto !important;
+    min-width: 90px;
+    height: auto !important;
+    padding: 5px 10px !important;
+    margin: 0 4px !important;
+    white-space: nowrap;
+    /* flex keeps the app's select arrow beside the number (see homepage2.css) */
+    display: inline-flex !important;
+    align-items: center;
+}
+#expenses_win .dataTables_length label,
+#payment_approval_window .dataTables_length label{
+    display: inline-flex;
+    align-items: center;
+}
+@media screen and (max-width: 768px){
+    #expenses_win .ex_cat_grid{
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Expense and payment request popups in homepage.php (.ex_modal). */
+.changesubwindow.ex_modal{
+    width: 640px;
+    max-width: calc(100vw - 24px);
+    border-radius: 16px;
+    padding: 18px 20px;
+}
+.changesubwindow.ex_modal.ex_modal_small{
+    width: 440px;
+}
+.ex_modal .ex_modal_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef3f3;
+}
+.ex_modal .ex_modal_head > div{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.ex_modal .ex_modal_head b{
+    font-size: 16px;
+    color: #1f2d2e;
+}
+.ex_modal .ex_modal_head small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+.ex_modal .ex_modal_head .funga{
+    position: static;
+    margin: 0;
+}
+.ex_modal_icon{
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    font-size: 16px;
+}
+.ex_modal_icon_ok{
+    background: #1e8e3e;
+}
+.ex_modal_icon_bad{
+    background: #c5221f;
+}
+.ex_modal .ex_modal_grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+    margin-bottom: 12px;
+}
+.ex_modal .ex_modal_wide{
+    grid-column: 1 / -1;
+}
+.ex_modal label.form-control-label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+    margin-bottom: 4px;
+}
+.ex_modal .form-control,
+.ex_modal select{
+    width: 100% !important;
+    margin: 0 !important;
+}
+.ex_modal .form-control[readonly]{
+    background: #f8fafb !important;
+    color: #1f2d2e !important;
+}
+.ex_modal #expense_status_view .badge{
+    font-size: 11px;
+    padding: 5px 9px;
+    border-radius: 20px;
+}
+.ex_modal .ex_modal_note{
+    font-size: 12px;
+    color: #51626b;
+    background: #f3f9f9;
+    border-left: 3px solid rgb(3, 131, 135);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin: 0 0 12px;
+}
+.ex_modal .ex_modal_note.hide{
+    display: none;
+}
+.ex_modal .ex_modal_note_bad{
+    background: #fdf3f2;
+    border-left-color: #c5221f;
+    color: #7a2a27;
+}
+.ex_modal .ex_modal_note .ex_mbtn{
+    margin-left: 8px;
+}
+.ex_modal .ex_modal_actions{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.ex_modal .ex_modal_actions .ex_left{
+    margin-right: auto;
+}
+.ex_modal .ex_modal_actions.hide,
+.ex_modal .ex_modal_actions .hide{
+    display: none;
+}
+.ex_modal .ex_mbtn{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #51626b;
+    background: #fff;
+    border: 1px solid #d5dde0;
+    border-radius: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+}
+.ex_modal .ex_mbtn:hover,
+.ex_modal .ex_mbtn:focus-visible{
+    background: #f1f4f5;
+    outline: none;
+}
+.ex_modal .ex_mbtn_ok{
+    color: #fff;
+    background: #1e8e3e;
+    border-color: #1e8e3e;
+}
+.ex_modal .ex_mbtn_ok:hover,
+.ex_modal .ex_mbtn_ok:focus-visible{
+    background: #18733a;
+}
+.ex_modal .ex_mbtn_bad{
+    color: #c5221f;
+    border-color: #f3c6c3;
+}
+.ex_modal .ex_mbtn_bad:hover,
+.ex_modal .ex_mbtn_bad:focus-visible{
+    background: #fdecea;
+}
+/* buttons beat the app-wide button rule, which chains four :not()s */
+.changesubwindow.ex_modal button.ex_btn_ghost:not(.disabled):not(.left_dash *){
+    background: #fff !important;
+    color: #51626b !important;
+    border: 1px solid #d5dde0 !important;
+    box-shadow: none !important;
+}
+.changesubwindow.ex_modal button.ex_btn_ok:not(.disabled):not(.left_dash *){
+    background: linear-gradient(135deg, #1e8e3e, #2fa653) !important;
+    box-shadow: 0 3px 8px rgba(30,142,62,0.3) !important;
+}
+.changesubwindow.ex_modal button.ex_btn_bad:not(.disabled):not(.left_dash *){
+    background: #fff !important;
+    color: #c5221f !important;
+    border: 1px solid #f3c6c3 !important;
+    box-shadow: none !important;
+}
+.changesubwindow.ex_modal button.hide{
+    display: none;
+}
+@media screen and (max-width: 550px){
+    .ex_modal .ex_modal_grid{
+        grid-template-columns: 1fr;
+    }
+}

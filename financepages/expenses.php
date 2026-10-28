@@ -21,11 +21,17 @@
                 <p>- At this window you are allowed to record expenses and liabilities from both operating and non-operating activities.</p>
                 <p>- Please capture the information you enter correctly.</p>
             </div>
-            <div class="section_card">
-                <p class="card_heading"><i class="fa fa-file"></i> Expenses</p>
-                <div class="expeses_options" id="exp_options">
-                    <button id="add_exp"><i class="fas fa-plus"></i> Add Expenses</button>
-                    <button class="<?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "d-none" : ""?>" id="approve_payments"><i class="fas fa-check"></i> Approve Payments</button>
+            <div class="section_card ex_card">
+                <!-- options: the add form and the find block open in place of these -->
+                <div class="ex_actions" id="exp_options">
+                    <div class="ex_action" id="add_exp" role="button" tabindex="0">
+                        <span class="ex_action_icon"><i class="fas fa-plus"></i></span>
+                        <span class="ex_action_text"><b>Add Expense</b><small>Record an expense or make a payment request</small></span>
+                    </div>
+                    <div class="ex_action <?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "d-none" : ""?>" id="approve_payments" role="button" tabindex="0">
+                        <span class="ex_action_icon"><i class="fas fa-check-double"></i></span>
+                        <span class="ex_action_text"><b>Approve Payments</b><small>Accept or decline pending payment requests</small></span>
+                    </div>
                     <button class="hide" id="find_exp_da"><i class="fas fa-search"></i> Find Expenses</button>
                 </div>
                 <div class="find_exp hide" id="find_exp_date">
@@ -76,191 +82,107 @@
                         <button id='done_display_exp'><i class="fas fa-times"></i> Close</button>
                     </div>
                 </div>
-                <div class="conts hide" id="recordexp">
-                    <p class="card_subheading">Add Expense</p>
-                    <div class="instructions">
-                        <p><strong>Hint:</strong></p>
-                        <p>- All expenses must be approved by the principal.</p>
-                        <p>- It starts by you making a request and from the principal side they`ll approve all expense requests!</p>
+                <div class="hide" id="recordexp">
+                    <div class="ex_head">
+                        <span class="ex_head_icon"><i class="fas fa-file-invoice"></i></span>
+                        <div><b>Add Expense</b><small>Expenses are paid once approved by the principal or an approver. Pick "Pending Approval" to send it as a payment request.</small></div>
                     </div>
-                    <div class="row">
-                        <div class="conts col-md-4">
-                            <label class="form-control-label" for="exp_named"><b>Expense Name:</b> <br></label>
-                            <input class="form-control w-100" type="text" name="exp_named" id="exp_named" placeholder = "Expense Name">
-                        </div>
-                        <div class="conts col-md-4">
-                            <label class="form-control-label" for="exp_cat"><b>Expense category</b> <br><span class="hide" id="load_expense_categs"><img src="images/ajax_clock_small.gif" id=""></span></label>
-                            <div id="expense_categories_holders"></div>
-                        </div>
-                        <div class="conts col-md-4">
-                            <label class="form-control-label" for="exp_cat"><b>Expense Sub-Category</b> <br><span class="hide" id="load_expense_sub_categs"><img src="images/ajax_clock_small.gif" id=""></span></label>
-                            <div id="expense_subcategory_display"><p class="text-danger">Select expense category to display expense sub-category!</p></div>
-                        </div>
-                        <div class="col-md-4 form-group">
-                            <label for="expense_cash_activity" class="form-control-label"><b>Expense Activity</b></label>
-                            <select name="expense_cash_activity" id="expense_cash_activity" class="form-control w-100">
-                                <option value="" hidden>Select Option</option>
-                                <option value="1">Operating Activities</option>
-                                <option value="2">Investing Activities</option>
-                                <option value="3">Financing Activities</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 form-group">
-                            <label for="expense_record_date" class="form-control-label"><b>Expense Record Date</b></label>
-                            <input type="date" class="form-control w-100" id="expense_record_date" value="<?php echo date("Y-m-d");?>">
-                        </div>
-                        <div class="conts col-md-4 hide">
-                            <label class="form-control-label" for="exp_quant"><b>Expense quantity:</b> <br></label>
-                            <input class="form-control w-100" value="1" type="number" name="exp_quant" id="exp_quant"  min = "0" placeholder = "Quantity">
-                        </div>
-                        <div class="conts col-md-4 hide">
-                            <label class="form-control-label" for="exp_amnt"><b>Expense unit cost:</b> <br></label>
-                            <input class="form-control w-100" type="number" name="exp_amnt" id="exp_amnt" value = '0' min = "0" placeholder = "Amount">
-                        </div>
-                        <div class="conts col-md-4 hide">
-                            <label class="form-control-label" for="unit_name"><b>Unit Name:</b> <small>(eg. kgs, litres)</small> <br></label>
-                            <input class="form-control w-100" type="text" name="unit_name" id="unit_name" placeholder = "Unit Name">
-                        </div>
-                        <div class="conts col-md-4">
-                            <label class="form-control-label" for="exp_total_amt"><b>Expense Amount</b> <br></label>
-                            <input class="form-control w-100" type="number" name="exp_total_amt" id="exp_total_amt" min = "0" placeholder = "Amount">
-                        </div>
-                        <div class="conts col-md-4">
-                            <label class="form-control-label" for="document_number"><b>Document Number</b> <br></label>
-                            <input class="form-control w-100" type="text" name="document_number" id="document_number"  min = "0" placeholder = "Optional - Receipt, Invoice, Cheque">
-                        </div>
-                        <div class="conts col-md-4 <?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "d-none" : ""?>">
-                            <label for="expense_approval" class="form-control-label">Expense Approval Status </label>
-                            <select name="expense_approval" id="expense_approval" class="form-control w-100">
-                                <option value="" hidden>Select an Option</option>
-                                <option <?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "" : "selected"?> value="1">Approve Expense</option>
-                                <option value="0">Pending Approval</option>
-                            </select>
-                        </div>
-                        <div class="col-md-12">
-                            <label for="new_expense_description" class="form-control-label"><b>Expense Description</b></label>
-                            <textarea name="new_expense_description" id="new_expense_description" cols="30" rows="3" class="form-control" placeholder="Write expense description here.."></textarea>
-                        </div>
-                        <div class="conts col-md-4">
-                            <p id='err_hndler_expenses'></p>
+                    <div class="ex_group">
+                        <div class="ex_group_title"><i class="fas fa-tag"></i> What is it for?</div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-control-label" for="exp_named">Expense Name</label>
+                                <input class="form-control w-100" type="text" name="exp_named" id="exp_named" placeholder="e.g. Office stationery">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-control-label" for="exp_cat">Expense Category <span class="hide" id="load_expense_categs"><img src="images/ajax_clock_small.gif"></span></label>
+                                <div id="expense_categories_holders"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-control-label">Expense Sub-Category <span class="hide" id="load_expense_sub_categs"><img src="images/ajax_clock_small.gif"></span></label>
+                                <div id="expense_subcategory_display"><p class="ex_hint">Select an expense category to see its sub-categories.</p></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="expense_cash_activity" class="form-control-label">Expense Activity</label>
+                                <select name="expense_cash_activity" id="expense_cash_activity" class="form-control w-100">
+                                    <option value="" hidden>Select Option</option>
+                                    <option value="1">Operating Activities</option>
+                                    <option value="2">Investing Activities</option>
+                                    <option value="3">Financing Activities</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <label for="new_expense_description" class="form-control-label">Expense Description</label>
+                                <textarea name="new_expense_description" id="new_expense_description" rows="2" class="form-control w-100" placeholder="Write expense description here.."></textarea>
+                            </div>
                         </div>
                     </div>
-                    <div class="conts col-md-6 row">
-                        <div class="col-md-6">
-                            <div id="error_message_expenses"><p class="text-danger text-center"><b>Select expense category before you proceed!</b></p></div>
-                            <button id='add_expenseed' class="hide"><i class="fas fa-paper-plane"></i> Make Payment Request</button>
+                    <div class="ex_group">
+                        <div class="ex_group_title"><i class="fas fa-money-bill-wave"></i> Amount and record</div>
+                        <div class="row g-3">
+                            <div class="col-md-4 hide">
+                                <label class="form-control-label" for="exp_quant">Expense quantity</label>
+                                <input class="form-control w-100" value="1" type="number" name="exp_quant" id="exp_quant" min="0" placeholder="Quantity">
+                            </div>
+                            <div class="col-md-4 hide">
+                                <label class="form-control-label" for="exp_amnt">Expense unit cost</label>
+                                <input class="form-control w-100" type="number" name="exp_amnt" id="exp_amnt" value="0" min="0" placeholder="Amount">
+                            </div>
+                            <div class="col-md-4 hide">
+                                <label class="form-control-label" for="unit_name">Unit Name <small>(eg. kgs, litres)</small></label>
+                                <input class="form-control w-100" type="text" name="unit_name" id="unit_name" placeholder="Unit Name">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-control-label" for="exp_total_amt">Expense Amount</label>
+                                <div class="ex_money">
+                                    <span>Kes</span>
+                                    <input class="form-control" type="number" name="exp_total_amt" id="exp_total_amt" min="0" placeholder="Amount">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="expense_record_date" class="form-control-label">Expense Record Date</label>
+                                <input type="date" class="form-control w-100" id="expense_record_date" value="<?php echo date("Y-m-d");?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-control-label" for="document_number">Document Number</label>
+                                <input class="form-control w-100" type="text" name="document_number" id="document_number" placeholder="Optional: receipt, invoice or cheque no.">
+                            </div>
+                            <div class="col-md-4 <?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "d-none" : ""?>">
+                                <label for="expense_approval" class="form-control-label">Expense Approval Status</label>
+                                <select name="expense_approval" id="expense_approval" class="form-control w-100">
+                                    <option value="" hidden>Select an Option</option>
+                                    <option <?=allowed("allow_expenses_approval") == "d-none" && $_SESSION['authority'] != "1" ? "" : "selected"?> value="1">Approve Expense</option>
+                                    <option value="0">Pending Approval</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <button id='done_adding_exp'><i class="fas fa-times"></i> Close</button>
-                        </div>
+                    </div>
+                    <p id='err_hndler_expenses'></p>
+                    <div class="ex_form_actions">
+                        <div id="error_message_expenses"><p class="ex_hint ex_hint_warn"><i class="fas fa-info-circle"></i> Select an expense category before you proceed.</p></div>
+                        <button type="button" class="ex_btn_ghost" id='done_adding_exp'><i class="fas fa-times"></i> Close</button>
+                        <button type="button" class="hide" id='add_expenseed'><i class="fas fa-paper-plane"></i> Save Expense</button>
                     </div>
                 </div>
             </div>
             <div class="display_daily_expense">
-                <div class="tables">
-                    <p id ="my_table"></p>
-                    <div id="window_expenses" class="section_card">
-                        <p class="card_heading">Expenses Table</p>
-                        <div class="row d-none" id="search_option_expenses">
-                            <div class="col-md-6 form-group row">
-                                <input type="text" name="search" id="searchkey_expenses" class="w-100 form-control rounded-lg p-1" placeholder="Search here ..">
-                            </div>
-                        </div>
-                        <div class="table-responsive" id="transDataReciever_expenses">
-                            <!-- <table class="table">
-                                <thead>
-                                    <tr>
-                                    <th title="Sort all descending"># <span id="sortall"><i class="fas fa-caret-down"></i></span></th>
-                                    <th  title="Sort by Reg No descending">Adm no {Student Name} <span id="sortadmno"><i class="fas fa-caret-down"></i></span></th>
-                                    <th  title="Sort by Amount descending">Paid Amount <span id="sortfeeamount"><i class="fas fa-caret-down"></i></span></th>
-                                    <th  title="Sort by date descending">D.O.P <span id="sortdate"><i class="fas fa-caret-down"></i></span></th>
-                                    <th>M.O.P</th>
-                                    <th>Purpose</th></tr>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>LBDB {<small>MAKR OTTO</small> } <span class="badge badge-success"> </span></td>
-                                        <td>Kes 1,000</td>
-                                        <td>14th June 2021</td>
-                                        <td>Bank</td>
-                                        <td>Admission Fees</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>LBDB {<small>MAKR OTTO</small> } <span class="badge badge-success"> </span></td>
-                                        <td>Kes 1,000</td>
-                                        <td>14th June 2021</td>
-                                        <td>Bank</td>
-                                        <td>Admission Fees</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>LBDB {<small>MAKR OTTO</small> } <span class="badge badge-success"> </span></td>
-                                        <td>Kes 1,000</td>
-                                        <td>14th June 2021</td>
-                                        <td>Bank</td>
-                                        <td>Admission Fees</td>
-                                    </tr>
-                                </tbody>
-                            </table> -->
-                            <div class='displaydata'><img class='' src='images/error.png'></div>
-                            <p class='sm-text text-danger text-bold text-center'><br>No records to display, Start by displaying your data with the options above</p>
-                        </div>
-                        <div class="row mt-5 invisible" id="tablefooter_expenses">
-                            <div class="col-sm-12 col-md-5">
-                                <div class="container-fluid">
-                                    <p class="text-xxs font-weight-bolder opacity-9 text-uppercase">Showing <span class="text-primary" id="startNo_expenses">1 </span> to <span class="text-primary" id="finishNo_expenses">10</span> of <span id="tot_records_expenses"></span> Records.</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-7">
-                                <div class="dataTables_paginate paging_full_numbers" id="datatable_paginate">
-                                    <ul class="pagination">
-                                        <li class="paginate_button page-item first" id="datatable_first"><a href="javascript:;" aria-controls="datatable" data-dt-idx="0" tabindex="0" class="page-link" id="tofirstNav_expenses">First</a></li>
-                                        <li class="paginate_button page-item previous mx-1" id="datatable_previous"><a href="javascript:;" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link" id="toprevNac_expenses">Prev</a></li>
-                                        <li class="paginate_button page-item previous active mx-3" id="datatable_previous"><a href="javascript:;" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link" id="pagenumNav_expenses">1</a></li>
-                                        <li class="paginate_button page-item next mx-1" id="datatable_next"><a href="javascript:;" aria-controls="datatable" data-dt-idx="7" tabindex="0" class="page-link" id="tonextNav_expenses">Next</a></li>
-                                        <li class="paginate_button page-item last mx-1" id="datatable_last"><a href="javascript:;" aria-controls="datatable" data-dt-idx="8" tabindex="0" class="page-link" id="tolastNav_expenses">Last</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                <!-- summary of the loaded expenses (expense.js showExpenseSummary) -->
+                <div class="ex_stats" id="expense_summary"></div>
+                <div id="window_expenses" class="section_card ex_card">
+                    <div class="ex_head">
+                        <span class="ex_head_icon"><i class="fas fa-receipt"></i></span>
+                        <div><b>Expenses</b><small>The latest 1,000 expenses. Hover a status to see who requested and approved it.</small></div>
+                    </div>
+                    <div class="table-responsive" id="transDataReciever_expenses">
+                        <p class="ex_hint">Loading expenses...</p>
                     </div>
                 </div>
-                <div class="conts">
-                    <div class="table_holders">
-                        <!-- <table>
-                            <tr>
-                                <th>Expense Name</th>
-                                <th>Expense Category</th>
-                                <th>Units</th>
-                                <th>Price per Unit</th>
-                                <th>Total Amount</th>
-                            </tr>
-                            <tr>
-                                <td>Sugar</td>
-                                <td>Utility</td>
-                                <td>3</td>
-                                <td>Ksh 102</td>
-                                <td><b>Ksh 306</b></td>
-                            </tr>
-                        </table> -->
-                        <!-- <table>
-                            <tr>
-                                <th>No.</th>
-                                <th>Expense Category</th>
-                                <th>Total</th>
-                                <th>Record(s)</th>
-                            </tr>
-                            <tr>
-                                <td>1.</td>
-                                <td>Daily-expense</td>
-                                <td>Kes 1,000</td>
-                                <td>2</td>
-                            </tr>
-                        </table> -->
+                <div class="section_card ex_card">
+                    <div class="ex_head">
+                        <span class="ex_head_icon"><i class="fas fa-chart-bar"></i></span>
+                        <div><b>Expenses by Category</b><small>Approved and pending expenses grouped by category (declined ones are left out).</small></div>
                     </div>
+                    <div class="ex_category" id="my_table"></div>
                 </div>
             </div>
         </div>
