@@ -1596,6 +1596,21 @@ function setTemplateStatusDot(statusId, isSet) {
         icon.classList.toggle("text-success", isSet);
         icon.classList.toggle("text-secondary", !isSet);
     }
+    refreshTemplateChannelCounts();
+}
+// "4 of 6 saved" on the SMS and Email channel cards, counted from the status
+// dots in each tab.
+function refreshTemplateChannelCounts() {
+    [["sms_templates_tab", "sms_templates_count"], ["email_templates_tab", "email_templates_count"]].forEach(function (pair) {
+        var pane = cObj(pair[0]);
+        var count = cObj(pair[1]);
+        if (!pane || !count) {
+            return;
+        }
+        var dots = pane.querySelectorAll(".template_status_dot");
+        var saved = pane.querySelectorAll('.template_status_dot[title="Saved"]').length;
+        count.innerText = saved + " of " + dots.length + " saved";
+    });
 }
 function hasTemplateContent(value) {
     return !!(value && String(value).trim().length > 0);
@@ -1635,6 +1650,77 @@ function setQuillData(id, html) {
         cObj(id).innerHTML = html || "";
     }
 }
+
+// Message tag chips (.msg_tag with a data-tag): a click inserts the tag at the
+// cursor of the chip's data-target box, or else of the box in its .msg_tags
+// panel that was last clicked into. A panel lists its boxes (textarea or Quill
+// container ids) in data-boxes, or names a container in data-scope whose
+// textareas all count, such as the per-student report card comments.
+function msgTagBoxOf(panel, el) {
+    var boxes = (panel.getAttribute("data-boxes") || "").split(",");
+    for (var i = 0; i < boxes.length; i++) {
+        var box = boxes[i].trim() ? cObj(boxes[i].trim()) : null;
+        if (box && box.contains(el)) {
+            return box;
+        }
+    }
+    var scope = panel.getAttribute("data-scope") ? cObj(panel.getAttribute("data-scope")) : null;
+    if (scope && el.tagName === "TEXTAREA" && scope.contains(el)) {
+        return el;
+    }
+    return null;
+}
+function msgTagDefaultBox(panel) {
+    if (panel.getAttribute("data-boxes")) {
+        return cObj(panel.getAttribute("data-boxes").split(",")[0].trim());
+    }
+    var scope = panel.getAttribute("data-scope") ? cObj(panel.getAttribute("data-scope")) : null;
+    return scope ? scope.querySelector("textarea") : null;
+}
+function insertMsgTag(box, tag) {
+    var quill = quillInstances[box.id];
+    if (quill) {
+        var range = quill.getSelection(true);
+        var index = range ? range.index : quill.getLength() - 1;
+        if (range && range.length > 0) {
+            quill.deleteText(range.index, range.length, "user");
+        }
+        quill.insertText(index, tag, "user");
+        quill.setSelection(index + tag.length, 0, "user");
+        return;
+    }
+    var start = box.selectionStart;
+    var end = box.selectionEnd;
+    box.value = box.value.substring(0, start) + tag + box.value.substring(end);
+    box.focus();
+    box.setSelectionRange(start + tag.length, start + tag.length);
+    // refresh the sample, whether the box listens through onkeyup or addEventListener
+    box.dispatchEvent(new Event("keyup", { bubbles: true }));
+}
+document.addEventListener("focusin", function (e) {
+    document.querySelectorAll(".msg_tags[data-boxes], .msg_tags[data-scope]").forEach(function (panel) {
+        var box = msgTagBoxOf(panel, e.target);
+        if (box) {
+            panel.msgTagLastBox = box;
+        }
+    });
+});
+document.addEventListener("click", function (e) {
+    var chip = e.target.closest(".msg_tag[data-tag]");
+    if (!chip) {
+        return;
+    }
+    var panel = chip.closest(".msg_tags");
+    var box = null;
+    if (chip.getAttribute("data-target")) {
+        box = cObj(chip.getAttribute("data-target"));
+    } else if (panel) {
+        box = (panel.msgTagLastBox && document.body.contains(panel.msgTagLastBox)) ? panel.msgTagLastBox : msgTagDefaultBox(panel);
+    }
+    if (box) {
+        insertMsgTag(box, chip.getAttribute("data-tag"));
+    }
+});
 
 // Email template editors are Quill instances (see homepage.php for the
 // createQuillEditor() calls). This reads their rich text content.

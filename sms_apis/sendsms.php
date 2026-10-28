@@ -328,31 +328,44 @@
                             <div id="email_editored" style="min-height:200px;"></div>
                         </div>
                     </div>
-                    <div class="cont border border-secondary p-1 my-2 mx-2 d-none" id="message_tags_window">
-                        <h6 class="text-center"><b>Message Tags</b></h6>
-                        <div class="instructions"><strong>Hint:</strong><br>
-                        <small>- Below are tags that hold dynamic data that can be inserted in a message to make it more informative and more specific to the recipient. <br>
-                            - Always include the curly braces when inserting tags in the message and always check the preview before sending the message.
-                        </small></div>
-                        <div class="row w-90 mx-2">
-                            <div class="conts p-2 bg-white my-2 col-md-6">
-                                <span><b>1. Student Fullname: </b> <span class="mx-2">{stud_fullname}</span> <span id="insert_tag1" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>2. Student First Name: </b> <span class="mx-2">{stud_first_name}</span> <span id="insert_tag2" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>3. Student Class: </b> <span class="mx-2">{stud_class}</span> <span id="insert_tag3" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>4. Student Age: </b> <span class="mx-2">{stud_age}</span> <span id="insert_tag4" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>5. Student Fees Balance: </b> <span class="mx-2">{stud_fees_balance}</span> <span id="insert_tag5" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>6. Student Fees To Pay: </b> <span class="mx-2">{stud_fees_to_pay}</span> <span id="insert_tag6" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>7. Student Fees Paid: </b> <span class="mx-2">{stud_fees_paid}</span> <span id="insert_tag7" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>8. Student Noun: </b> <span class="mx-2">{stud_noun}</span> <span id="insert_tag13" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span> <small><b class='badge bg-secondary'>Son/Daughter</b></small></span><hr class="my-1">
-                                <span><b>9. Student Admission: </b> <span class="mx-2">{stud_adm}</span> <span id="insert_tag14" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span> <small></small></span><hr class="my-1">
-                                <span><b>10. Next Module Fees: </b> <span class="mx-2">{next_module_fees}</span> <span id="insert_tag15" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span> <small><b class="badge bg-secondary">Current balance + next module fee</b></small></span><hr class="my-1">
+                    <div class="my-2 mx-2 d-none" id="message_tags_window">
+                        <div class="msg_tags">
+                            <div class="msg_tags_head"><i class="fas fa-tags"></i> Message Tags</div>
+                            <p class="msg_tags_hint">Tags are filled in with each recipient's details when the message is sent. Click a tag to add it to the message, or type <b>/</b> in the message box to search the tags, and check the sample before sending. Next module fees is the current balance plus the next module's fee.</p>
+                            <div class="msg_tags_group">
+                                <div class="msg_tags_group_title">Student</div>
+                                <div class="msg_tags_list">
+                                    <span class="msg_tag" id="insert_tag1" title="Click to insert {stud_fullname}">Full name <code>{stud_fullname}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag2" title="Click to insert {stud_first_name}">First name <code>{stud_first_name}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag3" title="Click to insert {stud_class}">Class <code>{stud_class}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag4" title="Click to insert {stud_age}">Age <code>{stud_age}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag14" title="Click to insert {stud_adm}">Admission no. <code>{stud_adm}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag13" title="Click to insert {stud_noun}">Son / daughter <code>{stud_noun}</code> <i class="fas fa-plus"></i></span>
+                                </div>
                             </div>
-                            <div class="conts p-2 bg-white my-2 col-md-6">
-                                <span><b>1. Parent Fullname: </b> <span class="mx-2">{par_fullname}</span> <span id="insert_tag8" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>2. Parent First Name: </b> <span class="mx-2">{par_first_name}</span> <span id="insert_tag10" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
-                                <span><b>3. Parent title 1: </b> <span class="mx-2">{title_1}</span> <span id="insert_tag11" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span> <small><b class="badge bg-secondary">Mr & Mrs</b></small></span><hr class="my-1">
-                                <span><b>4. Parent title 2: </b> <span class="mx-2">{title_2}</span> <span id="insert_tag12" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span> <small><b class="badge bg-secondary">Madam / Sir</b></small></span><hr class="my-1">
-                                <span><b>6. Today: </b> <span class="mx-2">{today}</span> <span id="insert_tag9" class="text-left link" title="click to insert in message"><i class="fas fa-angle-double-down"></i></span></span><hr class="my-1">
+                            <div class="msg_tags_group">
+                                <div class="msg_tags_group_title">Fees</div>
+                                <div class="msg_tags_list">
+                                    <span class="msg_tag" id="insert_tag5" title="Click to insert {stud_fees_balance}">Balance <code>{stud_fees_balance}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag6" title="Click to insert {stud_fees_to_pay}">Fees to pay <code>{stud_fees_to_pay}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag7" title="Click to insert {stud_fees_paid}">Fees paid <code>{stud_fees_paid}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag15" title="Click to insert {next_module_fees}">Next module fees <code>{next_module_fees}</code> <i class="fas fa-plus"></i></span>
+                                </div>
+                            </div>
+                            <div class="msg_tags_group">
+                                <div class="msg_tags_group_title">Parent</div>
+                                <div class="msg_tags_list">
+                                    <span class="msg_tag" id="insert_tag8" title="Click to insert {par_fullname}">Full name <code>{par_fullname}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag10" title="Click to insert {par_first_name}">First name <code>{par_first_name}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag11" title="Click to insert {title_1}">Mr / Mrs <code>{title_1}</code> <i class="fas fa-plus"></i></span>
+                                    <span class="msg_tag" id="insert_tag12" title="Click to insert {title_2}">Sir / Madam <code>{title_2}</code> <i class="fas fa-plus"></i></span>
+                                </div>
+                            </div>
+                            <div class="msg_tags_group">
+                                <div class="msg_tags_group_title">Date</div>
+                                <div class="msg_tags_list">
+                                    <span class="msg_tag" id="insert_tag9" title="Click to insert {today}">Today <code>{today}</code> <i class="fas fa-plus"></i></span>
+                                </div>
                             </div>
                         </div>
                     </div>
