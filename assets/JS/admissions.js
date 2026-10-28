@@ -8937,11 +8937,11 @@ function view_my_leaves_data() {
                     cObj("application_error_view").innerHTML = "";
                     var status = jsoned_data.status;
                     if (status == "0") {
-                        cObj("my_leave_status").innerHTML = "<span class='btn btn-secondary btn-block'> Pending</span>";
+                        cObj("my_leave_status").innerHTML = "<span class='al_status al_status_wait'><i class='fas fa-hourglass-half'></i> Pending approval</span>";
                     } else if (status == "1") {
-                        cObj("my_leave_status").innerHTML = "<span class='btn btn-success btn-block'><i class='fas fa-check'></i> Approved</span>";
+                        cObj("my_leave_status").innerHTML = "<span class='al_status al_status_ok'><i class='fas fa-check'></i> Approved</span>";
                     } else if (status == "2") {
-                        cObj("my_leave_status").innerHTML = "<span class='btn btn-danger btn-block'><i class='fas fa-times'></i> Declined</span>";
+                        cObj("my_leave_status").innerHTML = "<span class='al_status al_status_bad'><i class='fas fa-times'></i> Declined</span>";
                     }
                 } else {
                     cObj("leave_name_applied").value = "";
@@ -8968,91 +8968,69 @@ function my_leaves_view(object_id) {
 function selectLeave() {
     var leave_cat = this.value;
     var datapass = "?get_leave_balance=" + leave_cat;
-    // console.log(datapass);
-    sendData2("GET", "administration/admissions.php", datapass, cObj("leave_balance_apply"), cObj("leave_balance_loader"));
+    // the balance changes with the category, so check the chosen days against the new one
+    sendData2("GET", "administration/admissions.php", datapass, cObj("leave_balance_apply"), cObj("leave_balance_loader"), checkLeaveDaysAgainstBalance);
 }
 
-cObj("from_leave_date").onchange = function () {
-    var err = checkBlank("from_leave_date");
-    err += checkBlank("to_leaves_date");
-    if (err == 0) {
-        cObj("to_leaves_date").min = valObj("from_leave_date");
-        var datapass = "?count_days=true&from_date=" + valObj("from_leave_date") + "&to_date=" + valObj("to_leaves_date");
-        sendData2("GET", "administration/admissions.php", datapass, cObj("leave_days_holder"), cObj("leave_duration_loader"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("leave_duration_loader").classList.contains("hide")) {
-                    // console.log("Noticed in");
-                    if (cObj("date_differences_leave_holder") != null && cObj("date_differences_leave_holder") != undefined) {
-                        var difference = cObj("date_differences_leave_holder").innerText;
-                        cObj("leave_duration").value = difference;
-                    } else {
-                        cObj("leave_duration").value = 0;
-                    }
-                    if (cObj("days_entittled") != null || cObj("days_entittled") != undefined) {
-                        var days_chosen = (valObj("leave_duration") * 1);
-                        var max_days = (cObj("days_entittled").innerText * 1);
-                        if (days_chosen > max_days) {
-                            cObj("duration_day_errors").innerHTML = "<p class='text-danger' id='days_exceed_error'>You cannot apply for more days than the leave days balance!</p>";
-                        } else {
-                            cObj("duration_day_errors").innerHTML = "<p class='text-success'>These days exclude non-working days and holidays!</p>";
-                        }
-                    } else {
-                        cObj("duration_day_errors").innerHTML = "<p class='text-danger'>Select the leave category your are applying for!</p>";
-                    }
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 100);
+// compare the counted leave days with the balance of the selected category
+function checkLeaveDaysAgainstBalance() {
+    if (valObj("from_leave_date") == "" || valObj("to_leaves_date") == "") {
+        cObj("duration_day_errors").innerHTML = "";
+        return;
+    }
+    var days_chosen = (valObj("leave_duration") * 1);
+    if (days_chosen < 1) {
+        cObj("duration_day_errors").innerHTML = "<p class='text-danger' id='days_exceed_error'>The dates you selected have no working days in them!</p>";
+        return;
+    }
+    if (cObj("days_entittled") == null || cObj("days_entittled") == undefined) {
+        cObj("duration_day_errors").innerHTML = "<p class='text-danger' id='days_exceed_error'>Select the leave category you are applying for!</p>";
+        return;
+    }
+    var max_days = (cObj("days_entittled").innerText * 1);
+    if (days_chosen > max_days) {
+        cObj("duration_day_errors").innerHTML = "<p class='text-danger' id='days_exceed_error'>You cannot apply for more days than the leave days balance!</p>";
+    } else {
+        cObj("duration_day_errors").innerHTML = "<p class='text-success'>These days exclude non-working days and holidays!</p>";
     }
 }
-cObj("to_leaves_date").onchange = function () {
+
+function countAppliedLeaveDays() {
     var err = checkBlank("from_leave_date");
     err += checkBlank("to_leaves_date");
-    if (err == 0) {
-        cObj("to_leaves_date").min = valObj("from_leave_date");
-        // cObj("to_leaves_date").min = valObj("from_leave_date");
-        var datapass = "?count_days=true&from_date=" + valObj("from_leave_date") + "&to_date=" + valObj("to_leaves_date");
-        sendData2("GET", "administration/admissions.php", datapass, cObj("leave_days_holder"), cObj("leave_duration_loader"));
-        setTimeout(() => {
-            var timeout = 0;
-            var ids = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(ids);
-                }
-                if (cObj("leave_duration_loader").classList.contains("hide")) {
-                    // console.log("Noticed in");
-                    if (cObj("date_differences_leave_holder") != null && cObj("date_differences_leave_holder") != undefined) {
-                        var difference = cObj("date_differences_leave_holder").innerText;
-                        cObj("leave_duration").value = difference;
-                    } else {
-                        cObj("leave_duration").value = 0;
-                    }
-                    if (cObj("days_entittled") != null || cObj("days_entittled") != undefined) {
-                        var days_chosen = (valObj("leave_duration") * 1);
-                        var max_days = (cObj("days_entittled").innerText * 1);
-                        if (days_chosen > max_days) {
-                            cObj("duration_day_errors").innerHTML = "<p class='text-danger' id='days_exceed_error'>You cannot apply for more days than the leave days balance!</p>";
-                        } else {
-                            cObj("duration_day_errors").innerHTML = "<p class='text-success'>These days exclude non-working days and holidays!</p>";
-                        }
-                    } else {
-                        cObj("duration_day_errors").innerHTML = "<p class='text-danger'>Select the leave category your are applying for!</p>";
-                    }
-                    stopInterval(ids);
-                }
-            }, 100);
-        }, 100);
+    if (err != 0) {
+        return;
     }
+    cObj("to_leaves_date").min = valObj("from_leave_date");
+    if (valObj("to_leaves_date") < valObj("from_leave_date")) {
+        // the first day moved past the last day, pick the last day again
+        cObj("to_leaves_date").value = "";
+        cObj("leave_duration").value = 0;
+        cObj("duration_day_errors").innerHTML = "<p class='text-danger' id='days_exceed_error'>Select the last day of the leave again!</p>";
+        return;
+    }
+    var datapass = "?count_days=true&from_date=" + valObj("from_leave_date") + "&to_date=" + valObj("to_leaves_date");
+    sendData2("GET", "administration/admissions.php", datapass, cObj("leave_days_holder"), cObj("leave_duration_loader"), function () {
+        if (cObj("date_differences_leave_holder") != null && cObj("date_differences_leave_holder") != undefined) {
+            cObj("leave_duration").value = cObj("date_differences_leave_holder").innerText;
+        } else {
+            cObj("leave_duration").value = 0;
+        }
+        checkLeaveDaysAgainstBalance();
+    });
 }
+
+// role="button" elements in Apply Leave click with Enter and Space
+cObj("leave_mgmt_staff").addEventListener("keydown", function (e) {
+    var el = e.target;
+    if (el.getAttribute && el.getAttribute("role") === "button" && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        el.click();
+    }
+});
+
+cObj("from_leave_date").onchange = countAppliedLeaveDays;
+cObj("to_leaves_date").onchange = countAppliedLeaveDays;
 
 cObj("apply_leave").onclick = function () {
     var err = checkBlank("leave_type");
@@ -9074,11 +9052,15 @@ cObj("apply_leave").onclick = function () {
                     stopInterval(ids);
                 }
                 if (cObj("apply_leave_loader").classList.contains("hide")) {
-                    cObj("from_leave_date").value = "";
-                    cObj("to_leaves_date").value = "";
-                    cObj("leave_duration").value = "";
-                    cObj("leave_comments").value = "";
-                    cObj("back_to_list_emp_leave_list").click();
+                    // stay on the form when the server refused, so the reason stays visible
+                    if (cObj("leave_applied_success") != null) {
+                        cObj("from_leave_date").value = "";
+                        cObj("to_leaves_date").value = "";
+                        cObj("leave_duration").value = "";
+                        cObj("leave_comments").value = "";
+                        cObj("duration_day_errors").innerHTML = "";
+                        cObj("back_to_list_emp_leave_list").click();
+                    }
 
                     stopInterval(ids);
                 }
