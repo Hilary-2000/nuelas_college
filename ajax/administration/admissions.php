@@ -2260,23 +2260,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                 }
             }
             echo $total_all;
-        }elseif (isset($_GET['updatingpassword'])) {
-            $password = $_GET['updatingpassword'];
-            $userid = $_GET['usersids'];
-            include("../../connections/conn1.php");
-            include("../../assets/encrypt/encrypt.php");
-            $update = 'UPDATE `user_tbl` SET `password` = ? WHERE `user_id` = ?';
-            $stmt = $conn->prepare($update);
-            $password = encryptCode($password);
-            $stmt->bind_param("ss",$password,$userid);
-            if ($stmt->execute()) {
-                echo "<p style='color:green;'>Password update was successfull!</p>";
-                $staff_infor = getMyStaffIn4($conn,$userid);
-                $log_text = "Changed the password of ".(is_array($staff_infor) ? ucwords(strtolower($staff_infor['fullname'])) : "N/A")." successfully!";
-                log_administration($log_text);
-            }else {
-                echo "<p style='color:red;'>Password update wasn`t successfull!</p>";
-            }
         }elseif (isset($_GET['get_CLassteacher'])) {
             $select = "SELECT `class_teacher_id`,`class_assigned`,`active` FROM `class_teacher_tbl`";
             $stmt = $conn2->prepare($select);
@@ -6501,7 +6484,24 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
     }elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
         include("../../connections/conn1.php");
         include("../../connections/conn2.php");
-        if (isset($_POST['move_to_alumni'])) {
+        if (isset($_POST['updatingpassword'])) {
+            // sent as POST so the new password stays out of the URL and the server logs
+            $password = $_POST['updatingpassword'];
+            $userid = $_POST['usersids'];
+            include_once("../../assets/encrypt/encrypt.php");
+            $update = 'UPDATE `user_tbl` SET `password` = ? WHERE `user_id` = ?';
+            $stmt = $conn->prepare($update);
+            $password = encryptCode($password);
+            $stmt->bind_param("ss",$password,$userid);
+            if ($stmt->execute()) {
+                echo "<p style='color:green;'>Password update was successfull!</p>";
+                $staff_infor = getMyStaffIn4($conn,$userid);
+                $log_text = "Changed the password of ".(is_array($staff_infor) ? ucwords(strtolower($staff_infor['fullname'])) : "N/A")." successfully!";
+                log_administration($log_text);
+            }else {
+                echo "<p style='color:red;'>Password update wasn`t successfull!</p>";
+            }
+        }elseif (isset($_POST['move_to_alumni'])) {
             $selected = isset($_POST['selectedStd']) ? json_decode($_POST['selectedStd'], true) : [];
             if (!is_array($selected) || count($selected) == 0) {
                 echo json_encode(["status" => "error", "message" => "No students selected."]);

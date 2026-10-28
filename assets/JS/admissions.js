@@ -1464,9 +1464,9 @@ cObj("changebtns").onclick = function () {
         cObj("passworderrors").innerHTML = "<span class='pw_bad'><i class='fas fa-times-circle'></i> Please fill in both password fields.</span>";
     } else {
         if (valObj("enterpass") == valObj("reenterpass")) {
-            // encode it so characters like & and # reach the server intact
-            let datapassings = "?updatingpassword=" + encodeURIComponent(valObj("reenterpass")) + "&usersids=" + cObj("staffid").innerText;
-            sendData1("GET", "administration/admissions.php", datapassings, cObj("passworderrors2"));
+            // sent as POST so the password stays out of the URL; encoded so & and # arrive intact
+            let datapassings = "updatingpassword=" + encodeURIComponent(valObj("reenterpass")) + "&usersids=" + encodeURIComponent(cObj("staffid").innerText);
+            sendData1("POST", "administration/admissions.php", datapassings, cObj("passworderrors2"));
             closeChangePassword();
         } else {
             cObj("passworderrors").innerHTML = "<span class='pw_bad'><i class='fas fa-times-circle'></i> The passwords do not match.</span>";
