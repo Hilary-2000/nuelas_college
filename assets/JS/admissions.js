@@ -2350,7 +2350,7 @@ function clicks() {
                     } else {
                         data += auth;
                     }
-                    cObj("myauthorities").innerHTML = "<span style='color:blue;'>{" + data + "}</span>";
+                    cObj("myauthorities").textContent = data;
 
                     // set the value of the role
                     if(cObj("auths") != undefined){
@@ -2376,6 +2376,17 @@ function clicks() {
                         cObj("reason_for_staff_inactive").classList.add("hide");
                     }
                     cObj("staffid").innerText = splitdata[13];
+                    // name, initials and quick facts in the staff header
+                    var _staffName = (splitdata[0] || "").trim();
+                    cObj("staff_detail_identity").innerHTML = "<h3>" + escHtml(_staffName.length > 0 ? _staffName : "Employee") + "</h3>";
+                    var _initials = _staffName.split(/\s+/).filter(function (w) { return w.length > 0; }).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join("");
+                    cObj("staff_avatar_initials").innerHTML = _initials.length > 0 ? escHtml(_initials) : "<i class='fas fa-user'></i>";
+                    var _staffChips = "";
+                    if (splitdata[18]) _staffChips += "<span class='sp_chip'><i class='fas fa-briefcase'></i> " + escHtml(splitdata[18]) + "</span>";
+                    if (splitdata[19]) _staffChips += "<span class='sp_chip'><i class='fas fa-file-contract'></i> " + escHtml(splitdata[19]) + "</span>";
+                    if (splitdata[4] == "M" || splitdata[4] == "F") _staffChips += "<span class='sp_chip'><i class='fas fa-" + (splitdata[4] == "F" ? "venus" : "mars") + "'></i> " + (splitdata[4] == "F" ? "Female" : "Male") + "</span>";
+                    _staffChips += splitdata[10] == 1 ? "<span class='sp_chip sp_chip_ok'><i class='fas fa-check-circle'></i> Active</span>" : "<span class='sp_chip sp_chip_off'><i class='fas fa-ban'></i> In-active</span>";
+                    cObj("staff_detail_chips").innerHTML = _staffChips;
                     if (typeof loadStaffSignatureCard == "function") loadStaffSignatureCard(splitdata[13]);
                     // cObj("auths"+splitdata[11]).selected = true;
 
