@@ -8857,8 +8857,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                                         <label for='student_id_' class='form-control-label'>Comment here:</label>
                                         <textarea id='student_id_".str_replace(" ","_",$row['adm_no'])."' cols='30' rows='3' class='form-control student_exam_commentator' placeholder='Comments go here'></textarea>
                                     </div>
-                                    <div class='col-md-4 container-fluid border border-secondary rounded'>
-                                        <p class='text-primary student_exams_comments_previewer' id='preview_comments_exams_".str_replace(" ","_",$row['adm_no'])."'>Previews Appear here..</p>
+                                    <div class='col-md-4'>
+                                        <div class='msg_preview msg_preview_compact' data-channel='sms'>
+                                            <div class='msg_preview_head'><i class='fas fa-eye'></i> Comment Preview</div>
+                                            <div class='msg_preview_body'><div class='msg_bubble student_exams_comments_previewer' id='preview_comments_exams_".str_replace(" ","_",$row['adm_no'])."' data-placeholder='The comment preview appears here.'></div></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>";

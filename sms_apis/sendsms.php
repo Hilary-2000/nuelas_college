@@ -389,11 +389,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="w-90 mx-2 p-1 row bg-light">
-                        <div class="col-md-12 border border-primary p-2">
-                            <h6><b>Message Sample</b></h6>
-                            <small id="message_samples">Message Sample will appear here</small>
-                        </div>
+                    <div class="msg_preview msg_preview_wide my-2" data-channel="sms" id="broadcast_message_preview">
+                        <div class="msg_preview_head"><i class="fas fa-eye"></i> Message Sample <span class="msg_preview_chip" id="broadcast_preview_chip"><i class="fas fa-sms"></i> SMS</span></div>
+                        <div class="msg_preview_body"><div class="msg_bubble" id="message_samples" data-placeholder="The sample will appear here as you type."></div></div>
+                        <div class="msg_preview_meta"></div>
                     </div>
                     <p id="err_hands_error"></p>
                     <button type='button' id="send_msg_btns"><i class="fas fa-paper-plane"></i> Send message <span class="hide" id="load_bulk_emails_sending"><img src="images/ajax_clock_small.gif"></span></button>

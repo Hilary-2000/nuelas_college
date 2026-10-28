@@ -5194,7 +5194,7 @@ function setPreviewComments() {
         its_value = its_value.replace("{noun2}",(student_gender == "Male" ? "boy":"girl"));
         cObj("preview_comments_exams_"+its_id).innerText = its_value;
     }else{
-        cObj("preview_comments_exams_"+its_id).innerText = "Previews Appear here..";
+        cObj("preview_comments_exams_"+its_id).innerText = "";
     }
 }
 
@@ -5377,11 +5377,8 @@ cObj("finish_generating_reports").onclick = function () {
 
 function editSamplesData(event) {
     var sample_message = editSample_message(event.getContent());
-    if (sample_message.length > 0) {
-        cObj("email_contents_exam_reports_preview").innerHTML = sample_message;
-    }else{
-        cObj("email_contents_exam_reports_preview").innerHTML = "Sample Appear here ..";
-    }
+    // empty leaves the sample blank so its placeholder shows
+    cObj("email_contents_exam_reports_preview").innerHTML = stripTags(sample_message).trim().length > 0 ? sample_message : "";
 }
 
 function editSample_message(messages) {
