@@ -1076,8 +1076,8 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id='allowance_window'>
-            <div class="confirmpayment animate">
-                <h6 class="text-center">Add Allowance</h6>
+            <div class="confirmpayment animate pr_modal">
+                <h6 class="text-center"><span class="pr_modal_icon"><i class="fas fa-plus-circle"></i></span> Add Allowance</h6>
                 <div class="form-group">
                     <label for="allowance_name" class="form-control-label">Allowance Name</label>
                     <input type="text" class="form-control" placeholder="Allowance Name" id="allowance_name">
@@ -1094,8 +1094,8 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id='allowance_window2'>
-            <div class="confirmpayment animate">
-                <h6 class="text-center">Add Allowance</h6>
+            <div class="confirmpayment animate pr_modal">
+                <h6 class="text-center"><span class="pr_modal_icon"><i class="fas fa-plus-circle"></i></span> Add Allowance</h6>
                 <div class="form-group">
                     <label for="allowance_name2" class="form-control-label">Allowance Name</label>
                     <input type="text" class="form-control" placeholder="Allowance Name" id="allowance_name2">
@@ -1112,8 +1112,8 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id='deductions_window'>
-            <div class="confirmpayment animate">
-                <h6 class="text-center">Add Deductions</h6>
+            <div class="confirmpayment animate pr_modal">
+                <h6 class="text-center"><span class="pr_modal_icon pr_modal_icon_minus"><i class="fas fa-minus-circle"></i></span> Add Deductions</h6>
                 <div class="form-group">
                     <label for="deduction_name" class="form-control-label">Select Deduction</label>
                     <select name="deduction_type" id="deduction_type" class="form-control">
@@ -1126,11 +1126,11 @@ function checkPresnt($array, $string){
                         <option value="Fees Credit Note">Fees Credit Note</option>
                         <option value="define_new_entry">Define New deduction</option>
                     </select>
-                    <input type="text" class="form-control w-75 hide my-2" placeholder="Deduction Name" id="deduction_name">
+                    <input type="text" class="form-control hide my-2" placeholder="Deduction Name" id="deduction_name">
                 </div>
                 <div class="form-group my-2">
                     <label for="deduction_amount" class="form-control-label">Deduction Amounts</label>
-                    <input type="number" class="form-control w-75" placeholder="Deduction Amounts" id="deduction_amount">
+                    <input type="number" class="form-control" placeholder="Deduction Amounts" id="deduction_amount">
                 </div>
                 <p id="deduction_error"></p>
                 <div class="btns">
@@ -1140,8 +1140,8 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" id='deductions_window_1'>
-            <div class="confirmpayment animate">
-                <h6 class="text-center">Add Deductions</h6>
+            <div class="confirmpayment animate pr_modal">
+                <h6 class="text-center"><span class="pr_modal_icon pr_modal_icon_minus"><i class="fas fa-minus-circle"></i></span> Add Deductions</h6>
                 <div class="form-group">
                     <label for="deduction_name_1" class="form-control-label">Select Deduction</label>
                     <select name="deduction_type_1" id="deduction_type_1" class="form-control">
@@ -1154,11 +1154,11 @@ function checkPresnt($array, $string){
                         <option value="Fees Credit Note">Fees Credit Note</option>
                         <option value="define_new_entry">Define New deduction</option>
                     </select>
-                    <input type="text" class="form-control w-75 hide my-2" placeholder="Deduction Name" id="deduction_name_1">
+                    <input type="text" class="form-control hide my-2" placeholder="Deduction Name" id="deduction_name_1">
                 </div>
                 <div class="form-group my-2">
                     <label for="deduction_amount_1" class="form-control-label">Deduction Amounts</label>
-                    <input type="number" class="form-control w-75" placeholder="Deduction Amounts" id="deduction_amount_1">
+                    <input type="number" class="form-control" placeholder="Deduction Amounts" id="deduction_amount_1">
                 </div>
                 <p id="deduction_error_1"></p>
                 <div class="btns">
@@ -3957,7 +3957,7 @@ function checkPresnt($array, $string){
         <img src="images/dp.png" alt="" id="image_viewer" srcset="">
     </div>
     <div class="dialogholder hide" id="unenroll_confirm">
-        <div class="dialogwindow animate2">
+        <div class="dialogwindow animate2 pr_dialog_danger">
             <h6>Confirm</h6>
             <div class="message" id="message">
                 <p class="text-danger">All your staff payroll information will be erased, including all salary payments done to them!</p>
@@ -3970,7 +3970,7 @@ function checkPresnt($array, $string){
         </div>
     </div>
     <div class="dialogholder hide" id="delete_advance_payments">
-        <div class="dialogwindow animate2">
+        <div class="dialogwindow animate2 pr_dialog_danger">
             <h6>Confirm</h6>
             <div class="message" id="message">
                 <p>Are you sure you want to delete this staff`s advance payment and its history?</p>
@@ -4322,7 +4322,7 @@ function checkPresnt($array, $string){
     </script>
     <script src="assets/JS/admissions.js"></script>
     <script src="assets/JS/dashboardajax.js"></script>
-    <script src="assets/JS/finance.js"></script>
+    <script src="assets/JS/finance.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/finance.js'); ?>"></script>
     <script src="assets/JS/feesTable.js"></script>
     <script src="assets/JS/expense.js"></script>
     <script src="assets/JS/transport.js"></script>

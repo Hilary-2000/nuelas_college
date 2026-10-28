@@ -4840,3 +4840,995 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     max-width: 100%;
     font-size: 12px;
 }
+
+/* ===== Payroll window (financepages/payroll.php). pr_ classes; every id the
+   finance.js payroll code uses is unchanged. ===== */
+#payrolled_win .pr_nav{
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+#payrolled_win .pr_nav_main{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+#payrolled_win .pr_nav_btn{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 11px 13px;
+    cursor: pointer;
+    background: #fff;
+    transition: border-color .15s ease, background .15s ease;
+}
+#payrolled_win .pr_nav_btn:hover,
+#payrolled_win .pr_nav_btn:focus-visible{
+    border-color: rgb(3, 131, 135);
+    outline: none;
+}
+#payrolled_win .pr_nav_icon{
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-size: 17px;
+}
+#payrolled_win .pr_nav_text{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+#payrolled_win .pr_nav_text b{
+    font-size: 14px;
+    color: #1f2d2e;
+}
+#payrolled_win .pr_nav_text small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#payrolled_win .pr_nav_btn.active{
+    border-color: rgb(3, 131, 135);
+    background: #e7f4f4;
+}
+#payrolled_win .pr_nav_btn.active .pr_nav_icon{
+    background: rgb(3, 131, 135);
+    color: #fff;
+}
+#payrolled_win .pr_nav_reports{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #e3e7ea;
+}
+#payrolled_win .pr_nav_reports_title{
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7b7c;
+    margin-right: 4px;
+}
+#payrolled_win .pr_nav_reports_title i{
+    color: rgb(3, 131, 135);
+    margin-right: 3px;
+}
+#payrolled_win .pr_nav_chip{
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #fff;
+    border: 1px solid #c9dfe0;
+    border-radius: 20px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+}
+#payrolled_win .pr_nav_chip:hover,
+#payrolled_win .pr_nav_chip:focus-visible{
+    background: #e7f4f4;
+    outline: none;
+}
+#payrolled_win .pr_nav_chip.active{
+    background: rgb(3, 131, 135);
+    border-color: rgb(3, 131, 135);
+    color: #fff;
+}
+#payrolled_win .pr_view_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef3f3;
+}
+#payrolled_win .pr_view_head > div:not([class]){
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+}
+#payrolled_win .pr_view_head b{
+    font-size: 16px;
+    color: #1f2d2e;
+}
+#payrolled_win .pr_view_head small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#payrolled_win .pr_view_icon{
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    font-size: 16px;
+}
+#payrolled_win .pr_back p{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    cursor: pointer;
+}
+#payrolled_win .pr_card{
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+}
+#payrolled_win .pr_card_title{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+    font-weight: 700;
+    font-size: 14px;
+    color: #1f2d2e;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eef3f3;
+}
+#payrolled_win .pr_card_title > i{
+    color: rgb(3, 131, 135);
+}
+#payrolled_win .pr_card_note{
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7b7c;
+    background: #f1f4f5;
+    border-radius: 20px;
+    padding: 2px 9px;
+}
+#payrolled_win label .pr_card_note{
+    margin-left: 6px;
+}
+#payrolled_win .pr_field{
+    margin-bottom: 12px;
+}
+#payrolled_win .pr_field label,
+#payrolled_win .pr_card label.form-control-label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+    margin-bottom: 4px;
+}
+#payrolled_win .pr_card .form-control,
+#payrolled_win .pr_card select,
+#payrolled_win .pr_view_head select,
+#payrolled_win .pr_view_head input,
+#payrolled_win .pr_search input{
+    width: 100% !important;
+    margin: 0 !important;
+}
+#payrolled_win .pr_readonly{
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #8a9a9b;
+    background: #f1f4f5;
+    border-radius: 4px;
+    padding: 1px 6px;
+}
+#payrolled_win #amount_to_pay{
+    background: #f1f4f5 !important;
+    color: #51626b !important;
+}
+#payrolled_win .information_window.pr_help{
+    position: static;
+    width: auto;
+    background: #f3f9f9;
+    box-shadow: none;
+    border-left: 3px solid rgb(3, 131, 135);
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 14px;
+}
+#payrolled_win .pr_help h6{
+    font-size: 13px;
+    font-weight: 700;
+    color: rgb(3, 131, 135);
+    margin: 0 0 3px;
+}
+#payrolled_win .pr_help p{
+    font-size: 12px;
+    color: #51626b;
+    margin: 0;
+}
+#payrolled_win .pr_calc{
+    position: relative;
+}
+#payrolled_win .pr_overlay{
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    border-radius: 14px;
+    background: rgba(248,250,251,0.82);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 70px 16px 16px;
+}
+#payrolled_win .pr_overlay.hide{
+    display: none;
+}
+#payrolled_win .pr_overlay_box{
+    max-width: 340px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 8px 24px rgba(31,45,51,0.12);
+    font-size: 13px;
+    color: #3d4a4e;
+}
+#payrolled_win .pr_overlay_icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff4e5;
+    color: #b26a00;
+    margin-bottom: 8px;
+}
+#payrolled_win #payrollOverlayMissing{
+    color: #b26a00;
+    font-weight: 600;
+}
+#payrolled_win .pr_block{
+    border: 1px solid #eef3f3;
+    background: #fbfcfc;
+    border-radius: 12px;
+    padding: 11px 12px;
+    margin-bottom: 10px;
+}
+#payrolled_win .pr_block_title{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: rgb(3, 131, 135);
+    margin-bottom: 8px;
+}
+#payrolled_win .pr_add{
+    margin-left: auto;
+    font-size: 11px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border-radius: 20px;
+    padding: 2px 10px;
+    cursor: pointer;
+}
+#payrolled_win .pr_add:hover,
+#payrolled_win .pr_add:focus-visible{
+    background: rgb(3, 131, 135);
+    color: #fff;
+    outline: none;
+}
+#payrolled_win .pr_money{
+    display: flex;
+    align-items: stretch;
+}
+#payrolled_win .pr_money span{
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border: 1px solid #d7e9ea;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+}
+#payrolled_win .pr_money input{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+#payrolled_win .pr_toggle{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #3d4a4e;
+    cursor: pointer;
+}
+#payrolled_win .pr_toggle input[type=checkbox]{
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 0 0 36px;
+    width: 36px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 20px !important;
+    background: #cfd8dc !important;
+    position: relative;
+    cursor: pointer;
+    transition: background .15s ease;
+    box-shadow: none !important;
+}
+#payrolled_win .pr_toggle input[type=checkbox]::after{
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    transition: left .15s ease;
+}
+#payrolled_win .pr_toggle input[type=checkbox]:checked{
+    background: rgb(3, 131, 135) !important;
+}
+#payrolled_win .pr_toggle input[type=checkbox]:checked::after{
+    left: 18px;
+}
+#payrolled_win .pr_toggle input[type=checkbox]:focus-visible{
+    box-shadow: 0 0 0 3px rgba(3,131,135,0.25) !important;
+}
+#payrolled_win .pr_items .row{
+    display: flex;
+    align-items: center;
+    margin: 0 0 6px;
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 9px;
+    padding: 6px 8px;
+    font-size: 13px;
+}
+#payrolled_win .pr_items .row > div{
+    padding: 0 4px;
+}
+#payrolled_win .pr_items .row label,
+#payrolled_win .pr_items .row p{
+    margin: 0;
+    font-style: normal;
+}
+#payrolled_win .pr_items .row > div:last-child{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+}
+#payrolled_win .pr_items .funga{
+    position: static;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #c5221f;
+    background: #fdecea;
+    margin: 0 !important;
+}
+#payrolled_win .pr_empty{
+    font-size: 12px;
+    color: #7a8b8c;
+    background: #fff;
+    border: 1px dashed #d7e9ea;
+    border-radius: 9px;
+    padding: 8px 10px;
+    margin: 0;
+}
+#payrolled_win .pr_slip{
+    background: #fff;
+    border: 1px solid #d7e9ea;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(3,131,135,0.07);
+}
+#payrolled_win .pr_slip_sticky{
+    position: sticky;
+    top: 60px;
+}
+#payrolled_win .pr_slip_head{
+    background: linear-gradient(135deg, rgb(3, 131, 135), rgb(24, 158, 163));
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 14px;
+}
+#payrolled_win .pr_slip_head i{
+    margin-right: 5px;
+}
+#payrolled_win .pr_slip_section{
+    padding: 9px 14px;
+    border-bottom: 1px dashed #e3e7ea;
+}
+#payrolled_win .pr_slip_title{
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #7a8b8c;
+    margin-bottom: 4px;
+}
+#payrolled_win .pr_line,
+#payrolled_win .pr_dyn{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 13px;
+    color: #3d4a4e;
+    padding: 2px 0;
+}
+#payrolled_win .pr_line p{
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: #1f2d2e;
+}
+#payrolled_win .pr_line_total{
+    font-weight: 700;
+    color: #1f2d2e;
+    border-top: 1px solid #eef3f3;
+    margin-top: 3px;
+    padding-top: 5px;
+}
+/* rows the calculator builds as Bootstrap columns: label | amount */
+#payrolled_win .pr_dyn{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin: 0;
+    row-gap: 2px;
+}
+#payrolled_win .pr_dyn > div{
+    width: auto;
+    max-width: none;
+    padding: 0;
+    flex: none;
+}
+#payrolled_win .pr_dyn > .col-md-12{
+    grid-column: 1 / -1;
+}
+#payrolled_win .pr_dyn p,
+#payrolled_win .pr_dyn i{
+    margin: 0;
+    font-style: normal;
+}
+#payrolled_win .pr_dyn > div:nth-child(even) p{
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: #1f2d2e;
+}
+#payrolled_win .pr_dyn p::first-letter{
+    text-transform: none;
+}
+#payrolled_win .pr_dyn_empty{
+    font-size: 12px;
+    color: #9fb0b1;
+    font-style: italic !important;
+}
+#payrolled_win .pr_net{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 14px;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-weight: 700;
+}
+#payrolled_win .pr_net span{
+    font-size: 14px;
+}
+#payrolled_win .pr_net span i{
+    margin-right: 5px;
+}
+#payrolled_win .pr_net b{
+    font-size: 20px;
+    font-variant-numeric: tabular-nums;
+}
+#payrolled_win .pr_actions{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+#payrolled_win .pr_actions p{
+    margin: 0;
+    flex: 1;
+}
+#payrolled_win .pr_btn_row{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+#payrolled_win button.pr_btn_ghost{
+    background: #fff !important;
+    color: rgb(3, 131, 135) !important;
+    border: 1px solid #c9dfe0 !important;
+    box-shadow: none !important;
+    padding: 6px 12px;
+}
+#payrolled_win button.pr_btn_ghost:hover{
+    background: #e7f4f4 !important;
+}
+#payrolled_win button.pr_btn_danger{
+    background: #fff !important;
+    color: #c5221f !important;
+    border: 1px solid #f3c6c3 !important;
+    box-shadow: none !important;
+}
+#payrolled_win button.pr_btn_danger:hover{
+    background: #fdecea !important;
+}
+#payrolled_win .pr_btn_tile{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(24,158,163));
+    border-radius: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 3px 8px rgba(3,131,135,0.25);
+}
+#payrolled_win .pr_btn_tile:hover,
+#payrolled_win .pr_btn_tile:focus-visible{
+    box-shadow: 0 5px 14px rgba(3,131,135,0.35);
+    outline: none;
+}
+#payrolled_win .pr_btn_delete{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c5221f;
+    background: #fff;
+    border: 1px solid #f3c6c3;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+#payrolled_win .pr_btn_delete:hover{
+    background: #fdecea;
+}
+#payrolled_win .pr_stats{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+#payrolled_win .pr_stat{
+    background: #f8fafb;
+    border: 1px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+#payrolled_win .pr_stat small{
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #7a8b8c;
+}
+#payrolled_win .pr_stat b{
+    font-size: 15px;
+    color: #1f2d2e;
+}
+#payrolled_win .pr_stat_main{
+    background: #e7f4f4;
+    border-color: rgb(3, 131, 135);
+}
+#payrolled_win .pr_stat_main b{
+    color: rgb(3, 131, 135);
+}
+#payrolled_win .pr_pay_form{
+    max-width: 520px;
+}
+#payrolled_win .pr_year,
+#payrolled_win .pr_report_pick{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+#payrolled_win .pr_year label,
+#payrolled_win .pr_report_pick label{
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7b7c;
+    margin: 0;
+}
+#payrolled_win .pr_year select{
+    width: 130px !important;
+}
+#payrolled_win .pr_report_pick input{
+    width: 170px !important;
+}
+#payrolled_win .pr_legend{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 12px;
+    color: #6b7b7c;
+    margin-bottom: 12px;
+}
+#payrolled_win .pr_legend span:first-child{
+    font-weight: 600;
+}
+#payrolled_win .pr_search{
+    position: relative;
+    margin-bottom: 12px;
+}
+#payrolled_win .pr_search > i{
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9fb4b5;
+    font-size: 12px;
+    z-index: 1;
+}
+#payrolled_win .pr_search input{
+    padding-left: 32px !important;
+}
+#payrolled_win .pr_page_info{
+    font-size: 12px;
+    color: #6b7b7c;
+    margin: 6px 0;
+}
+#payrolled_win #payroll_reports_window{
+    width: 100%;
+    border: 1px solid #e4eaee;
+    border-radius: 16px;
+    padding: 18px 20px 12px;
+}
+/* payment history cards (ajax/finance/financial.php) */
+#payrolled_win .pr_history > .conts:first-child{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    background: #f8fafb;
+    border: 1px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+#payrolled_win .pr_history > .conts:first-child p{
+    margin: 0;
+    font-size: 13px;
+}
+#payrolled_win .pr_history .my_salo-flexbox{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+#payrolled_win .pr_history .year_card{
+    width: auto;
+    margin: 0;
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: none;
+    font-size: 13px;
+}
+#payrolled_win .pr_history .year_card .bordered_bottom{
+    border-bottom: 1px dashed #e3e7ea;
+}
+#payrolled_win .pr_history .year_card > div:first-child p{
+    font-weight: 700;
+    color: rgb(3, 131, 135);
+}
+#payrolled_win .pr_history .year_card p{
+    margin: 3px 0;
+}
+#payrolled_win .pr_history .color_brown{
+    color: #1f2d2e;
+    font-weight: 600;
+}
+/* enrolled staff table (ajax/finance/financial.php) */
+#payrolled_win .pr_staff_cell{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#payrolled_win .pr_avatar{
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-weight: 700;
+    font-size: 13px;
+}
+#payrolled_win .pr_net_cell{
+    color: rgb(3, 131, 135);
+    white-space: nowrap;
+}
+#payrolled_win .pr_row_actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+#payrolled_win .pr_act{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #fff;
+    border: 1px solid #c9dfe0;
+    border-radius: 20px;
+    padding: 3px 9px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#payrolled_win .pr_act:hover,
+#payrolled_win .pr_act:focus-visible{
+    background: #e7f4f4;
+    outline: none;
+}
+#payrolled_win .pr_act_pay{
+    background: rgb(3, 131, 135);
+    border-color: rgb(3, 131, 135);
+    color: #fff;
+}
+#payrolled_win .pr_act_pay:hover,
+#payrolled_win .pr_act_pay:focus-visible{
+    background: rgb(2, 110, 114);
+}
+@media screen and (max-width: 768px){
+    #payrolled_win .pr_nav_main,
+    #payrolled_win .pr_stats{
+        grid-template-columns: 1fr;
+    }
+    #payrolled_win .pr_slip_sticky{
+        position: static;
+    }
+}
+
+/* Payroll popups in homepage.php: add allowance / deduction, and the
+   un-enroll and delete-advance confirmations. */
+.confirmpayment.pr_modal{
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    border-radius: 16px;
+    padding: 18px 20px;
+}
+.pr_modal h6{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-start;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2d2e;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef3f3;
+}
+.pr_modal_icon{
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-size: 15px;
+}
+.pr_modal_icon_minus{
+    background: #fdecea;
+    color: #c5221f;
+}
+.pr_modal .form-group{
+    margin-bottom: 12px;
+}
+.pr_modal label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+}
+.pr_modal .form-control{
+    width: 100% !important;
+    margin: 4px 0 0 !important;
+}
+.pr_modal .btns{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-top: 6px;
+}
+/* beats the app-wide button rule, which chains four :not()s */
+.confirmpayment.pr_modal .btns button:last-child:not(.disabled):not(.left_dash *){
+    background: #fff !important;
+    color: #51626b !important;
+    border: 1px solid #d5dde0 !important;
+    box-shadow: none !important;
+}
+.dialogwindow.pr_dialog_danger h6{
+    color: #c5221f;
+    font-weight: 700;
+}
+.dialogwindow.pr_dialog_danger h6::before{
+    content: "\f071";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 7px;
+}
+.dialogwindow.pr_dialog_danger .buttons button:first-child{
+    background: linear-gradient(135deg, #c5221f, #e04a3f) !important;
+    box-shadow: 0 3px 8px rgba(197,34,31,0.3) !important;
+}
+
+/* Payroll compliance reports: the notice when no staff are covered for the
+   month (Payroll_Report_Empty in ajax/finance/financial.php), and the note
+   above the NITA table. */
+.pr_report_empty{
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: #f8fafb;
+    border: 1px dashed #c9dfe0;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin: 8px 0;
+    color: #3d4a4e;
+}
+.pr_report_empty_icon{
+    flex: 0 0 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-size: 19px;
+}
+.pr_report_empty b{
+    display: block;
+    font-size: 15px;
+    color: #1f2d2e;
+    margin-bottom: 4px;
+}
+.pr_report_empty p{
+    font-size: 13px;
+    margin: 0 0 6px;
+    color: #51626b;
+}
+.pr_report_empty ul{
+    margin: 0;
+    padding-left: 18px;
+    font-size: 12px;
+    color: #6b7b7c;
+}
+.pr_report_empty li{
+    margin: 2px 0;
+}
+.pr_report_note{
+    font-size: 12px;
+    color: #51626b;
+    background: #f3f9f9;
+    border-left: 3px solid rgb(3, 131, 135);
+    border-radius: 6px;
+    padding: 7px 10px;
+    margin: 10px 0;
+}
+.pr_report_note i{
+    color: rgb(3, 131, 135);
+    margin-right: 4px;
+}
+
+/* On-screen payroll compliance reports (NSSF, SHIF/NHIF, KRA, NITA): the
+   title with its PDF button, the summary strip and the totals row. */
+#payrolled_win .pr_report_top{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 4px 0 12px;
+}
+#payrolled_win .pr_report_top h5{
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f2d2e;
+    margin: 0;
+}
+#payrolled_win .pr_report_top .pr_btn_tile{
+    text-decoration: none;
+}
+#payrolled_win .pr_report_summary{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+#payrolled_win .pr_report_summary > div{
+    background: #f3f9f9;
+    border: 1px solid #d7e9ea;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+#payrolled_win .pr_report_summary small{
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #6b7b7c;
+}
+#payrolled_win .pr_report_summary b{
+    font-size: 17px;
+    color: rgb(3, 131, 135);
+}
+#payrolled_win .pr_report_table td{
+    white-space: nowrap;
+}
+#payrolled_win .pr_report_table tr.pr_report_total td{
+    font-weight: 700;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+}
+#payrolled_win .pr_report_table .pr_act{
+    text-decoration: none;
+}
