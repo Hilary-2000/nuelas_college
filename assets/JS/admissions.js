@@ -3731,8 +3731,16 @@ function display_course_list_table(course_history, json_data) {
     }
 }
 
+// Reset to default removes the custom selections, so it asks first
 cObj("reset_student_voteheads").onclick = function () {
-    var datapass = "?reset_votehead_settings=true&adm_no="+valObj("adminnos");
+    cObj("reset_evh_confirm").classList.remove("hide");
+}
+cObj("cancel_reset_evh").onclick = function () {
+    cObj("reset_evh_confirm").classList.add("hide");
+}
+cObj("confirm_reset_evh").onclick = function () {
+    cObj("reset_evh_confirm").classList.add("hide");
+    var datapass = "?reset_votehead_settings=true&adm_no="+encodeURIComponent(valObj("adminnos"));
     sendData2("GET","administration/admissions.php", datapass, cObj("error_handler_evh"), cObj("loader_evh"));
         setTimeout(() => {
             var timeout = 0;
@@ -3788,6 +3796,7 @@ cObj("edit_votehead_status").onclick = function () {
 
                     // set votehead checkbox
                     SetVoteheadCheckbox();
+                    decorateStudentVoteheadTable();
                     stopInterval(ids);
                 }
             }, 100);
@@ -3796,6 +3805,34 @@ cObj("edit_votehead_status").onclick = function () {
         cObj("boarding_status_changer").innerHTML = "<p class='text-danger'>An error has occured, reload your page and try again!</p>";
     }
 }
+
+// highlight the active module's column and fade the amounts whose box is unticked
+function decorateStudentVoteheadTable() {
+    var table = cObj("student_votehead_table");
+    if (!table) return;
+    var rows = table.querySelectorAll("tr");
+    if (rows.length < 2) return;
+    // the second header row holds one cell per module; the active one has a green badge
+    var activeModule = -1;
+    var moduleHeads = rows[1].querySelectorAll("th");
+    for (var i = 0; i < moduleHeads.length; i++) {
+        if (moduleHeads[i].querySelector(".bg-success")) activeModule = i;
+        moduleHeads[i].classList.toggle("vh_active_col", i == activeModule);
+    }
+    for (var r = 2; r < rows.length; r++) {
+        var cells = rows[r].querySelectorAll("td");
+        // No., votehead name and role come first, then one cell per module
+        for (var c = 3; c < cells.length; c++) {
+            var box = cells[c].querySelector("input[type=checkbox]");
+            cells[c].classList.toggle("vh_active_col", c - 3 == activeModule);
+            cells[c].classList.toggle("vh_amount_off", box != null && !box.checked);
+        }
+    }
+}
+// a tick on a row box changes the module boxes without a change event, so check after any change
+cObj("all_voteheads").addEventListener("change", function () {
+    setTimeout(decorateStudentVoteheadTable, 0);
+});
 
 function edit_course_fees_func() {
     var edit_module_course_fees = document.getElementsByClassName("edit_course_fees_"+this.id.substr(17));
@@ -3942,7 +3979,8 @@ function checkModules() {
 }
 
 cObj("save_changed_evh").onclick = function () {
-    var datapass = "update_voteheads=true&votehead_update="+valObj("course_level_value_holder")+"&adm_no="+valObj("adminnos");
+    // encoded so an & or + in a course name or charge description does not cut the data short
+    var datapass = "update_voteheads=true&votehead_update="+encodeURIComponent(valObj("course_level_value_holder"))+"&adm_no="+encodeURIComponent(valObj("adminnos"));
     sendDataPost("POST", "ajax/administration/admissions.php", datapass, cObj("error_handler_evh"), cObj("loader_evh"));
     setTimeout(() => {
         var timeout = 0;
@@ -3953,28 +3991,28 @@ cObj("save_changed_evh").onclick = function () {
                 stopInterval(ids);
             }
             if (cObj("loader_evh").classList.contains("hide")) {
-                cObj("error_handler_evh").innerHTML = "";
+                // look for the server's error marker before anything clears the reply
                 if (cObj("error_edit_votehead") == undefined || cObj("error_edit_votehead") == null) {
                     setTimeout(() => {
                         cObj("error_handler_evh").innerHTML = "";
                         cObj("close_student_fees_evh").click();
                         cObj("view"+valObj("adminnos")).click();
                     }, 1000);
-                }else{
-                    cObj("error_handler_evh").innerHTML = "<p class='text-success'>An error has occured!</p>";
                 }
+                // otherwise the server's own error message stays on show
                 stopInterval(ids);
             }
         }, 100);
     }, 200);
 }
 
-cObj("close_student_fees_evh").onclick = function () {
+function closeStudentVoteheads() {
     cObj("edit_student_votehead").classList.add("hide");
+    cObj("reset_evh_confirm").classList.add("hide");
+    cObj("error_handler_evh").innerHTML = "";
 }
-cObj("close_edit_student_votehead").onclick = function () {
-    cObj("edit_student_votehead").classList.add("hide");
-}
+cObj("close_student_fees_evh").onclick = closeStudentVoteheads;
+cObj("close_edit_student_votehead").onclick = closeStudentVoteheads;
 
 cObj("save_course_progress").onclick = function () {
     if (cObj("course_level_value") != undefined) {
@@ -4378,9 +4416,9 @@ cObj("updatestudinfor").onclick = function () {
     }
 }
 
-// reset vhs
+// Undo changes: reload the saved settings
 cObj("reset_vhs").onclick = function() {
-    cObj("error_handler_evh").innerHTML = "<p class='text-success'>Voteheads restored successfully</p>";
+    cObj("error_handler_evh").innerHTML = "<p class='text-success'>Unsaved changes discarded. These are the saved voteheads.</p>";
     cObj("edit_votehead_status").click();
     setTimeout(() => {
         cObj("error_handler_evh").innerHTML = "";
