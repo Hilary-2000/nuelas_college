@@ -1380,22 +1380,50 @@ cObj("back_exams_list").onclick = function () {
 }
 
 /********change password controls***********/
-cObj("cancelchngebtn1").onclick = function () {
-    cObj("passwindows").classList.remove("animate5");
+// the window has two steps: confirm the override (.pw_step1), then type the new password (.pw_step2)
+function closeChangePassword() {
     cObj("changepasswin").classList.add("hide");
-    cObj("passwindows").style.left = '0px';
-    cObj("changepass").style.height = '220px';
-    valObj("enterpass").value = '';
-    valObj("reenterpass").value = '';
+    cObj("passwindows").classList.remove("pw_on_step2");
+    cObj("enterpass").value = "";
+    cObj("reenterpass").value = "";
+    cObj("passworderrors").innerHTML = "";
+    var eyes = document.querySelectorAll("#changepasswin .pw_eye");
+    for (var i = 0; i < eyes.length; i++) {
+        cObj(eyes[i].getAttribute("data-target")).type = "password";
+        eyes[i].innerHTML = "<i class='fas fa-eye'></i>";
+    }
 }
-cObj("cancelchngebtn2").onclick = function () {
-    cObj("passwindows").classList.remove("animate5");
-    cObj("changepasswin").classList.add("hide");
-    cObj("passwindows").style.left = '0px';
-    cObj("changepass").style.height = '220px';
-    valObj("enterpass").value = '';
-    valObj("reenterpass").value = '';
-}
+cObj("cancelchngebtn1").onclick = closeChangePassword;
+cObj("cancelchngebtn2").onclick = closeChangePassword;
+cObj("pw_close").onclick = closeChangePassword;
+cObj("changepasswin").addEventListener("click", function (event) {
+    if (event.target == this) closeChangePassword();
+});
+cObj("changepasswin").addEventListener("keydown", function (event) {
+    if (event.key == "Escape") closeChangePassword();
+});
+(function () {
+    var eyes = document.querySelectorAll("#changepasswin .pw_eye");
+    for (var i = 0; i < eyes.length; i++) {
+        eyes[i].onclick = function () {
+            var input = cObj(this.getAttribute("data-target"));
+            var show = input.type == "password";
+            input.type = show ? "text" : "password";
+            this.title = show ? "Hide password" : "Show password";
+            this.innerHTML = show ? "<i class='fas fa-eye-slash'></i>" : "<i class='fas fa-eye'></i>";
+        };
+    }
+})();
+// say whether the two passwords match while typing the second one
+cObj("reenterpass").addEventListener("input", function () {
+    if (this.value.length == 0) {
+        cObj("passworderrors").innerHTML = "";
+    } else if (this.value == valObj("enterpass")) {
+        cObj("passworderrors").innerHTML = "<span class='pw_ok'><i class='fas fa-check-circle'></i> Passwords match</span>";
+    } else {
+        cObj("passworderrors").innerHTML = "<span class='pw_bad'><i class='fas fa-times-circle'></i> Passwords do not match yet</span>";
+    }
+});
 
 cObj("menubtn").onclick = function () {
     cObj("sideme").classList.remove("animate4");
@@ -1413,38 +1441,35 @@ cObj("closesidebar").onclick = function () {
     }, 400);
 }
 cObj("proceed").onclick = function () {
-    cObj("passwindows").classList.add("animate5");
-    setTimeout(() => {
-        cObj("passwindows").style.left = '-400px';
-    }, 499);
-    cObj("changepass").style.height = '300px';
+    cObj("passwindows").classList.add("pw_on_step2");
+    setTimeout(function () { cObj("enterpass").focus(); }, 50);
 }
 cObj("back_one").onclick = function () {
     cObj("backtostaff").click();
 }
 
 cObj("changepwd").onclick = function () {
+    var name = cObj("fullnamed").value.trim();
+    cObj("namesdd").innerText = name.length > 0 ? name : "this staff member";
+    cObj("passwindows").classList.remove("pw_on_step2");
     cObj("changepasswin").classList.remove("hide");
+    cObj("proceed").focus();
 }
 
 cObj("changebtns").onclick = function () {
     let err = 0;
-    var full = cObj("fullnamed").value;
-    var split = full.split(" ");
-    cObj("namesdd").innerText = split[0] + "`s";
     err += checkBlank("enterpass");
     err += checkBlank("reenterpass");
     if (err > 0) {
-        cObj("passworderrors").innerHTML = "<p style='color:red;'>Please fill both the password fields!</p>";
+        cObj("passworderrors").innerHTML = "<span class='pw_bad'><i class='fas fa-times-circle'></i> Please fill in both password fields.</span>";
     } else {
         if (valObj("enterpass") == valObj("reenterpass")) {
-            cObj("passworderrors").innerHTML = "<p style='color:green;'>Password do match</p>";
-            cObj("changepasswin").classList.add("hide");
-            let datapassings = "?updatingpassword=" + valObj("reenterpass") + "&usersids=" + cObj("staffid").innerText;
+            // encode it so characters like & and # reach the server intact
+            let datapassings = "?updatingpassword=" + encodeURIComponent(valObj("reenterpass")) + "&usersids=" + cObj("staffid").innerText;
             sendData1("GET", "administration/admissions.php", datapassings, cObj("passworderrors2"));
-            cObj("cancelchngebtn1").click();
+            closeChangePassword();
         } else {
-            cObj("passworderrors").innerHTML = "<p style='color:red;'>Passwords don`t match!</p>";
+            cObj("passworderrors").innerHTML = "<span class='pw_bad'><i class='fas fa-times-circle'></i> The passwords do not match.</span>";
         }
     }
 }

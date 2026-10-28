@@ -8756,3 +8756,207 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 #managestaff .dataTables_wrapper .dataTables_filter input{
     margin: 0 !important;
 }
+
+/* ===== Change password window (homepage.php #changepasswin, opened from the staff details).
+   Two steps in one card: confirm the override, then type the new password twice. ===== */
+#changepasswin{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 16px;
+    backdrop-filter: blur(2px);
+}
+#changepasswin.hide{
+    display: none;
+}
+#changepasswin .changepass{
+    width: 440px;
+    max-width: 100%;
+    height: auto !important;
+    margin: 18vh 0 0;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #fff;
+    font-family: inherit;
+    box-shadow: 0 24px 60px rgba(15, 40, 42, 0.28);
+}
+#changepasswin .pw_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    background: linear-gradient(120deg, rgb(3,131,135), rgb(39,93,95));
+    color: #fff;
+}
+#changepasswin .pw_icon{
+    flex: 0 0 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.18);
+    font-size: 15px;
+}
+#changepasswin .pw_head_text{
+    flex: 1;
+    min-width: 0;
+}
+#changepasswin .pw_head_text b{
+    display: block;
+    font-size: 16px;
+}
+#changepasswin .pw_head_text small{
+    display: block;
+    font-size: 12.5px;
+    opacity: .85;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#changepasswin .pw_head_text small span{
+    font-weight: 700;
+}
+#changepasswin .pw_close{
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: .85;
+}
+#changepasswin .pw_close:hover{
+    background: rgba(255,255,255,0.18);
+    opacity: 1;
+}
+/* the steps: only one shows at a time */
+#changepasswin .passwindows{
+    display: block;
+    width: auto;
+    left: 0 !important;
+    margin: 0;
+    padding: 20px;
+}
+#changepasswin .passwindows .pw_step{
+    width: auto;
+}
+#changepasswin .pw_step2,
+#changepasswin .pw_on_step2 .pw_step1{
+    display: none;
+}
+#changepasswin .pw_on_step2 .pw_step2{
+    display: block;
+    animation: pw_in .25s ease;
+}
+@keyframes pw_in{
+    from{ opacity: 0; transform: translateX(14px); }
+    to{ opacity: 1; transform: none; }
+}
+#changepasswin .pw_notice{
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid #f3e1b5;
+    border-radius: 12px;
+    background: #fff8e6;
+    color: #6b5420;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+#changepasswin .pw_notice i{
+    margin-top: 3px;
+    color: #d99a0b;
+    font-size: 16px;
+}
+#changepasswin .pw_notice p{
+    margin: 0;
+}
+#changepasswin .pw_field{
+    margin-bottom: 14px;
+}
+#changepasswin .pw_field label{
+    display: block;
+    margin: 0 0 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #4a5b5e;
+}
+#changepasswin .pw_input{
+    position: relative;
+}
+#changepasswin .pw_input input{
+    width: 100% !important;
+    height: 42px;
+    margin: 0 !important;
+    padding: 0 44px 0 14px !important;
+    border-radius: 10px;
+    font-size: 14px;
+}
+#changepasswin .pw_eye{
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #8a9a9c;
+    cursor: pointer;
+}
+#changepasswin .pw_eye:hover{
+    background: #eef7f7;
+    color: rgb(3,131,135);
+}
+#changepasswin #passworderrors{
+    min-height: 18px;
+    margin: -4px 0 0;
+    font-size: 12.5px;
+}
+#changepasswin .pw_ok{
+    color: #23a455;
+}
+#changepasswin .pw_bad{
+    color: #d64545;
+}
+#changepasswin .pw_actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+#changepasswin .pw_actions button{
+    display: inline-flex !important;
+    align-items: center;
+    gap: 7px;
+    height: 40px;
+    margin: 0 !important;
+    padding: 0 18px !important;
+    border-radius: 10px !important;
+    font-size: 13.5px !important;
+    font-weight: 600;
+}
+#changepasswin .pw_actions .pw_btn{
+    border: 1px solid transparent !important;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(39,93,95)) !important;
+    color: #fff !important;
+}
+#changepasswin .pw_actions .pw_btn:hover{
+    filter: brightness(1.08);
+}
+#changepasswin .pw_actions .pw_btn_ghost{
+    border: 1px solid #e4eaee !important;
+    background: #fff !important;
+    color: #4a5b5e !important;
+    box-shadow: none !important;
+}
+#changepasswin .pw_actions .pw_btn_ghost:hover{
+    background: #f4f7f8 !important;
+}
