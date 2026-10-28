@@ -7091,3 +7091,184 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 #personal_profile_page #my_information_inner p{
     margin: 0;
 }
+
+/* ===== SMS History on Broadcast (sms_apis/sendsms.php). sh_ classes. ===== */
+#show_sms_windows .sh_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef3f3;
+}
+#show_sms_windows .sh_head > div{
+    display: flex;
+    flex-direction: column;
+}
+#show_sms_windows .sh_head b{
+    font-size: 16px;
+    color: #1f2d2e;
+}
+#show_sms_windows .sh_head small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#show_sms_windows .sh_head_icon{
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    font-size: 16px;
+}
+#show_sms_windows .sh_filters{
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    align-items: end;
+    background: #f8fafb;
+    border: 1px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}
+#show_sms_windows .sh_filters .form-control-label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+}
+#show_sms_windows .sh_filters .form-control{
+    width: 100% !important;
+    margin: 0 !important;
+}
+#show_sms_windows .sh_filter_btns{
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+#show_sms_windows button.sh_btn_ghost{
+    background: #fff !important;
+    color: rgb(3, 131, 135) !important;
+    border: 1px solid #c9dfe0 !important;
+    box-shadow: none !important;
+}
+#show_sms_windows .sh_stats{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+#show_sms_windows .sh_stats > div{
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+#show_sms_windows .sh_stats small{
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #6b7b7c;
+}
+#show_sms_windows .sh_stats b{
+    font-size: 18px;
+    color: #1f2d2e;
+}
+#show_sms_windows .sh_stats .sh_stat_ok b{
+    color: #1e8e3e;
+}
+#show_sms_windows .sh_table td{
+    vertical-align: middle;
+    font-size: 13px;
+}
+#show_sms_windows .sh_type{
+    font-size: 11px;
+    font-weight: 700;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border-radius: 20px;
+    padding: 2px 9px;
+    white-space: nowrap;
+}
+#show_sms_windows .sh_message{
+    display: block;
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#show_sms_windows .sh_sender{
+    display: block;
+}
+#show_sms_windows .sh_count{
+    font-size: 11px;
+    color: #8a9a9b;
+}
+#show_sms_windows .sh_status{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 3px 9px;
+    white-space: nowrap;
+}
+#show_sms_windows .sh_status_ok{
+    color: #1e8e3e;
+    background: #e8f6ec;
+}
+#show_sms_windows .sh_status_part,
+#show_sms_windows .sh_status_wait{
+    color: #b26a00;
+    background: #fff4e5;
+}
+#show_sms_windows .sh_status_bad{
+    color: #c5221f;
+    background: #fdecea;
+}
+#show_sms_windows .sh_act{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #fff;
+    border: 1px solid #c9dfe0;
+    border-radius: 20px;
+    padding: 3px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#show_sms_windows .sh_act:hover,
+#show_sms_windows .sh_act:focus-visible{
+    background: #e7f4f4;
+    outline: none;
+}
+#show_sms_windows .dataTables_length select{
+    width: auto !important;
+    min-width: 90px;
+    height: auto !important;
+    padding: 5px 10px !important;
+    margin: 0 4px !important;
+    display: inline-flex !important;
+    align-items: center;
+}
+#show_sms_windows .dataTables_length label{
+    display: inline-flex;
+    align-items: center;
+}
+@media screen and (max-width: 700px){
+    #show_sms_windows .sh_filters,
+    #show_sms_windows .sh_stats{
+        grid-template-columns: 1fr;
+    }
+}
+#show_sms_windows .sh_table td:nth-child(6){
+    white-space: nowrap;
+}
