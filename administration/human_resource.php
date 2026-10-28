@@ -22,37 +22,34 @@
                 <p>- Manage your Employees Leave Information.</p>
                 <p>- Manage your Employees employment information.</p>
             </div>
-            <div class="section_card">
-                <label for="hr_options" class="form-control-label"><b>Select an Option</b></label>
-                <select name="hr_options" id="hr_options" class="form-control">
-                    <option value="" hidden>Select an option</option>
-                    <option value="manage_leaves">Manage Leaves</option>
-                    <!-- <option value="manage employees">Manage Employees</option> -->
-                </select>
-            </div>
-            <hr class="my-1">
-            <div class="section_card hide" id="leave_management_window">
-                <h4 class="text-center ">Manage Leaves</h4>
-                <!-- options for leaves are below -->
-                <p class="instructions"><strong>Hint:</strong><br> Kindly select an action before proceeding</p>
-                <label for="leaves_options">Select an action</label>
-                <select name="leaves_options" id="leaves_options" class="form-control">
+            <!-- Manage Leaves is the only option, so these selects stay hidden; the
+                 tab cards below drive leaves_options (admissions.js selectLeaveTab) -->
+            <select name="hr_options" id="hr_options" class="d-none">
+                <option value="" hidden>Select an option</option>
+                <option value="manage_leaves" selected>Manage Leaves</option>
+            </select>
+            <div class="section_card lv_card" id="leave_management_window">
+                <select name="leaves_options" id="leaves_options" class="d-none">
                     <option value="" hidden>Select an action</option>
                     <option value="view leave application">View Leave Applications</option>
-                    <!-- <option value="view leave balances">View Leave Balances</option> -->
                     <option value="view leave categories">Manage Leave Categories</option>
                 </select>
-                <hr class="my-1">
+                <div class="lv_tabs" id="leave_tabs">
+                    <div class="lv_tab" data-option="view leave application" role="button" tabindex="0">
+                        <span class="lv_tab_icon"><i class="fas fa-calendar-check"></i></span>
+                        <span class="lv_tab_text"><b>Leave Applications</b><small>Review, accept or reject staff leave requests</small></span>
+                    </div>
+                    <div class="lv_tab" data-option="view leave categories" role="button" tabindex="0">
+                        <span class="lv_tab_icon"><i class="fas fa-layer-group"></i></span>
+                        <span class="lv_tab_text"><b>Leave Categories</b><small>Annual, sick and other leave types and their days</small></span>
+                    </div>
+                </div>
                 <!-- manage leave categories -->
                 <div class="leave_displays my-2 animate hide" id="leave_diplay_windows">
-                    <h5 class="text-center" >Leave Categories<img class="hide" src="images/ajax_clock_small.gif" id="load_leaves_table"></h5>
-                    <div class="row">
-                        <div class="col-md-8">
-                            <!-- <input type="text" class="form-control w-50" placeholder="Search Here"> -->
-                        </div>
-                        <div class="col-md-4">
-                            <p class="block_btn" id="add_leave_category"> <i class="fas fa-plus"></i> Add Leave Category</p>
-                        </div>
+                    <div class="lv_head">
+                        <span class="lv_head_icon"><i class="fas fa-layer-group"></i></span>
+                        <div><b>Leave Categories <img class="hide" src="images/ajax_clock_small.gif" id="load_leaves_table"></b><small>The leave types staff can apply for and how many days each allows.</small></div>
+                        <div class="lv_btn" id="add_leave_category" role="button" tabindex="0"><i class="fas fa-plus"></i> Add Leave Category</div>
                     </div>
                     <span id="leave_tables_display"></span>
                     <!-- <table class="table">
@@ -76,8 +73,11 @@
                     <p>Showing 1 to 6 of 6 records</p> -->
                 </div>
                 <div class="leave_displays my-2 animate hide" id="add_leave_cat_window">
-                    <h5 class="text-center">Add Leave Categories</h5>
-                    <p class="block_btn" id="go_back_leave_list"><i class="fas fa-arrow-left"></i> Back</p>
+                    <div class="lv_back"><span class="link" id="go_back_leave_list" role="button" tabindex="0"><i class="fas fa-arrow-left"></i> Back to leave categories</span></div>
+                    <div class="lv_head">
+                        <span class="lv_head_icon"><i class="fas fa-plus"></i></span>
+                        <div><b>Add Leave Category</b><small>Set who can take it, how many days it allows and how the days build up.</small></div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -142,12 +142,14 @@
                         </div>
                     </div>
                     <p id="save_leave_cat"></p>
-                    <p class="block_btn my-2" id="save_leave_category"><i class="fas fa-save"></i> Save <img class="hide" src="images/ajax_clock_small.gif" id="save_leave_cat_loader"></p>
+                    <div class="lv_actions"><div class="lv_btn" id="save_leave_category" role="button" tabindex="0"><i class="fas fa-save"></i> Save Leave Category <img class="hide" src="images/ajax_clock_small.gif" id="save_leave_cat_loader"></div></div>
                 </div>
                 <div class="leave_displays my-2 animate hide" id="edit_leave_cat_window">
-                    <h5 class="text-center">Edit Leave Categories</h5>
-                    <p class="block_btn" id="go_back_leave_list2"><i class="fas fa-arrow-left"></i> Back</p>
-                    <p><b>Note:</b> <br>- Make changes where neccessary</p><hr class="my-1">
+                    <div class="lv_back"><span class="link" id="go_back_leave_list2" role="button" tabindex="0"><i class="fas fa-arrow-left"></i> Back to leave categories</span></div>
+                    <div class="lv_head">
+                        <span class="lv_head_icon"><i class="fas fa-pen"></i></span>
+                        <div><b>Edit Leave Category</b><small>Change what is needed and save.</small></div>
+                    </div>
                     <p class="hide" id="leave_data_holder"></p>
                     <div class="row">
                         <div class="col-md-6">
@@ -214,18 +216,22 @@
                         </div>
                     </div>
                     <p id="save_leave_cat2"></p>
-                    <p class="block_btn my-2" id="update_leave_category"><i class="fas fa-save"></i> Update <img class="hide" src="images/ajax_clock_small.gif" id="save_leave_cat_loader"></p>
+                    <div class="lv_actions"><div class="lv_btn" id="update_leave_category" role="button" tabindex="0"><i class="fas fa-save"></i> Update Leave Category <img class="hide" src="images/ajax_clock_small.gif" id="save_leave_cat_loader2"></div></div>
                 </div>
                 <div class="leave_displays my-2 animate hide" id="all_leaves_application">
-                    <h5 class="text-center">Leave Applications<img class="hide" src="images/ajax_clock_small.gif" id="leaves_application_loaders"></h5>
+                    <div class="lv_head">
+                        <span class="lv_head_icon"><i class="fas fa-calendar-check"></i></span>
+                        <div><b>Leave Applications <img class="hide" src="images/ajax_clock_small.gif" id="leaves_application_loaders"></b><small>Pending applications can be accepted or rejected; view any application for its details.</small></div>
+                    </div>
                     <p class="hide" id="my_leaves_application"></p>
-                    <div class="row" id="search_option_sms">
-                        <div class="col-md-6 form-group">
-                            <input type="text" name="search" id="searchkey_leaves" class="w-100 form-control rounded-lg p-1" placeholder="Search here ..">
+                    <div class="lv_filters" id="search_option_leaves">
+                        <div class="lv_search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" name="search" id="searchkey_leaves" class="form-control w-100" placeholder="Search by applicant, leave type or date...">
                         </div>
-                        <div class="col-md-6 form-group">
+                        <div>
                             <select name="choose_status" id="choose_leave_status" class="form-control w-100">
-                                <option value="">Select All</option>
+                                <option value="">All statuses</option>
                                 <option value="0">Pending</option>
                                 <option value="1">Accepted</option>
                                 <option value="2">Declined</option>
@@ -233,50 +239,7 @@
                         </div>
                     </div>
                     <div class="table-responsive" id="transDataReciever_leave_apply">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th title="Sort all descending"># <span id=""><i class="fas fa-caret-down"></i></span></th>
-                                    <th  title="Sort by Reg No descending">Applicant <span id=""><i class="fas fa-caret-down"></i></span></th>
-                                    <th  title="Sort by Amount descending">Leave Type <span id=""><i class="fas fa-caret-down"></i></span></th>
-                                    <th  title="Sort by date Applied">Application Date <span id=""><i class="fas fa-caret-down"></i></span></th>
-                                    <th  title="Sort by date Dates">Dates<span id=""><i class="fas fa-caret-down"></i></span></th>
-                                    <th  title="Sort by Duration">Duration <span id=""><i class="fas fa-caret-down"></i></span></th>
-                                    <th >Actions <span id=""><i class="fas fa-caret-down"></i></span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1 <span class="text-success" title="Charged"><i class="fas fa-info"></i></span></td>
-                                    <td>Hillary Ngige <span class="badge badge-success"> </span></td>
-                                    <td>Annual Leave</td>
-                                    <td>14th June 2021</td>
-                                    <td>14th June 2021 to 14th June 2021</td>
-                                    <td>16 Days</td>
-                                    <td><small class="link" id="edit_table"><i class="fas fa-check"></i> Accept</small> <small class="link" id="edit_table"><i class="fas fa-times"></i> Reject</small> <small class="link" id="edit_table"><i class="fas fa-eye"></i> View</small></td>
-                                </tr>
-                                <tr>
-                                    <td>1 <span class="text-success" title="Charged"><i class="fas fa-info"></i></span></td>
-                                    <td>Hillary Ngige <span class="badge badge-success"> </span></td>
-                                    <td>Annual Leave</td>
-                                    <td>14th June 2021</td>
-                                    <td>14th June 2021 to 14th June 2021</td>
-                                    <td>16 Days</td>
-                                    <td><span id="edit_table"><i class="fas fa-pen-fancy"></i> Edit</span></td>
-                                </tr>
-                                <tr>
-                                    <td>1 <span class="text-success" title="Charged"><i class="fas fa-info"></i></span></td>
-                                    <td>Hillary Ngige <span class="badge badge-success"> </span></td>
-                                    <td>Annual Leave</td>
-                                    <td>14th June 2021</td>
-                                    <td>14th June 2021 to 14th June 2021</td>
-                                    <td>16 Days</td>
-                                    <td><span id="edit_table"><i class="fas fa-pen-fancy"></i> Edit</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <!-- <div class='displaydata'><img class='' src='images/error.png'></div>
-                        <p class='sm-text text-danger text-bold text-center'><br>No records to display, Start by displaying your data with the options above</p> -->
+                        <p class="lv_hint">Loading leave applications...</p>
                     </div>
                     <div class="row mt-5" id="tablefooter_leave_apply">
                         <div class="col-sm-12 col-md-5">
@@ -298,17 +261,14 @@
                     </div>
                 </div>
                 <div class="leave_displays my-2 animate hide" id="view_applied_leaves_windows">
-                    <h5 class="text-center">View Leave Details<img class="hide" src="images/ajax_clock_small.gif" id="view_leaves"></h5>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="block_btn" id="back_to_leave_list"><i class="fas fa-arrow-left"></i> Back to list</p>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="hidden" id="unussual_id">
-                                <p class="btn btn-danger btn-sm" id="delete_this_application"><i class="fas fa-trash"></i></p>
-                            </div>
-                        </div>
+                    <div class="lv_back"><span class="link" id="back_to_leave_list" role="button" tabindex="0"><i class="fas fa-arrow-left"></i> Back to leave applications</span></div>
+                    <div class="lv_head">
+                        <span class="lv_head_icon"><i class="fas fa-file-alt"></i></span>
+                        <div><b>Leave Application <img class="hide" src="images/ajax_clock_small.gif" id="view_leaves"></b><small>The details of this application. Change its status below.</small></div>
+                        <input type="hidden" id="unussual_id">
+                        <span class="lv_btn_delete" id="delete_this_application" role="button" tabindex="0" title="Delete this application"><i class="fas fa-trash"></i> Delete</span>
+                    </div>
+                    <div class="container p-0">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -367,20 +327,19 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" id="leaves_options_views">
-                                    <p id="accept_leave_applications" class="btn btn-success btn-sm"><i class="fas fa-check"></i> Accept</p>
-                                    <p id="decline_leave_applications" class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Reject</p>
+                                    <label class="form-control-label">Decision</label>
+                                    <div class="lv_decide">
+                                        <span id="accept_leave_applications" class="lv_mbtn lv_mbtn_ok" role="button" tabindex="0"><i class="fas fa-check"></i> Accept</span>
+                                        <span id="decline_leave_applications" class="lv_mbtn lv_mbtn_bad" role="button" tabindex="0"><i class="fas fa-times"></i> Reject</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="section_card hide" id="employees_management_window">
-                <h4 class="text-center">Manage Employees</h4>
-            </div>
-            <div class="section_card hide" id="error_hr_selection">
-                <h4 class="text-center text-danger">Select a valid option</h4>
-            </div>
+            <div class="hide" id="employees_management_window"></div>
+            <div class="hide" id="error_hr_selection"></div>
         </div>
         <div class="bottom1">
             <p>Managed by Ladybird</p>

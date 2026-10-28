@@ -6400,3 +6400,283 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== Manage Leaves (administration/human_resource.php). lv_ classes. ===== */
+#human_resource_windows .lv_card{
+    border-radius: 16px;
+}
+#human_resource_windows .lv_tabs{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+#human_resource_windows .lv_tab{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+}
+#human_resource_windows .lv_tab:hover,
+#human_resource_windows .lv_tab:focus-visible{
+    border-color: rgb(3, 131, 135);
+    outline: none;
+}
+#human_resource_windows .lv_tab.active{
+    border-color: rgb(3, 131, 135);
+    background: #e7f4f4;
+}
+#human_resource_windows .lv_tab_icon,
+#human_resource_windows .lv_head_icon{
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-size: 16px;
+}
+#human_resource_windows .lv_tab.active .lv_tab_icon,
+#human_resource_windows .lv_head_icon{
+    background: rgb(3, 131, 135);
+    color: #fff;
+}
+#human_resource_windows .lv_tab_text{
+    display: flex;
+    flex-direction: column;
+}
+#human_resource_windows .lv_tab_text b{
+    font-size: 14px;
+    color: #1f2d2e;
+}
+#human_resource_windows .lv_tab_text small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#human_resource_windows .lv_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef3f3;
+}
+#human_resource_windows .lv_head > div:not([class]){
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+}
+#human_resource_windows .lv_head b{
+    font-size: 16px;
+    color: #1f2d2e;
+}
+#human_resource_windows .lv_head small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#human_resource_windows .lv_back span{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#human_resource_windows .lv_btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(24,158,163));
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 3px 8px rgba(3,131,135,0.25);
+}
+#human_resource_windows .lv_btn:hover,
+#human_resource_windows .lv_btn:focus-visible{
+    box-shadow: 0 5px 14px rgba(3,131,135,0.35);
+    outline: none;
+}
+#human_resource_windows .lv_btn_delete{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c5221f;
+    background: #fff;
+    border: 1px solid #f3c6c3;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+#human_resource_windows .lv_btn_delete:hover{
+    background: #fdecea;
+}
+#human_resource_windows .lv_actions{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+}
+#human_resource_windows .leave_displays .form-control-label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+}
+#human_resource_windows .leave_displays .form-control,
+#human_resource_windows .leave_displays select{
+    width: 100% !important;
+}
+#human_resource_windows .lv_filters{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+#human_resource_windows .lv_filters .form-control{
+    margin: 0 !important;
+}
+#human_resource_windows .lv_search{
+    position: relative;
+}
+#human_resource_windows .lv_search > i{
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9fb4b5;
+    font-size: 12px;
+    z-index: 1;
+}
+#human_resource_windows .lv_search input{
+    padding-left: 32px !important;
+}
+#human_resource_windows .lv_table td{
+    vertical-align: middle;
+}
+#human_resource_windows .lv_name{
+    color: #1f2d2e;
+}
+#human_resource_windows .lv_to{
+    color: #8a9a9b;
+    font-size: 12px;
+}
+#human_resource_windows .lv_status{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 3px 9px;
+    white-space: nowrap;
+}
+#human_resource_windows .lv_status_ok{
+    color: #1e8e3e;
+    background: #e8f6ec;
+}
+#human_resource_windows .lv_status_wait{
+    color: #b26a00;
+    background: #fff4e5;
+}
+#human_resource_windows .lv_status_bad{
+    color: #c5221f;
+    background: #fdecea;
+}
+#human_resource_windows .lv_status_off{
+    color: #6b7b7c;
+    background: #f1f4f5;
+}
+#human_resource_windows .lv_row_actions{
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+#human_resource_windows .lv_act{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #fff;
+    border: 1px solid #c9dfe0;
+    border-radius: 20px;
+    padding: 3px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#human_resource_windows .lv_act.hide{
+    display: none;
+}
+#human_resource_windows .lv_act:hover,
+#human_resource_windows .lv_act:focus-visible{
+    background: #e7f4f4;
+    outline: none;
+}
+#human_resource_windows .lv_act_ok{
+    color: #fff;
+    background: #1e8e3e;
+    border-color: #1e8e3e;
+}
+#human_resource_windows .lv_act_ok:hover{
+    background: #18733a;
+}
+#human_resource_windows .lv_act_bad{
+    color: #c5221f;
+    border-color: #f3c6c3;
+}
+#human_resource_windows .lv_act_bad:hover{
+    background: #fdecea;
+}
+#human_resource_windows .lv_decide{
+    display: flex;
+    gap: 8px;
+}
+#human_resource_windows .lv_mbtn{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+}
+#human_resource_windows .lv_mbtn.hide{
+    display: none;
+}
+#human_resource_windows .lv_mbtn_ok{
+    color: #fff;
+    background: #1e8e3e;
+}
+#human_resource_windows .lv_mbtn_bad{
+    color: #c5221f;
+    background: #fff;
+    border: 1px solid #f3c6c3;
+}
+#human_resource_windows .lv_hint,
+#human_resource_windows .lv_count{
+    font-size: 12px;
+    color: #7a8b8c;
+    margin: 6px 0;
+}
+@media screen and (max-width: 600px){
+    #human_resource_windows .lv_filters{
+        grid-template-columns: 1fr;
+    }
+}
