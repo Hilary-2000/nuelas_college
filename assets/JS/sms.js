@@ -1196,13 +1196,35 @@ function process_messages(data) {
 function messageData() {
     var my_message = cObj("text_message2").value;
     my_message = process_messages(my_message);
+    setBroadcastPreviewChannel("sms");
     cObj("message_samples").innerHTML = my_message;
 }
 
 function html_messageData(content) {
     var my_message = content;
     my_message = process_messages(my_message);
-    cObj("message_samples").innerHTML = my_message;
+    setBroadcastPreviewChannel("email");
+    // An empty Quill editor still holds "<p><br></p>"; leave the sample empty
+    // so its placeholder shows.
+    cObj("message_samples").innerHTML = stripTags(my_message).trim().length > 0 ? my_message : "";
+}
+
+// The Broadcast sample shows whichever tab is being written: an SMS chat
+// bubble or an email preview (see .msg_preview in mainpage.css).
+function setBroadcastPreviewChannel(channel) {
+    var card = cObj("broadcast_message_preview");
+    if (!card) return;
+    card.setAttribute("data-channel", channel);
+    cObj("message_samples").classList.toggle("is_html", channel === "email");
+    cObj("broadcast_preview_chip").innerHTML = channel === "email" ? "<i class='fas fa-envelope'></i> Email" : "<i class='fas fa-sms'></i> SMS";
+}
+if (cObj("broadcast_sms_tab_btn")) {
+    cObj("broadcast_sms_tab_btn").addEventListener("shown.bs.tab", messageData);
+}
+if (cObj("broadcast_email_tab_btn")) {
+    cObj("broadcast_email_tab_btn").addEventListener("shown.bs.tab", function () {
+        html_messageData(getQuillData("email_editored"));
+    });
 }
 
 // email messages table
@@ -1746,7 +1768,12 @@ function refreshEmailTemplatePreview(editorId) {
     }
     var subjectPreview = cObj(subjectId) ? process_messages(cObj(subjectId).value) : "";
     var bodyPreview = process_messages(getEmailEditorData(editorId));
-    cObj(viewerId).innerHTML = "<b>Subject:</b> " + subjectPreview + "<hr class='my-1'>" + bodyPreview;
+    if (stripTags(subjectPreview).trim().length === 0 && stripTags(bodyPreview).trim().length === 0) {
+        cObj(viewerId).innerHTML = "";
+        return;
+    }
+    cObj(viewerId).innerHTML = "<div class='msg_email_subject'><span>Subject</span>" + (subjectPreview || "<i>(no subject)</i>") + "</div>"
+        + "<div class='msg_email_body'>" + bodyPreview + "</div>";
 }
 
 function setEmailTemplateEditor(editorId, viewerId, savedValue) {

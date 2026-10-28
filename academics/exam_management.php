@@ -322,8 +322,12 @@
                                             <label for="email_contents_exam_reports" class="form-control-label">Email Contents: </label>
                                             <div id="email_contents_exam_reports" style="min-height:120px;"></div>
                                         </div>
-                                        <div class="col-md-3 bg-white">
-                                            <p class="text-primary py-2 my-2" id="email_contents_exam_reports_preview">Previews Appear here..</p>
+                                        <div class="col-md-3">
+                                            <div class="msg_preview" data-channel="email">
+                                                <div class="msg_preview_head"><i class="fas fa-eye"></i> Email Sample <span class="msg_preview_chip"><i class="fas fa-envelope"></i> Email</span></div>
+                                                <div class="msg_preview_body"><div class="msg_bubble is_html" id="email_contents_exam_reports_preview" data-placeholder="The email sample will appear here as you type."></div></div>
+                                                <div class="msg_preview_meta"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
