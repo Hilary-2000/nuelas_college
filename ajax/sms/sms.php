@@ -1096,88 +1096,99 @@
                     echo "<p style='color:gray;font-weight:600;'>No recent messages!</p>";
                 }
             }
-        }elseif (isset($_GET['sms_history'])) {
-            $from_date = isset($_GET['from']) ? $_GET['from'] : "";
-            // $to_date = strlen(isset($_GET['to'])) > 0 ? $_GET['to'] : "";
-            $to_date = isset($_GET['to']) ? $_GET['to'] : null;
-            // echo $to_date." pine";
-            $select = "SELECT * FROM `sms_table` ORDER BY `send_id` DESC";
-            if (isset($from_date) && isset($to_date)) {
-                $select = "SELECT * FROM `sms_table` WHERE date_sent BETWEEN '$from_date' AND '$to_date'  ORDER BY `send_id` DESC";
+        }elseif (isset($_GET['sms_history_dt'])) {
+            // SMS history for the DataTable on Broadcast (server-side paging,
+            // search, sorting and an optional date range).
+            $draw = intval($_GET['draw'] ?? 0);
+            $start = max(0, intval($_GET['start'] ?? 0));
+            $length = intval($_GET['length'] ?? 25);
+            $length = $length < 1 || $length > 200 ? 25 : $length;
+            $search = trim($_GET['search']['value'] ?? "");
+            $order_columns = [0 => "`send_id`", 1 => "`message_type`", 4 => "(`message_sent_succesfully` + 0)", 5 => "`date_sent`"];
+            $order_column = $order_columns[intval($_GET['order'][0]['column'] ?? 0)] ?? "`send_id`";
+            $order_dir = strtolower($_GET['order'][0]['dir'] ?? "desc") == "asc" ? "ASC" : "DESC";
+
+            $where = [];
+            $types = "";
+            $params = [];
+            $from = $_GET['from'] ?? "";
+            $to = $_GET['to'] ?? "";
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $from) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
+                $where[] = "`date_sent` BETWEEN ? AND ?";
+                $types .= "ss";
+                $params[] = $from;
+                $params[] = $to." 23:59:59";
             }
-            $stmt = $conn2->prepare($select);
+            $where_all = count($where) > 0 ? " WHERE ".implode(" AND ", $where) : "";
+            if (strlen($search) > 0) {
+                $where[] = "(`message` LIKE ? OR `message_type` LIKE ? OR `message_description` LIKE ? OR `sender_no` LIKE ? OR `number_collection` LIKE ? OR `date_sent` LIKE ?)";
+                $like = "%".$search."%";
+                $types .= "ssssss";
+                array_push($params, $like, $like, $like, $like, $like, $like);
+            }
+            $where_sql = count($where) > 0 ? " WHERE ".implode(" AND ", $where) : "";
+
+            // totals: all messages in the date range, and those matching the search
+            $stmt = $conn2->prepare("SELECT COUNT(*) AS 'Total' FROM `sms_table`".$where_all);
+            if (strlen($where_all) > 0) {
+                $stmt->bind_param("ss", $params[0], $params[1]);
+            }
+            $stmt->execute();
+            $records_total = $stmt->get_result()->fetch_assoc()['Total'] * 1;
+            $stmt = $conn2->prepare("SELECT COUNT(*) AS 'Total', SUM(`message_count`) AS 'Sent', SUM(`message_sent_succesfully`) AS 'Delivered' FROM `sms_table`".$where_sql);
+            if (strlen($types) > 0) {
+                $stmt->bind_param($types, ...$params);
+            }
+            $stmt->execute();
+            $filtered = $stmt->get_result()->fetch_assoc();
+
+            $stmt = $conn2->prepare("SELECT * FROM `sms_table`".$where_sql." ORDER BY ".$order_column." ".$order_dir.", `send_id` DESC LIMIT ".$start.", ".$length);
+            if (strlen($types) > 0) {
+                $stmt->bind_param($types, ...$params);
+            }
             $stmt->execute();
             $result = $stmt->get_result();
-            if ($result) {
-                $data_to_display = "<div class = 'recent_messages'>";
-                $xs = 0;
-                $totalMessages = 0;
-                $message_undelivered = 0;
-                $message_delivered = 0;
-                $to_charged_sh = 0;
-                $deduct_charge = 0;
-                $sms_data = [];
-                while ($row = $result->fetch_assoc()) {
-                    $xs++;
-                    $charged = "<div class='charged'>
-                                        <img src='images/coined.png' alt='charged'>
-                                    </div>";
-                    if ($row['charged'] == 0) {
-                        $charged = "<div class='chargedd'>
-                                        <!-- <img src='images/coined.png' alt='charged'> -->
-                                    </div>";
-                    }
-                    if ($row['charged'] == 1){
-                        $deduct_charge+=1;
-                    }
-                    $date = date("dS M Y @ H:i:sA",strtotime($row['date_sent']));
-                    $row = array_merge($row,array("date_sent2"=> $date));
-                    $sms_recipients = $row['number_collection'];
-                    $row = array_merge($row,array("recipients" => $sms_recipients));
-                    array_push($sms_data,$row);
-                    $totalMessages+= ($row['message_count']*1);
-                    $message_delivered+=($row['message_sent_succesfully']*1);
-                    $to_charged_sh+=($row['message_sent_succesfully']*1);//this is the amount to be charged
-                    $message_undelivered+=($row['message_undelivered']*1);
-                    $data_to_display.="<div class='one_message'>
-                                        <div class='status'>
-                                            <div class='message_type'>
-                                                <p>".$row['message_type']."</p>
-                                            </div>
-                                            <div class='message_status'>
-                                                <p>Delivered <small>(".$row['message_sent_succesfully']."/".$row['message_count'].")</small></p>
-                                            </div>
-                                        </div>
-                                        <div class='message_detail'>
-                                            <p class ='norm_unseen'>".$row['message_description']."</p>
-                                            <p class = 'norm_seen'>".$row['message']."</p>
-                                        </div>
-                                        <div class='date_sent'>
-                                            <div class='conts'>
-                                                <p>".date("M-d-Y",strtotime($row['date_sent']))."</p>
-                                            </div>
-                                            ".$charged."
-                                        </div>
-                                    </div>";
+            $rows = [];
+            $meta = [];
+            $number = $start;
+            while ($result && ($row = $result->fetch_assoc())) {
+                $number++;
+                $count = $row['message_count'] * 1;
+                $delivered = $row['message_sent_succesfully'] * 1;
+                if ($count == 0) {
+                    $status = "<span class='sh_status sh_status_wait'>Pending</span>";
+                } elseif ($delivered >= $count) {
+                    $status = "<span class='sh_status sh_status_ok'><i class='fas fa-check-circle'></i> Delivered ".$delivered."/".$count."</span>";
+                } elseif ($delivered > 0) {
+                    $status = "<span class='sh_status sh_status_part'><i class='fas fa-exclamation-circle'></i> Partial ".$delivered."/".$count."</span>";
+                } else {
+                    $status = "<span class='sh_status sh_status_bad'><i class='fas fa-times-circle'></i> Failed 0/".$count."</span>";
                 }
-                $sms_data = json_encode($sms_data);
-                // echo $sms_data;
-                if ($xs > 0) {
-                    $data_to_display.="</div>";
-                    $result_title = "<h6>Results</h6>";
-                    if (isset($from_date) && isset($to_date)) {
-                        $result_title = "<h6>Results from ".date("M-dS-Y",strtotime($from_date))." to ".date("M-dS-Y",strtotime($to_date))."</h6>";
-                    }
-                    $counters = "<div class='short_detail'>
-                                            ".$result_title."
-                                            <p >Total Messages sent:  ".$totalMessages." SMS(s) <br> Delivered Messages:  ".$message_delivered." SMS(s) <br><span class='hide'> Not delivered:  ".$message_undelivered." SMS(s)</span> <br></p>
-                                            <p class='hide'>Charged units: ".($deduct_charge).".<br>Units to charge :  ".($to_charged_sh - $deduct_charge)." (Ksh ".($to_charged_sh - $deduct_charge).")<br></p>
-                                        </div>";
-                    echo $counters."<p class='hide' id='sms_data_results'>".$sms_data."</p>";
-                }else {
-                    echo "<p style='color:gray;font-weight:600;'>No messages found!</p>";
-                }
+                $recipients = json_decode($row['number_collection'] ?? "", true);
+                $recipients = is_array($recipients) ? $recipients : (strlen(trim($row['number_collection'] ?? "")) > 0 ? [trim($row['number_collection'])] : []);
+                $date = strtotime($row['date_sent']) ? date("D dS M Y", strtotime($row['date_sent'])) : $row['date_sent'];
+                $message = $row['message'] ?? "";
+                $rows[] = [
+                    $number,
+                    "<span class='sh_type'>".htmlspecialchars($row['message_type'] ?: "-", ENT_QUOTES)."</span>",
+                    "<span class='sh_message' title='".htmlspecialchars($message, ENT_QUOTES)."'>".htmlspecialchars($message, ENT_QUOTES)."</span>",
+                    "<span class='sh_sender'>".htmlspecialchars($row['sender_no'] ?: "-", ENT_QUOTES)."</span><small class='sh_count'>".count($recipients)." recipient".(count($recipients) == 1 ? "" : "s")."</small>",
+                    $status,
+                    $date,
+                    "<span class='view_sms_details sh_act' role='button' tabindex='0' id='view_sms_details_".$row['send_id']."' title='View message details'><i class='fas fa-eye'></i> View</span>"
+                ];
+                $meta[$row['send_id']] = ["message" => $message, "recipients" => $recipients, "date" => $date];
             }
+            header("Content-Type: application/json");
+            echo json_encode([
+                "draw" => $draw,
+                "recordsTotal" => $records_total,
+                "recordsFiltered" => $filtered['Total'] * 1,
+                "data" => $rows,
+                "meta" => $meta,
+                "summary" => ["messages" => $filtered['Total'] * 1, "sent" => ($filtered['Sent'] ?? 0) * 1, "delivered" => ($filtered['Delivered'] ?? 0) * 1]
+            ]);
+            exit();
         }elseif (isset($_GET['email_history'])) {
             $select = "SELECT * FROM `email_address` ORDER BY `id` DESC";
             $stmt = $conn2->prepare($select);

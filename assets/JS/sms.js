@@ -695,145 +695,99 @@ cObj("send_post").onclick = function () {
         cObj("notice_errors").innerHTML = "<p class='red_notice'>No staff present!!</p>";
     }
 }
+// SMS history: a server-side DataTable (ajax/sms/sms.php sms_history_dt) that
+// pages, searches and sorts on the server, with an optional date range.
+// Each page's message details are kept in smsHistoryMeta for the View popup.
+var smsHistoryMeta = {};
+var smsHistoryRange = null; // {from, to} or null for every date
+
+function smsHistorySummary(summary) {
+    var range = smsHistoryRange ? "from " + smsHistoryRange.from + " to " + smsHistoryRange.to : "for all dates";
+    cObj("histotysms").innerHTML = "<div class='sh_stats'>" +
+        "<div><small>Messages " + range + "</small><b>" + summary.messages.toLocaleString() + "</b></div>" +
+        "<div><small>SMS sent</small><b>" + summary.sent.toLocaleString() + "</b></div>" +
+        "<div class='sh_stat_ok'><small>Delivered</small><b>" + summary.delivered.toLocaleString() + "</b></div>" +
+        "</div>";
+}
+
+function getRecentMessage() {
+    if ($.fn.DataTable.isDataTable("#sms_history_dt")) {
+        $("#sms_history_dt").DataTable().ajax.reload();
+        return;
+    }
+    $("#sms_history_dt").DataTable({
+        serverSide: true,
+        processing: true,
+        searchDelay: 400,
+        pageLength: 25,
+        lengthMenu: [10, 25, 50, 100],
+        order: [[0, "desc"]],
+        columnDefs: [{ targets: [2, 3, 6], orderable: false }],
+        ajax: {
+            url: "ajax/sms/sms.php",
+            data: function (d) {
+                d.sms_history_dt = true;
+                if (smsHistoryRange) {
+                    d.from = smsHistoryRange.from;
+                    d.to = smsHistoryRange.to;
+                }
+            },
+            dataSrc: function (json) {
+                smsHistoryMeta = json.meta || {};
+                smsHistorySummary(json.summary || { messages: 0, sent: 0, delivered: 0 });
+                return json.data;
+            }
+        },
+        language: { search: "", searchPlaceholder: "Search messages...", emptyTable: "No messages found." }
+    });
+}
+
 cObj("view_sms_history").onclick = function () {
     //check if the dates are blank
     var err = checkBlank("from_msg_sent");
     err += checkBlank("to_msg_sent");
     if (err == 0) {
+        if (valObj("from_msg_sent") > valObj("to_msg_sent")) {
+            cObj("sms_checker_evt_handlers").innerHTML = "<p class='red_notice'>The From date cannot be after the To date.</p>";
+            return;
+        }
         cObj("sms_checker_evt_handlers").innerHTML = "";
-        var datapass = "?sms_history=true&from=" + valObj("from_msg_sent") + "&to=" + valObj("to_msg_sent");
-        sendData1("GET", "sms/sms.php", datapass, cObj("histotysms"));
-        setTimeout(() => {
-            var timeout = 0;
-            var id23w = setInterval(() => {
-                timeout++;
-                //after two minutes of slow connection the next process wont be executed
-                if (timeout == 1200) {
-                    stopInterval(id23w);
-                }
-                if (cObj("loadings").classList.contains("hide")) {
-                    if (cObj("sms_data_results") != undefined && cObj("sms_data_results") != null) {
-                        var sms_data = cObj("sms_data_results").innerText;
-                        sms_data = JSON.parse(sms_data);
-                        // console.log(sms_data);
-                        create_smsdata_table(sms_data);
-                    }
-                    stopInterval(id23w);
-                }
-            }, 100);
-        }, 200);
+        smsHistoryRange = { from: valObj("from_msg_sent"), to: valObj("to_msg_sent") };
+        getRecentMessage();
     } else {
         cObj("sms_checker_evt_handlers").innerHTML = "<p class='red_notice'>Fill all the dates to proceed!</p>";
     }
 }
-//function toget the recent messages sent
-function getRecentMessage() {
-    var datapass = "?sms_history=true";
-    sendData2("GET", "sms/sms.php", datapass, cObj("histotysms"), cObj("sms_loaders_window"));
-    setTimeout(() => {
-        var timeout = 0;
-        var id23w = setInterval(() => {
-            timeout++;
-            //after two minutes of slow connection the next process wont be executed
-            if (timeout == 1200) {
-                stopInterval(id23w);
-            }
-            if (cObj("sms_loaders_window").classList.contains("hide")) {
-                stopInterval(id23w);
-                if (cObj("sms_data_results") != null && cObj("sms_data_results") != undefined) {
-                    var sms_data = cObj("sms_data_results").innerText;
-                    sms_data = JSON.parse(sms_data);
-                    // console.log(sms_data);
-                    create_smsdata_table(sms_data);
-                }else {
-                    cObj("transDataReciever_sms").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! No results found!</p>";
-                    cObj("tablefooter_sms").classList.add("invisible");
-                }
-            }
-        }, 100);
-    }, 200);
+cObj("sms_history_all").onclick = function () {
+    smsHistoryRange = null;
+    cObj("sms_checker_evt_handlers").innerHTML = "";
+    getRecentMessage();
 }
 
 function stopInterval(id) {
     clearInterval(id);
 }
 
-// from here we set the table for sms
-var rowsColStudents_sms = [];
-var rowsNCols_original_sms = [];
-var pagecountTransaction = 0; //this are the number of pages for transaction
-var pagecounttrans = 1; //the current page the user is
-var startpage_sms = 0; // this is where we start counting the page number
-
-// load the user data
-function create_smsdata_table(student_data) {
-    rowsColStudents_sms = [];
-    rowsNCols_original_sms = [];
-    pagecountTransaction = 0; //this are the number of pages for transaction
-    pagecounttrans = 1; //the current page the user is
-    startpage_sms = 0; // this is where we start counting the page number
-    // console.log(student_data.length);
-    // get the arrays
-    if (student_data.length > 0) {
-        var rows = student_data;
-        //create a column now
-        for (let index = 0; index < rows.length; index++) {
-            const element = rows[index];
-            // create the collumn array that will take the row value
-            var col = [];
-            // console.log(element);
-            col.push(element['charged']);
-            col.push(element['date_sent']);
-            col.push(element['message']);
-            col.push(element['message_count']);
-            col.push(element['message_description']);
-            col.push(element['message_sent_succesfully']);
-            col.push(element['message_type']);
-            col.push(element['message_undelivered']);
-            col.push(element['send_id']);
-            col.push(element['sender_no']);
-            col.push(index + 1);
-            col.push(element['date_sent2']);
-            col.push(element['number_collection']);
-            col.push(element['recipients']);
-            // var col = element.split(":");
-            rowsColStudents_sms.push(col);
-        }
-        rowsNCols_original_sms = rowsColStudents_sms;
-        cObj("tot_records_sms").innerText = rows.length;
-        //create the display table
-        //get the number of pages
-        cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, rowsColStudents_sms.length, rowsColStudents_sms);
-        view_and_edit_listeners();
-        if ($.fn && $.fn.DataTable) {
-            if ($.fn.DataTable.isDataTable("#sms_history_dt")) $("#sms_history_dt").DataTable().destroy();
-            $("#sms_history_dt").DataTable({ order: [], pageLength: 25, columnDefs: [{ orderable: false, targets: [6] }] });
-        }
-
-    } else {
-        cObj("transDataReciever_sms").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! No results found!</p>";
-        cObj("tablefooter_sms").classList.add("invisible");
+// View buttons are handled on the table holder, so every page works.
+cObj("transDataReciever_sms").addEventListener("click", function (e) {
+    var button = e.target.closest(".view_sms_details");
+    if (button) {
+        viewPhoneNumbers.call(button);
     }
-}
-
-function view_and_edit_listeners() {
-    var view_sms_details = document.getElementsByClassName("view_sms_details");
-    for (let index = 0; index < view_sms_details.length; index++) {
-        const element = view_sms_details[index];
-        element.addEventListener("click",viewPhoneNumbers);
+});
+cObj("transDataReciever_sms").addEventListener("keydown", function (e) {
+    var button = e.target.closest(".view_sms_details");
+    if (button && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        viewPhoneNumbers.call(button);
     }
-    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
-        new bootstrap.Tooltip(el, { trigger: 'hover' });
-    });
-}
+});
 
 function viewPhoneNumbers() {
-    var this_id = "numbers_value_"+this.id.substr(17);
-    var phone_numbers = hasJsonStructure(valObj(this_id)) ? JSON.parse(valObj(this_id)) : [];
-    // fill in the message details
-    cObj("message_recipients").innerText = phone_numbers.length > 0 ?  displayRecipients(hasJsonStructure(phone_numbers[12]) ? JSON.parse(phone_numbers[12]) : []) : "Not-Set";
-    cObj("message_contents_view").innerText = phone_numbers.length > 0 ?  phone_numbers[2] : "Not-Set";
-    cObj("date_sent_view").innerText = phone_numbers.length > 0 ?  phone_numbers[11] : "Not-Set";
+    var details = smsHistoryMeta[this.id.substr(17)];
+    cObj("message_recipients").innerText = details ? displayRecipients(details.recipients || []) : "Not-Set";
+    cObj("message_contents_view").innerText = details ? details.message : "Not-Set";
+    cObj("date_sent_view").innerText = details ? details.date : "Not-Set";
 
     // display the window
     cObj("message_details_window").classList.remove("hide");
@@ -843,297 +797,11 @@ function displayRecipients(arrays) {
     if (arrays.length == 0) {
         return "No Recipient";
     }
-
-    let data_to_display = "";
-    for (let index = 0; index < arrays.length; index++) {
-        const element = arrays[index];
-        data_to_display+=element+", ";
-    }
-    return data_to_display.substring(0,data_to_display.length-2);
+    return arrays.join(", ");
 }
 
 cObj("close_message_details").onclick = function () {
     cObj("message_details_window").classList.add("hide");
-}
-
-function displayRecord_sms(start, finish, arrays) {
-    var typeColors = {
-        broadcast: '#17a2b8', multicast: '#007bff',
-        parent: '#fd7e14', fee: '#fd7e14', staff: '#6f42c1', absent: '#e74a3b'
-    };
-    function smsTypeColor(t) {
-        t = (t || '').toLowerCase();
-        for (var k in typeColors) { if (t.indexOf(k) !== -1) return typeColors[k]; }
-        return '#6c757d';
-    }
-    function smsStatusBadge(count, delivered, failed) {
-        count = parseInt(count) || 0; delivered = parseInt(delivered) || 0; failed = parseInt(failed) || 0;
-        if (count === 0) return "<span class='badge badge-secondary'>Pending</span>";
-        if (delivered === count) return "<span class='badge badge-success'><i class='fas fa-check-circle'></i> Delivered " + delivered + "/" + count + "</span>";
-        if (delivered > 0) return "<span class='badge badge-warning'><i class='fas fa-exclamation-circle'></i> Partial " + delivered + "/" + count + "</span>";
-        return "<span class='badge badge-danger'><i class='fas fa-times-circle'></i> Failed " + delivered + "/" + count + "</span>";
-    }
-
-    var tableData = "<table id='sms_history_dt' class='table table-sm table-bordered table-hover' style='width:100%;font-size:13px;'>" +
-        "<thead><tr>" +
-        "<th style='background:#f8f9fa;'>#</th>" +
-        "<th style='background:#f8f9fa;'>Type</th>" +
-        "<th style='background:#f8f9fa;'>Message</th>" +
-        "<th style='background:#f8f9fa;'>Sender / Recipients</th>" +
-        "<th style='background:#f8f9fa;'>Status</th>" +
-        "<th style='background:#f8f9fa;'>Date Sent</th>" +
-        "<th style='background:#f8f9fa;'></th>" +
-        "</tr></thead><tbody>";
-
-    for (var i = 0; i < arrays.length; i++) {
-        var a = arrays[i];
-        var charged = a[0] == 1
-            ? "<span class='text-success ml-1' title='Charged'><i class='fas fa-coins'></i></span>"
-            : "<span class='text-muted ml-1' title='Not charged'><i class='fas fa-coins'></i></span>";
-        var tc = smsTypeColor(a[6]);
-        var typeBadge = "<span style='background:" + tc + ";color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;'>" + (a[6] || '—') + "</span>";
-        var statusBadge = smsStatusBadge(a[3], a[5], a[7]);
-        var msg = (a[2] || '');
-        var msgSafe = msg.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
-        var msgCell = "<span data-bs-toggle='tooltip' data-bs-placement='top' data-bs-title='" + msgSafe + "' style='display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:default;'>" + msg + "</span>";
-        var jsonVal = JSON.stringify(a).replace(/'/g, "&#39;");
-
-        tableData += "<tr>" +
-            "<td>" + (i + 1) + charged + "</td>" +
-            "<td>" + typeBadge + "</td>" +
-            "<td>" + msgCell + "</td>" +
-            "<td style='font-size:12px;'><input hidden value='" + jsonVal + "' id='numbers_value_" + a[8] + "'>" + (a[9] || '—') + "</td>" +
-            "<td>" + statusBadge + "</td>" +
-            "<td style='white-space:nowrap;'>" + (a[11] || '') + "</td>" +
-            "<td><span style='font-size:12px;cursor:pointer;' class='link view_sms_details' id='view_sms_details_" + a[8] + "' title='View details'><i class='fas fa-eye'></i></span></td>" +
-            "</tr>";
-    }
-
-    tableData += "</tbody></table>";
-    return tableData;
-}
-//next record 
-//add the page by one and the number os rows to dispay by 50
-cObj("tonextNav_sms").onclick = function () {
-    console.log(pagecounttrans + " " + pagecountTransaction);
-    if (pagecounttrans < pagecountTransaction) { // if the current page is less than the total number of pages add a page to go to the next page
-        startpage_sms += 50;
-        pagecounttrans++;
-        var endpage = startpage_sms + 50;
-        cObj("transDataReciever_sms").innerHTML = displayRecord_sms(startpage_sms, endpage, rowsColStudents_sms);
-        view_and_edit_listeners();
-    } else {
-        pagecounttrans = pagecountTransaction;
-    }
-}
-// end of next records
-cObj("toprevNac_sms").onclick = function () {
-    if (pagecounttrans > 1) {
-        pagecounttrans--;
-        startpage_sms -= 50;
-        var endpage = startpage_sms + 50;
-        cObj("transDataReciever_sms").innerHTML = displayRecord_sms(startpage_sms, endpage, rowsColStudents_sms);
-        view_and_edit_listeners();
-    }
-}
-cObj("tofirstNav_sms").onclick = function () {
-    if (pagecountTransaction > 0) {
-        pagecounttrans = 1;
-        startpage_sms = 0;
-        var endpage = startpage_sms + 50;
-        cObj("transDataReciever_sms").innerHTML = displayRecord_sms(startpage_sms, endpage, rowsColStudents_sms);
-        view_and_edit_listeners();
-    }
-}
-cObj("tolastNav_sms").onclick = function () {
-    if (pagecountTransaction > 0) {
-        pagecounttrans = pagecountTransaction;
-        startpage_sms = (pagecounttrans * 50) - 50;
-        var endpage = startpage_sms + 50;
-        cObj("transDataReciever_sms").innerHTML = displayRecord_sms(startpage_sms, endpage, rowsColStudents_sms);
-        view_and_edit_listeners();
-    }
-}
-
-// seacrh keyword at the table
-cObj("searchkey_sms").onkeyup = function () {
-    searchMySms(this.value);
-}
-//create a function to check if the array has the keyword being searched for
-function searchMySms(keyword) {
-    rowsColStudents_sms = rowsNCols_original_sms;
-    pagecounttrans = 1;
-    if (keyword.length > 0) {
-        // cObj("tablefooter").classList.add("invisible");
-    } else {
-        // cObj("tablefooter").classList.remove("invisible");
-    }
-    // console.log(keyword.toLowerCase());
-    var rowsNcol2 = [];
-    var keylower = keyword.toLowerCase();
-    var keyUpper = keyword.toUpperCase();
-    //row break
-    for (let index = 0; index < rowsColStudents_sms.length; index++) {
-        const element = rowsColStudents_sms[index];
-        //column break
-        var present = 0;
-        if (element[0].toString().toLowerCase().includes(keylower) || element[0].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[2].toString().toLowerCase().includes(keylower) || element[2].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[3].toString().toLowerCase().includes(keylower) || element[3].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[5].toString().toLowerCase().includes(keylower) || element[5].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[6].toString().toLowerCase().includes(keylower) || element[6].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[7].toString().toLowerCase().includes(keylower) || element[7].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[8].toString().toLowerCase().includes(keylower) || element[8].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[9].toString().toLowerCase().includes(keylower) || element[9].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[10].toString().toLowerCase().includes(keylower) || element[10].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[11].toString().toLowerCase().includes(keylower) || element[11].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        if (element[13].toString().toLowerCase().includes(keylower) || element[13].toString().toUpperCase().includes(keyUpper)) {
-            present++;
-        }
-        //here you can add any other columns to be searched for
-        // console.log(element[6]==keyword);
-        if (present > 0) {
-            rowsNcol2.push(element);
-        }
-    }
-    // console.log(rowsNcol2.length);
-    if (rowsNcol2.length > 0) {
-        rowsColStudents_sms = rowsNcol2;
-        var counted = rowsNcol2.length / 50;
-        pagecountTransaction = Math.ceil(counted);
-        cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, 50, rowsNcol2);
-        view_and_edit_listeners();
-        cObj("tot_records_sms").innerText = rowsNcol2.length;
-    } else {
-        cObj("transDataReciever_sms").innerHTML = "<div class='displaydata'><img class='' src='images/error.png'></div><p class='sm-text text-danger text-bold text-center'><br>Ooops! your search for \"" + keyword + "\" was not found</p>";
-        // cObj("tablefooter").classList.add("invisible");
-        cObj("startNo_sms").innerText = 0;
-        cObj("finishNo_sms").innerText = 0;
-        cObj("tot_records_sms").innerText = 0;
-        pagecountTransaction = 1;
-    }
-}
-
-// sort in ascending or descending order
-var sortall_sms_status = 1;
-var sort_message_type_status = 1;
-var sort_content_status = 1;
-function sortTable_sms() {
-    cObj("sortall_sms_th").addEventListener("click", function () {
-        // sort all in ascending order
-        if (sortall_sms_status == 0) {
-            // asc up to down
-            sortall_sms_status = 1;
-            //WITH FIRST COLUMN
-            rowsColStudents_sms = rowsNCols_original_sms;
-            rowsColStudents_sms = sortDesc(rowsColStudents_sms, 10);
-            var counted = rowsColStudents_sms.length / 50;
-            pagecountTransaction = Math.ceil(counted);
-            // console.log(rowsColStudents_sms);
-            cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, 50, rowsColStudents_sms);
-            view_and_edit_listeners();
-            cObj("tot_records_sms").innerText = rowsColStudents_sms.length;
-            cObj("sortall_sms").innerHTML = "- <i class='fas fa-caret-down'></i>";
-        } else {
-            // desc down to up
-            sortall_sms_status = 0;
-            //WITH FIRST COLUMN
-            rowsColStudents_sms = rowsNCols_original_sms;
-            rowsColStudents_sms = sortAsc(rowsColStudents_sms, 10);
-            var counted = rowsColStudents_sms.length / 50;
-            // console.log(rowsColStudents_sms);
-            pagecountTransaction = Math.ceil(counted);
-            cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, 50, rowsColStudents_sms);
-            view_and_edit_listeners();
-            cObj("tot_records_sms").innerText = rowsColStudents_sms.length;
-            cObj("sortall_sms").innerHTML = "- <i class='fas fa-caret-up'></i>";
-        }
-    });
-    cObj("sort_message_type_th").addEventListener("click", function () {
-        // sort all in ascending order
-        if (sort_message_type_status == 0) {
-            // asc up to down
-            sort_message_type_status = 1;
-            // console.log(cObj("sortadmno").innerHTML);
-            //WITH FIRST COLUMN
-            rowsColStudents_sms = rowsNCols_original_sms;
-            rowsColStudents_sms = sortDesc(rowsColStudents_sms, 6);
-            var counted = rowsColStudents_sms.length / 50;
-            pagecountTransaction = Math.ceil(counted);
-            // console.log(rowsColStudents_sms);
-            cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, 50, rowsColStudents_sms);
-            view_and_edit_listeners();
-            cObj("tot_records_sms").innerText = rowsColStudents_sms.length;
-            cObj("sort_message_type").innerHTML = "- <i class='fas fa-caret-down'></i>";
-        } else {
-            // desc down to up
-            sort_message_type_status = 0;
-            //WITH FIRST COLUMN
-            rowsColStudents_sms = rowsNCols_original_sms;
-            rowsColStudents_sms = sortAsc(rowsColStudents_sms, 6);
-            var counted = rowsColStudents_sms.length / 50;
-            // console.log(rowsColStudents_sms);
-            pagecountTransaction = Math.ceil(counted);
-            cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, 50, rowsColStudents_sms);
-            view_and_edit_listeners();
-            cObj("tot_records_sms").innerText = rowsColStudents_sms.length;
-            cObj("sort_message_type").innerHTML = "- <i class='fas fa-caret-up'></i>";
-        }
-    });
-    cObj("sort_content_th").addEventListener("click", function () {
-        // sort all in ascending order
-        if (sort_content_status == 0) {
-            // asc up to down
-            sort_content_status = 1;
-            // console.log(cObj("sortfeeamount").innerHTML);
-            //WITH FIRST COLUMN
-            rowsColStudents_sms = rowsNCols_original_sms;
-            rowsColStudents_sms = sortDesc(rowsColStudents_sms, 2);
-            var counted = rowsColStudents_sms.length / 50;
-            pagecountTransaction = Math.ceil(counted);
-            // console.log(rowsColStudents_sms);
-            cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, 50, rowsColStudents_sms);
-            view_and_edit_listeners();
-            cObj("tot_records_sms").innerText = rowsColStudents_sms.length;
-            cObj("sort_content").innerHTML = "- <i class='fas fa-caret-down'></i>";
-        } else {
-            // desc down to up
-            sort_content_status = 0;
-            //WITH FIRST COLUMN
-            rowsColStudents_sms = rowsNCols_original_sms;
-            rowsColStudents_sms = sortAsc(rowsColStudents_sms, 2);
-            var counted = rowsColStudents_sms.length / 50;
-            // console.log(rowsColStudents_sms);
-            pagecountTransaction = Math.ceil(counted);
-            cObj("transDataReciever_sms").innerHTML = displayRecord_sms(0, 50, rowsColStudents_sms);
-            view_and_edit_listeners();
-            cObj("tot_records_sms").innerText = rowsColStudents_sms.length;
-            cObj("sort_content").innerHTML = "- <i class='fas fa-caret-up'></i>";
-        }
-    });
-    cObj("sortdate_sms").addEventListener("click", function () {
-        cObj("sortall_sms_th").click();
-    });
 }
 
 // Broadcast composer: SMS Message and Email Message are two tabs (#broadcast_sms_tab /

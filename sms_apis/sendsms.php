@@ -433,83 +433,41 @@
                 </ul>
                 <div class="tab-content" id="myTabContent1">
                     <div class="tab-pane fade show active p-1 m-1" id="show_sms_windows" role="tabpanel" aria-labelledby="rather_view_sms_history">
-                        <h5 class="title text-center"><u>View SMS History</u></h5>
-                        <div class="">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="from_msg_sent">From: <br></label>
-                                    <input type="date" class="form-control" name="from_msg_sent" id="from_msg_sent" value = <?php echo date("Y-m-d", strtotime("-167 hour"))?>>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="to_msg_sent">To:</label>
-                                    <input class="form-control" type="date" name="to_msg_sent" id="to_msg_sent" value = <?php echo date("Y-m-d")?>><br>
-                                </div>
-                                <div class="col-md-4">
-                                    <button role="button" id="view_sms_history"><i class="fas fa-eye"></i> View SMS history</button>
-                                </div>
+                        <div class="sh_head">
+                            <span class="sh_head_icon"><i class="fas fa-sms"></i></span>
+                            <div><b>SMS History</b><small>Every SMS the college has sent, newest first. Pick dates to narrow it down.</small></div>
+                        </div>
+                        <div class="sh_filters">
+                            <div>
+                                <label class="form-control-label" for="from_msg_sent">From</label>
+                                <input type="date" class="form-control" name="from_msg_sent" id="from_msg_sent" value="<?php echo date("Y-m-d", strtotime("-167 hour"))?>">
                             </div>
-                            <p id="sms_checker_evt_handlers"></p>
-                            <div class="conts" id="histotysms"></div>
-                            <div class="conts" id="">
-                                <h6 class="text-center">Messages Table</h6>
-                                <div class="row" id="search_option_sms">
-                                    <div class="col-md-6 form-group row">
-                                        <input type="text" name="search" id="searchkey_sms" class="w-100 form-control rounded-lg p-1" placeholder="Search here ..">
-                                    </div>
-                                </div>
-                                <div class="table-responsive" id="transDataReciever_sms">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th title="Sort all descending"># <span id="sortall_sms"><i class="fas fa-caret-down"></i></span></th>
-                                                <th  title="Sort by Reg No descending">Message Type <span id="sort_message_type"><i class="fas fa-caret-down"></i></span></th>
-                                                <th  title="Sort by Amount descending">Content <span id="sort_content"><i class="fas fa-caret-down"></i></span></th>
-                                                <th  title="Sort by date descending">Date Sent <span id="sortdate_sms"><i class="fas fa-caret-down"></i></span></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1 <span class="text-success" title="Charged"><i class="fas fa-coins"></i></span></td>
-                                                <td>Multicast Delivered (1/1) <span class="badge badge-success"> </span></td>
-                                                <td>Hello Hillary see me at my office at 5 after classes</td>
-                                                <td>14th June 2021</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2 <span class="text-secondary"  title="Not Charged"><i class="fas fa-coins"></i></span></td>
-                                                <td>Multicast Delivered (1/1) <span class="badge badge-success"> </span></td>
-                                                <td>Hello Hillary see me at my office at 5 after classes</td>
-                                                <td>14th June 2021</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3 <span class="text-success"  title="Charged"><i class="fas fa-coins"></i></span></td>
-                                                <td>Multicast Delivered (1/1) <span class="badge badge-success"> </span></td>
-                                                <td>Hello Hillary see me at my office at 5 after classes</td>
-                                                <td>14th June 2021</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <!-- <div class='displaydata'><img class='' src='images/error.png'></div>
-                                    <p class='sm-text text-danger text-bold text-center'><br>No records to display, Start by displaying your data with the options above</p> -->
-                                </div>
-                                <div class="row mt-5" id="tablefooter_sms">
-                                    <div class="col-sm-12 col-md-5">
-                                        <div class="container-fluid">
-                                            <p class="text-xxs font-weight-bolder opacity-9 text-uppercase">Showing <span class="text-primary" id="startNo_sms">1 </span> to <span class="text-primary" id="finishNo_sms">10</span> of <span id="tot_records_sms"></span> Records.</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-7">
-                                        <div class="dataTables_paginate paging_full_numbers" id="datatable_paginate">
-                                            <ul class="pagination">
-                                                <li class="paginate_button page-item first" id="datatable_first"><a href="javascript:;" aria-controls="datatable" data-dt-idx="0" tabindex="0" class="page-link" id="tofirstNav_sms">First</a></li>
-                                                <li class="paginate_button page-item previous mx-1" id="datatable_previous"><a href="javascript:;" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link" id="toprevNac_sms">Prev</a></li>
-                                                <li class="paginate_button page-item previous active mx-3" id="datatable_previous"><a href="javascript:;" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link" id="pagenumNav_sms">1</a></li>
-                                                <li class="paginate_button page-item next mx-1" id="datatable_next"><a href="javascript:;" aria-controls="datatable" data-dt-idx="7" tabindex="0" class="page-link" id="tonextNav_sms">Next</a></li>
-                                                <li class="paginate_button page-item last mx-1" id="datatable_last"><a href="javascript:;" aria-controls="datatable" data-dt-idx="8" tabindex="0" class="page-link" id="tolastNav_sms">Last</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div>
+                                <label class="form-control-label" for="to_msg_sent">To</label>
+                                <input class="form-control" type="date" name="to_msg_sent" id="to_msg_sent" value="<?php echo date("Y-m-d")?>">
                             </div>
+                            <div class="sh_filter_btns">
+                                <button type="button" id="view_sms_history"><i class="fas fa-filter"></i> Show these dates</button>
+                                <button type="button" class="sh_btn_ghost" id="sms_history_all"><i class="fas fa-list"></i> All dates</button>
+                            </div>
+                        </div>
+                        <p id="sms_checker_evt_handlers"></p>
+                        <div id="histotysms"></div>
+                        <div class="table-responsive" id="transDataReciever_sms">
+                            <table id="sms_history_dt" class="table sh_table" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Type</th>
+                                        <th>Message</th>
+                                        <th>Sender / Recipients</th>
+                                        <th>Status</th>
+                                        <th>Date Sent</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="tab-pane fade p-1 m-1" id="show_email_windows" role="tabpanel" aria-labelledby="rather_view_email_history">
