@@ -7636,24 +7636,24 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     margin-right: 0;
 }
 
-/* ===== Student profile (Manage Students > Edit, administration/findstudents.php #viewinformation).
+/* ===== Student profile (Manage Students > Edit, administration/findstudents.php :is(#viewinformation, #informationwindow)).
    A header card with the photo, name and boarding switch, a row of stat tiles, then one
    card per section with the same icon header used on the other redesigned pages. ===== */
-#viewinformation{
+:is(#viewinformation, #informationwindow){
     --sp-teal: rgb(3, 131, 135);
     --sp-ink: #1f3a3c;
     --sp-muted: #6b7c7e;
     --sp-line: #e4eaee;
 }
-#viewinformation .studentdetails,
-#viewinformation .parentsinformation{
+:is(#viewinformation, #informationwindow) .studentdetails,
+:is(#viewinformation, #informationwindow) .parentsinformation{
     margin: 0;
     padding: 0;
     border: 0;
     background: none;
 }
 /* header card */
-#viewinformation .sp_hero{
+:is(#viewinformation, #informationwindow) .sp_hero{
     display: flex;
     gap: 24px;
     align-items: center;
@@ -7664,30 +7664,30 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     background: linear-gradient(120deg, rgba(3,131,135,0.08), rgba(255,255,255,0) 55%), #fff;
     box-shadow: 0 4px 14px rgba(31,45,51,0.06);
 }
-#viewinformation .sp_hero_photo{
+:is(#viewinformation, #informationwindow) .sp_hero_photo{
     flex: 0 0 auto;
     text-align: center;
 }
-#viewinformation .sp_hero_photo .student_images,
-#viewinformation .sp_hero_photo .student_images img{
+:is(#viewinformation, #informationwindow) .sp_hero_photo .student_images,
+:is(#viewinformation, #informationwindow) .sp_hero_photo .student_images img{
     width: 112px;
     height: 112px;
 }
-#viewinformation .sp_hero_photo .student_images img{
+:is(#viewinformation, #informationwindow) .sp_hero_photo .student_images img{
     object-fit: cover;
     padding: 0;
     border: 4px solid #fff;
     background: #e6f3f3;
     box-shadow: 0 4px 14px rgba(3,131,135,0.25);
 }
-#viewinformation .sp_photo_actions{
+:is(#viewinformation, #informationwindow) .sp_photo_actions{
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 6px;
     margin: 10px 0 0;
 }
-#viewinformation .sp_photo_btn{
+:is(#viewinformation, #informationwindow) .sp_photo_btn{
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -7700,20 +7700,20 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-weight: 600;
     cursor: pointer;
 }
-#viewinformation .sp_photo_btn:hover{
+:is(#viewinformation, #informationwindow) .sp_photo_btn:hover{
     background: #eef7f7;
 }
-#viewinformation .sp_photo_btn_del{
+:is(#viewinformation, #informationwindow) .sp_photo_btn_del{
     color: #c0392b;
 }
-#viewinformation .sp_photo_btn_del:hover{
+:is(#viewinformation, #informationwindow) .sp_photo_btn_del:hover{
     background: #fdecea;
 }
-#viewinformation #dp_locale{
+:is(#viewinformation, #informationwindow) #dp_locale{
     margin: 4px 0 0;
     font-size: 12px;
 }
-#viewinformation .sp_hero_main{
+:is(#viewinformation, #informationwindow) .sp_hero_main{
     flex: 1 1 auto;
     display: flex;
     flex-wrap: wrap;
@@ -7722,21 +7722,21 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     justify-content: space-between;
     min-width: 0;
 }
-#viewinformation .sp_identity{
+:is(#viewinformation, #informationwindow) .sp_identity{
     min-width: 0;
 }
-#viewinformation .sp_identity h3{
+:is(#viewinformation, #informationwindow) .sp_identity h3{
     margin: 0 0 10px;
     font-size: 22px;
     font-weight: 700;
     color: var(--sp-ink);
 }
-#viewinformation .sp_chips{
+:is(#viewinformation, #informationwindow) .sp_chips{
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
 }
-#viewinformation .sp_chip{
+:is(#viewinformation, #informationwindow) .sp_chip{
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -7747,25 +7747,25 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-size: 12.5px;
     font-weight: 600;
 }
-#viewinformation .sp_chip i{
+:is(#viewinformation, #informationwindow) .sp_chip i{
     font-size: 11px;
     color: var(--sp-teal);
 }
-#viewinformation .sp_chip_main{
+:is(#viewinformation, #informationwindow) .sp_chip_main{
     background: var(--sp-teal);
     color: #fff;
 }
-#viewinformation .sp_chip_main i{
+:is(#viewinformation, #informationwindow) .sp_chip_main i{
     color: #fff;
 }
-#viewinformation .sp_chip_ok{
+:is(#viewinformation, #informationwindow) .sp_chip_ok{
     background: #e8f5e9;
     color: #1e7b34;
 }
-#viewinformation .sp_chip_ok i{
+:is(#viewinformation, #informationwindow) .sp_chip_ok i{
     color: #28a745;
 }
-#viewinformation .sp_hero_side{
+:is(#viewinformation, #informationwindow) .sp_hero_side{
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -7773,36 +7773,36 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     width: 280px;
     max-width: 100%;
 }
-#viewinformation .sp_hero_side .sm-toggle-card{
+:is(#viewinformation, #informationwindow) .sp_hero_side .sm-toggle-card{
     margin: 0;
     max-width: none;
     background: #fff;
 }
-#viewinformation .sp_toggle_title{
+:is(#viewinformation, #informationwindow) .sp_toggle_title{
     margin: 0;
     font-size: 14px;
     font-weight: 700;
     color: var(--sp-ink);
 }
-#viewinformation .sp_toggle_title i{
+:is(#viewinformation, #informationwindow) .sp_toggle_title i{
     color: var(--sp-teal);
     margin-right: 4px;
 }
-#viewinformation .sp_toggle_sub{
+:is(#viewinformation, #informationwindow) .sp_toggle_sub{
     margin: 0;
     font-size: 12px;
     color: #888;
 }
-#viewinformation .sp_toggle_feedback{
+:is(#viewinformation, #informationwindow) .sp_toggle_feedback{
     display: block;
     margin: 0;
     font-size: 12px;
     color: #555;
 }
-#viewinformation .sp_toggle_feedback:empty{
+:is(#viewinformation, #informationwindow) .sp_toggle_feedback:empty{
     display: none;
 }
-#viewinformation .sp_btn_danger{
+:is(#viewinformation, #informationwindow) .sp_btn_danger{
     align-self: flex-end;
     padding: 6px 14px !important;
     border: 1px solid #f1c4bf !important;
@@ -7813,17 +7813,17 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-weight: 600;
     box-shadow: none !important;
 }
-#viewinformation .sp_btn_danger:hover{
+:is(#viewinformation, #informationwindow) .sp_btn_danger:hover{
     background: #fdecea !important;
 }
 /* stat tiles */
-#viewinformation .sp_stats{
+:is(#viewinformation, #informationwindow) .sp_stats{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 12px;
     margin-bottom: 14px;
 }
-#viewinformation .sp_stat{
+:is(#viewinformation, #informationwindow) .sp_stat{
     --tone: var(--sp-teal);
     --tone-bg: #e6f3f3;
     display: flex;
@@ -7835,12 +7835,12 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     background: #fff;
     box-shadow: 0 2px 8px rgba(31,45,51,0.04);
 }
-#viewinformation .sp_tone_bad{ --tone: #d64545; --tone-bg: #fdecea; }
-#viewinformation .sp_tone_good{ --tone: #23a455; --tone-bg: #e8f5e9; }
-#viewinformation .sp_tone_warn{ --tone: #d99a0b; --tone-bg: #fff6e0; }
-#viewinformation .sp_tone_purple{ --tone: #7b1fa2; --tone-bg: #f3e8f8; }
-#viewinformation .sp_tone_muted{ --tone: #8a9a9c; --tone-bg: #f1f5f6; }
-#viewinformation .sp_stat_icon{
+:is(#viewinformation, #informationwindow) .sp_tone_bad{ --tone: #d64545; --tone-bg: #fdecea; }
+:is(#viewinformation, #informationwindow) .sp_tone_good{ --tone: #23a455; --tone-bg: #e8f5e9; }
+:is(#viewinformation, #informationwindow) .sp_tone_warn{ --tone: #d99a0b; --tone-bg: #fff6e0; }
+:is(#viewinformation, #informationwindow) .sp_tone_purple{ --tone: #7b1fa2; --tone-bg: #f3e8f8; }
+:is(#viewinformation, #informationwindow) .sp_tone_muted{ --tone: #8a9a9c; --tone-bg: #f1f5f6; }
+:is(#viewinformation, #informationwindow) .sp_stat_icon{
     flex: 0 0 38px;
     height: 38px;
     display: inline-flex;
@@ -7851,43 +7851,43 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     color: var(--tone);
     font-size: 15px;
 }
-#viewinformation .sp_stat_body{
+:is(#viewinformation, #informationwindow) .sp_stat_body{
     flex: 1;
     min-width: 0;
 }
-#viewinformation .sp_stat_body b{
+:is(#viewinformation, #informationwindow) .sp_stat_body b{
     display: block;
     font-size: 19px;
     line-height: 1.2;
     color: var(--tone);
 }
-#viewinformation .sp_stat_body > span{
+:is(#viewinformation, #informationwindow) .sp_stat_body > span{
     display: block;
     margin-top: 2px;
     font-size: 12px;
     color: var(--sp-muted);
 }
-#viewinformation .sp_bar{
+:is(#viewinformation, #informationwindow) .sp_bar{
     height: 6px;
     margin-top: 8px;
     border-radius: 6px;
     background: #edf1f2;
     overflow: hidden;
 }
-#viewinformation .sp_bar span{
+:is(#viewinformation, #informationwindow) .sp_bar span{
     display: block;
     height: 100%;
     border-radius: 6px;
     background: var(--tone);
 }
-#viewinformation .sp_stat_note{
+:is(#viewinformation, #informationwindow) .sp_stat_note{
     display: block;
     margin-top: 3px;
     font-size: 11px;
     color: #98a6a8;
 }
 /* section cards */
-#viewinformation .sp_card{
+:is(#viewinformation, #informationwindow) .sp_card{
     padding: 18px 22px 20px;
     margin-bottom: 14px;
     border: 1px solid var(--sp-line);
@@ -7895,7 +7895,7 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     background: #fff;
     box-shadow: 0 4px 14px rgba(31,45,51,0.05);
 }
-#viewinformation .sp_head{
+:is(#viewinformation, #informationwindow) .sp_head{
     display: flex;
     align-items: center;
     gap: 12px;
@@ -7903,7 +7903,7 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     padding-bottom: 12px;
     border-bottom: 1px solid var(--sp-line);
 }
-#viewinformation .sp_icon{
+:is(#viewinformation, #informationwindow) .sp_icon{
     flex: 0 0 36px;
     height: 36px;
     display: inline-flex;
@@ -7914,27 +7914,27 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     color: #fff;
     font-size: 14px;
 }
-#viewinformation .sp_head_text b{
+:is(#viewinformation, #informationwindow) .sp_head_text b{
     display: block;
     font-size: 15.5px;
     color: var(--sp-ink);
 }
-#viewinformation .sp_head_text small{
+:is(#viewinformation, #informationwindow) .sp_head_text small{
     display: block;
     font-size: 12.5px;
     color: var(--sp-muted);
 }
-#viewinformation .sp_label{
+:is(#viewinformation, #informationwindow) .sp_label{
     display: block;
     margin: 0 0 5px;
     font-size: 12.5px;
     font-weight: 600;
     color: #4a5b5e;
 }
-#viewinformation .sp_label img{
+:is(#viewinformation, #informationwindow) .sp_label img{
     vertical-align: middle;
 }
-#viewinformation .sp_tag{
+:is(#viewinformation, #informationwindow) .sp_tag{
     margin-left: 4px;
     padding: 1px 7px;
     border-radius: 10px;
@@ -7943,12 +7943,12 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-size: 10.5px;
     font-weight: 600;
 }
-#viewinformation .sp_locked{
+:is(#viewinformation, #informationwindow) .sp_locked{
     background: #f4f7f8 !important;
     color: #44585a;
     font-weight: 600;
 }
-#viewinformation .sp_readonly{
+:is(#viewinformation, #informationwindow) .sp_readonly{
     margin: 0;
     padding: 7px 12px;
     border: 1px solid var(--sp-line);
@@ -7957,13 +7957,13 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-weight: 600;
     color: #44585a;
 }
-#viewinformation .sp_hint{
+:is(#viewinformation, #informationwindow) .sp_hint{
     display: block;
     margin-bottom: 4px;
     font-size: 12px;
     color: var(--sp-muted);
 }
-#viewinformation .sp_subhead{
+:is(#viewinformation, #informationwindow) .sp_subhead{
     display: flex;
     align-items: center;
     gap: 8px;
@@ -7972,12 +7972,12 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-weight: 700;
     color: var(--sp-ink);
 }
-#viewinformation .row + .sp_subhead{
+:is(#viewinformation, #informationwindow) .row + .sp_subhead{
     margin-top: 20px;
     padding-top: 16px;
     border-top: 1px dashed var(--sp-line);
 }
-#viewinformation .sp_subhead span{
+:is(#viewinformation, #informationwindow) .sp_subhead span{
     width: 22px;
     height: 22px;
     display: inline-flex;
@@ -7989,27 +7989,27 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-size: 11.5px;
 }
 /* finance facts */
-#viewinformation .sp_facts{
+:is(#viewinformation, #informationwindow) .sp_facts{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
 }
-#viewinformation .sp_fact{
+:is(#viewinformation, #informationwindow) .sp_fact{
     padding: 12px 14px;
     border-radius: 12px;
     background: #f8fafb;
     border: 1px solid #eef1f2;
 }
-#viewinformation .sp_fact_label{
+:is(#viewinformation, #informationwindow) .sp_fact_label{
     display: block;
     font-size: 12px;
     color: var(--sp-muted);
 }
-#viewinformation .sp_fact_label i{
+:is(#viewinformation, #informationwindow) .sp_fact_label i{
     color: #aab6b8;
     cursor: help;
 }
-#viewinformation .sp_fact_value{
+:is(#viewinformation, #informationwindow) .sp_fact_value{
     display: flex;
     align-items: center;
     gap: 8px;
@@ -8018,7 +8018,7 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-weight: 700;
     color: var(--sp-ink);
 }
-#viewinformation .sp_edit{
+:is(#viewinformation, #informationwindow) .sp_edit{
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -8030,22 +8030,22 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     color: var(--sp-teal);
     font-size: 11px;
 }
-#viewinformation .sp_edit:hover{
+:is(#viewinformation, #informationwindow) .sp_edit:hover{
     background: #eef7f7;
     color: var(--sp-teal);
     text-decoration: none;
 }
 /* course progress table (built by display_course_list_table in admissions.js) */
-#viewinformation .sp_course > h4{
+:is(#viewinformation, #informationwindow) .sp_course > h4{
     /* the card header already names it; the hidden inputs inside stay in the page */
     display: none;
 }
-#viewinformation .sp_course > p{
+:is(#viewinformation, #informationwindow) .sp_course > p{
     margin: 4px 0;
     text-align: center;
     color: var(--sp-muted) !important;
 }
-#viewinformation .sp_course table{
+:is(#viewinformation, #informationwindow) .sp_course table{
     width: 100%;
     margin: 0;
     border: 1px solid var(--sp-line);
@@ -8054,7 +8054,7 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     border-spacing: 0;
     overflow: hidden;
 }
-#viewinformation .sp_course th{
+:is(#viewinformation, #informationwindow) .sp_course th{
     padding: 10px 12px;
     background: #f4f7f8;
     color: #4a5b5e;
@@ -8065,7 +8065,7 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     border: 0;
     border-bottom: 1px solid var(--sp-line);
 }
-#viewinformation .sp_course td{
+:is(#viewinformation, #informationwindow) .sp_course td{
     padding: 10px 12px;
     border: 0;
     border-bottom: 1px solid #eef1f2;
@@ -8073,28 +8073,28 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-size: 13px;
     vertical-align: top;
 }
-#viewinformation .sp_course tr:last-child td{
+:is(#viewinformation, #informationwindow) .sp_course tr:last-child td{
     border-bottom: 0;
 }
-#viewinformation .sp_course td[rowspan]{
+:is(#viewinformation, #informationwindow) .sp_course td[rowspan]{
     background: #fbfcfc;
     color: var(--sp-ink);
 }
-#viewinformation .sp_course td:first-child{
+:is(#viewinformation, #informationwindow) .sp_course td:first-child{
     border-left: 0;
 }
-#viewinformation .sp_course td select{
+:is(#viewinformation, #informationwindow) .sp_course td select{
     max-width: 220px;
 }
-#viewinformation .sp_card_actions{
+:is(#viewinformation, #informationwindow) .sp_card_actions{
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 10px;
     margin-top: 14px;
 }
-#viewinformation .sp_btn_ghost,
-#viewinformation .sp_btn_primary{
+:is(#viewinformation, #informationwindow) .sp_btn_ghost,
+:is(#viewinformation, #informationwindow) .sp_btn_primary{
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -8104,30 +8104,30 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-weight: 600;
     cursor: pointer;
 }
-#viewinformation .sp_btn_ghost{
+:is(#viewinformation, #informationwindow) .sp_btn_ghost{
     border: 1px solid var(--sp-line);
     background: #fff;
     color: var(--sp-teal);
 }
-#viewinformation .sp_btn_ghost:hover{
+:is(#viewinformation, #informationwindow) .sp_btn_ghost:hover{
     background: #eef7f7;
 }
-#viewinformation .sp_btn_primary{
+:is(#viewinformation, #informationwindow) .sp_btn_primary{
     border: 1px solid transparent;
     background: linear-gradient(135deg, rgb(3,131,135), rgb(39,93,95));
     color: #fff;
 }
-#viewinformation .sp_btn_primary:hover{
+:is(#viewinformation, #informationwindow) .sp_btn_primary:hover{
     filter: brightness(1.08);
 }
 /* checkboxes and radio pills */
-#viewinformation .sp_checks,
-#viewinformation .sp_pills{
+:is(#viewinformation, #informationwindow) .sp_checks,
+:is(#viewinformation, #informationwindow) .sp_pills{
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
-#viewinformation .sp_check{
+:is(#viewinformation, #informationwindow) .sp_check{
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -8138,25 +8138,25 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-size: 13px;
     cursor: pointer;
 }
-#viewinformation .sp_check:has(input:checked){
+:is(#viewinformation, #informationwindow) .sp_check:has(input:checked){
     border-color: rgba(3,131,135,0.5);
     background: #eef7f7;
     color: var(--sp-teal);
     font-weight: 600;
 }
-#viewinformation .sp_check input{
+:is(#viewinformation, #informationwindow) .sp_check input{
     accent-color: rgb(3,131,135);
 }
-#viewinformation .sp_pill{
+:is(#viewinformation, #informationwindow) .sp_pill{
     margin: 0;
     cursor: pointer;
 }
-#viewinformation .sp_pill input{
+:is(#viewinformation, #informationwindow) .sp_pill input{
     position: absolute;
     opacity: 0;
     pointer-events: none;
 }
-#viewinformation .sp_pill span{
+:is(#viewinformation, #informationwindow) .sp_pill span{
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -8168,43 +8168,43 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-size: 13px;
     transition: background .15s, border-color .15s, color .15s;
 }
-#viewinformation .sp_pill:hover span{
+:is(#viewinformation, #informationwindow) .sp_pill:hover span{
     border-color: rgba(3,131,135,0.4);
 }
-#viewinformation .sp_pill input:checked + span{
+:is(#viewinformation, #informationwindow) .sp_pill input:checked + span{
     background: var(--sp-teal);
     border-color: var(--sp-teal);
     color: #fff;
     font-weight: 600;
 }
-#viewinformation .sp_pill input:focus-visible + span{
+:is(#viewinformation, #informationwindow) .sp_pill input:focus-visible + span{
     outline: 2px solid rgba(3,131,135,0.4);
     outline-offset: 2px;
 }
-#viewinformation .sp_channels{
+:is(#viewinformation, #informationwindow) .sp_channels{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 10px;
 }
-#viewinformation .sp_channel{
+:is(#viewinformation, #informationwindow) .sp_channel{
     padding: 12px 14px;
     border: 1px solid #eef1f2;
     border-radius: 12px;
     background: #f8fafb;
 }
-#viewinformation .sp_channel_who{
+:is(#viewinformation, #informationwindow) .sp_channel_who{
     display: block;
     margin-bottom: 8px;
     font-size: 12.5px;
     font-weight: 600;
     color: #4a5b5e;
 }
-#viewinformation .sp_channel_who i{
+:is(#viewinformation, #informationwindow) .sp_channel_who i{
     color: var(--sp-teal);
     margin-right: 4px;
 }
 /* save bar, kept in view at the bottom of the window */
-#viewinformation .sp_actionbar{
+:is(#viewinformation, #informationwindow) .sp_actionbar{
     position: sticky;
     bottom: 0;
     z-index: 2;
@@ -8221,7 +8221,7 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     backdrop-filter: blur(8px);
     box-shadow: 0 -6px 18px rgba(31,45,51,0.08);
 }
-#viewinformation .sp_back{
+:is(#viewinformation, #informationwindow) .sp_back{
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -8230,37 +8230,37 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     font-weight: 600;
     color: var(--sp-teal);
 }
-#viewinformation #coppy_cat_err{
+:is(#viewinformation, #informationwindow) #coppy_cat_err{
     flex: 1;
     margin: 0;
     font-size: 13px;
 }
-#viewinformation #coppy_cat_err:empty{
+:is(#viewinformation, #informationwindow) #coppy_cat_err:empty{
     display: none;
 }
 @media screen and (max-width: 768px){
-    #viewinformation .sp_hero{
+    :is(#viewinformation, #informationwindow) .sp_hero{
         flex-direction: column;
         text-align: center;
     }
-    #viewinformation .sp_hero_main{
+    :is(#viewinformation, #informationwindow) .sp_hero_main{
         flex-direction: column;
     }
-    #viewinformation .sp_chips{
+    :is(#viewinformation, #informationwindow) .sp_chips{
         justify-content: center;
     }
-    #viewinformation .sp_card{
+    :is(#viewinformation, #informationwindow) .sp_card{
         padding: 16px 14px;
     }
 }
-#viewinformation input:not([type=checkbox]):not([type=radio]),
-#viewinformation select,
-#viewinformation textarea{
+:is(#viewinformation, #informationwindow) input:not([type=checkbox]):not([type=radio]),
+:is(#viewinformation, #informationwindow) select,
+:is(#viewinformation, #informationwindow) textarea{
     margin-left: 0 !important;
 }
-#viewinformation .row input.form-control,
-#viewinformation .row select.form-control,
-#viewinformation #college_branch_edit_holder select{
+:is(#viewinformation, #informationwindow) .row input.form-control,
+:is(#viewinformation, #informationwindow) .row select.form-control,
+:is(#viewinformation, #informationwindow) #college_branch_edit_holder select{
     width: 100% !important;
     max-width: none;
 }
@@ -8652,4 +8652,107 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     #classregister .at_field_btn{
         flex-basis: 100%;
     }
+}
+
+/* staff details extras: initials in place of a photo, the header buttons and the signature */
+#informationwindow.staffinformed{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+#informationwindow .sf_avatar{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(39,93,95));
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 14px rgba(3,131,135,0.25);
+}
+#informationwindow .sp_identity #staff_detail_identity h3{
+    margin: 0 0 10px;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--sp-ink);
+}
+#informationwindow .sp_chips .sp_chips{
+    display: contents;
+}
+#informationwindow .sp_chip_off{
+    background: #fdecea;
+    color: #b03a2e;
+}
+#informationwindow .sp_chip_off i{
+    color: #d64545;
+}
+#informationwindow .sf_hero_side{
+    width: auto;
+    align-items: flex-end;
+}
+#informationwindow .sf_hero_side .sp_btn_danger{
+    align-self: flex-end;
+}
+#informationwindow button.sp_btn_ghost{
+    border: 1px solid var(--sp-line) !important;
+    background: #fff !important;
+    color: var(--sp-teal) !important;
+    box-shadow: none !important;
+    padding: 7px 14px !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+}
+#informationwindow button.sp_btn_ghost:hover{
+    background: #eef7f7 !important;
+}
+#informationwindow .sf_signature{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px;
+}
+#informationwindow .sf_signature .sig_card_preview{
+    margin: 0;
+}
+#informationwindow .sf_pair{
+    margin-bottom: 14px;
+}
+#informationwindow .sf_pair .sp_card{
+    margin-bottom: 0;
+}
+#informationwindow #data_in_display select{
+    width: 100% !important;
+}
+#informationwindow .sp_actionbar #updateerror{
+    flex: 1;
+    margin: 0;
+    font-size: 13px;
+}
+#informationwindow .sp_actionbar #updateerror:empty{
+    display: none;
+}
+
+/* Manage Staff list: the DataTables length and search pickers on one line */
+#managestaff .dataTables_wrapper .dataTables_length label,
+#managestaff .dataTables_wrapper .dataTables_filter label{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #6b7c7e;
+}
+#managestaff .dataTables_wrapper .dataTables_length select{
+    width: auto !important;
+    min-width: 70px;
+    margin: 0 !important;
+}
+#managestaff .dataTables_wrapper .dataTables_filter input{
+    margin: 0 !important;
 }
