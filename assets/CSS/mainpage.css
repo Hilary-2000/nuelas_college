@@ -7395,3 +7395,137 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 #show_sms_windows .sh_table td:nth-child(6){
     white-space: nowrap;
 }
+
+/* ===== Sidebar menu (homepage.php #sideme). The sections are always open
+   (.sidebars .contsc outranks .hide), so their headers are styled as
+   labels; ids and classes the menu code uses are unchanged. ===== */
+.sidebars{
+    background: linear-gradient(180deg, #0e3b3d 0%, #11494b 55%, #0c3436 100%);
+    backdrop-filter: none;
+    color: #fff;
+    padding: 12px 0 24px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+.sidebars::-webkit-scrollbar{
+    width: 6px;
+}
+.sidebars::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,0.25);
+    border-radius: 6px;
+}
+.sidebars .conts.flexed_column{
+    padding: 8px 14px 14px;
+    margin: 0 12px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sidebars .conts .schicon{
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    background: #fff;
+    padding: 4px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+.sidebars .conts h2{
+    font-size: 14px;
+    letter-spacing: 0.6px;
+    color: #fff;
+    margin: 10px 0 0;
+}
+.sidebars .titles{
+    border-bottom: none;
+    padding: 4px 18px 6px;
+    text-align: left;
+}
+.sidebars .titles h2{
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: rgba(255,255,255,0.45);
+    margin: 0;
+}
+.sidebars .conts{
+    margin: 2px 0;
+}
+.sidebars .navButs{
+    width: 100%;
+    padding: 12px 18px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+    color: rgba(255,255,255,0.55);
+    cursor: default;
+}
+.sidebars .navButs .arrow{
+    display: none;
+}
+.sidebars .contsc{
+    width: auto;
+    margin: 0 10px;
+}
+.sidebars .contsc .sidebtns{
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 11px;
+    padding: 8px 12px;
+    margin: 1px 0;
+    font-size: 13.5px;
+    font-weight: 500;
+    text-align: left;
+    color: rgba(255,255,255,0.86);
+    background: transparent;
+    backdrop-filter: none;
+    border-radius: 9px;
+    border-left: 3px solid transparent;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.sidebars .contsc .sidebtns > span{
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+}
+.sidebars .contsc .sidebtns .icons{
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    /* the menu icons are dark pictures: show them white like the font icons */
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+}
+.sidebars .contsc .sidebtns > span i{
+    font-size: 13px;
+    color: #fff;
+    opacity: 0.85;
+}
+.sidebars .contsc .sidebtns:hover,
+.sidebars .contsc .sidebtns:focus-visible{
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-weight: 500;
+    outline: none;
+}
+.sidebars .contsc .sidebtns.selectedbtn{
+    background: rgba(127, 209, 211, 0.18);
+    border-left-color: #7fd1d3;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+}
+.sidebars .contsc .sidebtns.selectedbtn > span{
+    background: rgb(3, 131, 135);
+}
+.sidebars .contsc .sidebtns.selectedbtn .icons,
+.sidebars .contsc .sidebtns.selectedbtn > span i{
+    opacity: 1;
+}
+.sidebars #closesidebar{
+    color: rgba(255,255,255,0.7);
+}
