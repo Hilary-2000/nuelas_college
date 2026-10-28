@@ -6028,6 +6028,16 @@ function changeDpLocale() {
 cObj("close_sch_change_dp").onclick = function () {
     cObj("change_sch_dp_win").classList.add("hide");
 }
+// the profile photo and logo buttons click with Enter and Space
+["update_school_profile_page", "personal_profile_page"].forEach(function (id) {
+    cObj(id).addEventListener("keydown", function (e) {
+        var el = e.target;
+        if (el.getAttribute && el.getAttribute("role") === "button" && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            el.click();
+        }
+    });
+});
 cObj("change_sch_dp").onclick = function () {
     cObj("change_sch_dp_win").classList.remove("hide");
 }

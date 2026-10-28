@@ -7017,3 +7017,200 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 #leave_mgmt_staff .form-control[readonly]{
     background: #f8fafb !important;
 }
+
+/* ===== College profile and My Profile (main_pages/system_profile.php,
+   personal_profile.php). pf_ classes. ===== */
+#update_school_profile_page .pf_hero,
+#personal_profile_page .pf_hero{
+    position: relative;
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+#update_school_profile_page .pf_hero_cover,
+#personal_profile_page .pf_hero_cover{
+    height: 90px;
+    background: linear-gradient(135deg, rgb(3, 131, 135), rgb(24, 158, 163) 60%, #7fd1d3);
+}
+#update_school_profile_page .pf_hero_body,
+#personal_profile_page .pf_hero_body{
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 0 20px 16px;
+    margin-top: -46px;
+    flex-wrap: wrap;
+}
+#update_school_profile_page .pf_avatar.school_logo,
+#personal_profile_page .pf_avatar.school_logo{
+    position: relative;
+    width: 104px;
+    height: 104px;
+    margin: 0;
+    padding: 0;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(31,45,51,0.15);
+    flex: 0 0 auto;
+}
+#update_school_profile_page .pf_avatar_logo.school_logo{
+    border-radius: 20px;
+}
+#update_school_profile_page .pf_avatar.school_logo img,
+#personal_profile_page .pf_avatar.school_logo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    margin: 0;
+}
+#update_school_profile_page .pf_avatar_logo.school_logo img{
+    object-fit: contain;
+    padding: 6px;
+    border-radius: 16px;
+}
+#update_school_profile_page .pf_avatar_edit,
+#personal_profile_page .pf_avatar_edit{
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    border: 3px solid #fff;
+    font-size: 12px;
+    cursor: pointer;
+}
+#update_school_profile_page .pf_avatar_edit:hover,
+#update_school_profile_page .pf_avatar_edit:focus-visible,
+#personal_profile_page .pf_avatar_edit:hover,
+#personal_profile_page .pf_avatar_edit:focus-visible{
+    background: rgb(2, 110, 114);
+    outline: none;
+}
+#update_school_profile_page .pf_hero_text,
+#personal_profile_page .pf_hero_text{
+    padding-bottom: 6px;
+    min-width: 200px;
+    flex: 1;
+}
+#update_school_profile_page .pf_hero_text h3,
+#personal_profile_page .pf_hero_text h3{
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2d2e;
+    margin: 0 0 2px;
+}
+#update_school_profile_page .pf_hero_text small,
+#personal_profile_page .pf_hero_text small{
+    font-size: 13px;
+    color: #6b7b7c;
+}
+#update_school_profile_page .pf_card,
+#personal_profile_page .pf_card{
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+#update_school_profile_page .pf_card_title,
+#personal_profile_page .pf_card_title{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f2d2e;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef3f3;
+}
+#update_school_profile_page .pf_card_title i,
+#personal_profile_page .pf_card_title i{
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-size: 13px;
+}
+#update_school_profile_page .form-control-label,
+#personal_profile_page .form-control-label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+    margin-bottom: 4px;
+}
+#update_school_profile_page .form-control,
+#update_school_profile_page select,
+#personal_profile_page .pf_card .form-control,
+#personal_profile_page .pf_card select{
+    width: 100% !important;
+    margin: 0 !important;
+}
+#update_school_profile_page .form-control[readonly]{
+    background: #f1f4f5 !important;
+    color: #51626b !important;
+}
+#update_school_profile_page .pf_req,
+#personal_profile_page .pf_req{
+    color: #c5221f;
+}
+#update_school_profile_page .pf_readonly{
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #8a9a9b;
+    background: #f1f4f5;
+    border-radius: 4px;
+    padding: 1px 6px;
+}
+#personal_profile_page .pf_help{
+    font-size: 13px;
+    color: #51626b;
+}
+#update_school_profile_page .pf_actions,
+#personal_profile_page .pf_actions{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+#update_school_profile_page .pf_actions p,
+#personal_profile_page .pf_actions p{
+    flex: 1;
+    margin: 0;
+}
+#personal_profile_page #dp_err_handler{
+    margin: 4px 0 0;
+}
+
+#personal_profile_page #my_information_inner{
+    font-size: 12px;
+    color: #51626b;
+    background: #f3f9f9;
+    border-left: 3px solid rgb(3, 131, 135);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 0 0 16px;
+}
+#personal_profile_page #my_information_inner:empty{
+    display: none;
+}
+#personal_profile_page #my_information_inner p{
+    margin: 0;
+}
