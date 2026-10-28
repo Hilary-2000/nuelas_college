@@ -13,7 +13,6 @@
         <div class="middle1">
             <div class="row">
                 <div class="instructions col-md-12">
-                    <!-- <button type='button' id='back_to_fees_payment_2'><i class="fa fa-arrow-left"></i> Back to Fees Payment</button> -->
                     <div class="notify">
                         <p><strong>Hint:</strong></p>
                     </div>
@@ -23,9 +22,12 @@
                     </ul>
                 </div>
             </div>
-            <div class="section_card" id="payment_approvals">
-                <p class="card_heading">Payment Requests <img src="images/ajax_clock_small.gif" id="payment_request_table_loader"></p>
-                <button id="back_to_expenses_view"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="section_card ex_card" id="payment_approvals">
+                <div class="ex_back"><span class="link" id="back_to_expenses_view" role="button" tabindex="0"><i class="fas fa-arrow-left"></i> Back to expenses</span></div>
+                <div class="ex_head">
+                    <span class="ex_head_icon"><i class="fas fa-check-double"></i></span>
+                    <div><b>Payment Requests <img src="images/ajax_clock_small.gif" id="payment_request_table_loader"></b><small>Expenses and supplier payments waiting for approval. View a request to see its description before you accept or decline it.</small></div>
+                </div>
                 <div class="table_container">
                     <div class="hide" id="payment_request_holder"></div>
                     <div id="payment_request_success"></div>

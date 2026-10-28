@@ -3132,119 +3132,83 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" style="overflow: auto;" id="view_payment_request">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
+            <div class="changesubwindow editexams animate ex_modal">
+                <div class="ex_modal_head">
+                    <span class="ex_modal_icon"><i class="fas fa-file-invoice-dollar"></i></span>
+                    <div><b>Payment Request</b><small>Check the details, then accept or decline the request.</small></div>
                     <p class="funga" id="close_view_payment_request">&times</p>
-                    <h6 class="text-center">View Payment Request</h6>
                 </div>
-                <div class="conts">
-                    <div class="instructions">
-                        <p><strong>Hint:</strong></p>
-                        <p>- Fill all fields as required!</p>
-                        <p>- Edit the supplier bill.</p>
+                <form class="ex_modal_grid" onsubmit="return false;">
+                    <input type="hidden" name="" id="payment_req_id">
+                    <input type="hidden" name="" id="payment_req_type">
+                    <div class="ex_modal_wide">
+                        <label class="form-control-label" for="payment_request_name">Expense Name</label>
+                        <input class="form-control" type="text" readonly id="payment_request_name" placeholder="-">
                     </div>
-                    <form class="add_expense" >
-                        <h6 class="text-center" ><u>Supplier Bill</u></h6>
-                        <div class="conts">
-                            <label class="form-control-label" for="payment_request_name">Expense Name: <br></label>
-                            <input type="hidden" name="" id="payment_req_id">
-                            <input type="hidden" name="" id="payment_req_type">
-                            <input class="form-control w-90" type="text" name="payment_request_name" id="payment_request_name" placeholder="Bill Name">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="PR_payment_for">Expense Category: <br></label>
-                            <input class="form-control w-90" type="text" name="PR_payment_for" id="PR_payment_for" placeholder="Payment For">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="PR_expense_categories">Expense Amount: <br></label>
-                            <input class="form-control w-90" type="text" name="PR_expense_categories" id="PR_expense_categories" placeholder="Expense Category">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="PR_expense_amount">Date Paid: <br></label>
-                            <input class="form-control w-90" type="text" name="PR_expense_amount" id="PR_expense_amount" placeholder="Expense Amount">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="PR_date_paid">Document Number: <br></label>
-                            <input class="form-control w-90" type="text" name="PR_date_paid" id="PR_date_paid" placeholder="Expense Name">
-                        </div>
-                        <div class="conts">
-                            <label class="form-control-label" for="PR_expense_description">Expense Description: <br></label>
-                            <textarea name="PR_expense_description" id="PR_expense_description" class="form-control" cols="30" rows="2"></textarea>
-                        </div>
-                    </form>
-                    <div class="conts">
-                        <!-- <p id="payment_requests_error"></p> -->
+                    <div>
+                        <label class="form-control-label" for="PR_payment_for">Expense Category</label>
+                        <input class="form-control" type="text" readonly id="PR_payment_for" placeholder="-">
                     </div>
-                    <div class="message_contents mt-3 hide" id="confirm_payment_request_window">
-                        <label class="form-control-label"><u>Confirm:</u></label>
-                        <p>- Confirm accepting the payment request?</p>
-                        <p>- This action is irreversible.</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button id="confirm_accept_payment_request"><i class="fas fa-trash"></i> Yes <img class="hide" src="images/ajax_clock_small.gif" id="delete_supplier_loader"></button>
-                            </div>
-                            <div class="col-md-6">
-                                <button id="cancel_accept_payment_request"><i class="fas fa-times"></i> Cancel</button>
-                            </div>
-                        </div>
+                    <div>
+                        <label class="form-control-label" for="PR_expense_categories">Expense Amount</label>
+                        <input class="form-control" type="text" readonly id="PR_expense_categories" placeholder="-">
                     </div>
-                    <div class="btns">
-                        <p class="float-right btn btn-sm btn-success" id="accept_payment_approvall"><i class="fas fa-check"></i> Accept</p>
-                        <p class="float-center btn btn-sm btn-warning" id="close_payment_approvale">Close</p>
-                        <p class="float-left btn btn-sm btn-danger" id="reject_payment_approvale">X reject</p>
+                    <div>
+                        <label class="form-control-label" for="PR_expense_amount">Date</label>
+                        <input class="form-control" type="text" readonly id="PR_expense_amount" placeholder="-">
                     </div>
+                    <div>
+                        <label class="form-control-label" for="PR_date_paid">Document Number</label>
+                        <input class="form-control" type="text" readonly id="PR_date_paid" placeholder="-">
+                    </div>
+                    <div class="ex_modal_wide">
+                        <label class="form-control-label" for="PR_expense_description">Expense Description</label>
+                        <textarea id="PR_expense_description" class="form-control" readonly rows="3" placeholder="No description given."></textarea>
+                    </div>
+                </form>
+                <div class="message_contents mt-3 hide" id="confirm_payment_request_window">
+                    <p>Accept this payment request? This cannot be undone.</p>
+                    <div class="ex_modal_actions">
+                        <button type="button" class="ex_btn_ghost" id="cancel_accept_payment_request"><i class="fas fa-times"></i> Cancel</button>
+                        <button type="button" id="confirm_accept_payment_request"><i class="fas fa-check"></i> Yes, accept <img class="hide" src="images/ajax_clock_small.gif" id="delete_supplier_loader"></button>
+                    </div>
+                </div>
+                <div class="ex_modal_actions">
+                    <span class="ex_mbtn" id="close_payment_approvale" role="button" tabindex="0">Close</span>
+                    <span class="ex_mbtn ex_mbtn_bad" id="reject_payment_approvale" role="button" tabindex="0"><i class="fas fa-times"></i> Decline</span>
+                    <span class="ex_mbtn ex_mbtn_ok" id="accept_payment_approvall" role="button" tabindex="0"><i class="fas fa-check"></i> Accept</span>
                 </div>
             </div>
         </div>
         <div class="confirmpaymentwindow hide" style="overflow: auto;" id="show_payment_req_confirmation">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
+            <div class="changesubwindow editexams animate ex_modal ex_modal_small">
+                <div class="ex_modal_head">
+                    <span class="ex_modal_icon ex_modal_icon_ok"><i class="fas fa-check"></i></span>
+                    <div><b>Accept Payment Request</b><small>The expense is approved and counted as paid. This cannot be undone.</small></div>
                     <p class="funga" id="close_confirm_payment_request">&times</p>
-                    <h6 class="text-center">Accept Payment Request</h6>
                 </div>
-                <div class="conts">
-                    <div class="message_contents mt-3">
-                        <input type="hidden" id="payment_request_id">
-                        <input type="hidden" id="payment_request_type">
-                        <label class="form-control-label"><u>Confirm:</u></label>
-                        <p>- Confirm accepting the payment request?</p>
-                        <p>- This action is irreversible.</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button id="confirm_payment_request_in" ><i class="fas fa-check"></i> Yes <img id="loader_clocks" class="hide" src="images/ajax_clock_small.gif" ></button>
-                            </div>
-                            <div class="col-md-6">
-                                <button id="cancel_payment_request_in" ><i class="fas fa-times"></i> Cancel</button>
-                            </div>
-                        </div>
-                    </div>
+                <input type="hidden" id="payment_request_id">
+                <input type="hidden" id="payment_request_type">
+                <div class="ex_modal_actions">
+                    <button type="button" class="ex_btn_ghost" id="cancel_payment_request_in"><i class="fas fa-times"></i> Cancel</button>
+                    <button type="button" class="ex_btn_ok" id="confirm_payment_request_in"><i class="fas fa-check"></i> Yes, accept <img id="loader_clocks" class="hide" src="images/ajax_clock_small.gif"></button>
                 </div>
             </div>
         </div>
         <div class="confirmpaymentwindow hide" style="overflow: auto;" id="show_payment_decline_window">
-            <div class="changesubwindow editexams animate">
-                <div class="conts">
+            <div class="changesubwindow editexams animate ex_modal ex_modal_small">
+                <div class="ex_modal_head">
+                    <span class="ex_modal_icon ex_modal_icon_bad"><i class="fas fa-times"></i></span>
+                    <div><b>Decline Payment Request</b><small>The person who asked for it sees your reason. This cannot be undone.</small></div>
                     <p class="funga" id="close_payment_decline_window">&times</p>
-                    <h6 class="text-center">Decline Payment Request</h6>
                 </div>
-                <div class="conts">
-                    <div class="message_contents mt-3">
-                        <input type="hidden" id="payment_request_id_decline">
-                        <input type="hidden" id="payment_request_type_decline">
-                        <label class="form-control-label"><u>Confirm:</u></label>
-                        <p>- Confirm decline the payment request?</p>
-                        <p>- This action is irreversible.</p>
-                        <label for="payment_decline_description" class="form-control-label">Reason of decline</label>
-                        <textarea name="payment_decline_description" id="payment_decline_description" class="form-control" rows="5" placeholder="Reason for declining the payment request!"></textarea>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button id="confirm_payment_request_decline" ><i class="fas fa-check"></i> Yes <img id="all_loader_clocks" class="hide" src="images/ajax_clock_small.gif" ></button>
-                            </div>
-                            <div class="col-md-6">
-                                <button id="cancel_payment_request_decline" ><i class="fas fa-times"></i> Cancel</button>
-                            </div>
-                        </div>
-                    </div>
+                <input type="hidden" id="payment_request_id_decline">
+                <input type="hidden" id="payment_request_type_decline">
+                <label for="payment_decline_description" class="form-control-label">Reason for declining</label>
+                <textarea name="payment_decline_description" id="payment_decline_description" class="form-control" rows="4" placeholder="e.g. The amount does not match the invoice."></textarea>
+                <div class="ex_modal_actions">
+                    <button type="button" class="ex_btn_ghost" id="cancel_payment_request_decline"><i class="fas fa-times"></i> Cancel</button>
+                    <button type="button" class="ex_btn_bad" id="confirm_payment_request_decline"><i class="fas fa-times"></i> Yes, decline <img id="all_loader_clocks" class="hide" src="images/ajax_clock_small.gif"></button>
                 </div>
             </div>
         </div>
@@ -3741,66 +3705,67 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" style="overflow: auto;" id="edit_expense_windows">
-            <div class="changesubwindow editexams animate">
-                <div class="container w-100">
+            <div class="changesubwindow editexams animate ex_modal">
+                <div class="ex_modal_head">
+                    <span class="ex_modal_icon"><i class="fas fa-pen"></i></span>
+                    <div><b>Edit Expense <img src="images/ajax_clock_small.gif" id="expense_editor_loader" class="hide"></b><small>An approved expense keeps its amount; pending and declined ones can be changed or deleted.</small></div>
+                    <span id="expense_status_view"></span>
                     <p class="funga" id="edit_expense_windows_2">&times</p>
-                    <h6 class="text-center"><b>Edit Expense</b> <label for=""><img src="images/ajax_clock_small.gif" id="expense_editor_loader" class="hide"></label></h6>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <button type='button' id="delete_promt_expenses"><i class="fas fa-trash"></i> Delete</button>
-                    </div>
-                    <div class="col-md-6" id="expense_status_view">
-                        <!-- show the payment approve status -->
-                    </div>
+                <div class="message_contents hide ex_modal_note ex_modal_note_bad" id="reason_for_req_decline_window">
+                    <b>Reason for decline:</b> <span id="reason_for_payment_decline">No Reason stated!</span>
                 </div>
-                <p class="message_contents border border-primary rounded p-2 hide" id="delete_exp_window">
-                    Are you sure you want to delete this expense entry! <br>
-                    <span id="delete_expense_entry" class="text-danger link"><i class="fas fa-trash"></i>Delete</span>
-                </p>
-                <div class="message_contents hide" id="reason_for_req_decline_window">
-                    <label class="form-control-label"><u>Reason for request decline:</u></label>
-                    <p id="reason_for_payment_decline">No Reason stated!</p>
-                </div>
-                <div class="add_expense" id="">
-                    <label for="edit_expense_name" class="form-label">Expense Name</label>
-                    <input type="text" class="form-control w-75" id="edit_expense_name" placeholder="Expense Name">
-                    
-                    <label for="edit_expense_record_date" class="form-label">Expense Record Date</label>
-                    <input type="date" class="form-control w-75" id="edit_expense_record_date" value="<?=date("Y-m-d")?>">
-
-                    <label for="edit_expense_category" class="form-label">Expense Category <img src="images/ajax_clock_small.gif" id="expense_cat_egories" class="hide"></label>
-                    <p id="show_expense_category"></p>
-
-                    <label for="edit_expense_sub_cat" class="form-label">Expense Sub-Category <img src="images/ajax_clock_small.gif" id="expense_sub_cat_egories" class="hide"></label>
-                    <p id="show_expense_sub_category"></p>
-
-                    <label for="edit_expense_cash_activity" class="form-control-label"><b>Expense Activity</b></label>
-                    <select name="edit_expense_cash_activity" id="edit_expense_cash_activity" class="form-control w-75">
-                        <option value="" hidden>Select Option</option>
-                        <option value="1">Operating Activities</option>
-                        <option value="2">Investing Activities</option>
-                        <option value="3">Financing Activities</option>
-                    </select>
-                    
-                    <label for="total_unit_cost" class="form-control-label">Total Unit Cost</label>
-                    <input type="number" id="total_unit_cost" class="form-control w-75">
-
-                    <label class="form-control-label" for="edit_document_number"><b>Document Number</b> <br></label>
-                    <input class="form-control w-75" type="text" name="edit_document_number" id="edit_document_number"  min = "0" placeholder = "Optional - Receipt, Invoice, Cheque">
-
-                    <label class="form-control-label" for="edit_expense_description"><b>Expense Description</b> <br></label>
-                    <textarea name="edit_expense_description" id="edit_expense_description" cols="30" rows="3" class="form-control" placeholder="Expense description"></textarea>
-
-                    <input type="hidden" id="expense_ids_in">
-                    <div class="btns">
-                        <p class="border border-secondary text-success p-1" id="no-edit-supplier-details">You can`t edit a supplier payment from here!</p>
-                        <button type="button" id="save_expense_details"><i class="fas fa-upload"></i> Update Expense</button>
-                        <button type="button" id="close_edit_expense_window"><i class="fas fa-times"></i> Close</button>
+                <div class="ex_modal_grid">
+                    <div>
+                        <label for="edit_expense_name" class="form-control-label">Expense Name</label>
+                        <input type="text" class="form-control" id="edit_expense_name" placeholder="Expense Name">
                     </div>
-                    <div class="container" id="error_handlers_expenses">
+                    <div>
+                        <label for="edit_expense_record_date" class="form-control-label">Expense Record Date</label>
+                        <input type="date" class="form-control" id="edit_expense_record_date" value="<?=date("Y-m-d")?>">
+                    </div>
+                    <div>
+                        <label for="edit_expense_category" class="form-control-label">Expense Category <img src="images/ajax_clock_small.gif" id="expense_cat_egories" class="hide"></label>
+                        <div id="show_expense_category"></div>
+                    </div>
+                    <div>
+                        <label for="edit_expense_sub_cat" class="form-control-label">Expense Sub-Category <img src="images/ajax_clock_small.gif" id="expense_sub_cat_egories" class="hide"></label>
+                        <div id="show_expense_sub_category"></div>
+                    </div>
+                    <div>
+                        <label for="edit_expense_cash_activity" class="form-control-label">Expense Activity</label>
+                        <select name="edit_expense_cash_activity" id="edit_expense_cash_activity" class="form-control">
+                            <option value="" hidden>Select Option</option>
+                            <option value="1">Operating Activities</option>
+                            <option value="2">Investing Activities</option>
+                            <option value="3">Financing Activities</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="total_unit_cost" class="form-control-label">Amount (Kes)</label>
+                        <input type="number" id="total_unit_cost" class="form-control">
+                    </div>
+                    <div class="ex_modal_wide">
+                        <label class="form-control-label" for="edit_document_number">Document Number</label>
+                        <input class="form-control" type="text" name="edit_document_number" id="edit_document_number" placeholder="Optional: receipt, invoice or cheque no.">
+                    </div>
+                    <div class="ex_modal_wide">
+                        <label class="form-control-label" for="edit_expense_description">Expense Description</label>
+                        <textarea name="edit_expense_description" id="edit_expense_description" rows="3" class="form-control" placeholder="Expense description"></textarea>
                     </div>
                 </div>
+                <input type="hidden" id="expense_ids_in">
+                <p class="ex_modal_note" id="no-edit-supplier-details"><i class="fas fa-info-circle"></i> Supplier payments are edited from Supplier Accounts.</p>
+                <div class="message_contents hide ex_modal_note ex_modal_note_bad" id="delete_exp_window">
+                    Delete this expense entry? This cannot be undone.
+                    <span id="delete_expense_entry" class="ex_mbtn ex_mbtn_bad" role="button" tabindex="0"><i class="fas fa-trash"></i> Yes, delete</span>
+                </div>
+                <div class="ex_modal_actions">
+                    <button type="button" class="ex_btn_bad ex_left" id="delete_promt_expenses"><i class="fas fa-trash"></i> Delete</button>
+                    <button type="button" class="ex_btn_ghost" id="close_edit_expense_window"><i class="fas fa-times"></i> Close</button>
+                    <button type="button" id="save_expense_details"><i class="fas fa-upload"></i> Update Expense</button>
+                </div>
+                <div id="error_handlers_expenses"></div>
             </div>
         </div>
         <div class="confirmpaymentwindow hide" style="overflow: auto;" id="change_revenue_category_window">
@@ -5068,7 +5033,7 @@ function checkPresnt($array, $string){
     <script src="assets/JS/dashboardajax.js"></script>
     <script src="assets/JS/finance.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/finance.js'); ?>"></script>
     <script src="assets/JS/feesTable.js"></script>
-    <script src="assets/JS/expense.js"></script>
+    <script src="assets/JS/expense.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/expense.js'); ?>"></script>
     <script src="assets/JS/transport.js"></script>
     <script src="assets/JS/academics.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/academics.js'); ?>"></script>
     <script src="assets/JS/boarding.js"></script>
