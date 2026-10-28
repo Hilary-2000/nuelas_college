@@ -505,8 +505,8 @@ function checkPresnt($array, $string){
                 <button class="navButs">Account <span class="arrow rotate_right"></button>
                 <div class="contsd">
                     <div class="contsc">
-                        <button type='button' class="sidebtns <?php echo allowed("update_school_profile"); ?> htbtn" id='update_school_profile'><span><img class="icons" src="images/updateprofile.png"></span>Update school profile</button>
-                        <button type='button' class="sidebtns <?php echo allowed("update_personal_profile"); ?> " id='update_personal_profile'><span><img class="icons" src="images/updateprofile.png"></span>Update personal profile</button>
+                        <button type='button' class="sidebtns <?php echo allowed("update_school_profile"); ?> htbtn" id='update_school_profile'><span><img class="icons" src="images/updateprofile.png"></span>College Profile</button>
+                        <button type='button' class="sidebtns <?php echo allowed("update_personal_profile"); ?> " id='update_personal_profile'><span><img class="icons" src="images/updateprofile.png"></span>My Profile</button>
                         <button type='button' class="sidebtns <?php echo allowed("settings"); ?> htbtn" id='set_btns'><span><img class="icons" src="images/settings.png"></span>Settings</button>
                         <button type='button' class="sidebtns <?php echo allowed("action_logs_btn"); ?> htbtn" id='action_logs_btn'><span><i class="fas fa-history text-dark"></i></span>Action Logs</button>
                         <button type='button' class="sidebtns <?php echo allowed("general_reports"); ?> htbtn" id='my_reports'><span><i class="fas fa-book text-dark"></i></span>Reports</button>
