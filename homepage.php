@@ -5029,7 +5029,7 @@ function checkPresnt($array, $string){
             sendData("GET", "login/changevalues.php", datapass, cObj("logout"));
         }
     </script>
-    <script src="assets/JS/admissions.js"></script>
+    <script src="assets/JS/admissions.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/admissions.js'); ?>"></script>
     <script src="assets/JS/dashboardajax.js"></script>
     <script src="assets/JS/finance.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/finance.js'); ?>"></script>
     <script src="assets/JS/feesTable.js"></script>

@@ -940,6 +940,8 @@ cObj("humanresource").onclick = function () {
     addselected(this.id);
     cObj("human_resource_windows").classList.remove("hide");
     removesidebar();
+    // open straight on the leave applications
+    selectLeaveTab("view leave application");
 }
 
 cObj("my_reports").onclick = function () {
@@ -8224,6 +8226,29 @@ cObj("go_back_leave_list2").onclick = function () {
 
 
 // leave categories options
+// Manage Leaves tab cards: each sets the hidden leaves_options select and runs
+// its change handler, then highlights itself.
+function selectLeaveTab(option) {
+    cObj("leaves_options").value = option;
+    cObj("leaves_options").onchange();
+    document.querySelectorAll("#leave_tabs .lv_tab").forEach(function (tab) {
+        tab.classList.toggle("active", tab.getAttribute("data-option") == option);
+    });
+}
+document.querySelectorAll("#leave_tabs .lv_tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+        selectLeaveTab(tab.getAttribute("data-option"));
+    });
+});
+// role="button" elements in Manage Leaves click with Enter and Space
+cObj("human_resource_windows").addEventListener("keydown", function (e) {
+    var el = e.target;
+    if (el.getAttribute && el.getAttribute("role") === "button" && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        el.click();
+    }
+});
+
 cObj("leaves_options").onchange = function () {
     var leaves_options = this.value;
     if (leaves_options == "view leave categories") {
@@ -9259,6 +9284,26 @@ var pagecountLeaves = 0; //this are the number of pages for transaction
 var pagecount_leaved = 1; //the current page the user is
 var startpage_leaves = 1; // this is where we start counting the page number
 
+// One leave application row: status badge, and Accept / Reject while pending.
+function leaveApplicationRow(index, row) {
+    var pending = row[7] == "0";
+    var status = row[7] == "0" ? "<span class='lv_status lv_status_wait'><i class='fas fa-hourglass-half'></i> Pending</span>"
+        : (row[7] == "1" ? "<span class='lv_status lv_status_ok'><i class='fas fa-check'></i> Accepted</span>"
+        : "<span class='lv_status lv_status_bad'><i class='fas fa-times'></i> Declined</span>");
+    return "<tr><td>" + (index + 1) + "</td>" +
+        "<td><b class='lv_name'>" + escHtml(row[1]) + "</b></td>" +
+        "<td>" + escHtml(row[0]) + "</td>" +
+        "<td>" + escHtml(row[3]) + " <span class='lv_to'>to</span> " + escHtml(row[4]) + "</td>" +
+        "<td class='text-end'><b>" + escHtml(row[2]) + "</b> working day" + (row[2] == 1 ? "" : "s") + "</td>" +
+        "<td>" + escHtml(row[5]) + "</td>" +
+        "<td>" + status + "</td>" +
+        "<td><div class='lv_row_actions'>" +
+        "<span class='view_leaves_btn lv_act' role='button' tabindex='0' id='view_leaves_btn" + index + "'><i class='fas fa-eye'></i> View</span>" +
+        "<span class='accept_leaves lv_act lv_act_ok" + (pending ? "" : " hide") + "' role='button' tabindex='0' id='accept_leaves" + index + "'><i class='fas fa-check'></i> Accept</span>" +
+        "<span class='decline_leave lv_act lv_act_bad" + (pending ? "" : " hide") + "' role='button' tabindex='0' id='decline_leave" + index + "'><i class='fas fa-times'></i> Reject</span>" +
+        "</div></td></tr>";
+}
+
 // display record function
 function displayRecord_leave_application(start, finish, arrays) {
     start--;
@@ -9266,74 +9311,10 @@ function displayRecord_leave_application(start, finish, arrays) {
         start = 0;
     }
     var total = arrays.length;
-    //the finish value
-    var fins = 0;
-    //this is the table header to the start of the tbody
-    var tableData = "<table class='table'><thead><tr><th title='Sort all descending'># <span id=''><i class='fas fa-caret-down'></i></span></th><th  title='Sort by Reg No descending'>Applicant <span id=''><i class='fas fa-caret-down'></i></span></th><th  title='Sort by Amount descending'>Leave Type <span id=''><i class='fas fa-caret-down'></i></span></th><th  title='Sort by date Applied'>Application Date <span id=''><i class='fas fa-caret-down'></i></span></th><th  title='Sort by date Dates'>Dates<span id=''><i class='fas fa-caret-down'></i></span></th><th  title='Sort by Duration'>Duration <span id=''><i class='fas fa-caret-down'></i></span></th><th >Actions <span id=''><i class='fas fa-caret-down'></i></span></th></tr></thead><tbody>";
-    if (finish < total) {
-        fins = finish;
-        //create a table of the 10 records
-        for (let index = start; index < finish; index++) {
-            var accept_leave = "";
-            var decline_leave = "";
-            var view_leaves = "";
-            var leave_status = "";
-            if (arrays[index][7] == "0") {
-                accept_leave = "";
-                decline_leave = "";
-                view_leaves = "";
-                leave_status = "primary";
-            } else if (arrays[index][7] == "1") {
-                accept_leave = "hide";
-                decline_leave = "hide";
-                view_leaves = "";
-                leave_status = "success";
-            } else if (arrays[index][7] == "2") {
-                accept_leave = "hide";
-                decline_leave = "hide";
-                view_leaves = "";
-                leave_status = "danger";
-            } else {
-                accept_leave = "hide";
-                decline_leave = "hide";
-                view_leaves = "";
-                leave_status = "danger";
-            }
-            //create table of 10 elements
-            tableData += "<tr><td>" + (index + 1) + " <span class='text-" + leave_status + "' title='Charged'><i class='fas fa-info'></i></span></td><td><small>" + arrays[index][1] + "</small> <span class='badge badge-success'> </span></td><td><small>" + arrays[index][0] + "</small></td><td><small>" + arrays[index][5] + "</small></td><td><small>" + arrays[index][3] + " TO </small><small>" + arrays[index][4] + "</small></td><td><small>" + arrays[index][2] + " Working Day(s)</small></td><td><small class='link " + accept_leave + " accept_leaves' id='accept_leaves" + index + "'><i class='fas fa-check'></i> Accept</small> <small class='link " + decline_leave + " decline_leave' id='decline_leave" + index + "'><i class='fas fa-times'></i> Reject</small> <small class='link " + view_leaves + " view_leaves_btn' id='view_leaves_btn" + index + "'><i class='fas fa-eye'></i> View</small></td></tr>";
-        }
-    } else {
-        //create a table of the 10 records
-        for (let index = start; index < total; index++) {
-            var accept_leave = "";
-            var decline_leave = "";
-            var view_leaves = "";
-            var leave_status = "";
-            if (arrays[index][7] == "0") {
-                accept_leave = "";
-                decline_leave = "";
-                view_leaves = "";
-                leave_status = "primary";
-            } else if (arrays[index][7] == "1") {
-                accept_leave = "hide";
-                decline_leave = "hide";
-                view_leaves = "";
-                leave_status = "success";
-            } else if (arrays[index][7] == "2") {
-                accept_leave = "hide";
-                decline_leave = "hide";
-                view_leaves = "";
-                leave_status = "danger";
-            } else {
-                accept_leave = "hide";
-                decline_leave = "hide";
-                view_leaves = "";
-                leave_status = "danger";
-            }
-            //create table of 10 elements
-            tableData += "<tr><td>" + (index + 1) + " <span class='text-" + leave_status + "' title='Charged'><i class='fas fa-info'></i></span></td><td><small>" + arrays[index][1] + "</small> <span class='badge badge-success'> </span></td><td><small>" + arrays[index][0] + "</small></td><td><small>" + arrays[index][5] + "</small></td><td><small>" + arrays[index][3] + " TO </small><small>" + arrays[index][4] + "</small></td><td><small>" + arrays[index][2] + " Working Day(s)</small></td><td><small class='link " + accept_leave + " accept_leaves' id='accept_leaves" + index + "'><i class='fas fa-check'></i> Accept</small> <small class='link " + decline_leave + " decline_leave' id='decline_leave" + index + "'><i class='fas fa-times'></i> Reject</small> <small class='link " + view_leaves + " view_leaves_btn' id='view_leaves_btn" + index + "'><i class='fas fa-eye'></i> View</small></td></tr>";
-        }
-        fins = total;
+    var fins = finish < total ? finish : total;
+    var tableData = "<table class='table lv_table'><thead><tr><th>#</th><th>Applicant</th><th>Leave Type</th><th>Dates</th><th class='text-end'>Duration</th><th>Applied On</th><th>Status</th><th>Actions</th></tr></thead><tbody>";
+    for (let index = start; index < fins; index++) {
+        tableData += leaveApplicationRow(index, arrays[index]);
     }
     tableData += "</tbody></table>";
     //set the start and the end value
