@@ -4272,3 +4272,402 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
         grid-template-columns: 1fr;
     }
 }
+
+/* Broadcast message: parent filters and student list (sms_apis/sendsms.php,
+   rows from ajax/sms/sms.php get_parents_list). */
+.bc_stats{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 10px 0 12px;
+}
+.bc_stat{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+.bc_stat_icon{
+    flex: 0 0 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-size: 15px;
+}
+.bc_stat b{
+    display: block;
+    font-size: 20px;
+    line-height: 1.1;
+    color: #1f2d2e;
+}
+.bc_stat small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+.bc_stat_selected{
+    border-color: rgb(3, 131, 135);
+    background: #f3f9f9;
+}
+.bc_stat_selected .bc_stat_icon{
+    background: rgb(3, 131, 135);
+    color: #fff;
+}
+.bc_stat_selected b{
+    color: rgb(3, 131, 135);
+}
+.bc_filters{
+    background: #fff;
+    border: 1px solid #d7e9ea;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(3,131,135,0.06);
+    margin: 0 0 12px;
+    overflow: hidden;
+}
+.bc_filters_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #f8fafb;
+    border-bottom: 1px solid #e3e7ea;
+    cursor: pointer;
+    user-select: none;
+}
+.bc_filters_head:focus-visible{
+    outline: none;
+    box-shadow: inset 0 0 0 2px rgba(3,131,135,0.35);
+}
+.bc_filters_icon{
+    flex: 0 0 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    font-size: 15px;
+}
+.bc_filters_title{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+.bc_filters_title b{
+    font-size: 15px;
+    color: #1f2d2e;
+}
+.bc_filters_title small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+.bc_filters_badge{
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: rgb(3, 131, 135);
+    border-radius: 20px;
+    padding: 3px 10px;
+    white-space: nowrap;
+}
+.bc_filters_chevron{
+    color: #7a8b8c;
+}
+.bc_filters_body{
+    padding: 4px 14px 14px;
+}
+.bc_group{
+    padding: 12px 0 4px;
+    border-bottom: 1px dashed #e3e7ea;
+}
+.bc_group_title{
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgb(3, 131, 135);
+    margin-bottom: 8px;
+}
+.bc_group_title i{
+    margin-right: 4px;
+}
+.bc_label{
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+    margin-bottom: 5px;
+}
+.bc_label span{
+    font-weight: 400;
+    color: #8a9a9b;
+    font-size: 12px;
+}
+.bc_help{
+    display: block;
+    font-size: 11px;
+    color: #8a9a9b;
+    margin-top: 4px;
+}
+.bc_filters_body select,
+.bc_filters_body input[type=date],
+.bc_filters_body input[type=number],
+.bc_list .bc_search input{
+    margin: 0 !important;
+}
+.bc_seg{
+    display: inline-flex;
+    flex-wrap: wrap;
+    background: #f1f4f5;
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+}
+.bc_seg input{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.bc_seg label{
+    margin: 0;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #51626b;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+}
+.bc_seg label:hover{
+    color: rgb(3, 131, 135);
+}
+.bc_seg input:checked + label{
+    background: #fff;
+    color: rgb(3, 131, 135);
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.bc_seg input:focus-visible + label{
+    box-shadow: 0 0 0 2px rgba(3,131,135,0.35);
+}
+.bc_range{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.bc_range input{
+    flex: 1;
+    min-width: 0;
+    width: auto !important;
+}
+.bc_range_cur{
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border-radius: 6px;
+    padding: 5px 8px;
+}
+.bc_range_to{
+    font-size: 12px;
+    color: #8a9a9b;
+}
+.bc_filters_actions{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 14px;
+}
+#students_parents button.bc_btn_ghost{
+    background: #fff !important;
+    color: rgb(3, 131, 135) !important;
+    border: 1px solid #c9dfe0 !important;
+    box-shadow: none !important;
+    padding: 6px 12px;
+}
+#students_parents button.bc_btn_ghost:hover{
+    background: #e7f4f4 !important;
+    transform: none;
+}
+#students_parents #broadcast_apply_filters{
+    padding: 7px 16px;
+}
+.bc_list{
+    background: #fff;
+    border: 1px solid #d7e9ea;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin: 0 0 12px;
+}
+.bc_list_head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.bc_list_title{
+    font-size: 14px;
+    color: #3d4a4e;
+}
+.bc_list_title i{
+    color: rgb(3, 131, 135);
+    margin-right: 4px;
+}
+.bc_list_title b{
+    color: rgb(3, 131, 135);
+}
+.bc_list_btns{
+    display: flex;
+    gap: 6px;
+}
+.bc_search{
+    position: relative;
+    margin-bottom: 10px;
+}
+.bc_search > i{
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9fb4b5;
+    font-size: 12px;
+    z-index: 1;
+}
+.bc_search input{
+    padding-left: 32px !important;
+}
+#parents_lists_nm .staff_list.bc_students{
+    width: 100%;
+    max-height: 380px;
+    border: 1px solid #e3e7ea;
+    border-radius: 10px;
+    margin: 0;
+}
+#parents_lists_nm .staff_dets{
+    width: 100%;
+    margin: 0;
+    padding: 8px 12px;
+    gap: 10px;
+    border-bottom: 1px solid #f0f3f4;
+    justify-content: flex-start;
+    transition: background .12s ease;
+}
+#parents_lists_nm .bc_select_all{
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8fafb;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: rgb(3, 131, 135);
+}
+#parents_lists_nm .bc_select_all label{
+    flex: 1;
+    margin: 0;
+    cursor: pointer;
+    order: 2;
+}
+#parents_lists_nm .staff_dets input[type=checkbox]{
+    order: 1;
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    accent-color: rgb(3, 131, 135);
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+#parents_lists_nm .bc_student .bc_student_no{
+    order: 2;
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #f1f4f5;
+    color: #7a8b8c;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+#parents_lists_nm .bc_student_info{
+    order: 3;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    cursor: pointer;
+    min-width: 0;
+}
+.bc_student_top{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: #1f2d2e;
+}
+.bc_student_top code{
+    font-size: 11px;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border-radius: 10px;
+    padding: 1px 8px;
+}
+.bc_student_top .banner,
+.bc_student_top .badge{
+    font-size: 10px !important;
+    border-radius: 10px;
+    padding: 2px 8px;
+}
+.bc_student_meta{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #7a8b8c;
+}
+.bc_student_meta i{
+    font-size: 10px;
+    margin-right: 3px;
+    color: #9fb4b5;
+}
+#parents_lists_nm .bc_student:hover{
+    background: #f8fafb;
+}
+#parents_lists_nm .bc_student:has(input:checked){
+    background: #eef7f7;
+}
+#parents_lists_nm .bc_student:has(input:checked) .bc_student_no{
+    background: rgb(3, 131, 135);
+    color: #fff;
+}
+.bc_empty{
+    padding: 14px;
+    border-radius: 10px;
+    background: #fdf3f2;
+    color: #c5221f;
+    font-size: 13px;
+}
+.bc_empty i{
+    margin-right: 6px;
+}
+@media screen and (max-width: 550px){
+    .bc_stats{
+        grid-template-columns: 1fr;
+    }
+}
