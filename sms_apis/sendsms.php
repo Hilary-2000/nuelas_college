@@ -1,6 +1,6 @@
 <div class="contents animate hide" id = "send_sms">
     <div class="titled">
-        <h6>Broadcast Messages</h6>
+        <h2>Email &amp; SMS</h2>
     </div>
     <div class="admWindow ">
         <div class="top1">
