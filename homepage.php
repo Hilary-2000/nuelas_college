@@ -936,44 +936,62 @@ function checkPresnt($array, $string){
             </div>
         </div>
         <div class="confirmpaymentwindow hide" style="overflow: auto;" id="edit_student_votehead">
-            <div class="window_lg animate">
-                <div class="conts">
-                    <p class="funga" id="close_edit_student_votehead">&times</p>
-                    <h5 class="text-center"><b>Edit Student Voteheads <img class="hide" src="images/ajax_clock_small.gif" id="loader_evh"></b></h5>
+            <div class="window_lg animate vh_modal" role="dialog" aria-modal="true" aria-labelledby="vh_title">
+                <div class="vh_head">
+                    <span class="vh_icon"><i class="fas fa-tasks"></i></span>
+                    <div class="vh_head_text">
+                        <b id="vh_title">Edit Student Voteheads <img class="hide" src="images/ajax_clock_small.gif" id="loader_evh"></b>
+                        <small>Tick what the student pays for in each module of their active course.</small>
+                    </div>
+                    <p class="funga" id="close_edit_student_votehead" role="button" title="Close">&times;</p>
                 </div>
-                <div class="add_expense">
-                    <div class="form-group my-2">
-                        <div class="instructions"><strong>Hint:</strong>
-                        <ul>
-                            <li>This voteheads settings will be linked to the class this student is in this academic year.</li>
-                            <li>Select voteheads the student will pay for!</li>
-                            <li>Transport votehead is compulsory for every student enrolled in transport until un-enrolled/in-active!</li>
-                            <li>Once the voteheads are selected this will determine the amount the student pays!</li>
-                            <li>If a votehead selected is provisional, it will be compulsory for the student to pay for that!</li>
-                        </ul></div>
-                    </div>
-                    <hr class="mx-auto">
-                    <div class="form-group my-2">
-                        <p><b>Student Name : </b><span id="student_name_evh">Loading...</span></p>
-                        <p><b>Student Adm No : </b><span id="student_adm_no_evh">Loading...</span></p>
-                        <p><b>Student Class : </b><span id="student_class_evh">Loading...</span></p>
-                        <p><b>Current Fees : </b><span id="current_fees_evh">Loading...</span></p>
-                        <input type="hidden" id="student_index_evh" value="0">
-                        <input type="hidden" name="course_level_value_holder" id="course_level_value_holder" value="[]">
-                        <button type="button" id="reset_student_voteheads"><i class="fas fa-undo-alt"></i> Reset to default</button>
-                    </div>
-                    <hr class="mx-auto">
-                    <div class="form-group my-2">
-                        <div id="all_voteheads">
-                            <p>Voteheads will appear here!</p>
+                <div class="vh_body">
+                    <!-- who the settings are for -->
+                    <div class="vh_student">
+                        <div class="vh_student_main">
+                            <span class="vh_avatar"><i class="fas fa-user-graduate"></i></span>
+                            <div>
+                                <b id="student_name_evh">Loading...</b>
+                                <div class="vh_chips">
+                                    <span class="vh_chip"><i class="fas fa-id-badge"></i> <span id="student_adm_no_evh">Loading...</span></span>
+                                    <span class="vh_chip"><i class="fas fa-layer-group"></i> <span id="student_class_evh">Loading...</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vh_fees">
+                            <span>Current fee balance</span>
+                            <b id="current_fees_evh">Loading...</b>
                         </div>
                     </div>
-                    <div class="container" id="error_handler_evh"></div>
+                    <input type="hidden" id="student_index_evh" value="0">
+                    <input type="hidden" name="course_level_value_holder" id="course_level_value_holder" value="[]">
+                    <div class="instructions vh_hint">
+                        <p><strong>Hint:</strong></p>
+                        <ul>
+                            <li>Tick a votehead in a module's column for the student to pay it in that module. The box at the start of a row ticks or clears the whole row.</li>
+                            <li>A provisional votehead you tick becomes compulsory for the student.</li>
+                            <li>The transport votehead stays compulsory while the student is enrolled in transport.</li>
+                            <li>The settings apply to the student's active course, and decide how much they pay.</li>
+                        </ul>
+                    </div>
+                    <div id="all_voteheads" class="vh_table">
+                        <p>Voteheads will appear here!</p>
+                    </div>
+                    <div id="error_handler_evh"></div>
+                    <!-- confirmation before the reset, since it removes the custom selections -->
+                    <div class="vh_confirm hide" id="reset_evh_confirm">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Reset this student's voteheads to the course defaults? Any custom selections will be removed.</p>
+                        <button type="button" class="vh_btn_ghost" id="cancel_reset_evh">Cancel</button>
+                        <button type="button" class="vh_btn_danger" id="confirm_reset_evh"><i class="fas fa-undo-alt"></i> Yes, reset</button>
+                    </div>
                 </div>
-                <div class="btns">
-                    <button type="button" id='save_changed_evh'><i class="fas fa-save"></i> Save Votehead Changes</button>
-                    <button class="btn btn-sm btn-outline-success" id="reset_vhs" type='button'><i class="fa fa-retweet"></i> Restore</button>
-                    <button type="button" id="close_student_fees_evh"><i class="fas fa-times"></i> Close</button>
+                <div class="vh_foot">
+                    <button type="button" class="vh_btn_danger_ghost" id="reset_student_voteheads"><i class="fas fa-undo-alt"></i> Reset to default</button>
+                    <button type="button" class="vh_btn_ghost" id="reset_vhs" title="Reload the saved settings and discard unsaved ticks"><i class="fa fa-retweet"></i> Undo changes</button>
+                    <span class="vh_spacer"></span>
+                    <button type="button" class="vh_btn_ghost" id="close_student_fees_evh">Close</button>
+                    <button type="button" class="vh_btn" id='save_changed_evh'><i class="fas fa-save"></i> Save Votehead Changes</button>
                 </div>
             </div>
         </div>
