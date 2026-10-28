@@ -121,7 +121,7 @@ function checkPresnt($array, $string){
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="shortcut icon" href="images/ladybird_white.png" type="image/x-icon">
-    <link rel="stylesheet" href="assets/CSS/mainpage.css">
+    <link rel="stylesheet" href="assets/CSS/mainpage.css?v=<?php echo filemtime(__DIR__ . '/assets/CSS/mainpage.css'); ?>">
     <link rel="stylesheet" href="assets/CSS/homepage2.css">
     <link rel="stylesheet" href="assets/CSS/font-awesome/css/all.css">
     <!-- GOOGLE FONTS -->
@@ -5050,7 +5050,8 @@ function checkPresnt($array, $string){
     <script src="assets/JS/transport.js"></script>
     <script src="assets/JS/academics.js"></script>
     <script src="assets/JS/boarding.js"></script>
-    <script src="assets/JS/sms.js"></script>
+    <script src="assets/JS/sms.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/sms.js'); ?>"></script>
+    <script src="assets/JS/tagSuggest.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/tagSuggest.js'); ?>"></script>
     <script src="assets/JS/groups.js"></script>
     <script src="assets/JS/charged_accounts.js"></script>
     <script src="assets/JS/action_logs.js"></script>
