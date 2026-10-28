@@ -3489,3 +3489,457 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 #idle_lock_window #idle_lock_logout:hover{
     background: #eef8f8 !important;
 }
+
+/* Message tag chips (message templates, Broadcast, report card comments and
+   email). Each chip keeps the id/class its click handler already uses. */
+.msg_tags{
+    background: #fff;
+    border: 1px solid #d7e9ea;
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 2px 8px rgba(3,131,135,0.06);
+}
+.msg_tags_head{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(3, 131, 135);
+}
+.msg_tags_hint{
+    font-size: 12px;
+    color: #6b7b7c;
+    margin: 4px 0 0;
+}
+.msg_tags_group{
+    margin-top: 12px;
+}
+.msg_tags_group_title{
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #7a8b8c;
+    margin-bottom: 6px;
+}
+.msg_tags_list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.msg_tag{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f3f9f9;
+    border: 1px solid #d7e9ea;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-style: normal;
+    color: #2b3a3b;
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.msg_tag code{
+    font-size: 11px;
+    color: rgb(3, 131, 135);
+    background: none;
+    padding: 0;
+}
+.msg_tag .fa-plus{
+    font-size: 9px;
+    color: #9fb4b5;
+}
+.msg_tag:hover{
+    background: rgb(3, 131, 135);
+    border-color: rgb(3, 131, 135);
+    color: #fff;
+}
+.msg_tag:hover code,
+.msg_tag:hover .fa-plus{
+    color: #fff;
+}
+.msg_tag_compact{
+    padding: 3px 9px;
+}
+.msg_tags_inline{
+    margin: 6px 0 10px;
+}
+.msg_tags_inline_title{
+    font-size: 12px;
+    color: #6b7b7c;
+    margin-bottom: 6px;
+}
+
+/* Tag suggestions that open when "/" is typed in a message box
+   (assets/JS/tagSuggest.js). Positioned at the caret. */
+.tag_suggest{
+    position: fixed;
+    z-index: 10000;
+    width: 330px;
+    max-width: calc(100vw - 16px);
+    max-height: 290px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #d7e9ea;
+    border-radius: 10px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+    padding: 4px;
+    font-size: 13px;
+}
+.tag_suggest.hide{
+    display: none;
+}
+.tag_suggest_head{
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    padding: 5px 8px 6px;
+    border-bottom: 1px solid #eef3f3;
+    margin-bottom: 3px;
+}
+.tag_suggest_head span{
+    font-weight: 400;
+    color: #8a9a9b;
+    float: right;
+}
+.tag_suggest_item{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "label group" "code code";
+    gap: 1px 8px;
+    padding: 6px 9px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+.tag_suggest_item.is_active,
+.tag_suggest_item:hover{
+    background: #e7f4f4;
+}
+.tag_suggest_label{
+    grid-area: label;
+    font-weight: 600;
+    color: #1f2d2e;
+}
+.tag_suggest_group{
+    grid-area: group;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #8a9a9b;
+    align-self: center;
+}
+.tag_suggest_item code{
+    grid-area: code;
+    font-size: 11px;
+    color: rgb(3, 131, 135);
+    background: none;
+    padding: 0;
+}
+
+/* Collapsible tag panels and the "/" tip under message boxes
+   (assets/JS/tagSuggest.js). */
+.msg_tags_head{
+    flex-wrap: wrap;
+}
+.msg_tags_summary{
+    font-size: 12px;
+    font-weight: 400;
+    color: #6b7b7c;
+}
+.msg_tags_toggle{
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border-radius: 20px;
+    padding: 3px 11px;
+    cursor: pointer;
+    user-select: none;
+}
+.msg_tags_toggle:hover,
+.msg_tags_toggle:focus{
+    background: rgb(3, 131, 135);
+    color: #fff;
+    outline: none;
+}
+.msg_tags.is_collapsed{
+    padding-top: 9px;
+    padding-bottom: 9px;
+}
+.msg_tags.is_collapsed .msg_tags_body{
+    display: none;
+}
+.msg_tags kbd,
+.tag_hint kbd{
+    font-size: 11px;
+    font-weight: 700;
+    color: rgb(3, 131, 135);
+    background: #fff;
+    border: 1px solid #c9dfe0;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 0 5px;
+    box-shadow: none;
+}
+.tag_hint{
+    font-size: 12px;
+    color: #6b7b7c;
+    margin: 5px 0 0;
+}
+.tag_hint.hide{
+    display: none;
+}
+.tag_hint code{
+    font-size: 11px;
+    color: rgb(3, 131, 135);
+    background: #f3f9f9;
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+.tag_hint .fa-arrow-right{
+    font-size: 9px;
+    color: #9fb4b5;
+}
+
+/* Message Templates: SMS / Email channel switch. Each channel has its own
+   colour (SMS teal, Email indigo), used by its card, its banner and the
+   headers of the templates under it, so it is clear which kind is being set. */
+.tmpl_channel_switch{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 10px 4px 6px;
+    padding: 0;
+}
+.tmpl_channel{
+    --channel: rgb(3, 131, 135);
+    --channel_soft: #e7f4f4;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    background: #fff;
+    border: 2px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: #3d4a4e;
+    cursor: pointer;
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.tmpl_channel_email{
+    --channel: #5b5fc7;
+    --channel_soft: #eeeffb;
+}
+.tmpl_channel:hover{
+    border-color: var(--channel);
+}
+.tmpl_channel.active{
+    border-color: var(--channel);
+    background: var(--channel_soft);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.tmpl_channel_icon{
+    flex: 0 0 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    background: var(--channel_soft);
+    color: var(--channel);
+}
+.tmpl_channel.active .tmpl_channel_icon{
+    background: var(--channel);
+    color: #fff;
+}
+.tmpl_channel_text{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.tmpl_channel_text b{
+    font-size: 15px;
+    color: #1f2d2e;
+}
+.tmpl_channel_text small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+.tmpl_channel_count{
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--channel);
+    background: #fff;
+    border: 1px solid var(--channel);
+    border-radius: 20px;
+    padding: 2px 9px;
+}
+.tmpl_channel_count:empty{
+    display: none;
+}
+.tmpl_channel_tick{
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 18px;
+    color: var(--channel);
+    background: #fff;
+    border-radius: 50%;
+    display: none;
+}
+.tmpl_channel.active .tmpl_channel_tick{
+    display: block;
+}
+.tmpl_channel_banner{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-radius: 10px;
+    padding: 11px 14px;
+    margin: 4px 0 10px;
+    color: #fff;
+}
+.tmpl_channel_banner > i{
+    font-size: 20px;
+    margin-top: 2px;
+}
+.tmpl_channel_banner b{
+    display: block;
+    font-size: 14px;
+}
+.tmpl_channel_banner span{
+    font-size: 12px;
+    opacity: 0.92;
+}
+.tmpl_channel_banner_sms{
+    background: linear-gradient(135deg, rgb(3, 131, 135), rgb(24, 158, 163));
+}
+.tmpl_channel_banner_email{
+    background: linear-gradient(135deg, #5b5fc7, #7478d8);
+}
+#sms_templates_tab .setting_s > .bg-secondary,
+#email_templates_tab .setting_s > .bg-secondary{
+    background: rgb(3, 131, 135) !important;
+}
+#email_templates_tab .setting_s > .bg-secondary{
+    background: #5b5fc7 !important;
+}
+#sms_templates_tab .setting_s > .bg-secondary p::before,
+#email_templates_tab .setting_s > .bg-secondary p::before{
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 7px;
+}
+#sms_templates_tab .setting_s > .bg-secondary p::before{
+    content: "\f7cd";
+}
+#email_templates_tab .setting_s > .bg-secondary p::before{
+    content: "\f0e0";
+}
+@media screen and (max-width: 550px){
+    .tmpl_channel_switch{
+        grid-template-columns: 1fr;
+    }
+}
+/* The frame around the channel cards and the templates under them, so the
+   cards read as the header of the area they switch. */
+.tmpl_channel_area{
+    background: #fff;
+    border: 1px solid #b9d3d4;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(3,131,135,0.06);
+    margin: 10px 4px;
+    overflow: hidden;
+}
+.tmpl_channel_area .tmpl_channel_switch{
+    margin: 0;
+    padding: 14px;
+    background: #f8fafb;
+    border-bottom: 1px solid #e3e7ea;
+}
+.tmpl_channel_area > .tab-content{
+    padding: 6px 8px 8px;
+}
+/* The channel cards are <button>s for the Bootstrap tabs, so they need to
+   win over the app-wide button style above (teal gradient, !important). */
+#templateChannelTab button.tmpl_channel{
+    background: #fff !important;
+    color: #3d4a4e !important;
+    border: 2px solid #e3e7ea !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    letter-spacing: normal;
+    box-shadow: none !important;
+    padding: 12px 14px;
+    transform: none !important;
+}
+#templateChannelTab button.tmpl_channel:hover{
+    border-color: var(--channel) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+#templateChannelTab button.tmpl_channel.active{
+    background: var(--channel_soft) !important;
+    border-color: var(--channel) !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08) !important;
+}
+#templateChannelTab .tmpl_channel .tmpl_channel_tick{
+    display: none;
+}
+#templateChannelTab .tmpl_channel.active .tmpl_channel_tick{
+    display: block;
+}
+
+/* Quill editor toolbars (email templates, Broadcast email, report card email).
+   Their buttons are <button>s, so without this the app-wide button style turns
+   each one into a large teal block. The :not() chain matches that rule's so
+   this one is more specific. */
+.ql-toolbar.ql-snow button:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *){
+    background: none !important;
+    border: none !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    transform: none !important;
+    width: 28px;
+    min-width: 0 !important;
+    height: 26px;
+    padding: 3px 5px !important;
+    margin: 0 1px !important;
+}
+.ql-toolbar.ql-snow button:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *):hover,
+.ql-toolbar.ql-snow button.ql-active:not(.disabled):not(.left_dash *):not(.sidebars *):not(.administrationwindow *){
+    background: #e7f4f4 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+.ql-toolbar.ql-snow button:hover .ql-stroke,
+.ql-toolbar.ql-snow button.ql-active .ql-stroke{
+    stroke: rgb(3, 131, 135);
+}
+.ql-toolbar.ql-snow button:hover .ql-fill,
+.ql-toolbar.ql-snow button.ql-active .ql-fill{
+    fill: rgb(3, 131, 135);
+}
+.ql-toolbar.ql-snow{
+    border-radius: 8px 8px 0 0;
+    background: #f8fafb;
+}
+/* Quill sizes its text area to 100% of the column, which pushes it past the
+   Save button below. Let it grow with its content from its own min-height. */
+.ql-container.ql-snow{
+    height: auto;
+    border-radius: 0 0 8px 8px;
+}
+.ql-container.ql-snow .ql-editor{
+    min-height: inherit;
+}

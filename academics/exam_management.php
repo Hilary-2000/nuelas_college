@@ -111,15 +111,19 @@
                         <div class="slides p-2 hide">
                             <h6 class="text-center">Step 5: Directors comment</h6>
                             <div class="form-group">
-                                <div class="instructions"><strong>Hint:</strong><br>Directors comment will appear on every students report card. <br> You can include tags to make the comments more specific to the students <br>Leave Blank to exclude the directors comment<br>
-                                    <b><u>Tags Include</u></b>
-                                    <ul>
-                                        <li>{fullname} : Display the students fullname.</li>
-                                        <li>{firstname} : Display the students first name.</li>
-                                        <li>{noun1} : Display the students noun. <small>If they are <b>male</b> they will be reffered to as <b>son</b></small></li>
-                                        <li>{noun2} : Display the students noun. <small>If they are <b>male</b> they will be reffered to as <b>boy</b></small></li>
-                                    </ul>
-                                    <b class="text-danger"><u>Include the curly braces("{}") when including tags and check on the preview how the comments are going to appear.</u></b>
+                                <div class="instructions"><strong>Hint:</strong><br>Directors comment will appear on every students report card. <br> You can include tags to make the comments more specific to the students <br>Leave Blank to exclude the directors comment</div>
+                                <div class="msg_tags my-2" data-scope="students_commentators">
+                                    <div class="msg_tags_head"><i class="fas fa-tags"></i> Tags</div>
+                                    <p class="msg_tags_hint">Tags are filled in with each student's details on the report card. Click a tag to insert it into the comment box you last clicked into, or type <b>/</b> in a comment box to search them, and check the preview before generating.</p>
+                                    <div class="msg_tags_group">
+                                        <div class="msg_tags_group_title">Student</div>
+                                        <div class="msg_tags_list">
+                                            <span class="msg_tag" data-tag="{fullname}" title="The student's full name. Click to insert {fullname}">Full name <code>{fullname}</code> <i class="fas fa-plus"></i></span>
+                                            <span class="msg_tag" data-tag="{firstname}" title="The student's first name. Click to insert {firstname}">First name <code>{firstname}</code> <i class="fas fa-plus"></i></span>
+                                            <span class="msg_tag" data-tag="{noun1}" title="son or daughter. Click to insert {noun1}">Son / daughter <code>{noun1}</code> <i class="fas fa-plus"></i></span>
+                                            <span class="msg_tag" data-tag="{noun2}" title="boy or girl. Click to insert {noun2}">Boy / girl <code>{noun2}</code> <i class="fas fa-plus"></i></span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- decide how you may want the comments to be written -->
                                 <!-- it can be written in bulk or individually -->
@@ -296,18 +300,22 @@
                                     <input type="text" class="form-control" placeholder="E-mail Subject" value="<?php echo 'Student Exam Report Card'?>" name="email_subject_exams_report" id="email_subject_exams_report">
 
                                     
-                                    <div class="instructions"><strong>Hint:</strong><br>Compose email message below that will accompany the report card attachment. <br> Include tags to make the message more personalised to the parents <br>Leave Blank to exclude the message<br>
-                                        <b><u>Tags Include</u></b>
-                                        <ul>
-                                            <li>{fullname} : Display the students fullname.</li>
-                                            <li>{firstname} : Display the students first name.</li>
-                                            <li>{noun1} : Display the students noun. <small>If they are <b>male</b> they will be reffered to as <b>son</b></small></li>
-                                            <li>{noun2} : Display the students noun. <small>If they are <b>male</b> they will be reffered to as <b>boy</b></small></li>
-                                            <li>{noun3} : Display the students noun. <small>If they are <b>male</b> they will be reffered to as <b>his</b></small></li>
-                                            <li>{class} : Display the students class.</li>
-                                            <li>{adm_no} : Display the students admission no.</li>
-                                        </ul>
-                                        <b class="text-danger"><u>Include the curly braces("{}") when including tags and check on the preview how the messages are going to appear.</u></b>
+                                    <div class="instructions"><strong>Hint:</strong><br>Compose email message below that will accompany the report card attachment. <br> Include tags to make the message more personalised to the parents <br>Leave Blank to exclude the message</div>
+                                    <div class="msg_tags my-2" data-boxes="email_contents_exam_reports">
+                                        <div class="msg_tags_head"><i class="fas fa-tags"></i> Tags</div>
+                                        <p class="msg_tags_hint">Tags are filled in with each student's details when the email is sent. Click a tag to insert it into the email, or type <b>/</b> in the email to search them, and check the preview before sending.</p>
+                                        <div class="msg_tags_group">
+                                            <div class="msg_tags_group_title">Student</div>
+                                            <div class="msg_tags_list">
+                                                <span class="msg_tag" data-tag="{fullname}" title="The student's full name. Click to insert {fullname}">Full name <code>{fullname}</code> <i class="fas fa-plus"></i></span>
+                                                <span class="msg_tag" data-tag="{firstname}" title="The student's first name. Click to insert {firstname}">First name <code>{firstname}</code> <i class="fas fa-plus"></i></span>
+                                                <span class="msg_tag" data-tag="{noun1}" title="son or daughter. Click to insert {noun1}">Son / daughter <code>{noun1}</code> <i class="fas fa-plus"></i></span>
+                                                <span class="msg_tag" data-tag="{noun2}" title="boy or girl. Click to insert {noun2}">Boy / girl <code>{noun2}</code> <i class="fas fa-plus"></i></span>
+                                                <span class="msg_tag" data-tag="{noun3}" title="his or her. Click to insert {noun3}">His / her <code>{noun3}</code> <i class="fas fa-plus"></i></span>
+                                                <span class="msg_tag" data-tag="{class}" title="The student's class. Click to insert {class}">Class <code>{class}</code> <i class="fas fa-plus"></i></span>
+                                                <span class="msg_tag" data-tag="{adm_no}" title="The student's admission number. Click to insert {adm_no}">Admission no. <code>{adm_no}</code> <i class="fas fa-plus"></i></span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-9">
