@@ -7,7 +7,10 @@
     <meta name="description" content="The number one online School information system that provides solutions to 100s of schools and makes them go digital">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ladybird SMIS</title>
-    <link rel="shortcut icon" href="images/ladybird.png" type="image/x-icon">
+    <link rel="icon" href="images/brand/favicon.ico" sizes="48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/brand/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/brand/favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/brand/apple-touch-icon.png">
     <link rel="stylesheet" href="mainpage.css">
     <link rel="stylesheet" href="/sims/assets/CSS/font-awesome/css/all.css">
 </head>
