@@ -6,13 +6,13 @@ date_default_timezone_set('Africa/Nairobi');
 function allowed($id){
     $auth = $_SESSION['auth'];
     if ($auth == 0) {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "action_logs_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "message_templates", "update_school_profile", "update_personal_profile", "settings", "general_reports", "action_logs_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "1") {
-        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "update_school_profile", "update_personal_profile", "settings", "general_reports", "action_logs_btn"];
+        $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff", "pay_fees", "find_transaction", "mpesa_transactions", "fees_structure", "supplier_account", "payroll", "leave_mgmt", "expenses", "asset_management", "finance_report", "manage_groups", "manage_charged_accounts", "apply_leave_menu", "payroll_advance", "sms_broadcast", "message_templates", "update_school_profile", "update_personal_profile", "settings", "general_reports", "action_logs_btn"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "2") {
-        $allowed = ["sms_broadcast","update_personal_profile","general_reports", "action_logs_btn", "apply_leave_menu", "payroll_advance"];
+        $allowed = ["sms_broadcast","message_templates","update_personal_profile","general_reports", "action_logs_btn", "apply_leave_menu", "payroll_advance"];
         return checkPresnt($allowed,$id) ? "" : "d-none";
     } else if ($auth == "3") {
         $allowed = ["admit_student", "callregister", "manage_student", "register_staff", "manage_staff","update_school_profile", "update_personal_profile", "general_reports", "action_logs_btn", "apply_leave_menu", "payroll_advance"];
@@ -497,6 +497,7 @@ function checkPresnt($array, $string){
                 <div class="contsd">
                     <div class="contsc">
                         <button type='button' class="sidebtns <?php echo allowed("sms_broadcast"); ?> htbtn" id='sms_broadcast'><span><img class="icons" src="images/broadcast.png"></span>Broadcast Message</button>
+                        <button type='button' class="sidebtns <?php echo allowed("message_templates"); ?> htbtn" id='message_templates_menu'><span><i class="fas fa-file-alt"></i></span>Message Templates</button>
                     </div>
                 </div>
             </div>
@@ -1284,6 +1285,10 @@ function checkPresnt($array, $string){
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='sms_and_broadcast'>1. Broadcast Message</label>
                             <input class='sms_broadcasted' type='checkbox' name='sms_and_broadcast' id='sms_and_broadcast'>
                         </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='message_templates_sect'>2. Message Templates</label>
+                            <input class='sms_broadcasted' type='checkbox' name='message_templates_sect' id='message_templates_sect'>
+                        </div>
                         <hr>
                         <!-- staft of sms section -->
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
@@ -1437,6 +1442,10 @@ function checkPresnt($array, $string){
                         <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
                             <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='sms_and_broadcast2'>1. Broadcast Message</label>
                             <input class='fill_data sms_broadcasted2' type='checkbox' name='sms_and_broadcast2' id='sms_and_broadcast2'>
+                        </div>
+                        <div class='checkboxholder' style='margin:10px 0;padding:0px 0px;'>
+                            <label style='margin-right:5px;cursor:pointer;font-size:13px;' for='message_templates_sect2'>2. Message Templates</label>
+                            <input class='fill_data sms_broadcasted2' type='checkbox' name='message_templates_sect2' id='message_templates_sect2'>
                         </div>
                         <hr>
                         <!-- staft of sms section -->
