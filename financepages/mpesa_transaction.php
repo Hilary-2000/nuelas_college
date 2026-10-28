@@ -103,57 +103,74 @@
                     </div>
                 </div>
             </div>
-            <!-- the assigne fees window -->
-            <div class="hide" id="payment_information">
-                <!-- display the payment information -->
-                <div class="back mt-2">
-                    <p class="link" id="goback_link" style="text-align: left;"><i class="fas fa-arrow-left"></i> Go back</p>
+            <!-- the assign fees window -->
+            <div class="container hide" id="payment_information">
+                <div class="mt-2">
+                    <p class="link" id="goback_link" style="text-align:left;font-weight:600;"><i class="fas fa-arrow-left"></i> Go back</p>
                 </div>
-                <div class="section_card">
-                    <p class="card_heading">Assign Transaction</p>
-                    <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="text-primary">Transaction information</h6>
+
+                <!-- Transaction summary -->
+                <div class="section_card my-3 mx-auto" style="max-width:760px;">
+                    <p class="sections"><i class="fas fa-mobile-alt"></i> Assign M-Pesa Transaction</p>
+                    <div>
                         <p class="hide" id="output_mpesa_transactions"></p>
-                        <p>
-                            <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Payment Id: </strong><span id="payment_id">PHJHJHGHJH</span></span><br>
-                            <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Transaction Id: </strong><span id="mpesa_id">PHJHJHGHJH</span></span><br>
-                            <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Transaction Amount: </strong> Kes <span id="assign_payment_amount_paid">1000,</span></span><br>
-                            <input type="hidden" name="" id="mpesa_payment_amount_holder" value="0">
-                            <span class="text-danger text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Wrong Student Id: </strong><span id="wrong_adm">12</span></span><br>
-                            <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Date of transaction: </strong><span id="trans_time"> 12th Aug 2022 10:00:00</span></span><br>
-                            <span class="text-dark text-uppercase text-xxs"><strong> <i class="fas fa-check"></i> Payer Name: </strong><span id="payer_name">ADALA HILLARY NGIGE</span></span><br>
-                            <span class="text-dark text-uppercase text-xxs d-none"><strong> <i class="fas fa-check"></i> MSISDN: </strong><span id="msisdn">254743551250</span></span><br>
-                        </p>
-                    </div>
-                    <div class="col-md-6">
-                        <h6 class="text-primary">Find Student</h6>
-                        <div class="form-group float-right" style="width: fit-content;">
-                            <label for="stud_admission_no" class="form-control-label">Enter student admission to associate with the payment:</label>
-                            <div class="form-group">
-                                <div class="autocomplete">
-                                    <input type="text" name="stud_admission_no" id="stud_admission_no" class="" placeholder="Admission No">
-                                </div>
-                                <button class="btn btn-primary btn-sm" id="find_student_assign"><i class="fas fa-search"></i> Search</button>
+                        <input type="hidden" name="" id="mpesa_payment_amount_holder" value="0">
+                        <span class="d-none" id="msisdn"></span>
+                        <div class="row m-0" style="row-gap:14px;">
+                            <div class="col-6 col-md-4">
+                                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;"><i class="fas fa-hashtag"></i> Payment Id</div>
+                                <div style="font-size:14px;font-weight:700;color:#333;" id="payment_id">...</div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;"><i class="fas fa-receipt"></i> Transaction Id</div>
+                                <div style="font-size:14px;font-weight:700;color:#333;" id="mpesa_id">...</div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;"><i class="fas fa-money-bill-wave"></i> Amount</div>
+                                <div style="font-size:16px;font-weight:700;color:#28a745;">Kes <span id="assign_payment_amount_paid">...</span></div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;"><i class="fas fa-exclamation-triangle"></i> Wrong Student Id</div>
+                                <div><span style="display:inline-block;background:#fdecea;color:#c0392b;font-weight:700;font-size:13px;padding:3px 10px;border-radius:5px;" id="wrong_adm">...</span></div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;"><i class="fas fa-clock"></i> Date of Transaction</div>
+                                <div style="font-size:13px;font-weight:700;color:#333;" id="trans_time">...</div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.4px;"><i class="fas fa-user"></i> Payer Name</div>
+                                <div style="font-size:14px;font-weight:700;color:#333;" id="payer_name">...</div>
                             </div>
                         </div>
                     </div>
-                    </div>
                 </div>
-                <div class="section_card hide" id="result_holder">
-                    <p class="card_heading">Assign to Student</p>
-                    <div id="student_results">
-                    </div>
-                    <div class="conts my-2">
-                        <label for="payment_for_option" class="form-control-label"><b>Select what the payment is for</b></label>
-                        <p id="payments_options"></p>
-                    </div>
-                    <div class="button">
-                        <div class="bg-white p-1">
-                            <p class="text-bolder">By clicking Assign Payment you are confirming transfer of MPESA ID: <strong id="mpesa_idds">PHJHJHBHN</strong> of Ksh <strong id="amount_to_transfer">1000</strong> to <strong id="stud_name">Student name</strong>.</p>
+
+                <!-- Find the student and assign -->
+                <div id="mpesa_student_assign_window" class="section_card mx-auto" style="max-width:760px;">
+                    <p class="sections"><i class="fas fa-user-graduate"></i> Assign to Student</p>
+                    <div class="form-group" style="max-width:400px;">
+                        <label for="stud_admission_no" class="form-control-label"><b>Enter student admission number</b></label>
+                        <div class="d-flex" style="gap:6px;">
+                            <div class="autocomplete" style="flex:1;">
+                                <input type="text" name="stud_admission_no" id="stud_admission_no" class="form-control w-100" placeholder="Admission No">
+                            </div>
+                            <button class="btn btn-primary btn-sm" id="find_student_assign"><i class="fas fa-search"></i> Search</button>
                         </div>
-                        <button class="btn btn-primary " id="assigne_payment_btn"><i class="fas fa-check"></i> Assign Payment</button>
-                        <p id="error_handled"></p>
+                    </div>
+                    <hr>
+                    <div class="my-2 hide" id="result_holder">
+                        <div class="container-fluid" id="student_results"></div>
+                        <div class="conts my-2">
+                            <label class="form-control-label"><b>Select what the payment is for</b></label>
+                            <p id="payments_options"></p>
+                        </div>
+                        <div class="button">
+                            <div style="background:#e3f2fd;border-left:4px solid #1565c0;border-radius:6px;padding:10px 14px;margin-bottom:10px;">
+                                <p class="m-0" style="font-size:13px;color:#333;"><i class="fas fa-info-circle"></i> By clicking Assign Payment you are confirming transfer of MPESA ID: <strong id="mpesa_idds">...</strong> of Ksh <strong id="amount_to_transfer">...</strong> to <strong id="stud_name">...</strong>.</p>
+                            </div>
+                            <button class="btn btn-primary" id="assigne_payment_btn"><i class="fas fa-link"></i> Assign Payment</button>
+                            <p id="error_handled"></p>
+                        </div>
                     </div>
                 </div>
             </div>
