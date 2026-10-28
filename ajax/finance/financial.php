@@ -1948,7 +1948,7 @@
                     // echo $data_to_display;
                     echo $json_2;
                 }else {
-                    echo "<p class='green_notice' style='text-align:center;'>No expenses recorded today!</p>";
+                    echo "";
                 }
 
 
@@ -1963,32 +1963,32 @@
                 $result = $stmt->get_result();
                 if ($result) {
                     $xs = 0;
-                    $data_to_display = "<div class='modepayChartHolder' style='width:400px;height:400px;margin:auto;'><canvas id='expense-charted-in' width = '200px' height='200px'></canvas></div><h5 style='text-align:center;' id='title-charts2'>Expenses Categories</h5><table  class='table'>
-                                        <tr>
-                                            <th>No.</th>
+                    $data_to_display = "<div class='ex_cat_grid'><div class='modepayChartHolder ex_chart'><canvas id='expense-charted-in' width = '200px' height='200px'></canvas></div><div><h5 class='hide' id='title-charts2'>Expenses Categories</h5><table class='table ex_table'>
+                                        <thead><tr>
+                                            <th>#</th>
                                             <th>Expense Category</th>
-                                            <th>Amount</th>
-                                            <th>Record(s)</th>
-                                        </tr>";
+                                            <th class='text-end'>Amount</th>
+                                            <th class='text-end'>Records</th>
+                                        </tr></thead><tbody>";
                                         $myjson = "{";
                     while ($row = $result->fetch_assoc()) {
                         $xs++;
                         $expense_name = get_expense($row['exp_category'],$conn2);
                         $data_to_display.="<tr>
-                                            <td>".$xs." .</td>
-                                            <td>".($expense_name != null ? $expense_name['expense_name'] : $row['exp_category'])."</td>
-                                            <td>Kes ".comma($row['Total'])."</td>
-                                            <td>".$row['Record']."</td>
+                                            <td>".$xs."</td>
+                                            <td>".htmlspecialchars($expense_name != null ? $expense_name['expense_name'] : $row['exp_category'], ENT_QUOTES)."</td>
+                                            <td class='text-end'><b>Kes ".comma($row['Total'])."</b></td>
+                                            <td class='text-end'>".$row['Record']."</td>
                                         </tr>";
                         $myjson.="\"".($expense_name != null ? $expense_name['expense_name'] : $row['exp_category'])."\":\"".trim($row['Total'])."\",";
                     }
                     $myjson = substr($myjson,0,strlen($myjson)-1);
                     $myjson.="}";
-                    $data_to_display.="</table><p class='hide' id='table_values2'>$myjson</p>";
+                    $data_to_display.="</tbody></table></div></div><p class='hide' id='table_values2'>$myjson</p>";
                     if ($xs > 0) {
                         echo $data_to_display;
                     }else {
-                        echo "<p class='red_notice'>No records found for ".date("M - Y",strtotime($startdate))." !</p>";
+                        echo "<p class='ex_hint'><i class='fas fa-inbox'></i> No approved or pending expenses to group by category yet.</p>";
                     }
                 }
             }

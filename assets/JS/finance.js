@@ -1658,19 +1658,11 @@ function displayTodaysExpense() {
                 if (cObj("expenses_data_json") != undefined) {
                     var expenses_data_json = cObj("expenses_data_json").innerText;
                     if (expenses_data_json.length > 0) {
-                        if (expenses_data_json.length > 5) {
-                            var expense_data = expenses_data_json.length > 0 ? JSON.parse(expenses_data_json) : [];
-                            // console.log(expense_data);
-                            getExpensesNDisplay(expense_data);
-                            // create the table
-                            cObj("search_option_expenses").classList.remove("d-none");
-                            cObj("tablefooter_expenses").classList.remove("invisible");
-                        } else {
-                            cObj("search_option_expenses").classList.add("d-none");
-                            cObj("transDataReciever_expensess").innerHTML = "<p class='sm-text text-danger text-bold text-center'><span style='font-size:40px;'><i class='fas fa-exclamation-triangle'></i></span> <br>Ooops! No results found!</p>";
-                            cObj("tablefooter_expenses").classList.add("invisible");
-                        }
+                        // the DataTable (or the empty message) is built in expense.js
+                        getExpensesNDisplay(expenses_data_json.length > 5 && hasJsonStructure(expenses_data_json) ? JSON.parse(expenses_data_json) : []);
                     }
+                } else {
+                    getExpensesNDisplay([]);
                 }
                 stopInterval(ids);
             }
@@ -6364,44 +6356,64 @@ function display_payment_requests(){
     }, 200);
 }
 
+// Each request's data, by payment id. Rows on later pages of the DataTable are
+// not in the page, so View, Accept and Decline read from here.
+var paymentRequestsById = {};
+function paymentRequestRaw(id) {
+    return paymentRequestsById[id] ? JSON.stringify(paymentRequestsById[id]) : valObj("payment_request_" + id);
+}
+
 function display_all_payment_requests(data_to_display) {
     var data_in_display = "";
+    paymentRequestsById = {};
     if (data_to_display.length > 0) {
-        data_in_display = "<table id='payment_application_table' class='table'><thead><tr><th>No.</th><th>Payment for</th><th>Expense Categories</th><th>Expense Amount.</th><th>Date Paid</th><th>Document Number</th><th>Action</th></tr></thead><tbody>";
+        data_in_display = "<table id='payment_application_table' class='table ex_table'><thead><tr><th>#</th><th>Payment for</th><th>Expense Category</th><th class='text-end'>Amount</th><th>Date</th><th>Document No.</th><th>Action</th></tr></thead><tbody>";
         for (let index = 0; index < data_to_display.length; index++) {
             const element = data_to_display[index];
-            var flag = element.table_name == "running_expense" ? " <small class='badge bg-success' data-bs-toggle='tooltip' data-bs-placement='top' title='Running Expenses'>E</small>" : " <small class='badge bg-warning' data-bs-toggle='tooltip' data-bs-placement='top' title='Suppliers'>S</small>";
-            data_in_display+="<tr><td><input type='hidden' id='payment_request_"+element.payment_id+"' value='"+JSON.stringify(element)+"'>"+(index+1)+" "+flag+"</td><td>"+element.exp_name+"</td><td>"+element.exp_category+"</td><td>"+element.amount+"</td><td>"+element.date_paid+"</td><td>"+element.document_number+"</td><td><span style='font-size:12px;' class='link view_payment_requests' id='view_pay_req_"+element.payment_id+"'><i class='fa fa-eye'></i> View </span> <br> <span style='font-size:12px;' class='link accept_pay_request' id='accept_"+element.payment_id+"'><i class='fa fa-check'></i> Accept </span> <br> <span style='font-size:12px; color:red;' class='link decline_pay_request' id='decline_"+element.payment_id+"'><b>X</b> Decline </span></td></tr>";
+            paymentRequestsById[element.payment_id] = element;
+            var type = element.table_name == "running_expense" ? "<span class='ex_type'>Expense</span>" : "<span class='ex_type ex_type_supplier'>Supplier</span>";
+            var amount = (element.amount + "").replace(/[^0-9.]/g, "") * 1 || 0;
+            data_in_display += "<tr>" +
+                "<td>" + (index + 1) + "</td>" +
+                "<td><b class='ex_name'>" + escHtml(element.exp_name || "-") + "</b> " + type + "</td>" +
+                "<td>" + escHtml(element.exp_category || "-") + "</td>" +
+                "<td class='text-end' data-order='" + amount + "'><b>Kes " + amount.toLocaleString() + "</b></td>" +
+                "<td>" + escHtml(element.date_paid || "-") + "</td>" +
+                "<td>" + escHtml(element.document_number || "-") + "</td>" +
+                "<td><div class='ex_row_actions'>" +
+                "<span class='view_payment_requests ex_act' role='button' tabindex='0' id='view_pay_req_" + element.payment_id + "'><i class='fa fa-eye'></i> View</span>" +
+                "<span class='accept_pay_request ex_act ex_act_ok' role='button' tabindex='0' id='accept_" + element.payment_id + "'><i class='fa fa-check'></i> Accept</span>" +
+                "<span class='decline_pay_request ex_act ex_act_bad' role='button' tabindex='0' id='decline_" + element.payment_id + "'><i class='fa fa-times'></i> Decline</span>" +
+                "</div></td></tr>";
         }
-        data_in_display+="</tbody></table>";
-    }else{
-        data_in_display="<p class='text-danger'>No Payment requests data found!</p>";
+        data_in_display += "</tbody></table>";
+    } else {
+        data_in_display = "<div class='ex_empty'><span><i class='fas fa-check-circle'></i></span><div><b>No payment requests waiting</b><p>Every expense and supplier payment has been approved or declined.</p></div></div>";
     }
 
     // data to display
     cObj("payment_request_tables").innerHTML = data_in_display;
 
-    // add an event listener
-    var view_payment_requests = document.getElementsByClassName("view_payment_requests");
-    for (let index = 0; index < view_payment_requests.length; index++) {
-        const element = view_payment_requests[index];
-        element.addEventListener("click",view_payment_request);
-    }
-
-    var accept_pay_request = document.getElementsByClassName("accept_pay_request");
-    for (let index = 0; index < accept_pay_request.length; index++) {
-        const element = accept_pay_request[index];
-        element.addEventListener("click", accept_pay_requests);
-    }
-
-    var decline_pay_request = document.getElementsByClassName("decline_pay_request");
-    for (let index = 0; index < decline_pay_request.length; index++) {
-        const element = decline_pay_request[index];
-        element.addEventListener("click", decline_pay_requests);
+    // one listener on the holder covers every page of the table
+    var holder = cObj("payment_request_tables");
+    if (!holder._actionsWired) {
+        holder._actionsWired = true;
+        holder.addEventListener("click", function (e) {
+            var view = e.target.closest(".view_payment_requests");
+            var accept = e.target.closest(".accept_pay_request");
+            var decline = e.target.closest(".decline_pay_request");
+            if (view) view_payment_request.call(view);
+            else if (accept) accept_pay_requests.call(accept);
+            else if (decline) decline_pay_requests.call(decline);
+        });
     }
 
     if (cObj("payment_application_table") != undefined) {
-        $('#payment_application_table').DataTable();
+        $('#payment_application_table').DataTable({
+            order: [],
+            columnDefs: [{ orderable: false, targets: -1 }],
+            language: { search: "", searchPlaceholder: "Search requests..." }
+        });
     }
 
     // set tool tip
@@ -6413,8 +6425,8 @@ function view_payment_request() {
     cObj("view_payment_request").classList.remove("hide");
 
     // fill data
-    if (hasJsonStructure(valObj("payment_request_"+id))) {
-        var payment_request = JSON.parse(valObj("payment_request_"+id));
+    if (hasJsonStructure(paymentRequestRaw(id))) {
+        var payment_request = JSON.parse(paymentRequestRaw(id));
 
         // get the data 
         cObj("payment_request_name").value = payment_request.exp_name;
@@ -6496,9 +6508,9 @@ function accept_pay_requests() {
     var id = this.id.substr("accept_".length,this.id.length);
 
     // fill data
-    if (hasJsonStructure(valObj("payment_request_"+id))) {
+    if (hasJsonStructure(paymentRequestRaw(id))) {
         cObj("show_payment_req_confirmation").classList.remove("hide");
-        var payment_request = JSON.parse(valObj("payment_request_"+id));
+        var payment_request = JSON.parse(paymentRequestRaw(id));
 
         // get the data
         cObj("payment_request_id").value = payment_request.payment_id;
@@ -6510,9 +6522,9 @@ function decline_pay_requests() {
     var id = this.id.substr("decline_".length,this.id.length);
 
     // fill data
-    if (hasJsonStructure(valObj("payment_request_"+id))) {
+    if (hasJsonStructure(paymentRequestRaw(id))) {
         cObj("show_payment_decline_window").classList.remove("hide");
-        var payment_request = JSON.parse(valObj("payment_request_"+id));
+        var payment_request = JSON.parse(paymentRequestRaw(id));
 
         // get the data 
         cObj("payment_request_id_decline").value = payment_request.payment_id;
