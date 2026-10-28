@@ -4066,3 +4066,332 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 .ql-container.ql-snow .ql-editor{
     min-height: inherit;
 }
+
+/* Charged Accounts (financepages/charged_accounts.php). The Create Charge /
+   Charge History switch reuses the Message Templates channel cards; like
+   those, they are <button>s and need to win over the app-wide button style. */
+#chargedAccountsTab{
+    margin: 4px 0 14px;
+}
+#chargedAccountsTab button.tmpl_channel{
+    background: #fff !important;
+    color: #3d4a4e !important;
+    border: 2px solid #e3e7ea !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    letter-spacing: normal;
+    box-shadow: none !important;
+    padding: 12px 14px;
+    transform: none !important;
+}
+#chargedAccountsTab button.tmpl_channel:hover{
+    border-color: var(--channel) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+#chargedAccountsTab button.tmpl_channel.active{
+    background: var(--channel_soft) !important;
+    border-color: var(--channel) !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08) !important;
+}
+#chargedAccountsTab .tmpl_channel .tmpl_channel_tick{
+    display: none;
+}
+#chargedAccountsTab .tmpl_channel.active .tmpl_channel_tick{
+    display: block;
+}
+#charged_accounts_win .card_heading i{
+    margin-right: 4px;
+}
+.ca_step{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #1f2d2e;
+    margin: 6px 0 10px;
+}
+.ca_step span{
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.ca_targets{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.ca_target{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 2px solid #e3e7ea;
+    border-radius: 12px;
+    padding: 11px 14px;
+    cursor: pointer;
+    margin: 0;
+    transition: border-color .15s ease, background .15s ease;
+}
+.ca_target:hover{
+    border-color: rgb(3, 131, 135);
+}
+.ca_target input{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.ca_target_icon{
+    flex: 0 0 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+}
+.ca_target_text{
+    display: flex;
+    flex-direction: column;
+}
+.ca_target_text b{
+    font-size: 14px;
+    color: #1f2d2e;
+}
+.ca_target_text small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+.ca_target:has(input:checked){
+    border-color: rgb(3, 131, 135);
+    background: #e7f4f4;
+}
+.ca_target:has(input:checked) .ca_target_icon{
+    background: rgb(3, 131, 135);
+    color: #fff;
+}
+.ca_target:has(input:focus-visible){
+    box-shadow: 0 0 0 3px rgba(3,131,135,0.2);
+}
+.ca_target_panel{
+    background: #f8fafb;
+    border: 1px solid #e3e7ea;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+}
+.ca_add_row{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    max-width: 520px;
+}
+.ca_add_row .autocomplete{
+    flex: 1;
+}
+.ca_chips_title{
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7b7c;
+    margin-bottom: 6px;
+}
+.ca_chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.ca_chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #d7e9ea;
+    border-radius: 20px;
+    padding: 4px 6px 4px 11px;
+    font-size: 12px;
+    color: #2b3a3b;
+}
+.ca_chip > .fa-user{
+    font-size: 10px;
+    color: #9fb4b5;
+}
+.ca_chip code{
+    font-size: 11px;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border-radius: 10px;
+    padding: 1px 7px;
+}
+.ca_chip .remove_charge_admno_btn{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #8a9a9b;
+    cursor: pointer;
+}
+.ca_chip .remove_charge_admno_btn:hover,
+.ca_chip .remove_charge_admno_btn:focus{
+    background: #fdecea;
+    color: #c5221f;
+    outline: none;
+}
+.ca_amount{
+    display: flex;
+    align-items: stretch;
+}
+.ca_amount span{
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border: 1px solid #d7e9ea;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+}
+.ca_amount input{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+#charged_accounts_win #charge_admno_input,
+#charged_accounts_win #charge_group_select,
+#charged_accounts_win #charge_description,
+#charged_accounts_win #charge_period,
+#charged_accounts_win #charge_amount{
+    margin: 0 !important;
+}
+#charge_history_panel .dataTables_length label{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+#charge_history_panel .dataTables_length select{
+    width: auto !important;
+    min-width: 90px;
+    height: auto !important;
+    padding: 5px 10px !important;
+    white-space: nowrap;
+    margin: 0 !important;
+    /* flex keeps the app's select arrow beside the number (see homepage2.css) */
+    display: inline-flex !important;
+    align-items: center;
+}
+.ca_batch_modal .ca_batch_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eef3f3;
+    margin-bottom: 12px;
+}
+.ca_batch_head > div{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.ca_batch_head b{
+    font-size: 16px;
+    color: #1f2d2e;
+}
+.ca_batch_head small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+.ca_batch_head .funga{
+    position: static;
+    margin: 0;
+}
+.ca_batch_icon{
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    font-size: 17px;
+}
+.ca_batch_search{
+    position: relative;
+    margin-bottom: 10px;
+}
+.ca_batch_search > i{
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9fb4b5;
+    font-size: 12px;
+    z-index: 1;
+}
+.ca_batch_search input{
+    padding-left: 32px !important;
+    margin: 0 !important;
+}
+#batch_students_holder{
+    max-height: 55vh;
+    overflow-y: auto;
+}
+#batch_students_holder .list-group{
+    border: 1px solid #e3e7ea;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.ca_batch_row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    font-size: 13px;
+    border-left: none;
+    border-right: none;
+}
+.ca_batch_row:nth-child(even){
+    background: #f8fafb;
+}
+.ca_batch_no{
+    flex: 0 0 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #e7f4f4;
+    color: rgb(3, 131, 135);
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.ca_batch_name{
+    flex: 1;
+    color: #1f2d2e;
+}
+.ca_batch_row code{
+    font-size: 11px;
+    color: rgb(3, 131, 135);
+    background: #e7f4f4;
+    border-radius: 10px;
+    padding: 2px 8px;
+}
+@media screen and (max-width: 550px){
+    .ca_targets{
+        grid-template-columns: 1fr;
+    }
+}

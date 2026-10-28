@@ -102,7 +102,7 @@
                 $xs++;
                 $name = $row['first_name'] !== null ? ucwords(strtolower($row['first_name'] . " " . $row['second_name'] . " " . $row['surname'])) : "(student no longer on record)";
                 $search_key = strtolower($name . " " . $row['adm_no']);
-                $data .= "<li class='list-group-item batch_student_row' data-search='" . e($search_key) . "'>{$xs}. {$name} <small style='color:red;'>({$row['adm_no']})</small></li>";
+                $data .= "<li class='list-group-item batch_student_row ca_batch_row' data-search='" . e($search_key) . "'><span class='ca_batch_no'>{$xs}</span><span class='ca_batch_name'>" . e($name) . "</span><code>" . e($row['adm_no']) . "</code></li>";
             }
             $data .= "</ul>";
             if ($xs == 0) {
