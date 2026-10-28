@@ -120,7 +120,10 @@ function checkPresnt($array, $string){
                         } ?> </title>
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="shortcut icon" href="images/ladybird_white.png" type="image/x-icon">
+    <link rel="icon" href="images/brand/favicon.ico" sizes="48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/brand/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/brand/favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/brand/apple-touch-icon.png">
     <link rel="stylesheet" href="assets/CSS/mainpage.css?v=<?php echo filemtime(__DIR__ . '/assets/CSS/mainpage.css'); ?>">
     <link rel="stylesheet" href="assets/CSS/homepage2.css">
     <link rel="stylesheet" href="assets/CSS/font-awesome/css/all.css">

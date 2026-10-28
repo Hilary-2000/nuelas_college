@@ -11,7 +11,10 @@
     <meta content="Ladybird School Management System, Best Management System, SMIS, Ladybird SMIS, School management Systems in Kenya" name="keywords">
 
     <!-- Favicons -->
-    <link href="images/ladybird_white.png" rel="icon">
+    <link rel="icon" href="images/brand/favicon.ico" sizes="48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/brand/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/brand/favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/brand/apple-touch-icon.png">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->

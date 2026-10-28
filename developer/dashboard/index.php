@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/css/developer.css">
     <link rel="stylesheet" href="/sims/assets/CSS/font-awesome/css/all.css">
-    <link rel="shortcut icon" href="../../images/ladybird.png" type="image/x-icon">
+    <link rel="icon" href="../../images/brand/favicon.ico" sizes="48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../images/brand/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../../images/brand/favicon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../images/brand/apple-touch-icon.png">
     <title>Developer Dashboard</title>
 </head>
 <body>
