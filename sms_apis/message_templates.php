@@ -1,6 +1,6 @@
 <div class="contents animate hide" id = "sms_templates_window">
     <div class="titled">
-        <h6>Message Templates</h6>
+        <h2>Email &amp; SMS</h2>
     </div>
     <div class="admWindow ">
         <div class="top1">
