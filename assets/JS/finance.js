@@ -1790,6 +1790,26 @@ function incomeStatement(year = null) {
     sendData1("GET", "finance/financial.php", datapass, cObj("finance_statements"));
 }
 //create the select teachers to get the teachers in their pay roll
+// Payroll menu: highlight the option that is open. Options without a
+// handler are left as they are.
+document.querySelectorAll("#payroll_nav .pr_nav_btn, #payroll_nav .pr_nav_chip").forEach(function (el) {
+    el.addEventListener("click", function () {
+        if (typeof el.onclick !== "function") return;
+        document.querySelectorAll("#payroll_nav .pr_nav_btn, #payroll_nav .pr_nav_chip").forEach(function (other) {
+            other.classList.toggle("active", other === el);
+        });
+    });
+});
+// The payroll window's tiles and links are role="button" elements, so Enter
+// and Space click them like buttons.
+cObj("payrolled_win").addEventListener("keydown", function (e) {
+    var el = e.target;
+    if (el.getAttribute && el.getAttribute("role") === "button" && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        el.click();
+    }
+});
+
 cObj("enroll_staff_btn").onclick = function () {
     // payroll details
     cObj("payroll_enroll").classList.remove("hide");
@@ -1844,11 +1864,11 @@ function checkPayrollStaffDetails() {
 }
 
 function resetSalaryCalculator(){
-    cObj("gros_salo_rec").innerHTML = "0";
-    cObj("all_allowances").innerHTML = "0";
-    cObj("total_salary").innerHTML = "0";
+    cObj("gros_salo_rec").innerHTML = "Ksh 0";
+    cObj("all_allowances").innerHTML = "Ksh 0";
+    cObj("total_salary").innerHTML = "Ksh 0";
     // cObj("nssf_contributes").innerHTML = "Ksh 0";
-    cObj("contributions_before_tax").innerHTML = "Ksh 0";
+    cObj("contributions_before_tax").innerHTML = "<div class='col-md-12'><p class='pr_dyn_empty'>Contributions before tax will appear here</p></div>";
     cObj("taxable_income_records").innerHTML = "Ksh 0";
     cObj("incomeTaxRecord").innerHTML = "Ksh 0";
     cObj("personal_relief_records").innerHTML = "Ksh 0";
@@ -1972,6 +1992,27 @@ cObj("kra_reports").onclick = function () {
     cObj("display_kra_reports").click();
 }
 
+cObj("nita_reports").onclick = function () {
+    cObj("viewEnrolledPay").classList.add("hide");
+    cObj("payroll_enroll").classList.add("hide");
+    cObj("pay_salary_staff").classList.add("hide");
+    cObj("view_payment_history").classList.add("hide");
+    cObj("salary_infor").classList.add("hide");
+    cObj("advance_management").classList.add("hide");
+
+    hideAllReports();
+    cObj("payroll_reports_window").classList.remove("hide");
+    cObj("nita_reports_window").classList.remove("hide");
+    cObj("display_nita_reports").click();
+}
+
+cObj("display_nita_reports").onclick = function () {
+    var err = checkBlank("select_nita_months");
+    if (err == 0) {
+        var datapass = "?get_nita_reports=true&selected_months="+valObj("select_nita_months");
+        sendData2("GET","finance/financial.php",datapass,cObj("display_nita_reports_windows"),cObj("display_nita_reports_loader"));
+    }
+}
 cObj("display_kra_reports").onclick = function () {
     var err = checkBlank("select_kra_months");
     if (err == 0) {
@@ -2089,7 +2130,7 @@ function editSalaries() {
     cObj("dedcut_paye_edit").checked = false;
     cObj("allowance_holder_edit").innerText = "";
     cObj("gross_sa").innerText = 0;
-    cObj("allowance_html").innerHTML = "<p class='text-success'>No allowances to display at the moment.</p>";
+    cObj("allowance_html").innerHTML = "<p class='pr_empty'>No allowances to display at the moment.</p>";
     // get the salary details
     var datapass = "?salary_details=" + stfid;
     sendData1("GET", "finance/financial.php", datapass, cObj("salary_infor_br"), function () {
@@ -2157,7 +2198,7 @@ function editSalaries() {
                     // display the data
                     displayDeductions(obj.deductions);
                 }else{
-                    cObj("deduction_windows").innerHTML = "<p class='text-success'>No deductions to display at the moment.</p>";
+                    cObj("deduction_windows").innerHTML = "<p class='pr_empty'>No deductions to display at the moment.</p>";
                 }
                 cObj("error_calaculator").innerHTML = "";
                 breakdownPayments2();
@@ -3338,7 +3379,7 @@ function delete_deduction_1() {
         cObj("deductions_holder_1").innerText = JSON.stringify(json_data);
     }else{
         cObj("deductions_holder_1").innerText = "";
-        cObj("deductions_windoww_1").innerHTML = "<p class='text-success'>No deductions to display at the moment.</p>";
+        cObj("deductions_windoww_1").innerHTML = "<p class='pr_empty'>No deductions to display at the moment.</p>";
     }
 }
 
@@ -3370,7 +3411,7 @@ function delete_deduction() {
         cObj("deductions_holder").innerText = JSON.stringify(json_data);
     }else{
         cObj("deductions_holder").innerText = "";
-        cObj("deduction_windows").innerHTML = "<p class='text-success'>No deductions to display at the moment.</p>";
+        cObj("deduction_windows").innerHTML = "<p class='pr_empty'>No deductions to display at the moment.</p>";
     }
 }
 
@@ -3519,11 +3560,11 @@ function deleteAllowances() {
             addAllowances(obj);
         } else {
             cObj("allowance_holder").innerText = "";
-            cObj("allowances_and_bonuses").innerHTML = "<p class='text-success'>No allowances to display at the moment.</p>";
+            cObj("allowances_and_bonuses").innerHTML = "<p class='pr_empty'>No allowances to display at the moment.</p>";
         }
     } else {
         cObj("allowance_holder").innerText = "";
-        cObj("allowances_and_bonuses").innerHTML = "<p class='text-success'>No allowances to display at the moment.</p>";
+        cObj("allowances_and_bonuses").innerHTML = "<p class='pr_empty'>No allowances to display at the moment.</p>";
     }
 }
 
@@ -3553,11 +3594,11 @@ function deleteAllowances2() {
             }
         } else {
             cObj("allowance_holder_edit").innerText = "";
-            cObj("allowance_html").innerHTML = "<p class='text-success'>No allowances to display at the moment.</p>";
+            cObj("allowance_html").innerHTML = "<p class='pr_empty'>No allowances to display at the moment.</p>";
         }
     } else {
         cObj("allowance_holder_edit").innerText = "";
-        cObj("allowance_html").innerHTML = "<p class='text-success'>No allowances to display at the moment.</p>";
+        cObj("allowance_html").innerHTML = "<p class='pr_empty'>No allowances to display at the moment.</p>";
     }
 }
 function breakdownPayments() {
@@ -3569,11 +3610,14 @@ function breakdownPayments() {
     var allowances = getAllowances()*1;
     gross_salary += allowances;
     var nssf_tier = valObj("nssf_rates");
-    var nhif_shif_amount = Nhif_Shif_Amount(gross_salary,effect_year);
-    var nssf_amount = Nssf_Amount(gross_salary, effect_year, nssf_tier);
-    var housing_levy = Housing_Levy((gross_salary), effect_year);
+    // only what is actually deducted counts towards taxable pay and tax
+    var deduct_shif = cObj("deduct_NHIF").checked;
+    var deduct_housing = cObj("deduct_nhds").checked;
+    var nhif_shif_amount = deduct_shif ? Nhif_Shif_Amount(gross_salary,effect_year) : 0;
+    var nssf_amount = nssf_tier == "none" ? 0 : Nssf_Amount(gross_salary, effect_year, nssf_tier);
+    var housing_levy = deduct_housing ? Housing_Levy((gross_salary), effect_year) : 0;
     var taxable_income = Taxable_Income(gross_salary, effect_year, nssf_amount, nhif_shif_amount, housing_levy);
-    var income_tax = Income_Tax((gross_salary), effect_year, nssf_tier);
+    var income_tax = Income_Tax((gross_salary), effect_year, nssf_tier, deduct_shif, deduct_housing);
     var deductions = hasJsonStructure(valObj("deductions_holder_1")) ? JSON.parse(valObj("deductions_holder_1")) : [];
     var insurance_relief = Nhif_Shif_Relief(gross_salary, effect_year);
     var income_tax_relief = Income_Tax_Relief(effect_year);
@@ -3608,11 +3652,11 @@ function breakdownPayments() {
     // DEDUCTION
 
     // GROSS SALARY
-    cObj("gros_salo_rec").innerHTML = payment_breakdown.gross_salary_without_allowance.toLocaleString();
+    cObj("gros_salo_rec").innerHTML = "Ksh " + payment_breakdown.gross_salary_without_allowance.toLocaleString();
 
     // ALLOWANCES
-    cObj("all_allowances").innerText = payment_breakdown.allowance_total.toLocaleString();
-    cObj("total_salary").innerHTML = payment_breakdown.gross_salary_with_allowance.toLocaleString();
+    cObj("all_allowances").innerText = "Ksh " + payment_breakdown.allowance_total.toLocaleString();
+    cObj("total_salary").innerHTML = "Ksh " + payment_breakdown.gross_salary_with_allowance.toLocaleString();
 
     // CONTRIBUTIONS BEFORE TAX
     var data_to_display = "";
@@ -3620,13 +3664,13 @@ function breakdownPayments() {
         data_to_display += "<div class='col-md-6'><p><i>- NSSF Contribution</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nssf_amount.toLocaleString()+"</i></p></div>";
     }else{
         data_to_display += "<div class='col-md-6'><p><i>- NSSF Contribution</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nssf_amount.toLocaleString()+"</i></p></div>";
-        data_to_display += "<div class='col-md-6'><p><i>- NHIF/SHIF Contribution</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
+        data_to_display += "<div class='col-md-6'><p><i>- "+(effect_year <= 202410 ? "NHIF" : "SHIF")+" Contribution</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
         data_to_display += "<div class='col-md-6'><p><i>- Housing Levy</i></p></div><div class='col-md-6 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.housing_levy.toLocaleString()+"</i></p></div>";
     }
     cObj("contributions_before_tax").innerHTML = data_to_display;
 
     var contribution_before_tax_total = effect_year < 202411 ? payment_breakdown.nssf_amount : (payment_breakdown.nssf_amount + payment_breakdown.nhif_shif_amount + payment_breakdown.housing_levy)
-    cObj("contribution_before_tax_totals").innerText = contribution_before_tax_total.toLocaleString();
+    cObj("contribution_before_tax_totals").innerText = "Kes " + contribution_before_tax_total.toLocaleString();
 
     // TAXABLE INCOME
     cObj("taxable_income_records").innerHTML = "Kes "+payment_breakdown.taxable_income.toLocaleString();
@@ -3641,7 +3685,7 @@ function breakdownPayments() {
     // PAYMENTS AFTER TAX
     var data_to_display = "";
     if (effect_year < 202411) {
-        data_to_display += "<div class='col-md-6'><p><i>- NHIF/SHIF Contribution</i></p></div><div class='col-md-6 text-left'><p><i>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
+        data_to_display += "<div class='col-md-6'><p><i>- "+(effect_year <= 202410 ? "NHIF" : "SHIF")+" Contribution</i></p></div><div class='col-md-6 text-left'><p><i>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
         if (effect_year > 202402) {
             data_to_display += "<div class='col-md-6'><p><i>- Housing Levy</i></p></div><div class='col-md-6 text-left'><p><i>Ksh "+payment_breakdown.housing_levy.toLocaleString()+"</i></p></div>";
         }
@@ -3728,7 +3772,8 @@ function Nhif_Shif_Amount(gross_salary, effect_year){
             return 1700;
         }
     }else if(effect_year >= 202410){
-        return gross_salary * 0.0275;
+        // SHIF: 2.75% of gross pay, at least Kes 300 a month
+        return Math.max(gross_salary * 0.0275, 300);
     }
     return 0;
 }
@@ -3779,6 +3824,11 @@ function Housing_Levy(gross_salary, effect_year) {
 }
 
 function Nhif_Shif_Relief(gross_salary, effect_year) {
+    // Insurance relief on SHIF ended once SHIF became tax-deductible (Tax Laws
+    // (Amendment) Act 2024, from the December 2024 payroll).
+    if (effect_year > 202411) {
+        return 0;
+    }
     var nhif_shif_amount = Nhif_Shif_Amount(gross_salary, effect_year)*1;
     if (effect_year >= 202201) {
         return 0.15 * nhif_shif_amount > 5000 ? 5000 : 0.15 * nhif_shif_amount;
@@ -3806,6 +3856,11 @@ function Income_Tax_Relief(effect_year){
     }
 }
 function Ahl_Relief(gross_salary, effect_year){
+    // Affordable housing relief ended once the Housing Levy became tax-deductible
+    // (Tax Laws (Amendment) Act 2024, from the December 2024 payroll).
+    if (effect_year > 202411) {
+        return 0;
+    }
     if (effect_year >= 202402) {
         var housing_levy = Housing_Levy(gross_salary, effect_year);
         var ahl_relief = 0.15 * housing_levy;
@@ -3814,9 +3869,12 @@ function Ahl_Relief(gross_salary, effect_year){
     return 0;
 }
 
-function Income_Tax(gross_salary, effect_year, nssf_tier){
-    var housing_levy = Housing_Levy(gross_salary, effect_year)*1;
-    var nhif_shif_amount = Nhif_Shif_Amount(gross_salary, effect_year)*1;
+// Tax charged on the staff member's taxable pay. SHIF and the Housing Levy only
+// reduce taxable pay when they are actually deducted (deduct_shif and
+// deduct_housing default to true).
+function Income_Tax(gross_salary, effect_year, nssf_tier, deduct_shif, deduct_housing){
+    var housing_levy = deduct_housing === false ? 0 : Housing_Levy(gross_salary, effect_year)*1;
+    var nhif_shif_amount = deduct_shif === false ? 0 : Nhif_Shif_Amount(gross_salary, effect_year)*1;
     var nssf_amount = Nssf_Amount(gross_salary, effect_year, nssf_tier)*1;
     var taxable_income = Taxable_Income(gross_salary, effect_year, nssf_amount, nhif_shif_amount, housing_levy)*1;
     
@@ -3946,11 +4004,14 @@ function breakdownPayments2() {
     var allowances = getAllowances2()*1;
     gross_salary+=allowances;
     var nssf_tier_edit = valObj("nssf_rates_edit");
-    var nssf_contribution = Nssf_Amount(gross_salary, effect_year_edit, nssf_tier_edit)*1;
-    var nhif_shif_amount = Nhif_Shif_Amount(gross_salary, effect_year_edit)*1;
-    var housing_levy = Housing_Levy(gross_salary, effect_year_edit)*1;
+    // only what is actually deducted counts towards taxable pay and tax
+    var deduct_shif_edit = cObj("dedcut_nhif_edit").checked;
+    var deduct_housing_edit = cObj("edit_deduct_nhds").checked;
+    var nssf_contribution = nssf_tier_edit == "none" ? 0 : Nssf_Amount(gross_salary, effect_year_edit, nssf_tier_edit)*1;
+    var nhif_shif_amount = deduct_shif_edit ? Nhif_Shif_Amount(gross_salary, effect_year_edit)*1 : 0;
+    var housing_levy = deduct_housing_edit ? Housing_Levy(gross_salary, effect_year_edit)*1 : 0;
     var taxable_income = Taxable_Income(gross_salary, effect_year_edit, nssf_contribution, nhif_shif_amount, housing_levy)*1;
-    var income_tax = Income_Tax(gross_salary, effect_year_edit, nssf_tier_edit)*1;
+    var income_tax = Income_Tax(gross_salary, effect_year_edit, nssf_tier_edit, deduct_shif_edit, deduct_housing_edit)*1;
     var income_tax_relief = Income_Tax_Relief(effect_year_edit)*1;
     var insurance_relief = Nhif_Shif_Relief(gross_salary, effect_year_edit)*1;
     var ahl_relief = Ahl_Relief(gross_salary, effect_year_edit)*1;
@@ -3997,7 +4058,7 @@ function breakdownPayments2() {
         total_contributions += payment_breakdown.nssf_amount;
     }else{
         data_to_display += "<div class='col-md-8'><p><i>- NSSF Contribution</i></p></div><div class='col-md-4 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nssf_amount.toLocaleString()+"</i></p></div>";
-        data_to_display += "<div class='col-md-8'><p><i>- NHIF/SHIF Contribution</i></p></div><div class='col-md-4 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
+        data_to_display += "<div class='col-md-8'><p><i>- "+(effect_year_edit <= 202410 ? "NHIF" : "SHIF")+" Contribution</i></p></div><div class='col-md-4 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
         data_to_display += "<div class='col-md-8'><p><i>- Housing Levy</i></p></div><div class='col-md-4 text-left'><p><i id='nssf_contributes'>Ksh "+payment_breakdown.housing_levy.toLocaleString()+"</i></p></div>";
         total_contributions+=payment_breakdown.nssf_amount;
         total_contributions+=payment_breakdown.housing_levy;
@@ -4009,7 +4070,7 @@ function breakdownPayments2() {
     // PAYMENTS AFTER TAX
     var data_to_display = "";
     if (effect_year_edit < 202411) {
-        data_to_display += "<div class='col-md-8'><p><i>- NHIF/SHIF Contribution</i></p></div><div class='col-md-4 text-left'><p><i>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
+        data_to_display += "<div class='col-md-8'><p><i>- "+(effect_year_edit <= 202410 ? "NHIF" : "SHIF")+" Contribution</i></p></div><div class='col-md-4 text-left'><p><i>Ksh "+payment_breakdown.nhif_shif_amount.toLocaleString()+"</i></p></div>";
         if (effect_year_edit > 202402) {
             data_to_display += "<div class='col-md-8'><p><i>- Housing Levy</i></p></div><div class='col-md-4 text-left'><p><i>Ksh "+payment_breakdown.housing_levy.toLocaleString()+"</i></p></div>";
         }
@@ -4350,6 +4411,12 @@ cObj("dedcut_paye_edit").onchange = function () {
 cObj("dedcut_nhif_edit").onchange = function () {
     breakdownPayments2();
 }
+cObj("edit_deduct_nhds").onchange = function () {
+    breakdownPayments2();
+}
+cObj("accept_ahl_relief").onchange = function () {
+    breakdownPayments2();
+}
 cObj("year_of_effect_paye").onchange = function () {
     breakdownPayments2();
     restrictMonthYearSelection("effect_month_payee", "year_of_effect_paye");
@@ -4644,8 +4711,8 @@ cObj("display_nssf_reports").onclick = function () {
     var err = 0;
     err+=checkBlank("select_nssf_months");
     if (err == 0) {
-        var datapass = "?get_nssf_reports=true&selected_month="+valObj("select_nssf_months");
-        sendData1("GET","finance/financial.php",datapass,cObj("display_nssf_reports_windows"),cObj("display_nssf_reports_loader"));
+        var datapass = "?get_nssf_reports=true&selected_months="+valObj("select_nssf_months");
+        sendData2("GET","finance/financial.php",datapass,cObj("display_nssf_reports_windows"),cObj("display_nssf_reports_loader"));
     }
 }
 
