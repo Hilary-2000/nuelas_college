@@ -1964,6 +1964,30 @@ function createTimetabe(id) {
         cObj("create_tt_in").classList.add("hide");
     }
 }
+// the option cards on Student Attendance pick the option in #optd, which drives the page
+function markAttendanceOption() {
+    var cards = document.querySelectorAll("#attendance_option_cards .at_action");
+    for (var i = 0; i < cards.length; i++) {
+        cards[i].classList.toggle("active", cards[i].getAttribute("data-option") == valObj("optd"));
+    }
+}
+(function () {
+    var cards = document.querySelectorAll("#attendance_option_cards .at_action");
+    for (var i = 0; i < cards.length; i++) {
+        cards[i].addEventListener("click", function () {
+            cObj("optd").value = this.getAttribute("data-option");
+            cObj("optd").dispatchEvent(new Event("change"));
+        });
+        cards[i].addEventListener("keydown", function (event) {
+            if (event.key == "Enter" || event.key == " ") {
+                event.preventDefault();
+                this.click();
+            }
+        });
+    }
+    cObj("optd").addEventListener("change", markAttendanceOption);
+})();
+
 cObj("optd").onchange = function () {
     cObj("tableinformation").innerHTML = "";
     var err = checkBlank("optd");
