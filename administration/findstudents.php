@@ -84,23 +84,26 @@
                     </span>
                 </div>
             </div>
-            <div class="topsearch section_card">
+            <div class="topsearch section_card fs_card">
                 <div class="topsearch1 instructions">
                     <p><strong>Hint:</strong></p>
-                    <p>- Student information can be retrieved, changed and deleted at this window. <br>- Start by finding the student by the available options</p>
-                    <p>- Its recomended that the student is searched by their admission number <small>(the results are accurate)</small></p>
+                    <p>- Find a student here to view, change or delete their information.</p>
+                    <p>- Searching by admission number gives the most accurate result.</p>
                 </div>
-                <div class="my-2">
-                    <div class="col-lg-12 row">
-                        <div class="col-md-3">
-                            <p id="errorSearch"></p>
-                            <label for="sach" ><b>Search here by: </b></label><br>
-                            <select class="form-control-select" name="sach" id="sach">
-                                <option value="" hidden>Select option..</option>
+                <div class="fs_head">
+                    <span class="fs_icon"><i class="fas fa-search"></i></span>
+                    <div class="fs_head_text"><b>Find Students</b><small>Choose how to search, fill in the details that appear, then click Search.</small></div>
+                </div>
+                <p id="errorSearch"></p>
+                <div class="fs_filters">
+                    <div class="fs_field fs_field_main">
+                        <label class="fs_label" for="sach">Search by</label>
+                            <select class="form-control" name="sach" id="sach" aria-label="Search by">
+                                <option value="" hidden>Choose how to search..</option>
                                 <option value="name">Name</option>
                                 <option value="AdmNo">Admission No</option>
                                 <option value="class">Course Levels</option>
-                                <option value="bcno">I`d Number</option>
+                                <option value="bcno">ID Number</option>
                                 <option value="allstuds" id ='alstuds'>All students</option>
                                 <option value="regtoday" id='regtodays'>Registered today</option>
                                 <option value="registered_in" id='registered_in'>Intake</option>
@@ -110,31 +113,31 @@
                                 <option value="age_range">Age Range</option>
                                 <option value="by_module">Module</option>
                             </select>
-                        </div>
-                        <div class="col-md-3 mx-auto hide" id="named">
-                            <label class="form-control-label" for="name"><b>Enter name:</b> <br></label>
-                            <input type="text" name="name" id="name" placeholder="Type name here">
-                            <img src="images/ajax_clock_small.gif" class="hide" id="names_loaders_find">
-                        </div>
-                        <div class="col-md-3 mx-auto hide" id="admnosd">
-                            <label class="form-control-label" for="admno"><b>Admission no: </b><br></label>
-                            <input type="text" name="admno" id="admno" placeholder="Type admission no.">
-                            <img src="images/ajax_clock_small.gif" class="hide" id="admnos_loaders_find">
-                        </div>
-                        <div class="col-md-3 mx-auto hide bg-red" id="classenroll">
-                            <label class="form-control-label" for="selclass"><b>Course Level:</b> <br></label>
-                            <p id="stud_class_find"></p>
-                        </div>
-                        <div class="col-md-3 mx-auto hide" id="course_lists_search_bar">
-                            <label class="form-control-label" for="course_chosen_search"><b>Select Course:</b> <img class="hide" src="images/ajax_clock_small.gif" id="course_list_find_loader"><br></label>
-                            <p id="get_student_class_list" class="text-danger"> Select course level first!</p>
-                        </div>
-                        <div class="col-md-3 mx-auto hide" id="bcnos">
-                            <label class="form-control-label" for="bcnosd"><b>National I`d No.</b> <br></label>
-                            <input type="text" name="bcnosd" id="bcnosd" placeholder="Enter I`d No.">
-                        </div>
-                        <div class="col-md-3 hide" id="intake_month_search_win">
-                            <label class="form-control-label" for="intake_month_search"><b>Intake Month.</b> <br></label>
+                    </div>
+                    <div class="fs_field hide" id="named">
+                        <label class="fs_label" for="name">Student name</label>
+                        <div class="fs_input_icon"><i class="fas fa-font"></i><input class="form-control" type="text" name="name" id="name" placeholder="Type a name"></div>
+                        <img src="images/ajax_clock_small.gif" class="hide" id="names_loaders_find">
+                    </div>
+                    <div class="fs_field hide" id="admnosd">
+                        <label class="fs_label" for="admno">Admission no.</label>
+                        <div class="fs_input_icon"><i class="fas fa-id-badge"></i><input class="form-control" type="text" name="admno" id="admno" placeholder="e.g. LC-2025-003"></div>
+                        <img src="images/ajax_clock_small.gif" class="hide" id="admnos_loaders_find">
+                    </div>
+                    <div class="fs_field hide" id="classenroll">
+                        <label class="fs_label" for="selclass">Course level</label>
+                        <p id="stud_class_find"></p>
+                    </div>
+                    <div class="fs_field hide" id="course_lists_search_bar">
+                        <label class="fs_label" for="course_chosen_search">Course <img class="hide" src="images/ajax_clock_small.gif" id="course_list_find_loader"></label>
+                        <p id="get_student_class_list" class="fs_placeholder">Select a course level first</p>
+                    </div>
+                    <div class="fs_field hide" id="bcnos">
+                        <label class="fs_label" for="bcnosd">National ID number</label>
+                        <div class="fs_input_icon"><i class="fas fa-id-card"></i><input class="form-control" type="text" name="bcnosd" id="bcnosd" placeholder="Enter ID number"></div>
+                    </div>
+                    <div class="fs_field hide" id="intake_month_search_win">
+                        <label class="fs_label" for="intake_month_search">Intake month</label>
                             <select name="" id="intake_month_search" class="form-control">
                                 <option value="" hidden>Select intake month</option>
                                 <option value="Jan">Jan</option>
@@ -150,27 +153,27 @@
                                 <option value="Nov">Nov</option>
                                 <option value="Dec">Dec</option>
                             </select>
-                        </div>
-                        <div class="col-md-3 hide" id="intake_year_search_win">
-                            <label class="form-control-label" for="intake_year_search"><b>Intake Year.</b> <br></label>
+                    </div>
+                    <div class="fs_field hide" id="intake_year_search_win">
+                        <label class="fs_label" for="intake_year_search">Intake year</label>
                             <select name="intake_year_search" id="intake_year_search" class="form-control">
                                 <option value="" hidden>Select an Option</option>
                                 <?php for($index = date("Y"); $index > 2017; $index--):?>
                                     <option value="<?=$index?>"><?=$index?></option>
                                 <?php endfor;?>
                             </select>
-                        </div>
-                        <div class="col-md-3 hide" id="student_status_window">
-                            <label class="form-control-label" for="student_status_search"><b>Student Status</b> <br></label>
+                    </div>
+                    <div class="fs_field hide" id="student_status_window">
+                        <label class="fs_label" for="student_status_search">Student status</label>
                             <select name="" id="student_status_search" class="form-control">
                                 <option value="" hidden>Select student status</option>
                                 <option value="1">Active</option>
                                 <option value="0">In-Active</option>
                                 <option value="both">Both</option>
                             </select>
-                        </div>
-                        <div class="col-md-3 hide" id="student_study_mode_search_win">
-                            <label for="study_mode_search" class="form-control-label"><b>Study Mode</b></label>
+                    </div>
+                    <div class="fs_field hide" id="student_study_mode_search_win">
+                        <label for="study_mode_search" class="fs_label">Study mode</label>
                             <select name="study_mode_search" id="study_mode_search" class="form-control">
                                 <option value="" hidden>Select an Option</option>
                                 <option value="fulltime">Fulltime Mode</option>
@@ -179,19 +182,21 @@
                                 <option value="online">Online Mode</option>
                                 <option value="all">All Modes</option>
                             </select>
+                    </div>
+                    <div class="fs_field hide" id="college_branch_search">
+                        <label for="college_branch_search_student" class="fs_label">College branch</label>
+                        <span id="get_college_branch_holder"></span>
+                    </div>
+                    <div class="fs_field fs_field_wide hide" id="doa_range_win">
+                        <label class="fs_label" for="doa_from">Admitted between</label>
+                        <div class="fs_range">
+                            <input type="date" id="doa_from" class="form-control" aria-label="Admitted from">
+                            <span>and</span>
+                            <input type="date" id="doa_to" class="form-control" aria-label="Admitted to">
                         </div>
-                        <div class="col-md-3 hide" id="college_branch_search">
-                            <label for="college_branch_search_student" class="form-control-label">College Branch</label>
-                            <span id="get_college_branch_holder"></span>
-                        </div>
-                        <div class="col-md-3 hide" id="doa_range_win">
-                            <label class="form-control-label"><b>Admission Date From</b></label>
-                            <input type="date" id="doa_from" class="form-control mb-1">
-                            <label class="form-control-label"><b>Admission Date To</b></label>
-                            <input type="date" id="doa_to" class="form-control">
-                        </div>
-                        <div class="col-md-3 hide" id="county_search_win">
-                            <label class="form-control-label"><b>Select County</b></label>
+                    </div>
+                    <div class="fs_field hide" id="county_search_win">
+                        <label class="fs_label" for="county_search_filter">County</label>
                             <select id="county_search_filter" class="form-control">
                                 <option value="">-- Select County --</option>
                                 <option value="Mombasa">Mombasa</option>
@@ -242,9 +247,9 @@
                                 <option value="Nyamira">Nyamira</option>
                                 <option value="Nairobi">Nairobi</option>
                             </select>
-                        </div>
-                        <div class="col-md-3 hide" id="heard_search_win">
-                            <label class="form-control-label"><b>How They Heard About Us</b></label>
+                    </div>
+                    <div class="fs_field hide" id="heard_search_win">
+                        <label class="fs_label" for="heard_search_filter">How they heard about us</label>
                             <select id="heard_search_filter" class="form-control">
                                 <option value="">-- Select Option --</option>
                                 <option value="Radio">Radio</option>
@@ -256,25 +261,25 @@
                                 <option value="Referral">Referral</option>
                                 <option value="Others">Others</option>
                             </select>
+                    </div>
+                    <div class="fs_field fs_field_wide hide" id="age_range_win">
+                        <label class="fs_label" for="age_from">Age between (years)</label>
+                        <div class="fs_range">
+                            <input type="number" id="age_from" class="form-control" placeholder="e.g. 18" min="1" max="100" aria-label="Minimum age">
+                            <span>and</span>
+                            <input type="number" id="age_to" class="form-control" placeholder="e.g. 30" min="1" max="100" aria-label="Maximum age">
                         </div>
-                        <div class="col-md-3 hide" id="age_range_win">
-                            <label class="form-control-label"><b>Min Age (years)</b></label>
-                            <input type="number" id="age_from" class="form-control mb-1" placeholder="e.g. 18" min="1" max="100">
-                            <label class="form-control-label"><b>Max Age (years)</b></label>
-                            <input type="number" id="age_to" class="form-control" placeholder="e.g. 30" min="1" max="100">
-                        </div>
-                        <div class="col-md-3 hide" id="module_search_win">
-                            <label class="form-control-label"><b>Select Module</b> <img src="images/ajax_clock_small.gif" class="hide" id="module_search_loader"></label>
+                    </div>
+                    <div class="fs_field hide" id="module_search_win">
+                        <label class="fs_label" for="module_search_filter">Module <img src="images/ajax_clock_small.gif" class="hide" id="module_search_loader"></label>
                             <select id="module_search_filter" class="form-control">
                                 <option value="">-- Select Module --</option>
                             </select>
-                        </div>
-                        <div class="col-md-3">
-                            <span id="findingstudents" class="btn btn-primary btn-sm mt-4 rounded" type="button"><i class="fas fa-search"></i> Search</span>
-                        </div>
+                    </div>
+                    <div class="fs_field fs_field_btn">
+                        <span id="findingstudents" class="fs_search_btn" role="button" tabindex="0"><i class="fas fa-search"></i> Search</span>
                     </div>
                 </div>
-                <hr>
                 <p id="swindow"></p>
                 <p id="topsearch2"></p>
                 <div class="body1 hide" id="class_tr_search">
