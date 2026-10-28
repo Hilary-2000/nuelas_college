@@ -4713,19 +4713,19 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $result = $stmt->get_result();
             $data_to_display = "";
             if ($result) {
-                $data_to_display.="<div class='tableme'><table class='table'><tr><th>#</th><th>Name</th><th>Accrued</th><th>Genders</th><th>Max Days</th><th>Actions</th></tr>";
+                $data_to_display.="<div class='tableme'><table class='table lv_table'><thead><tr><th>#</th><th>Leave</th><th>Status</th><th>Accrued</th><th>Gender</th><th class='text-end'>Max Days / Year</th><th>Action</th></tr></thead><tbody>";
                 $index = 1;
                 $inactive = "";
                 while ($row = $result->fetch_assoc()) {
                     if ($row['active'] == "1") {
-                        $data_to_display.="<tr class=''><td>".$index." <small class='text-success'><i class='fas fa-info'></i></small></td><td>".$row['leave_title']."</td><td>".$row['days_are_accrued']."</td><td>".$row['gender']."</td><td>".$row['max_days']." Days</td><td><small><span class='link edit_leaves' id='edit_leave_".$row['id']."'><i class='fas fa-pen-fancy'></i> Edit</span></small></td></tr>";
+                        $data_to_display.="<tr><td>".$index."</td><td><b>".htmlspecialchars($row['leave_title'], ENT_QUOTES)."</b></td><td><span class='lv_status lv_status_ok'>Active</span></td><td>".htmlspecialchars($row['days_are_accrued'], ENT_QUOTES)."</td><td>".htmlspecialchars($row['gender'], ENT_QUOTES)."</td><td class='text-end'>".$row['max_days']." days</td><td><span class='edit_leaves lv_act' role='button' tabindex='0' id='edit_leave_".$row['id']."'><i class='fas fa-pen'></i> Edit</span></td></tr>";
                     }else{
-                        $data_to_display.="<tr class=''><td>".$index." <small class='text-danger'><i class='fas fa-info'></i></small></td><td>".$row['leave_title']."</td><td>".$row['days_are_accrued']."</td><td>".$row['gender']."</td><td>".$row['max_days']." Days</td><td><small><span class='link edit_leaves' id='edit_leave_".$row['id']."'><i class='fas fa-pen-fancy'></i> Edit</span></small></td></tr>";
+                        $data_to_display.="<tr><td>".$index."</td><td><b>".htmlspecialchars($row['leave_title'], ENT_QUOTES)."</b></td><td><span class='lv_status lv_status_off'>Inactive</span></td><td>".htmlspecialchars($row['days_are_accrued'], ENT_QUOTES)."</td><td>".htmlspecialchars($row['gender'], ENT_QUOTES)."</td><td class='text-end'>".$row['max_days']." days</td><td><span class='edit_leaves lv_act' role='button' tabindex='0' id='edit_leave_".$row['id']."'><i class='fas fa-pen'></i> Edit</span></td></tr>";
                     }
                     $index++;
                 }
-                $data_to_display.=$inactive."</table></div>
-                <p>Showing 1 to ".($index-1)." of ".($index-1)." records</p>";
+                $data_to_display.=$inactive."</tbody></table></div>
+                <p class='lv_count'>".($index-1)." leave categor".(($index-1) == 1 ? "y" : "ies")."</p>";
                 echo $data_to_display;
             }else{
                 echo "<p class='text-danger'>An error occured while displaying Leave Category tables</p>";
