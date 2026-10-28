@@ -7406,3 +7406,108 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 .sidebars #closesidebar{
     color: rgba(255,255,255,0.7);
 }
+
+/* ===== Page windows =====
+   The frame every menu page opens in: the page title above, then the .admWindow card with
+   its .top1 header bar, .middle1 body and .bottom1 footer. A clean white card with a teal
+   header bar, matching the cards used inside the pages. */
+.contents .titled{
+    width: 90%;
+    margin: 22px auto 12px;
+    text-align: left;
+}
+.contents .titled h2{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    color: #1f3a3c;
+}
+.contents .titled h2::before{
+    content: "";
+    width: 5px;
+    height: 22px;
+    border-radius: 3px;
+    background: linear-gradient(rgb(3,131,135), rgb(39,93,95));
+}
+.contents .admWindow{
+    border: 1px solid #e3eaeb;
+    border-radius: 14px;
+    background: #fff;
+    backdrop-filter: none;
+    box-shadow: 0 10px 30px rgba(15, 60, 62, .08), 0 2px 6px rgba(15, 60, 62, .05);
+}
+.contents .admWindow .top1{
+    margin: 0 0 6px;
+    padding: 14px 20px;
+    border-bottom: none;
+    border-radius: 13px 13px 0 0;
+    background: linear-gradient(120deg, rgb(3,131,135), rgb(39,93,95));
+}
+.contents .admWindow .top1 .row{
+    align-items: center;
+}
+.contents .admWindow .top1 p{
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: .2px;
+}
+/* the Tutorial link as a pill on the right of the header bar */
+.contents .admWindow .top1 .link{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    float: right;
+    padding: 4px 12px;
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 20px;
+    background: rgba(255,255,255,.14);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .15s;
+}
+.contents .admWindow .top1 .link:hover{
+    background: rgba(255,255,255,.28);
+    color: #fff;
+    text-decoration: none;
+}
+.contents .admWindow .top1 .link i{
+    font-size: 10px;
+}
+.contents .admWindow .middle1{
+    padding: 14px 10px;
+}
+.contents .admWindow .bottom1{
+    width: auto;
+    margin-top: 14px;
+    padding: 8px 20px;
+    border-top: 1px solid #eef1f2;
+    border-radius: 0 0 13px 13px;
+    background: #f8fafb;
+}
+.contents .admWindow .bottom1 p{
+    margin: 0;
+    color: #8a9a9c;
+    font-size: 12px;
+}
+@media screen and (max-width: 768px){
+    .contents .titled,
+    .contents .admWindow{
+        width: 96%;
+    }
+    .contents .admWindow .top1{
+        padding: 12px 14px;
+    }
+    .contents .admWindow .top1 .link{
+        float: none;
+        margin-top: 6px;
+    }
+}
