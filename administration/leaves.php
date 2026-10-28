@@ -18,130 +18,103 @@
                 <p><strong>Hint:</strong></p>
                 <p>Welcome <?php echo ucwords(strtolower($_SESSION['fullnames']));?> to the Employees Leave management window, At this window you will be able to apply for leaves and also view your leave application history.</p>
             </div>
-            <hr class="my-1">
-            <div class="section_card hide my_leaves_view" id="apply_leaves_windows">
-                <h4 class="text-centre">Apply for Leave</h4>
-                <p class="block_btn" id="back_to_list_emp_leave_list"><i class="fas fa-arrow-left"></i> Back to list</p>
-                <div class="row my-4">
-                    <div class="col-md-6">
-                        <div class="form-group my-1">
-                            <label for="leave_type" class="form-control-label text-bold"><b>Select leave:</b><img class="hide" src="images/ajax_clock_small.gif" id="leave_loader_select"></label>
+            <div class="section_card hide my_leaves_view al_card" id="apply_leaves_windows">
+                <div class="al_back"><span class="link" id="back_to_list_emp_leave_list" role="button" tabindex="0"><i class="fas fa-arrow-left"></i> Back to my leave applications</span></div>
+                <div class="al_head">
+                    <span class="al_head_icon"><i class="fas fa-plane-departure"></i></span>
+                    <div><b>Apply for Leave</b><small>Pick the leave type and your first and last day off. Weekends, non-working days and public holidays are not counted.</small></div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="al_group">
+                            <div class="al_group_title"><i class="fas fa-layer-group"></i> Leave type</div>
+                            <label for="leave_type" class="form-control-label">Select leave <img class="hide" src="images/ajax_clock_small.gif" id="leave_loader_select"></label>
                             <span id="leave_category_select"></span>
+                            <div class="al_balance_box">
+                                <small>Your balance <img class="hide" src="images/ajax_clock_small.gif" id="leave_balance_loader"></small>
+                                <div id="leave_balance_apply">Select leave category</div>
+                            </div>
                         </div>
-                        <div class="form-group my-1">
-                            <label for="" class="form-control-label"><b>Leave Balance:</b><img class="hide" src="images/ajax_clock_small.gif" id="leave_balance_loader"></label>
-                            <!-- <input type="number" name="leave_balance" id="leave_balance" readonly placeholder="Select Leave Category" value="" class="form-control w-100"> -->
-                            <span class="text-primary" id="leave_balance_apply" class="">Select leave category</span>
-                        </div>
-                        <div class="form-group my-1">
-                            <!-- <label for="leave_type" class="form-control-label"><b>Date Range:</b></label> -->
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="from_leave_date" class="form-control-label"><b>From (Leave starting date):</b></label>
+                        <div class="al_group">
+                            <div class="al_group_title"><i class="fas fa-calendar-alt"></i> Dates</div>
+                            <div class="row g-2">
+                                <div class="col-sm-6">
+                                    <label for="from_leave_date" class="form-control-label">First day of leave</label>
                                     <input class="form-control w-100" type="date" min="<?php echo date("Y-m-d",strtotime("7 days"));?>" name="from_leave_date" id="from_leave_date">
                                 </div>
-                                <div class="col-md-12">
-                                    <label for="to_leaves_date" class="form-control-label"><b>To (Returning date):</b></label>
+                                <div class="col-sm-6">
+                                    <label for="to_leaves_date" class="form-control-label">Last day of leave</label>
                                     <input class="form-control w-100" type="date" min="<?php echo date("Y-m-d",strtotime("7 days"));?>" name="to_leaves_date" id="to_leaves_date">
                                 </div>
                             </div>
+                            <small class="al_help">Leave must be applied for at least a week ahead.</small>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group my-1">
-                            <label for="leave_duration" class="form-control-label"><b>Leave duration in Days<img class="hide" src="images/ajax_clock_small.gif" id="leave_duration_loader"></b></label>
-                            <input type="number" readonly name="leave_duration" value="0" id="leave_duration" placeholder="Calculated Automatically - (Select start and end date)" class="form-control w-100">
-                            <p class="" id="leave_days_holder"></p>
-                            <p id="duration_day_errors"></p>
-                        </div>
-                        <div class="form-group my-1">
-                            <label for="leave_comments" class="form-control-label"><b>Leave Description</b></label>
-                            <textarea name="leave_comments" id="leave_comments" cols="30" rows="5" class="form-control w-100" placeholder="Describe why you are applying for the leave"></textarea>
-                        </div>
-                        <div class="form-group my-1">
-                            <p class="block_btn" id="apply_leave"><i class="fas fa-save"></i> Apply Now <img class="hide" src="images/ajax_clock_small.gif" id="apply_leave_loader"></p>
-                            <p id="application_error"></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="section_card my_leaves_view" id="display_my_applied_leaves">
-                <h5 class="text-center">Leave Application Table<img class="hide" src="images/ajax_clock_small.gif" id="my_leave_list_loader"></h5>
-                <div class="row">
-                    <div class="col-md-6">
-
-                    </div>
-                    <div class="col-md-6 d-flex">
-                        <p class="block_btn" id="self_apply_for_leave"><i class="fas fa-plus"></i> Apply Leave</p>
-                    </div>
-                </div>
-                <div class="container" id="my_application_table_data">
-                    <table class='table'>
-                        <tr>
-                            <th>#</th>
-                            <th>Leave Title</th>
-                            <th>Date Applied</th>
-                            <th>Days Duration</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Annual Leaf</td>
-                            <td>Mon 6th Aug 2022</td>
-                            <td>60 days</td>
-                            <td>Pending</td>
-                            <td><p class='link view_emp_leaves' id='view_emp_leaves'><i class="fas fa-eye"></i> View</p></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="section_card hide my_leaves_view" id="view_leave_details_emp">
-                <h4 class="text-centre">Leave Details <img class="hide" src="images/ajax_clock_small.gif" id="load_leave_details"></h4>
-                <p class="hide" id="leave_details_result"></p>
-                <p class="block_btn" id="back_to_list_emp_leave_list_2"><i class="fas fa-arrow-left"></i> Back to list</p>
-                <div class="row my-4">
-                    <div class="col-md-12">
-                        <span id="my_leave_status"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group my-1">
-                            <label for="leave_name_applied" class="form-control-label text-bold"><b>Leave Title:</b></label>
-                            <input type="text" name="" readonly placeholder="Leave Title" id="leave_name_applied" class="form-control w-100">
-                        </div>
-                        <div class="form-group my-1">
-                            <label for="leave_apply_date_views" class="form-control-label"><b>Date Applied:</b><img class="hide" src="images/ajax_clock_small.gif" id="leave_balance_loader"></label>
-                            <input type="text" name="" readonly placeholder="Leave Apply Date" id="leave_apply_date_views" class="form-control w-100">
-                        </div>
-                        <div class="form-group my-1">
-                            <!-- <label for="leave_type" class="form-control-label"><b>Date Range:</b></label> -->
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="from_leave_date_my_view" class="form-control-label"><b>From (Leave starting date):</b></label>
-                                    <input class="form-control w-100" readonly type="text" min="<?php echo date("Y-m-d",strtotime("7 days"));?>" name="from_leave_date_my_view" id="from_leave_date_my_view">
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="to_leaves_date_my_view" class="form-control-label"><b>To (Returning date):</b></label>
-                                    <input class="form-control w-100" type="text" min="<?php echo date("Y-m-d",strtotime("7 days"));?>" name="to_leaves_date_my_view" id="to_leaves_date_my_view">
-                                </div>
+                    <div class="col-lg-6">
+                        <div class="al_group">
+                            <div class="al_group_title"><i class="fas fa-calculator"></i> Working days</div>
+                            <div class="al_days">
+                                <input type="number" readonly name="leave_duration" value="0" id="leave_duration" class="form-control">
+                                <span>working day(s) <img class="hide" src="images/ajax_clock_small.gif" id="leave_duration_loader"></span>
                             </div>
+                            <p class="hide" id="leave_days_holder"></p>
+                            <div id="duration_day_errors"></div>
+                        </div>
+                        <div class="al_group">
+                            <div class="al_group_title"><i class="fas fa-comment-alt"></i> Reason</div>
+                            <label for="leave_comments" class="form-control-label">Leave Description</label>
+                            <textarea name="leave_comments" id="leave_comments" rows="4" class="form-control w-100" placeholder="Describe why you are applying for the leave"></textarea>
+                        </div>
+                        <div class="al_actions">
+                            <p id="application_error"></p>
+                            <div class="al_btn" id="apply_leave" role="button" tabindex="0"><i class="fas fa-paper-plane"></i> Apply Now <img class="hide" src="images/ajax_clock_small.gif" id="apply_leave_loader"></div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="section_card my_leaves_view al_card" id="display_my_applied_leaves">
+                <div class="al_head">
+                    <span class="al_head_icon"><i class="fas fa-calendar-check"></i></span>
+                    <div><b>My Leave Applications <img class="hide" src="images/ajax_clock_small.gif" id="my_leave_list_loader"></b><small>Every leave you have applied for and whether it was approved.</small></div>
+                    <div class="al_btn" id="self_apply_for_leave" role="button" tabindex="0"><i class="fas fa-plus"></i> Apply for Leave</div>
+                </div>
+                <div id="my_application_table_data">
+                    <p class="al_hint">Loading your leave applications...</p>
+                </div>
+            </div>
+            <div class="section_card hide my_leaves_view al_card" id="view_leave_details_emp">
+                <div class="al_back"><span class="link" id="back_to_list_emp_leave_list_2" role="button" tabindex="0"><i class="fas fa-arrow-left"></i> Back to my leave applications</span></div>
+                <div class="al_head">
+                    <span class="al_head_icon"><i class="fas fa-file-alt"></i></span>
+                    <div><b>Leave Application <img class="hide" src="images/ajax_clock_small.gif" id="load_leave_details"></b><small>The details of this application.</small></div>
+                    <span id="my_leave_status"></span>
+                </div>
+                <p class="hide" id="leave_details_result"></p>
+                <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="form-group my-1">
-                            <label for="leave_duration_days_view" class="form-control-label"><b>Leave duration in Days<img class="hide" src="images/ajax_clock_small.gif" id="leave_duration_loader"></b></label>
-                            <input type="number" readonly name="leave_duration_days_view" value="0" id="leave_duration_days_view" placeholder="Calculated Automatically" class="form-control w-100">
-                            <p class="" id="leave_days_holder"></p>
-                            <p id="duration_day_errors"></p>
-                        </div>
-                        <div class="form-group my-1">
-                            <label for="leave_comments_my_view" class="form-control-label"><b>Leave Description</b></label>
-                            <textarea name="leave_comments_my_view" id="leave_comments_my_view" cols="30" rows="5" class="form-control w-100" placeholder="Describe why you are applying for the leave"></textarea>
-                        </div>
-                        <div class="form-group my-1">
-                            <!-- <p class="block_btn" id="apply_leave"><i class="fas fa-save"></i> Apply Now <img class="hide" src="images/ajax_clock_small.gif" id="apply_leave_loader"></p> -->
-                            <p id="application_error_view"></p>
-                        </div>
+                        <label for="leave_name_applied" class="form-control-label">Leave</label>
+                        <input type="text" readonly placeholder="Leave Title" id="leave_name_applied" class="form-control w-100">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="leave_apply_date_views" class="form-control-label">Applied On</label>
+                        <input type="text" readonly placeholder="Leave Apply Date" id="leave_apply_date_views" class="form-control w-100">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="from_leave_date_my_view" class="form-control-label">First day of leave</label>
+                        <input class="form-control w-100" readonly type="text" id="from_leave_date_my_view">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="to_leaves_date_my_view" class="form-control-label">Last day of leave</label>
+                        <input class="form-control w-100" readonly type="text" id="to_leaves_date_my_view">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="leave_duration_days_view" class="form-control-label">Working days</label>
+                        <input type="number" readonly value="0" id="leave_duration_days_view" class="form-control w-100">
+                    </div>
+                    <div class="col-12">
+                        <label for="leave_comments_my_view" class="form-control-label">Leave Description</label>
+                        <textarea id="leave_comments_my_view" rows="4" readonly class="form-control w-100" placeholder="No description given."></textarea>
+                        <p id="application_error_view"></p>
                     </div>
                 </div>
             </div>
