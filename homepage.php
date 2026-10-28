@@ -401,6 +401,12 @@ function checkPresnt($array, $string){
                 <h2>Navigate</h2>
                 <span id='closesidebar'>&times</span>
             </div>
+            <div class="menu_search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="menu_search" placeholder="Search the menu..." autocomplete="off" aria-label="Search the menu">
+                <span class="hide" id="menu_search_clear" role="button" title="Clear search">&times;</span>
+            </div>
+            <p class="menu_search_empty hide" id="menu_search_empty">No menu option matches your search.</p>
             <!--<div class="contsds">
                 <button class="navButs">Shortcut <span class="arrow rotate_right"></span> </button>
                 <div class="contsd">
@@ -5049,6 +5055,7 @@ function checkPresnt($array, $string){
     <script src="assets/JS/sms.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/sms.js'); ?>"></script>
     <script src="assets/JS/tagSuggest.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/tagSuggest.js'); ?>"></script>
     <script src="assets/JS/messagePreview.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/messagePreview.js'); ?>"></script>
+    <script src="assets/JS/menuSearch.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/menuSearch.js'); ?>"></script>
     <script src="assets/JS/groups.js"></script>
     <script src="assets/JS/charged_accounts.js?v=<?php echo filemtime(__DIR__ . '/assets/JS/charged_accounts.js'); ?>"></script>
     <script src="assets/JS/action_logs.js"></script>
