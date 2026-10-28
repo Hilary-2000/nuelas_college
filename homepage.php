@@ -4285,7 +4285,8 @@ function checkPresnt($array, $string){
         </div>
     </div>
     <div class="copyright">
-        <p> Last System Update: 28th October 2025 @ 10:01AM || Ladybird SMIS Copyright © 2020 - <?php echo date("Y"); ?> | All rights reserved</p>
+        <p class="cp_update"><i class="fas fa-sync-alt"></i> Last system update: <b>28th October 2025, 10:01 AM</b></p>
+        <p class="cp_rights">&copy; 2020 - <?php echo date("Y"); ?> Ladybird SMIS. All rights reserved.</p>
     </div>
     <script src="assets/JS/functions.js"></script>
     <script src="assets/JS/idleLock.js"></script>
