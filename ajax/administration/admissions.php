@@ -5242,8 +5242,22 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     $leave_id = $_GET['get_leave_balance'];
                     // $days_entitled = round(getLeave_Balance($conn,$conn2,$leave_id));
                     $our_days = getLeaveBalance_2($conn,$conn2,$leave_id);
-                    echo $our_days." Days: ";
-                    echo "<span class='hide' id='days_entittled'>".$our_days."</span><br>";
+                    if (!is_numeric($our_days)) {
+                        echo $our_days;
+                    } else {
+                        // days already waiting for approval are not in the balance yet, the same
+                        // check the server makes when the leave is applied for
+                        $stmt = $conn2->prepare("SELECT SUM(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `employee_id` = ? AND `leave_category` = ? AND `status` = '0'");
+                        $stmt->bind_param("ss",$_SESSION['userids'],$leave_id);
+                        $stmt->execute();
+                        $pending_days = ($stmt->get_result()->fetch_assoc()['Total'] ?? 0) * 1;
+                        $available = max(0, $our_days - $pending_days);
+                        echo "<span class='al_balance'><b>".$available."</b> day".($available == 1 ? "" : "s")." available</span>";
+                        if ($pending_days > 0) {
+                            echo "<small class='al_balance_note'>".$our_days." in your balance, less ".$pending_days." waiting for approval</small>";
+                        }
+                        echo "<span class='hide' id='days_entittled'>".$available."</span>";
+                    }
                 }else{
                     echo "<p class='border border-danger text-danger p-2'>Your date of employment has not been set by your administrator.<br>Kindly contact your administrator first before you proceed.</p>";
                 }
@@ -5254,47 +5268,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
         }elseif (isset($_GET['count_days'])) {
             $from_date = $_GET['from_date'];
             $to_date = $_GET['to_date'];
-            // difference in days
-            if ($to_date >= $from_date) {
-                $date1=date_create($from_date);
-                $date2=date_create($to_date);
-                $diff=date_diff($date1,$date2);
-                $date_differences = $diff->format("%a");
-                // $date_differences+=2;// add the start and end date
-
-                // GET THE WORKING DAYS OF THE WEEK
-                $select = "SELECT * FROM `settings` WHERE `sett` = 'working_days'";
-                $stmt = $conn2->prepare($select);
-                $stmt->execute();
-                $result  = $stmt->get_result();
-                $working_days = [];
-                if ($result) {
-                    if ($row = $result->fetch_assoc()) {
-                        $working_days = explode(",",trim($row['valued']));
-                    }
-                }
-                
-                // loop through the dates
-                // var_dump($working_days);
-                $days_that_are_holiday_or_weekend = 0;
-                $days_that_are_not_holiday_or_weekend = 0;
-                for ($index=0; $index <= $date_differences; $index++) {
-                    $is_date_or_holiday = checkDate_Holiday($from_date,$working_days);
-                    if ($is_date_or_holiday > 0) {
-                        $days_that_are_holiday_or_weekend+=$is_date_or_holiday;
-                        // echo "Today is holiday ".date("D dS M Y",strtotime($from_date))." => ";
-                    }else{
-                        $days_that_are_not_holiday_or_weekend++;
-                    }
-                    // echo $from_date."<br>";
-                    // add one day to from date
-                    $date = date_create($from_date);
-                    date_add($date , date_interval_create_from_date_string("1 day"));
-                    $from_date = date_format($date,"Y-m-d");
-                }
-                $is_date_or_holiday = checkDate_Holiday($to_date,$working_days);
-                $days_that_are_not_holiday_or_weekend = $is_date_or_holiday > 0 ? $days_that_are_not_holiday_or_weekend : $days_that_are_not_holiday_or_weekend-1;
-                echo "<span class='hide' id='date_differences_leave_holder'>".$days_that_are_not_holiday_or_weekend."</span>";
+            if (isValidLeaveDate($from_date) && isValidLeaveDate($to_date) && $to_date >= $from_date) {
+                $date_differences = countLeaveDays($conn2,$from_date,$to_date);
+                echo "<span class='hide' id='date_differences_leave_holder'>".$date_differences."</span>";
             }else{
                 echo 0;
             }
@@ -5303,8 +5279,42 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $leave_category_applied = $_GET['leave_category_applied'];
             $from_date = $_GET['from_date'];
             $to_date = $_GET['to_date'];
-            $leave_duration = $_GET['leave_duration'];
             $leave_description = $_GET['leave_description'];
+            include_once("../../connections/conn1.php");
+
+            // never trust the day count from the browser: recount it and check it against the balance
+            if (!isValidLeaveDate($from_date) || !isValidLeaveDate($to_date) || $to_date < $from_date) {
+                echo "<p class='text-danger'>The last day of the leave cannot be before the first day.</p>";
+                exit();
+            }
+            $leave_duration = countLeaveDays($conn2,$from_date,$to_date);
+            if ($leave_duration < 1) {
+                echo "<p class='text-danger'>The dates you selected are all non-working days or holidays.</p>";
+                exit();
+            }
+            $staff_information = getMyStaffIn4($conn,$_SESSION['userids']);
+            if (count($staff_information) == 0 || strlen(trim($staff_information['doe'] ?? "")) == 0) {
+                echo "<p class='text-danger'>Your date of employment has not been set by your administrator.</p>";
+                exit();
+            }
+            $leave_balance = getLeaveBalance_2($conn,$conn2,$leave_category_applied);
+            if (!is_numeric($leave_balance)) {
+                echo "<p class='text-danger'>This leave category is not set up correctly. Contact your administrator.</p>";
+                exit();
+            }
+            // days already waiting for approval in this category are not yet in the balance
+            $select = "SELECT SUM(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `employee_id` = ? AND `leave_category` = ? AND `status` = '0'";
+            $stmt = $conn2->prepare($select);
+            $stmt->bind_param("ss",$_SESSION['userids'],$leave_category_applied);
+            $stmt->execute();
+            $pending_row = $stmt->get_result()->fetch_assoc();
+            $pending_days = ($pending_row['Total'] ?? 0) * 1;
+            $days_available = $leave_balance - $pending_days;
+            if ($leave_duration > $days_available) {
+                $pending_note = $pending_days > 0 ? " (".$leave_balance." in your balance, less ".$pending_days." already waiting for approval)" : "";
+                echo "<p class='text-danger'>You are applying for ".$leave_duration." day(s) but only have ".max(0,$days_available)." day(s) available".$pending_note.".</p>";
+                exit();
+            }
 
             $insert = "INSERT INTO `apply_leave` (`leave_category`,`employee_id`,`days_duration`,`from`,`to`,`date_applied`,`leave_description`,`status`) VALUES (?,?,?,?,?,?,?,?)";
             $stmt = $conn2->prepare($insert);
@@ -5312,7 +5322,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $status = 0;
             $stmt->bind_param("ssssssss",$leave_category_applied,$_SESSION['userids'],$leave_duration,$from_date,$to_date,$today,$leave_description,$status);
             if($stmt->execute()){
-                echo "<p class='text-success'>Leave applied successfully!<br> Kindly wait for confirmation from the administrator or Human Resource</p>";
+                echo "<p class='text-success' id='leave_applied_success'>Leave applied successfully!<br> Kindly wait for confirmation from the administrator or Human Resource</p>";
             }else{
                 echo "<p class='text-danger'>An error occured during application!</p>";
             }
@@ -5408,17 +5418,17 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $win_display = "";
             if ($result) {
                 $counter = 1;
-                $win_display.="<div class='tableme'><table class='table' id='my_leave_applications'><thead><tr><th>#</th><th>Leave Title</th><th>Date Applied</th><th>Dates</th><th>Days Duration</th><th>Status</th><th>Action</th></tr></thead><tbody>";
+                $win_display.="<div class='tableme'><table class='table al_table' id='my_leave_applications'><thead><tr><th>#</th><th>Leave</th><th>Applied On</th><th>Dates</th><th class='text-end'>Duration</th><th>Status</th><th>Action</th></tr></thead><tbody>";
                 while($row = $result->fetch_assoc()){
                     $status = $row['status'];
                     if ($status == "0") {
-                        $status = "<p class='text-secondary'>Pending</p>";
+                        $status = "<span class='al_status al_status_wait'><i class='fas fa-hourglass-half'></i> Pending</span>";
                     }elseif($status == "1"){
-                        $status = "<p class='text-success'>Approved</p>";
+                        $status = "<span class='al_status al_status_ok'><i class='fas fa-check'></i> Approved</span>";
                     }elseif($status == "2"){
-                        $status = "<p class='text-danger'>Declined</p>";
+                        $status = "<span class='al_status al_status_bad'><i class='fas fa-times'></i> Declined</span>";
                     }
-                    $win_display.="<tr><td>".$counter."</td><td>".ucwords(strtolower(getLeaveDetails($conn2,$row['leave_category'])['leave_title']))."</td><td>".date("D dS M Y",strtotime($row['date_applied']))."</td><td>".date("D dS M Y",strtotime($row['from']))." to ".date("D dS M Y",strtotime($row['to']))."</td><td>".$row['days_duration']." Days</td><td>".$status."</td><td><p class='link view_emp_leaves' id='view_emp_leaves".$row['id']."'><i class='fas fa-eye'></i> View</p></td></tr>";
+                    $win_display.="<tr><td>".$counter."</td><td><b>".htmlspecialchars(ucwords(strtolower(getLeaveDetails($conn2,$row['leave_category'])['leave_title'])), ENT_QUOTES)."</b></td><td>".date("D dS M Y",strtotime($row['date_applied']))."</td><td>".date("D dS M Y",strtotime($row['from']))." <span class='al_to'>to</span> ".date("D dS M Y",strtotime($row['to']))."</td><td class='text-end'><b>".$row['days_duration']."</b> day".($row['days_duration'] == 1 ? "" : "s")."</td><td>".$status."</td><td><span class='view_emp_leaves al_act' role='button' tabindex='0' id='view_emp_leaves".$row['id']."'><i class='fas fa-eye'></i> View</span></td></tr>";
                     $counter++;
                 }
                 $win_display.="</tbody></table></div>";
@@ -10362,6 +10372,7 @@ function isJson_report($string) {
             "Christmas Day" => "25-12",
             "Boxing Day" => "26-12"
         ];
+        $holidays = array_merge($holidays, easterHolidays(date("Y",strtotime($date))));
         
         // return $data;
         foreach ($holidays as $key => $value) {
@@ -11304,7 +11315,7 @@ function isJson_report($string) {
                         $doe = date("Ym",strtotime($doe))."01";
 
                         // get the number of days used this year by the staff
-                        $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `employee_id` = '".$staff_id."' AND `leave_category` = '".$leave_id."' AND `status` != '1'";
+                        $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `employee_id` = '".$staff_id."' AND `leave_category` = '".$leave_id."' AND `status` = '1'";
                         $stmt = $conn2->prepare($select);
                         $stmt->execute();
                         $result = $stmt->get_result();
@@ -11317,10 +11328,8 @@ function isJson_report($string) {
 
                         
                         if ($days_are_accrued == "Monthly") {
-                            $today = date("Ym",strtotime("1 month"))."01";
-                            // echo $today;
-                            // get the difference in months between this dates
-                            $days_entitled = differenceDatesMonth($doe,$today)+1;
+                            // months started since the hire month, this month included
+                            $days_entitled = ((date("Y")*12 + date("n")) - (date("Y",strtotime($doe))*12 + date("n",strtotime($doe)))) + 1;
                             // echo $days_entitled;
 
                             $days_accrued_each_month = round($max_days/12,2);
@@ -11332,7 +11341,7 @@ function isJson_report($string) {
                                 return "<p class='text-danger'>Invalid Leave Setup</p>";
                             }
                         }elseif($days_are_accrued == "Yearly"){
-                            return $max_days;
+                            return $max_days - $days_used;
                         }elseif($days_are_accrued == "Weekly"){
                             // number of weeks this year
                             $start_yr = date("Ymd",strtotime(date("Y")."0101"));
@@ -11781,7 +11790,7 @@ function isJson_report($string) {
                         $doe = date("Ym",strtotime($doe))."01";
 
                         // get the number of days used this year by the staff
-                        $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `employee_id` = '".$staff_id."' AND `leave_category` = '".$leave_id."' AND `status` != '1'";
+                        $select = "SELECT sum(`days_duration`) AS 'Total' FROM `apply_leave` WHERE `employee_id` = '".$staff_id."' AND `leave_category` = '".$leave_id."' AND `status` = '1'";
                         $stmt = $conn2->prepare($select);
                         $stmt->execute();
                         $result = $stmt->get_result();
@@ -11794,10 +11803,8 @@ function isJson_report($string) {
 
                         
                         if ($days_are_accrued == "Monthly") {
-                            $today = date("Ym",strtotime("1 month"))."01";
-                            // echo $today;
-                            // get the difference in months between this dates
-                            $days_entitled = differenceDatesMonth($doe,$today)+1;
+                            // months started since the hire month, this month included
+                            $days_entitled = ((date("Y")*12 + date("n")) - (date("Y",strtotime($doe))*12 + date("n",strtotime($doe)))) + 1;
                             // echo $days_entitled;
 
                             $days_accrued_each_month = round($max_days/12,2);
@@ -11809,7 +11816,7 @@ function isJson_report($string) {
                                 return "<p class='text-danger'>Invalid Leave Setup</p>";
                             }
                         }elseif($days_are_accrued == "Yearly"){
-                            return $max_days;
+                            return $max_days - $days_used;
                         }elseif($days_are_accrued == "Weekly"){
                             // number of weeks this year
                             $start_yr = $calender[0];
@@ -14083,6 +14090,57 @@ function isJson_report($string) {
         }
         return $days_balance;
     }
+    // Good Friday and Easter Monday move every year: Easter Sunday by the anonymous Gregorian algorithm
+    function easterHolidays($year){
+        $year = (int) $year;
+        $a = $year % 19; $b = intdiv($year,100); $c = $year % 100;
+        $d = intdiv($b,4); $e = $b % 4; $f = intdiv($b+8,25); $g = intdiv($b-$f+1,3);
+        $h = (19*$a + $b - $d - $g + 15) % 30;
+        $i = intdiv($c,4); $k = $c % 4;
+        $l = (32 + 2*$e + 2*$i - $h - $k) % 7;
+        $m = intdiv($a + 11*$h + 22*$l,451);
+        $month = intdiv($h + $l - 7*$m + 114,31);
+        $day = (($h + $l - 7*$m + 114) % 31) + 1;
+        $easter = mktime(0,0,0,$month,$day,$year);
+        return [
+            "Good Friday" => date("d-m",strtotime("-2 days",$easter)),
+            "Easter Monday" => date("d-m",strtotime("+1 day",$easter))
+        ];
+    }
+    function isValidLeaveDate($date){
+        $parsed = DateTime::createFromFormat("Y-m-d",(string) $date);
+        return $parsed !== false && $parsed->format("Y-m-d") === $date;
+    }
+    // working days from $from_date to $to_date, both included, skipping non-working days and holidays
+    function countLeaveDays($conn2,$from_date,$to_date){
+        if ($to_date < $from_date) {
+            return 0;
+        }
+        $select = "SELECT * FROM `settings` WHERE `sett` = 'working_days'";
+        $stmt = $conn2->prepare($select);
+        $stmt->execute();
+        $result  = $stmt->get_result();
+        // a college that never saved its working days works Monday to Friday
+        $working_days = ["Mon","Tue","Wed","Thur","Fri"];
+        if ($result) {
+            if ($row = $result->fetch_assoc()) {
+                if (strlen(trim($row['valued'])) > 0) {
+                    $working_days = explode(",",trim($row['valued']));
+                }
+            }
+        }
+        $days = 0;
+        $date = date_create($from_date);
+        $last = date_create($to_date);
+        while ($date <= $last) {
+            // a holiday falling on a non-working day is still only one day off
+            if (checkDate_Holiday(date_format($date,"Y-m-d"),$working_days) == 0) {
+                $days++;
+            }
+            date_add($date, date_interval_create_from_date_string("1 day"));
+        }
+        return $days;
+    }
     function checkDate_Holiday($date,$working_days){
         // get the working days of the week
         $month_dates = date("m",strtotime($date));
@@ -14098,6 +14156,7 @@ function isJson_report($string) {
             "Christmas Day" => "25-12",
             "Boxing Day" => "26-12"
         ];
+        $holidays = array_merge($holidays, easterHolidays(date("Y",strtotime($date))));
         
         // return $data;
         $is_holiday = [];

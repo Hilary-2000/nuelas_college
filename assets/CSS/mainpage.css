@@ -6803,3 +6803,217 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== Apply Leave (administration/leaves.php). al_ classes. ===== */
+#leave_mgmt_staff .al_card{
+    border-radius: 16px;
+}
+#leave_mgmt_staff .al_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef3f3;
+}
+#leave_mgmt_staff .al_head > div:not([class]){
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+}
+#leave_mgmt_staff .al_head b{
+    font-size: 16px;
+    color: #1f2d2e;
+}
+#leave_mgmt_staff .al_head small{
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#leave_mgmt_staff .al_head_icon{
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(3, 131, 135);
+    color: #fff;
+    font-size: 16px;
+}
+#leave_mgmt_staff .al_back span{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+#leave_mgmt_staff .al_group{
+    border: 1px solid #eef3f3;
+    background: #fbfcfc;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}
+#leave_mgmt_staff .al_group_title{
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: rgb(3, 131, 135);
+    margin-bottom: 10px;
+}
+#leave_mgmt_staff .al_group_title i{
+    margin-right: 4px;
+}
+#leave_mgmt_staff .form-control-label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d4a4e;
+    margin-bottom: 4px;
+}
+#leave_mgmt_staff .form-control,
+#leave_mgmt_staff select{
+    width: 100% !important;
+    margin: 0 !important;
+}
+#leave_mgmt_staff .al_balance_box{
+    margin-top: 10px;
+    background: #e7f4f4;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+#leave_mgmt_staff .al_balance_box > small{
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #6b7b7c;
+}
+#leave_mgmt_staff #leave_balance_apply{
+    font-size: 13px;
+    color: #51626b;
+}
+#leave_mgmt_staff .al_balance b{
+    font-size: 22px;
+    color: rgb(3, 131, 135);
+}
+#leave_mgmt_staff .al_balance_note{
+    display: block;
+    font-size: 12px;
+    color: #6b7b7c;
+}
+#leave_mgmt_staff .al_help,
+#leave_mgmt_staff .al_hint{
+    display: block;
+    font-size: 12px;
+    color: #8a9a9b;
+    margin-top: 6px;
+}
+#leave_mgmt_staff .al_days{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#leave_mgmt_staff .al_days input{
+    width: 90px !important;
+    font-size: 22px;
+    font-weight: 700;
+    color: rgb(3, 131, 135) !important;
+    text-align: center;
+}
+#leave_mgmt_staff .al_days span{
+    font-size: 13px;
+    color: #51626b;
+}
+#leave_mgmt_staff #duration_day_errors p{
+    font-size: 12px;
+    margin: 8px 0 0;
+}
+#leave_mgmt_staff .al_actions{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+#leave_mgmt_staff .al_actions p{
+    flex: 1;
+    margin: 0;
+}
+#leave_mgmt_staff .al_btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(24,158,163));
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 3px 8px rgba(3,131,135,0.25);
+}
+#leave_mgmt_staff .al_btn:hover,
+#leave_mgmt_staff .al_btn:focus-visible{
+    box-shadow: 0 5px 14px rgba(3,131,135,0.35);
+    outline: none;
+}
+#leave_mgmt_staff .al_table td{
+    vertical-align: middle;
+}
+#leave_mgmt_staff .al_to{
+    color: #8a9a9b;
+    font-size: 12px;
+}
+#leave_mgmt_staff .al_status{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 3px 9px;
+    white-space: nowrap;
+}
+#leave_mgmt_staff .al_head .al_status{
+    font-size: 12px;
+    padding: 5px 12px;
+}
+#leave_mgmt_staff .al_status_ok{
+    color: #1e8e3e;
+    background: #e8f6ec;
+}
+#leave_mgmt_staff .al_status_wait{
+    color: #b26a00;
+    background: #fff4e5;
+}
+#leave_mgmt_staff .al_status_bad{
+    color: #c5221f;
+    background: #fdecea;
+}
+#leave_mgmt_staff .al_act{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(3, 131, 135);
+    background: #fff;
+    border: 1px solid #c9dfe0;
+    border-radius: 20px;
+    padding: 3px 10px;
+    cursor: pointer;
+}
+#leave_mgmt_staff .al_act:hover,
+#leave_mgmt_staff .al_act:focus-visible{
+    background: #e7f4f4;
+    outline: none;
+}
+#leave_mgmt_staff .form-control[readonly]{
+    background: #f8fafb !important;
+}
