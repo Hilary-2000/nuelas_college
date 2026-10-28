@@ -5044,7 +5044,7 @@ function checkPresnt($array, $string){
         </div>
     </div>
     <div class="copyright">
-        <p class="cp_update"><i class="fas fa-sync-alt"></i> Last system update: <b>28th October 2025, 10:01 AM</b></p>
+        <p class="cp_update"><i class="fas fa-sync-alt"></i> Last system update: <b>28th October 2026, 6:55 PM</b></p>
         <p class="cp_rights">&copy; 2020 - <?php echo date("Y"); ?> Ladybird SMIS. All rights reserved.</p>
     </div>
     <script src="assets/JS/functions.js"></script>
