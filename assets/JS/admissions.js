@@ -3301,32 +3301,41 @@ function tablebtnlistener() {
                     var _pctFn = function (s) { var m = String(s || "").match(/(\d+(?:\.\d+)?)\s*%/); return m ? parseFloat(m[1]) : null; };
                     var _termPct = _pctFn(_attTerm);
                     var _yearPct = _pctFn(_attYear);
-                    var _barColor = function (p) { return p >= 80 ? '#28a745' : p >= 50 ? '#e6a817' : '#dc3545'; };
+                    var _barTone = function (p) { return p >= 80 ? "good" : p >= 50 ? "warn" : "bad"; };
                     var _attCard = function (label, rawStr, pct, icon) {
                         var cleanStr = escHtml(stripTags(rawStr));
-                        var barHtml = pct !== null
-                            ? "<div style='background:#e0e0e0;border-radius:20px;height:6px;margin-top:6px;overflow:hidden;'><div style='height:100%;width:" + pct + "%;background:" + _barColor(pct) + ";border-radius:20px;'></div></div><div style='font-size:10px;color:#888;margin-top:2px;'>" + cleanStr + "</div>"
-                            : "<div style='font-size:12px;color:#999;margin-top:4px;'>" + cleanStr + "</div>";
-                        var pctDisplay = pct !== null ? pct + "%" : cleanStr;
-                        var color = pct !== null ? _barColor(pct) : '#888';
-                        return "<div style='background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:10px 12px;height:100%;'>" +
-                               "<div style='font-size:20px;font-weight:700;color:" + color + ";'>" + pctDisplay + "</div>" +
-                               "<div style='font-size:11px;color:#555;margin-top:2px;'><i class='" + icon + "'></i>&nbsp;" + label + "</div>" +
-                               barHtml + "</div>";
+                        var tone = pct !== null ? _barTone(pct) : "muted";
+                        var bar = pct !== null ? "<div class='sp_bar'><span style='width:" + Math.min(pct, 100) + "%'></span></div><small class='sp_stat_note'>" + cleanStr + "</small>" : "";
+                        return "<div class='sp_stat sp_stat_att sp_tone_" + tone + "'>" +
+                               "<span class='sp_stat_icon'><i class='" + icon + "'></i></span>" +
+                               "<div class='sp_stat_body'><b>" + (pct !== null ? pct + "%" : cleanStr) + "</b><span>" + label + "</span>" + bar + "</div></div>";
                     };
+                    var _moneyCard = function (label, value, icon, tone) {
+                        return "<div class='sp_stat sp_tone_" + tone + "'>" +
+                               "<span class='sp_stat_icon'><i class='" + icon + "'></i></span>" +
+                               "<div class='sp_stat_body'><b>" + escHtml(value) + "</b><span>" + label + "</span></div></div>";
+                    };
+                    // name and quick facts in the profile header
+                    var _identityEl = cObj("student_detail_identity");
+                    if (_identityEl) {
+                        var _history = splitdata[42];
+                        var _courseName = _history && _history.course_name ? _history.course_name : "";
+                        var _activeModule = _history && _history.module_terms ? _history.module_terms.find(function (m) { return m.status == 1; }) : null;
+                        var _chips = "<span class='sp_chip sp_chip_main'><i class='fas fa-id-badge'></i> " + escHtml(_adm) + "</span>" +
+                                     "<span class='sp_chip'><i class='fas fa-layer-group'></i> " + escHtml(_class) + "</span>";
+                        if (_courseName) _chips += "<span class='sp_chip'><i class='fas fa-book-open'></i> " + escHtml(_courseName) + "</span>";
+                        if (_activeModule) _chips += "<span class='sp_chip sp_chip_ok'><i class='fas fa-play-circle'></i> " + escHtml(_activeModule.term_name) + " active</span>";
+                        if (splitdata[5]) _chips += "<span class='sp_chip'><i class='fas fa-" + (splitdata[5] == "Female" ? "venus" : "mars") + "'></i> " + escHtml(splitdata[5]) + "</span>";
+                        _identityEl.innerHTML = "<h3>" + escHtml(_fullname) + "</h3><div class='sp_chips'>" + _chips + "</div>";
+                    }
                     var _statsEl = cObj("student_detail_stats");
                     if (_statsEl) {
                         _statsEl.innerHTML =
-                            "<div class='section_card'>" +
-                            "<p style='font-size:17px;font-weight:700;color:#333;margin:0 0 2px;'>" + escHtml(_fullname) + "</p>" +
-                            "<p style='font-size:12px;color:#777;margin:0 0 12px;'>" + escHtml(_class) + " &nbsp;&bull;&nbsp; Adm: " + escHtml(_adm) + "</p>" +
-                            "<div class='row'>" +
-                            "<div class='col-6 col-md-4 mb-2'><div style='background:#fdecea;border-left:4px solid #dc3545;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#dc3545;'>" + escHtml(_bal) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-exclamation-circle'></i>&nbsp;Fee Balance</div></div></div>" +
-                            "<div class='col-6 col-md-4 mb-2'><div style='background:#e8f5e9;border-left:4px solid #28a745;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#28a745;'>" + escHtml(_totalOwed) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-file-invoice-dollar'></i>&nbsp;Total Payments Owed</div></div></div>" +
-                            "<div class='col-6 col-md-4 mb-2'><div style='background:#ede7f6;border-left:4px solid #7b1fa2;border-radius:6px;padding:10px 12px;height:100%;'><div style='font-size:18px;font-weight:700;color:#7b1fa2;'>" + escHtml(_totalPaid) + "</div><div style='font-size:11px;color:#555;margin-top:3px;'><i class='fas fa-history'></i>&nbsp;Total Paid Since Joining</div></div></div>" +
-                            "<div class='col-6 col-md-4 mb-2'>" + _attCard("Attendance (Module)", _attTerm, _termPct, "fas fa-calendar-check") + "</div>" +
-                            "<div class='col-6 col-md-4 mb-2'>" + _attCard("Attendance (Year)", _attYear, _yearPct, "fas fa-chart-line") + "</div>" +
-                            "</div></div>";
+                            _moneyCard("Fee balance", _bal, "fas fa-exclamation-circle", "bad") +
+                            _moneyCard("Total payments owed", _totalOwed, "fas fa-file-invoice-dollar", "good") +
+                            _moneyCard("Total paid since joining", _totalPaid, "fas fa-history", "purple") +
+                            _attCard("Attendance (module)", _attTerm, _termPct, "fas fa-calendar-check") +
+                            _attCard("Attendance (year)", _attYear, _yearPct, "fas fa-chart-line");
                     }
                     getDP();
 
