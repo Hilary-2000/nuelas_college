@@ -220,6 +220,13 @@ function initBroadcastFilterPanel() {
                 chevron.classList.replace("fa-chevron-up", "fa-chevron-down");
             }
         });
+        // The header is a focusable card, so Enter and Space fold it too.
+        toggle.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggle.click();
+            }
+        });
     }
     // Apply Filters button
     var applyBtn = cObj("broadcast_apply_filters");

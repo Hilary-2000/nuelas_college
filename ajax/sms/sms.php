@@ -448,9 +448,9 @@
             $result = $stmt->get_result();
 
             if ($result) {
-                $data_to_display = "<div class='staff_list'>
-                    <div class='staff_dets'>
-                        <label for='staff123s' style='color:cadetblue;'>Select all visible</label>
+                $data_to_display = "<div class='staff_list bc_students'>
+                    <div class='staff_dets bc_select_all'>
+                        <label for='staff123s'>Select all visible</label>
                         <input type='checkbox' name='staff123s' id='staff123s'>
                     </div>";
 
@@ -500,13 +500,15 @@
                         : "<small class='badge bg-secondary text-white' style='font-size:10px;'>Inactive</small>";
                     $module_info = $active_module_name ? $active_module_name : 'No active module';
 
+                    $name_html = htmlspecialchars($name, ENT_QUOTES);
+                    $adm_html = htmlspecialchars($adm, ENT_QUOTES);
+                    $module_html = htmlspecialchars($module_info, ENT_QUOTES);
                     $data_to_display .= "
-                        <div class='staff_dets hide_students' id='hide_students{$adm}' data-balance='{$balance}'>
-                            <label style='font-size:12px;'>{$xs}.</label>
-                            <label class='text-left students_sms_names' style='font-size:14px;' id='imr{$adm}' for='adm{$adm}'>
-                                {$status_badge}
-                                {$name} <small style='color:red;'>({$adm})</small>
-                                <small class='text-muted'>&nbsp;|&nbsp;{$module_info}&nbsp;|&nbsp;KES {$balance_display}</small>
+                        <div class='staff_dets hide_students bc_student' id='hide_students{$adm}' data-balance='{$balance}'>
+                            <label class='bc_student_no'>{$xs}</label>
+                            <label class='text-left students_sms_names bc_student_info' id='imr{$adm}' for='adm{$adm}'>
+                                <span class='bc_student_top'>{$status_badge} <b>{$name_html}</b> <code>{$adm_html}</code></span>
+                                <span class='bc_student_meta'><span><i class='fas fa-layer-group'></i> {$module_html}</span><span><i class='fas fa-coins'></i> KES {$balance_display}</span></span>
                             </label>
                             <input type='checkbox' class='student-class-par " . ($active ? "activated_banner" : "") . "' name='adm{$adm}' id='adm{$adm}'>
                         </div>";
@@ -517,7 +519,7 @@
                 if ($xs > 0) {
                     echo $data_to_display;
                 } else {
-                    echo "<div class='p-2 my-2 text-danger border border-danger rounded'>No students found matching your filters. Try adjusting or clearing some filters.</div>";
+                    echo "<div class='bc_empty'><i class='fas fa-search'></i> No students found matching your filters. Try adjusting or clearing some filters.</div>";
                 }
             }
         }elseif (isset($_GET['all_parents'])) {
