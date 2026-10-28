@@ -292,149 +292,141 @@
                         <button class = "my_back_button"  type="button" id="go_back_1" ><i class="fas fa-arrow-left"></i></button>
                     </div>
                 <div class="staffinformed form-group rounded hide" id="viewinformation" >
-                    <div class="conts">
-                        <!--<h3 class='infortitle' viewinformation><strong>Student information</strong></h3>-->
-                        <p id ="updateerrors"></p>
-                        <!-- <div class="notification">
-                            <div class="ttt">
-                                <p><strong>Notice:</strong></p>
+                    <p id ="updateerrors"></p>
+                    <div class="studentdetails">
+                    <!-- profile header: photo, name (filled by admissions.js), boarding and delete -->
+                    <div class="sp_hero">
+                        <div class="sp_hero_photo">
+                            <p id="dp_local_stud" class="hide"></p>
+                            <div class="student_images">
+                                <img id="student_image" style="cursor: pointer;" src="images/board.jpg" alt="Student photo" title="Click to view the photo">
                             </div>
-                            <div class="conts">
-                                <p><i>The student information can only be updated if you are administrator.</i></p>
-                            </div>
-                        </div> -->
-                        <div class="studentdetails">
-                            <div class="cont section_card">
-                                <div class="row my-1">
-                                    <div class="col-md-6">
-                                        <div class="sm-toggle-card mt-1 mb-1" style="max-width:380px;">
-                                            <div>
-                                                <p style="font-weight:700;font-size:14px;margin:0;">Boarding Enrolled</p>
-                                                <p style="font-size:12px;color:#888;margin:0;" id="boarding_toggle_label">Loading…</p>
-                                            </div>
-                                            <label class="sm-switch">
-                                                <input type="checkbox" id="boarding_toggle">
-                                                <span class="sm-slider"></span>
-                                            </label>
-                                        </div>
-                                        <span id="boarding_toggle_feedback" style="font-size:12px;min-height:16px;display:block;margin-bottom:6px;color:#555;"></span>
-                                        <p id="boarding_status_changer" style="font-size:12px;"></p>
-                                        <img class="hide" src="images/ajax_clock_small.gif" id="boarding_status_load">
-                                        <span id="boarding_status" class="hide"></span>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" id="prompt_delete_student"><i class="fas fa-trash-alt"></i> Delete Student <img class="hide" src="images/ajax_clock_small.gif" id="delete_student_load"></button>
+                            <p class="sp_photo_actions">
+                                <img class="hide" src="images/ajax_clock_small.gif" id="student_dp_loader">
+                                <span id="change_student_profile_image" class="sp_photo_btn" role="button" tabindex="0"><i class="fas fa-camera"></i> Change</span>
+                                <span id="delete_dp" class="sp_photo_btn sp_photo_btn_del" role="button" tabindex="0" title="Remove the photo"><i class="fas fa-trash-alt"></i></span>
+                            </p>
+                            <p id="dp_locale"></p>
+                        </div>
+                        <div class="sp_hero_main">
+                            <div id="student_detail_identity" class="sp_identity"></div>
+                            <div class="sp_hero_side">
+                                <div class="sm-toggle-card">
+                                    <div>
+                                        <p class="sp_toggle_title"><i class="fas fa-bed"></i> Boarding Enrolled</p>
+                                        <p class="sp_toggle_sub" id="boarding_toggle_label">Loading...</p>
                                     </div>
-                                    <div class="col-md-6 border-left-0" style="border-left: 1px solid gray;">
-                                        <div class="cont">
-                                            <p id="dp_local_stud" class="hide"></p>
-                                            <p class="text-center"> <img class="hide" src="images/ajax_clock_small.gif" id="student_dp_loader"> <span id="change_student_profile_image" class="btn btn-sm btn-primary"><i class="fas fa-pen"></i> Change</span> <span class="btn btn-danger btn-sm btn-alt" id="delete_dp"><i class="fas fa-trash-alt"></i></span></p>
-                                            <p id="dp_locale"></p>
-                                        </div>
-                                        <div class="container m-auto w-50 d-flex justify-content-center" style="width: 120px;">
-                                            <div class="student_images">
-                                                <img id="student_image" style="cursor: pointer;" src="images/board.jpg" alt="studen`s photo" class="">
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label class="sm-switch">
+                                        <input type="checkbox" id="boarding_toggle">
+                                        <span class="sm-slider"></span>
+                                    </label>
                                 </div>
+                                <span id="boarding_toggle_feedback" class="sp_toggle_feedback"></span>
+                                <p id="boarding_status_changer" class="sp_toggle_feedback"></p>
+                                <img class="hide" src="images/ajax_clock_small.gif" id="boarding_status_load">
+                                <span id="boarding_status" class="hide"></span>
+                                <button type="button" class="sp_btn_danger" id="prompt_delete_student"><i class="fas fa-trash-alt"></i> Delete Student <img class="hide" src="images/ajax_clock_small.gif" id="delete_student_load"></button>
                             </div>
-                            <hr>
-                            <div class="titlesd">
-                                <p>Student Personal Data</p>
+                        </div>
+                    </div>
+                    <!-- quick stats: fee balance, payments and attendance (admissions.js) -->
+                    <div id="student_detail_stats" class="sp_stats"></div>
+                    <!-- hidden elements kept for existing JS writes/reads -->
+                    <span class="hide" id="current_term"></span>
+                    <span class="hide" id="total_amount_to_pay"></span>
+                    <span class="hide" id="fees_paid_this_term"></span>
+                    <span class="hide" id="fees_balances"></span>
+                    <span class="hide" id="total_paid_fees"></span>
+                    <span class="hide" id="transport_enrolled_std_infor"></span>
+                    <span class="hide" id="board_enrolled_std_infor"></span>
+                    <span class="hide" id="attendance_this_term"></span>
+                    <span class="hide" id="attendance_this_year"></span>
+
+                    <div class="sp_card">
+                        <div class="sp_head">
+                            <span class="sp_icon"><i class="fas fa-wallet"></i></span>
+                            <div class="sp_head_text"><b>Finance and Enrolment</b><small>Carried balance, voteheads, discount and one-off charges</small></div>
+                        </div>
+                        <div class="sp_facts">
+                            <div class="sp_fact">
+                                <span class="sp_fact_label">Balance carried forward</span>
+                                <span class="sp_fact_value"><span id="lastyr_fees_balance">Kes 0</span><span class="sp_edit link <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_last_yr_academic_balance" title="Edit"><i class="fas fa-pen"></i></span></span>
                             </div>
-                            <!-- quick-stats banner (replaces the old Finance Summary / Attendance Statistics grid) -->
-                            <div id="student_detail_stats" class="mb-3"></div>
-                            <!-- hidden elements kept for existing JS writes/reads -->
-                            <span class="hide" id="current_term"></span>
-                            <span class="hide" id="total_amount_to_pay"></span>
-                            <span class="hide" id="fees_paid_this_term"></span>
-                            <span class="hide" id="fees_balances"></span>
-                            <span class="hide" id="total_paid_fees"></span>
-                            <span class="hide" id="transport_enrolled_std_infor"></span>
-                            <span class="hide" id="board_enrolled_std_infor"></span>
-                            <span class="hide" id="attendance_this_term"></span>
-                            <span class="hide" id="attendance_this_year"></span>
-                            <div class="card shadow-sm mb-3" style="border-left:4px solid #00897b;">
-                                <div class="card-body py-3">
-                                    <h6 class="card-title mb-3" style="color:#00695c;"><i class="fas fa-wallet mr-2"></i>Finance & Enrolment Details</h6>
-                                    <div class="row">
-                                        <div class="col-md-3 mb-2">
-                                            <p class="mb-1"><b>Balance carry forward:</b></p>
-                                            <p class="mb-0"><span id="lastyr_fees_balance">Kes 10,000</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_last_yr_academic_balance"><i class="fas fa-pen-fancy"></i></span></p>
-                                        </div>
-                                        <div class="col-md-3 mb-2">
-                                            <p class="mb-1"><b>Votehead Status: <i class="fas fa-info-circle" title="This highlights the voteheads the students are paying for!"></i> </b></p>
-                                            <p class="mb-0"><span id="view_votehead_status">10</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_votehead_status"><i class="fas fa-pen-fancy"></i></span></p>
-                                        </div>
-                                        <div class="col-md-3 mb-2">
-                                            <p class="mb-1"><b>Fees Discount: <i class="fas fa-info-circle" title="This discount only affects the Regular & Boarding Fees only!. Transport fees won`t be affected by this discount"></i> </b></p>
-                                            <p class="mb-0"><span id="fees_discount">10</span><span class="link mx-2 <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_discounts"><i class="fas fa-pen-fancy"></i></span></p>
-                                        </div>
-                                        <div class="col-md-3 mb-2">
-                                            <p class="mb-1"><b>Charged Account:</b></p>
-                                            <p class="mb-0"><span id="charged_account_summary">Kes 0 - 0 item(s)</span><span class="link mx-2" id="view_charged_account_btn" title="View / Edit Charged Account"><i class="fas fa-eye"></i></span></p>
-                                            <input type="hidden" id="charged_account_can_edit" value="<?php echo ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0") ? "1" : "0"; ?>">
-                                            <p id="charged_account_holder_raw" class="hide"></p>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="sp_fact">
+                                <span class="sp_fact_label">Votehead status <i class="fas fa-info-circle" title="The voteheads the student is paying for"></i></span>
+                                <span class="sp_fact_value"><span id="view_votehead_status">-</span><span class="sp_edit link <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_votehead_status" title="Edit"><i class="fas fa-pen"></i></span></span>
                             </div>
-                            <div class="card shadow-sm mb-3" style="border-left:4px solid #1976d2;">
-                                <div class="card-body py-3">
-                                <h6 class="card-title mb-3" style="color:#1976d2;"><i class="fas fa-user mr-2"></i>Basic Information</h6>
-                                <div class="row">
-                                <div class="col-md-4">
-                                    <label for="snamed_in" class="form-control-label"><b>Surname: </b><br></label>
-                                    <input type="text" class="form-control w-100" autocomplete="off" id="snamed_in"  placeholder ="Surname">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="fnamed_in"><b>First name:</b> <br></label>
-                                    <input  class="form-control w-100" type="text" autocomplete="off" id="fnamed_in"  placeholder ="Firstname">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="lnamed_in"><b>Last name: </b><br></label>
-                                    <input  class="form-control w-100" type="text" autocomplete="off" id="lnamed_in"  placeholder ="Last Name">
-                                </div>
-                                <div class="col-md-4">
-                                    <img src="images/ajax_clock_small.gif" class="hide" id="class_loaders_id_in">
-                                    <label class="form-control-label" for="classed"><b>Course Level: </b><br></label>
-                                    <div id="class_holders"></div>
-                                    <div id="course_level_error_window"></div>
-                                    <input type="hidden" name="" id="course_level_hidden">
-                                </div>
-                                <div class="col-md-4">
-                                    <img src="images/ajax_clock_small.gif" class="hide" id="course_list_edit_loader">
-                                    <label class="form-control-label" for="course_chosen_edit"><b>Course: </b><br></label>
-                                    <div id="course_list_edit"></div>
-                                    <div id="course_chosen_error_window"></div>
-                                    <input type="hidden" name="" id="course_chosen_level_hidden">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="dobs"><b>Date of birth </b><br></label>
-                                    <input  class="form-control w-100" type="date" autocomplete="off" id="dobs"  max=<?php date("Y-m-d",strtotime("-2 years")) ?>>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="doas"><b>Date of admission </b><br></label>
-                                    <input  class="form-control w-100" type="date" autocomplete="off" id="doas"  max=<?php date("Y-m-d",strtotime("-2 years")) ?>>
-                                </div>
-                                <div class="container col-md-12 my-1 p-2 hide" id="reason_for_leaving_window">
-                                    <label for="reason_for_leaving_desc" class="form-control-label"><strong>Reason for leaving</strong></label>
-                                    <textarea name="reason_for_leaving_desc" id="reason_for_leaving_desc" cols="30" rows="5" class="form-control" placeholder="Brief description why they transfered">We are here!</textarea>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="genders"><b>Gender: </b><br></label>
-                                    <select class="form-control w-100" id="genders">
-                                        <option value="" hidden>Select gender..</option>
-                                        <option id='Male' value="Male">Male</option>
-                                        <option id='Female' value="Female">Female</option>
-                                    </select>
-                                </div>
-                                <div class = "col-md-4">
-                                    <label class="form-control-label" for="addressed"><b>Address</b></label><br>
-                                    <input class="form-control w-100" type="text" autocomplete="off" id="addressed" placeholder="Area of residence">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="edit_county" class="form-control-label"><b>County</b></label>
-                                    <select id="edit_county" class="form-control w-100">
+                            <div class="sp_fact">
+                                <span class="sp_fact_label">Fees discount <i class="fas fa-info-circle" title="The discount applies to regular and boarding fees only. Transport fees are not discounted."></i></span>
+                                <span class="sp_fact_value"><span id="fees_discount">-</span><span class="sp_edit link <?php if ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0"){}else{echo "hide";}?>" id="edit_discounts" title="Edit"><i class="fas fa-pen"></i></span></span>
+                            </div>
+                            <div class="sp_fact">
+                                <span class="sp_fact_label">Charged account</span>
+                                <span class="sp_fact_value"><span id="charged_account_summary">Kes 0 - 0 item(s)</span><span class="sp_edit link" id="view_charged_account_btn" title="View or edit the charged account"><i class="fas fa-eye"></i></span></span>
+                                <input type="hidden" id="charged_account_can_edit" value="<?php echo ($_SESSION['authority'] == "1" || $_SESSION['authority'] == "0") ? "1" : "0"; ?>">
+                                <p id="charged_account_holder_raw" class="hide"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sp_card">
+                        <div class="sp_head">
+                            <span class="sp_icon"><i class="fas fa-user"></i></span>
+                            <div class="sp_head_text"><b>Basic Information</b><small>Name, course, dates and contacts</small></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="sp_label" for="snamed_in">Surname</label>
+                                <input type="text" class="form-control w-100" autocomplete="off" id="snamed_in" placeholder="Surname">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="fnamed_in">First name</label>
+                                <input class="form-control w-100" type="text" autocomplete="off" id="fnamed_in" placeholder="First name">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="lnamed_in">Last name</label>
+                                <input class="form-control w-100" type="text" autocomplete="off" id="lnamed_in" placeholder="Last name">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="classed">Course level <img src="images/ajax_clock_small.gif" class="hide" id="class_loaders_id_in"></label>
+                                <div id="class_holders"></div>
+                                <div id="course_level_error_window"></div>
+                                <input type="hidden" name="" id="course_level_hidden">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="course_chosen_edit">Course <img src="images/ajax_clock_small.gif" class="hide" id="course_list_edit_loader"></label>
+                                <div id="course_list_edit"></div>
+                                <div id="course_chosen_error_window"></div>
+                                <input type="hidden" name="" id="course_chosen_level_hidden">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="dobs">Date of birth</label>
+                                <input class="form-control w-100" type="date" autocomplete="off" id="dobs">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="doas">Date of admission</label>
+                                <input class="form-control w-100" type="date" autocomplete="off" id="doas">
+                            </div>
+                            <div class="col-md-12 hide" id="reason_for_leaving_window">
+                                <label for="reason_for_leaving_desc" class="sp_label">Reason for leaving</label>
+                                <textarea name="reason_for_leaving_desc" id="reason_for_leaving_desc" cols="30" rows="4" class="form-control" placeholder="Briefly describe why the student left"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="genders">Gender</label>
+                                <select class="form-control w-100" id="genders">
+                                    <option value="" hidden>Select gender..</option>
+                                    <option id='Male' value="Male">Male</option>
+                                    <option id='Female' value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="addressed">Address</label>
+                                <input class="form-control w-100" type="text" autocomplete="off" id="addressed" placeholder="Area of residence">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit_county" class="sp_label">County</label>
+                                <select id="edit_county" class="form-control w-100">
+                                    <option value="">-- Select County --</option>
                                         <option value="">-- Select County --</option>
                                         <option value="Mombasa">Mombasa</option>
                                         <option value="Kwale">Kwale</option>
@@ -483,11 +475,11 @@
                                         <option value="Kisii">Kisii</option>
                                         <option value="Nyamira">Nyamira</option>
                                         <option value="Nairobi">Nairobi</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="intake_month_edit" class="form-control-label"><b>Intake Month</b></label>
-                                    <select name="intake_month_edit" id="intake_month_edit" class="form-control w-100">
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="intake_month_edit" class="sp_label">Intake month</label>
+                                <select name="intake_month_edit" id="intake_month_edit" class="form-control w-100">
                                         <option value="" hidden>Select an Option</option>
                                         <option value="JAN">JAN</option>
                                         <option value="FEB">FEB</option>
@@ -501,347 +493,268 @@
                                         <option value="OCT">OCT</option>
                                         <option value="NOV">NOV</option>
                                         <option value="DEC">DEC</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="intake_year_edit" class="form-control-label"><b>Intake Year</b></label>
-                                    <select name="intake_year_edit" id="intake_year_edit" class="form-control w-100">
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="intake_year_edit" class="sp_label">Intake year</label>
+                                <select name="intake_year_edit" id="intake_year_edit" class="form-control w-100">
                                         <option value="" hidden>Select an Option</option>
                                         <?php for($index = date("Y"); $index > 2017; $index--):?>
                                             <option value="<?=$index?>"><?=$index?></option>
                                         <?php endfor;?>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="edit_study_mode" class="form-control-label"><b>Study Mode</b></label>
-                                    <select name="edit_study_mode" id="edit_study_mode" class="form-control w-100">
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit_study_mode" class="sp_label">Study mode</label>
+                                <select name="edit_study_mode" id="edit_study_mode" class="form-control w-100">
                                         <option value="" hidden>Select an Option</option>
                                         <option selected value="fulltime">Fulltime Mode</option>
                                         <option value="evening">Hybrid Mode</option>
                                         <option value="weekend">Weekend Mode</option>
                                         <option value="online">Online Mode</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4 d-none" id="study_mode_cost_holder">
-                                    <label class="form-control-label"><b id="study_mode_cost_label">Module Cost</b></label>
-                                    <p class="form-control bg-light">Kes <span id="study_mode_cost_value">0</span></p>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="course_progress" class="form-control-label"><b>Course Progress</b></label>
-                                    <select name="course_progress" id="course_progress" class="form-control w-100">
-                                        <option value="" hidden>Select how you wish the student progress</option>
-                                        <option value="1">Automated</option>
-                                        <option value="0">Manual</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="edit_student_contacts"><b>Student contacts:</b></label><br>
-                                    <input type="number" class="form-control w-100" name="edit_student_contacts" id="edit_student_contacts" placeholder="Kenyan contacts only">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="edit_student_email"><b>Student email:</b></label>
-                                    <input type="email" class="form-control w-100" name="edit_student_email" id="edit_student_email" placeholder = "Enter email">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="college_branch_edit"><b>College Branch: </b><img src="images/ajax_clock_small.gif" class="hide" id="college_branch_loader_edit"><br></label>
-                                    <div id="college_branch_edit_holder"></div>
-                                </div>
-                                </div>
-                                </div>
+                                </select>
                             </div>
-                            <div class="form-control d-flex flex-wrap my-2 rounded form-group row">
-                                <div id="course_details_display">
-                                    <h4 class="text-center">Course Levels</h4>
-                                    <table class="table">
-                                        <tr>
-                                            <th>Course Level</th>
-                                            <th>Course Name</th>
-                                            <th>Module Terms</th>
-                                            <th>Status</th>
-                                            <th>Completed</th>
-                                            <th>Period</th>
-                                        </tr>
-                                        <tr>
-                                            <td rowspan="3" style="vertical-align: middle;"><b>Diploma Module 1</b></td>
-                                            <td rowspan="3" style="vertical-align: middle;"><b>Engineering</b></td>
-                                            <td>Term 1</td>
-                                            <td>In-Active</td>
-                                            <td>Completed</td>
-                                            <td>Jan 12th June 2023 <br> Jan 30th June 2024</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Term 2</td>
-                                            <td>In-Active</td>
-                                            <td>In-Complete</td>
-                                            <td>Jan 12th June 2023 <br> Jan 30th June 2024</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Term 3</td>
-                                            <td>Active</td>
-                                            <td>In-Complete</td>
-                                            <td>Jan 12th June 2023 <br> Jan 30th June 2024</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <span class="btn btn-secondary btn-sm w-25 mx-auto my-2" id="add_modules"><i class="fa fa-plus"></i> Add Course Modules <img src="images/ajax_clock_small.gif" class="hide" id="add_course_modules_loader"></span>
-                                <br>
-                                <span class="btn btn-secondary btn-sm w-50 mx-auto my-2" id="save_course_progress"><i class="fa fa-save"></i> Save Course Progress <img src="images/ajax_clock_small.gif" class="hide" id="save_course_progress_loader"></span>
-                                <div id="error_handler_course_progress"></div>
+                            <div class="col-md-4 d-none" id="study_mode_cost_holder">
+                                <label class="sp_label"><span id="study_mode_cost_label">Module Cost</span></label>
+                                <p class="sp_readonly">Kes <span id="study_mode_cost_value">0</span></p>
                             </div>
-                            <div class="form-control d-flex flex-wrap my-2 rounded row">
-                                <div class="titles">
-                                    <p>Numbers</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="adminnos"><b>Admission No.</b> <span style='color:rgb(99, 36, 36);font-size:13px;'>(Readonly)</span> <br></label>
-                                    <input  class="w-100 bg-secondary form-control" type="text" readonly  id="adminnos" placeholder = "Adm No.">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="indexnos"><b>Index number </b><br></label>
-                                    <input  class="w-100 form-control" type="text"  id="indexnos" placeholder = "Index number">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="bcnno"><b>Birth certifiacte number </b><br></label>
-                                    <input  class="w-100 form-control" type="text"  id="bcnno" placeholder = "BC number">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="adm_ess"><b>Admission Essentials </b><br></label>
-                                    <p id="admissionessentials_lists"></p>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="clubs_in_sporters" class="form-control-label"><b>Sports Houses / Clubs</b></label>
-                                    <p id="clubs_for_sports_in">
-                                    <select name='' class='border border-dark text-xxs form-control bg-light w-50' id='select_clubs_sports' class='form-control'><option value='' id='select_clubs_sports_def' hidden>Select an option</option></select>
-                                    </p>
-                                </div>
+                            <div class="col-md-4">
+                                <label for="course_progress" class="sp_label">Course progress</label>
+                                <select name="course_progress" id="course_progress" class="form-control w-100">
+                                    <option value="" hidden>Select how the student progresses</option>
+                                    <option value="1">Automated</option>
+                                    <option value="0">Manual</option>
+                                </select>
                             </div>
-                            <div class="form-control d-flex flex-wrap my-2 rounded row">
-                                <div class = "titles">
-                                    <p>More information</p>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="edit_student_contacts">Student phone</label>
+                                <input type="number" class="form-control w-100" name="edit_student_contacts" id="edit_student_contacts" placeholder="Kenyan numbers only">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="edit_student_email">Student email</label>
+                                <input type="email" class="form-control w-100" name="edit_student_email" id="edit_student_email" placeholder="Enter email">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="college_branch_edit">College branch <img src="images/ajax_clock_small.gif" class="hide" id="college_branch_loader_edit"></label>
+                                <div id="college_branch_edit_holder"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sp_card">
+                        <div class="sp_head">
+                            <span class="sp_icon"><i class="fas fa-route"></i></span>
+                            <div class="sp_head_text"><b>Course Progress</b><small>Set each module's status, dates and cost, then save the progress</small></div>
+                        </div>
+                        <div id="course_details_display" class="sp_course"></div>
+                        <div class="sp_card_actions">
+                            <span class="sp_btn_ghost" id="add_modules" role="button" tabindex="0"><i class="fa fa-plus"></i> Add Course Modules <img src="images/ajax_clock_small.gif" class="hide" id="add_course_modules_loader"></span>
+                            <span class="sp_btn_primary" id="save_course_progress" role="button" tabindex="0"><i class="fa fa-save"></i> Save Course Progress <img src="images/ajax_clock_small.gif" class="hide" id="save_course_progress_loader"></span>
+                        </div>
+                        <div id="error_handler_course_progress"></div>
+                    </div>
+
+                    <div class="sp_card">
+                        <div class="sp_head">
+                            <span class="sp_icon"><i class="fas fa-id-card"></i></span>
+                            <div class="sp_head_text"><b>Admission Details</b><small>Identification numbers, admission items and clubs</small></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="sp_label" for="adminnos">Admission no. <span class="sp_tag">Read only</span></label>
+                                <input class="w-100 form-control sp_locked" type="text" readonly id="adminnos" placeholder="Adm No.">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="indexnos">Index number</label>
+                                <input class="w-100 form-control" type="text" id="indexnos" placeholder="Index number">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="bcnno">Birth certificate number</label>
+                                <input class="w-100 form-control" type="text" id="bcnno" placeholder="Birth certificate number">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label">Admission essentials</label>
+                                <p id="admissionessentials_lists"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="select_clubs_sports" class="sp_label">Sports houses / clubs</label>
+                                <p id="clubs_for_sports_in">
+                                <select name='' class='form-control w-100' id='select_clubs_sports'><option value='' id='select_clubs_sports_def' hidden>Select an option</option></select>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sp_card">
+                        <div class="sp_head">
+                            <span class="sp_icon"><i class="fas fa-notes-medical"></i></span>
+                            <div class="sp_head_text"><b>Health and Background</b><small>Disability, medical history and how the student found the college</small></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="sp_label" for="disableds">Disabled</label>
+                                <select id="disableds" class="form-control w-100">
+                                    <option value="" hidden>Select option..</option>
+                                    <option id="Yes" value="Yes">Yes</option>
+                                    <option id="No" value="No">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="sp_label" for="descriptionsd">Disability description</label>
+                                <textarea class="form-control w-100" placeholder="Describe the disability, if any" autocomplete="off" id="descriptionsd" cols="30" rows="3"></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="medical_histry" class="sp_label">Medical history</label>
+                                <textarea class="form-control" name="medical_histry" id="medical_histry" cols="30" rows="3" placeholder="Allergies, conditions or other medical notes"></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="sp_label">How did they hear about us?</label>
+                                <div class="sp_checks">
+                                    <label class="sp_check"><input class="edit_heard_about_checkbox" type="checkbox" id="edit_heard_radio" value="Radio"> Radio</label>
+                                    <label class="sp_check"><input class="edit_heard_about_checkbox" type="checkbox" id="edit_heard_tv" value="TV"> TV</label>
+                                    <label class="sp_check"><input class="edit_heard_about_checkbox" type="checkbox" id="edit_heard_facebook" value="Facebook"> Facebook</label>
+                                    <label class="sp_check"><input class="edit_heard_about_checkbox" type="checkbox" id="edit_heard_instagram" value="Instagram"> Instagram</label>
+                                    <label class="sp_check"><input class="edit_heard_about_checkbox" type="checkbox" id="edit_heard_tiktok" value="Tiktok"> Tiktok</label>
+                                    <label class="sp_check"><input class="edit_heard_about_checkbox" type="checkbox" id="edit_heard_friends" value="Friends"> Friends</label>
+                                    <label class="sp_check"><input class="edit_heard_about_checkbox" type="checkbox" id="edit_heard_referral" value="Referral"> Referral</label>
+                                    <label class="sp_check"><input class="edit_heard_about_checkbox" type="checkbox" id="edit_heard_others" value="Others"> Others</label>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-control-label" for="disableds"><b>Disabled: </b></label><br>
-                                    <select id="disableds" class="w-100">
-                                        <option value="" hidden>Select option..</option>
-                                        <option id="Yes" value="Yes">Yes</option>
-                                        <option id="No" value="No">No</option>
-                                    </select>
+                                <div class="row g-2 mt-1 hide" id="edit_referral_details_win">
+                                    <div class="col-12"><span class="sp_hint">Referral: who referred them and their phone number</span></div>
+                                    <div class="col-md-6"><input type="text" id="edit_referral_name" class="form-control" placeholder="Referral name"></div>
+                                    <div class="col-md-6"><input type="text" id="edit_referral_phone" class="form-control" placeholder="Referral phone number"></div>
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="form-control-label" for="descriptionsd"><b>Disabled description: </b><br></label>
-                                    <textarea style='padding:4px 2px;' class="form-control w-100" placeholder="Disabled Description" autocomplete="off" id="descriptionsd" cols="30" rows="5"></textarea>
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="medical_histry" class="form-control-label"><b>Medical History</b></label>
-                                    <textarea class="form-control" name="medical_histry" id="medical_histry" cols="30" rows="5" placeholder="Medical History Appears here"></textarea>
-                                </div>
-                                <div class="col-md-12 my-2">
-                                    <label class="form-control-label"><b>How did you hear about us?</b></label>
-                                    <div class="row mt-1">
-                                        <div class="col-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_radio" value="Radio">
-                                                <label class="form-check-label" for="edit_heard_radio">Radio</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_tv" value="TV">
-                                                <label class="form-check-label" for="edit_heard_tv">TV</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_facebook" value="Facebook">
-                                                <label class="form-check-label" for="edit_heard_facebook">Facebook</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_instagram" value="Instagram">
-                                                <label class="form-check-label" for="edit_heard_instagram">Instagram</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_tiktok" value="Tiktok">
-                                                <label class="form-check-label" for="edit_heard_tiktok">Tiktok</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_friends" value="Friends">
-                                                <label class="form-check-label" for="edit_heard_friends">Friends</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_referral" value="Referral">
-                                                <label class="form-check-label" for="edit_heard_referral">Referral</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input edit_heard_about_checkbox" type="checkbox" id="edit_heard_others" value="Others">
-                                                <label class="form-check-label" for="edit_heard_others">Others</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 hide" id="edit_referral_details_win">
-                                        <label class="form-control-label text-secondary" style="font-size:12px;">Referral — Indicate name and phone</label>
-                                        <input type="text" id="edit_referral_name" class="form-control mb-1" placeholder="Referral name">
-                                        <input type="text" id="edit_referral_phone" class="form-control" placeholder="Referral phone number">
-                                    </div>
-                                    <div class="mt-2 hide" id="edit_heard_others_win">
-                                        <label class="form-control-label text-secondary" style="font-size:12px;">Others — Please specify</label>
-                                        <input type="text" id="edit_heard_others_specify" class="form-control" placeholder="Please specify">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 my-2">
-                                    <p class="hide" id="previous_school_json"></p>
-                                    <h6 class="text-center">Previous Schools Attended.</h6>
-                                    <div class="tableme"><p id="prev_sch_list"></p></div>
+                                <div class="mt-2 hide" id="edit_heard_others_win">
+                                    <span class="sp_hint">Others: please specify</span>
+                                    <input type="text" id="edit_heard_others_specify" class="form-control" placeholder="Please specify">
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="sp_card">
+                        <div class="sp_head">
+                            <span class="sp_icon"><i class="fas fa-school"></i></span>
+                            <div class="sp_head_text"><b>Previous Schools</b><small>Schools the student attended before joining</small></div>
+                        </div>
+                        <p class="hide" id="previous_school_json"></p>
+                        <div class="tableme"><p id="prev_sch_list"></p></div>
+                    </div>
+                    </div>
+
                     <div class="parentsinformation">
-                        <!--<h3 class='infortitle'><strong>Parents information</strong></h3>-->
-                        <div class="form-control d-flex flex-wrap my-2 rounded">
-                            <div class="titles">
-                                <p>Student information</p>
+                    <div class="sp_card">
+                        <div class="sp_head">
+                            <span class="sp_icon"><i class="fas fa-users"></i></span>
+                            <div class="sp_head_text"><b>Parents and Guardians</b><small>Contacts the college reaches out to about the student</small></div>
+                        </div>
+                        <p class="sp_subhead"><span>1</span> First parent</p>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="sp_label" for="pnamed">Name</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='pnamed' placeholder='Parent name'>
                             </div>
-                            <p style="color:maroon;font-size:12px;"><u>First Parent</u></p>
-                            <div class="form-control d-flex flex-wrap my-2 rounded row">
-                                <div class="col-md-4">
-                                    <label for="pnamed"><b>Parents name: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="pnamed" placeholder='Parents name'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="pcontacted"><b>Parents Contacts : </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="pcontacted" placeholder='Parents Contacts'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="paddressed"><b>Parents residence: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="paddressed" placeholder='Parents Residence'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="pemails"><b>Parents Email: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="pemails" placeholder='Parents Emails'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="parrelationship"><b>Parents Relation: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="parrelationship" placeholder='Parents Emails'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="paroccupation1"><b>Parents Occupation: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="paroccupation1" placeholder='Parent`s Occupation'>
-                                </div>
-                                <div class="col-md-4 hide">
-                                    <div class="call_option">
-                                        <p class="btn btn-sm btn-success my-2" id="call_phone">Click to call parent</p>
-                                    </div>
-                                    <div class="call_option">
-                                        <p class="btn btn-sm btn-success my-2" id="mail_to">Click to send the parent an email.</p>
-                                    </div>
-                                </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="pcontacted">Phone</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='pcontacted' placeholder='Parent phone number'>
                             </div>
-                            <p style="color:maroon;font-size:12px;"><u>Second Parent</u></p>
-                            <div class="form-control d-flex flex-wrap my-2 rounded row">
-                                <div class="col-md-4">
-                                    <label for="pnamed2"><b>Parents name: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="pnamed2" placeholder='Parents name'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="pcontacted2"><b>Parents Contacts : </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="pcontacted2" placeholder='Parents Contacts'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="pemails2"><b>Parents Email: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="pemails2" placeholder='Parents Emails'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="parrelationship2"><b>Parents Relation: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="parrelationship2" placeholder='Parents Relation'>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="paroccupation2"><b>Parents Occupation: </b><br></label>
-                                    <input class='form-control w-100' type="text" autocomplete="off" id="paroccupation2" placeholder='Parent`s Occupation'>
-                                </div>
-                                <div class="col-md-4 hide">
-                                    <div class="call_option">
-                                        <p class="btn btn-sm btn-success my-2" id="call_phone2">Click to call parent</p>
-                                    </div>
-                                    <div class="call_option">
-                                        <p class="btn btn-sm btn-success my-2" id="mail_to2">Click to send the parent an email.</p>
-                                    </div>
-                                </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="paddressed">Residence</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='paddressed' placeholder='Parent residence'>
                             </div>
-                            <hr class="mt-2 mb-2">
-                            <div class="px-1 pb-1">
-                                <p class="mb-2" style="font-size:13px;font-weight:600;color:#555;"><i class="fas fa-comment-dots mr-1"></i> Preferred Mode of Communication</p>
-                                <div class="d-flex flex-wrap" style="gap:12px;">
-                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                        <input type="radio" name="preferred_communication" id="pref_comm_school_default" value="school_default" checked>
-                                        &nbsp;School Default
-                                    </label>
-                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                        <input type="radio" name="preferred_communication" id="pref_comm_primary" value="primary_parent">
-                                        &nbsp;Primary Parent
-                                    </label>
-                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                        <input type="radio" name="preferred_communication" id="pref_comm_secondary" value="secondary_parent">
-                                        &nbsp;Secondary Parent
-                                    </label>
-                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                        <input type="radio" name="preferred_communication" id="pref_comm_both" value="both_parents">
-                                        &nbsp;Both Parents
-                                    </label>
-                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                        <input type="radio" name="preferred_communication" id="pref_comm_student" value="student">
-                                        &nbsp;Student
-                                    </label>
-                                    <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                        <input type="radio" name="preferred_communication" id="pref_comm_all" value="all_three">
-                                        &nbsp;All Three
-                                    </label>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="pemails">Email</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='pemails' placeholder='Parent email'>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="parrelationship">Relationship</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='parrelationship' placeholder='e.g. Mother'>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="paroccupation1">Occupation</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='paroccupation1' placeholder='Parent occupation'>
+                            </div>
+                            <div class="col-md-4 hide">
+                                <div class="call_option"><p class="btn btn-sm btn-success my-2" id="call_phone">Click to call parent</p></div>
+                                <div class="call_option"><p class="btn btn-sm btn-success my-2" id="mail_to">Click to send the parent an email.</p></div>
+                            </div>
+                        </div>
+                        <p class="sp_subhead"><span>2</span> Second parent</p>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="sp_label" for="pnamed2">Name</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='pnamed2' placeholder='Parent name'>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="pcontacted2">Phone</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='pcontacted2' placeholder='Parent phone number'>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="pemails2">Email</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='pemails2' placeholder='Parent email'>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="parrelationship2">Relationship</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='parrelationship2' placeholder='e.g. Father'>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="sp_label" for="paroccupation2">Occupation</label>
+                                <input class='form-control w-100' type='text' autocomplete='off' id='paroccupation2' placeholder='Parent occupation'>
+                            </div>
+                            <div class="col-md-4 hide">
+                                <div class="call_option"><p class="btn btn-sm btn-success my-2" id="call_phone2">Click to call parent</p></div>
+                                <div class="call_option"><p class="btn btn-sm btn-success my-2" id="mail_to2">Click to send the parent an email.</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sp_card">
+                        <div class="sp_head">
+                            <span class="sp_icon"><i class="fas fa-comment-dots"></i></span>
+                            <div class="sp_head_text"><b>Communication</b><small>Who receives messages about this student, and how</small></div>
+                        </div>
+                        <p class="sp_label">Preferred recipient</p>
+                        <div class="sp_pills">
+                            <label class="sp_pill"><input type="radio" name="preferred_communication" id="pref_comm_school_default" value="school_default" checked><span>College default</span></label>
+                            <label class="sp_pill"><input type="radio" name="preferred_communication" id="pref_comm_primary" value="primary_parent"><span>Primary parent</span></label>
+                            <label class="sp_pill"><input type="radio" name="preferred_communication" id="pref_comm_secondary" value="secondary_parent"><span>Secondary parent</span></label>
+                            <label class="sp_pill"><input type="radio" name="preferred_communication" id="pref_comm_both" value="both_parents"><span>Both parents</span></label>
+                            <label class="sp_pill"><input type="radio" name="preferred_communication" id="pref_comm_student" value="student"><span>Student</span></label>
+                            <label class="sp_pill"><input type="radio" name="preferred_communication" id="pref_comm_all" value="all_three"><span>All three</span></label>
+                        </div>
+                        <p class="sp_label mt-3">Preferred channel</p>
+                        <div class="sp_channels">
+                            <div class="sp_channel">
+                                <span class="sp_channel_who"><i class="fas fa-user-graduate"></i> Student</span>
+                                <div class="sp_pills">
+                                    <label class="sp_pill"><input type="radio" name="student_channel" id="student_channel_sms" value="sms" checked><span><i class="fas fa-sms"></i> SMS</span></label>
+                                    <label class="sp_pill"><input type="radio" name="student_channel" id="student_channel_email" value="email"><span><i class="fas fa-envelope"></i> Email</span></label>
                                 </div>
                             </div>
-                            <hr class="mt-2 mb-2">
-                            <div class="px-1 pb-1">
-                                <p class="mb-2" style="font-size:13px;font-weight:600;color:#555;"><i class="fas fa-satellite-dish mr-1"></i> Preferred Communication Channel</p>
-                                <div class="d-flex flex-wrap" style="gap:24px;">
-                                    <div>
-                                        <label class="mb-1 d-block" style="font-size:12px;color:#777;">Student</label>
-                                        <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                            <input type="radio" name="student_channel" id="student_channel_sms" value="sms" checked>
-                                            &nbsp;SMS
-                                        </label>
-                                        <label class="mb-0 ml-2" style="cursor:pointer;font-size:13px;">
-                                            <input type="radio" name="student_channel" id="student_channel_email" value="email">
-                                            &nbsp;Email
-                                        </label>
-                                    </div>
-                                    <div>
-                                        <label class="mb-1 d-block" style="font-size:12px;color:#777;">Primary Parent</label>
-                                        <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                            <input type="radio" name="primary_parent_channel" id="primary_parent_channel_sms" value="sms" checked>
-                                            &nbsp;SMS
-                                        </label>
-                                        <label class="mb-0 ml-2" style="cursor:pointer;font-size:13px;">
-                                            <input type="radio" name="primary_parent_channel" id="primary_parent_channel_email" value="email">
-                                            &nbsp;Email
-                                        </label>
-                                    </div>
-                                    <div>
-                                        <label class="mb-1 d-block" style="font-size:12px;color:#777;">Secondary Parent</label>
-                                        <label class="mb-0" style="cursor:pointer;font-size:13px;">
-                                            <input type="radio" name="secondary_parent_channel" id="secondary_parent_channel_sms" value="sms" checked>
-                                            &nbsp;SMS
-                                        </label>
-                                        <label class="mb-0 ml-2" style="cursor:pointer;font-size:13px;">
-                                            <input type="radio" name="secondary_parent_channel" id="secondary_parent_channel_email" value="email">
-                                            &nbsp;Email
-                                        </label>
-                                    </div>
+                            <div class="sp_channel">
+                                <span class="sp_channel_who"><i class="fas fa-user"></i> Primary parent</span>
+                                <div class="sp_pills">
+                                    <label class="sp_pill"><input type="radio" name="primary_parent_channel" id="primary_parent_channel_sms" value="sms" checked><span><i class="fas fa-sms"></i> SMS</span></label>
+                                    <label class="sp_pill"><input type="radio" name="primary_parent_channel" id="primary_parent_channel_email" value="email"><span><i class="fas fa-envelope"></i> Email</span></label>
+                                </div>
+                            </div>
+                            <div class="sp_channel">
+                                <span class="sp_channel_who"><i class="fas fa-user-friends"></i> Secondary parent</span>
+                                <div class="sp_pills">
+                                    <label class="sp_pill"><input type="radio" name="secondary_parent_channel" id="secondary_parent_channel_sms" value="sms" checked><span><i class="fas fa-sms"></i> SMS</span></label>
+                                    <label class="sp_pill"><input type="radio" name="secondary_parent_channel" id="secondary_parent_channel_email" value="email"><span><i class="fas fa-envelope"></i> Email</span></label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="btns">
-                        <!--<button type="button">Delete Student</button>-->
-                        <button type="button" id='updatestudinfor'><i class="fas fa-upload"></i> Update student information</button>
-                        <p class = "link" id="returnfind">&laquo; Go back to student list</p>
                     </div>
-                    <p id="coppy_cat_err"></p>
+
+                    <!-- stays at the bottom of the window while scrolling the profile -->
+                    <div class="sp_actionbar">
+                        <span class="sp_back link" id="returnfind" role="button" tabindex="0"><i class="fas fa-arrow-left"></i> Back to student list</span>
+                        <p id="coppy_cat_err"></p>
+                        <button type="button" id='updatestudinfor'><i class="fas fa-save"></i> Update student information</button>
+                    </div>
                 </div>
                 <!-- <div class="conts" id="result_body_2">
                     <div class="view_informations row p-2">
