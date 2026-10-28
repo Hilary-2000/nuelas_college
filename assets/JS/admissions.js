@@ -117,6 +117,19 @@ function setListernerSetClass(){
     }
 }
 
+// Message Templates opens from its own menu button or from Broadcast.
+function openMessageTemplates(menu_id) {
+    hideWindow();
+    unselectbtns();
+    addselected(menu_id);
+    cObj("sms_templates_window").classList.remove("hide");
+    removesidebar();
+    get_school_information();
+    get_message_samples();
+}
+cObj("message_templates_menu").onclick = function () {
+    openMessageTemplates("message_templates_menu");
+}
 cObj("message_templates_setup_btn").onclick = function () {
     hideWindow();
     unselectbtns();
@@ -6932,6 +6945,10 @@ function getEditedStaffRoles(status = "new"){
                 "Status": status == "edit" ? (cObj("sms_and_broadcast2") != undefined ? (cObj("sms_and_broadcast2").checked ? "yes" : "no") : "no") : (cObj("sms_and_broadcast") != undefined ? (cObj("sms_and_broadcast").checked ? "yes" : "no") : "no")
             },
             {
+                "name": "message_templates",
+                "Status": status == "edit" ? (cObj("message_templates_sect2") != undefined ? (cObj("message_templates_sect2").checked ? "yes" : "no") : "no") : (cObj("message_templates_sect") != undefined ? (cObj("message_templates_sect").checked ? "yes" : "no") : "no")
+            },
+            {
                 "name": "update_school_profile",
                 "Status": status == "edit" ? (cObj("update_school_profile_sect2") != undefined ? (cObj("update_school_profile_sect2").checked ? "yes" : "no") : "no") : (cObj("update_school_profile_sect") != undefined ? (cObj("update_school_profile_sect").checked ? "yes" : "no") : "no")
             },
@@ -7255,6 +7272,14 @@ function checkRoles(roles, edit_status = "new") {
         var element_id = "";
         if(edit_status == "edit"){
             element_id = "manage_charged_accounts_sect2";
+        }
+        if(cObj(element_id) != undefined){
+            cObj(element_id).checked = roles.Status == "yes";
+        }
+    }else if(roles.name == "message_templates"){
+        var element_id = "";
+        if(edit_status == "edit"){
+            element_id = "message_templates_sect2";
         }
         if(cObj(element_id) != undefined){
             cObj(element_id).checked = roles.Status == "yes";
