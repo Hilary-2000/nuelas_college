@@ -9253,3 +9253,317 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     border-color: rgb(3,131,135) !important;
     box-shadow: 0 0 0 3px rgba(3,131,135,0.15) !important;
 }
+
+/* ===== Edit Student Voteheads (homepage.php #edit_student_votehead, opened from the student
+   profile). A teal header, the student and their balance on top, the votehead table with
+   the active module column highlighted, and the actions in a footer. ===== */
+#edit_student_votehead .vh_modal{
+    width: 1060px;
+    max-width: calc(100vw - 32px);
+    margin: 6vh auto 40px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    font-family: inherit;
+    box-shadow: 0 24px 60px rgba(15, 40, 42, 0.28);
+}
+#edit_student_votehead .vh_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: linear-gradient(120deg, rgb(3,131,135), rgb(39,93,95));
+    color: #fff;
+}
+#edit_student_votehead .vh_icon{
+    flex: 0 0 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.18);
+    font-size: 15px;
+}
+#edit_student_votehead .vh_head_text{
+    flex: 1;
+    min-width: 0;
+}
+#edit_student_votehead .vh_head_text b{
+    display: block;
+    font-size: 16px;
+}
+#edit_student_votehead .vh_head_text small{
+    display: block;
+    font-size: 12.5px;
+    opacity: .85;
+}
+#edit_student_votehead .vh_head .funga{
+    position: static;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    border-radius: 9px;
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+    opacity: .85;
+}
+#edit_student_votehead .vh_head .funga:hover{
+    background: rgba(255,255,255,0.18);
+    opacity: 1;
+}
+#edit_student_votehead .vh_body{
+    padding: 18px 20px 6px;
+}
+/* the student */
+#edit_student_votehead .vh_student{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    border: 1px solid #e4eaee;
+    border-radius: 14px;
+    background: linear-gradient(120deg, rgba(3,131,135,0.07), rgba(255,255,255,0) 60%), #fff;
+}
+#edit_student_votehead .vh_student_main{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+#edit_student_votehead .vh_avatar{
+    flex: 0 0 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e6f3f3;
+    color: rgb(3,131,135);
+    font-size: 18px;
+}
+#edit_student_votehead .vh_student_main b{
+    display: block;
+    font-size: 16px;
+    color: #1f3a3c;
+}
+#edit_student_votehead .vh_chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 5px;
+}
+#edit_student_votehead .vh_chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #f1f5f6;
+    color: #44585a;
+    font-size: 12px;
+    font-weight: 600;
+}
+#edit_student_votehead .vh_chip i{
+    font-size: 10.5px;
+    color: rgb(3,131,135);
+}
+#edit_student_votehead .vh_fees{
+    text-align: right;
+}
+#edit_student_votehead .vh_fees span{
+    display: block;
+    font-size: 12px;
+    color: #6b7c7e;
+}
+#edit_student_votehead .vh_fees b{
+    font-size: 19px;
+    color: #d64545;
+}
+#edit_student_votehead .vh_hint{
+    margin-bottom: 14px;
+}
+/* the votehead table the server builds (get_student_voteheads in ajax/finance/financial.php) */
+#edit_student_votehead .vh_table .tableme{
+    padding: 0;
+    overflow-x: auto;
+}
+#edit_student_votehead #student_votehead_table{
+    width: 100%;
+    margin: 0;
+    border: 1px solid #e4eaee;
+    border-radius: 12px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+#edit_student_votehead #student_votehead_table th{
+    padding: 9px 9px;
+    background: #f4f7f8;
+    color: #4a5b5e;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    border: 0;
+    border-bottom: 1px solid #e4eaee;
+    white-space: nowrap;
+    vertical-align: bottom;
+}
+#edit_student_votehead #student_votehead_table td{
+    padding: 10px 9px;
+    border: 0;
+    border-bottom: 1px solid #eef1f2;
+    font-size: 13px;
+    color: #1f3a3c;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+#edit_student_votehead #student_votehead_table tr:last-child td{
+    border-bottom: 0;
+}
+#edit_student_votehead #student_votehead_table tr:hover td{
+    background: #fbfcfc;
+}
+#edit_student_votehead #student_votehead_table td:nth-child(2){
+    font-weight: 600;
+    white-space: normal;
+    min-width: 120px;
+}
+#edit_student_votehead #student_votehead_table .badge{
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+#edit_student_votehead #student_votehead_table th .badge.bg-success{
+    background: #23a455 !important;
+}
+#edit_student_votehead #student_votehead_table th .badge.bg-secondary{
+    background: #c3cdcf !important;
+}
+#edit_student_votehead #student_votehead_table td .badge.bg-primary{
+    background: #e6f3f3 !important;
+    color: rgb(3,131,135);
+}
+#edit_student_votehead #student_votehead_table input[type=checkbox]{
+    width: 17px;
+    height: 17px;
+    margin: 0 6px 0 0;
+    vertical-align: -3px;
+    accent-color: rgb(3,131,135);
+    cursor: pointer;
+}
+/* the active module's column, marked by the script after the table loads */
+#edit_student_votehead #student_votehead_table .vh_active_col{
+    background: rgba(35,164,85,0.07);
+}
+#edit_student_votehead #student_votehead_table tr:hover td.vh_active_col{
+    background: rgba(35,164,85,0.12);
+}
+/* an amount whose box is unticked fades, so what the student pays stands out */
+#edit_student_votehead #student_votehead_table .vh_amount_off{
+    color: #a9b5b7;
+    text-decoration: line-through;
+}
+#edit_student_votehead #error_handler_evh p{
+    margin: 10px 0 0;
+    font-size: 13px;
+}
+/* reset confirmation */
+#edit_student_votehead .vh_confirm{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border: 1px solid #f3c7c2;
+    border-radius: 12px;
+    background: #fdf1ef;
+    color: #8a2f25;
+    font-size: 13px;
+}
+#edit_student_votehead .vh_confirm.hide{
+    display: none;
+}
+#edit_student_votehead .vh_confirm i{
+    color: #d64545;
+}
+#edit_student_votehead .vh_confirm p{
+    flex: 1 1 260px;
+    margin: 0;
+}
+/* footer actions */
+#edit_student_votehead .vh_foot{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    margin-top: 14px;
+    border-top: 1px solid #eef1f2;
+    background: #f8fafb;
+}
+#edit_student_votehead .vh_spacer{
+    flex: 1;
+}
+#edit_student_votehead .vh_modal button{
+    display: inline-flex !important;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    margin: 0 !important;
+    padding: 0 16px !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    font-weight: 600;
+    box-shadow: none !important;
+}
+#edit_student_votehead .vh_modal .vh_btn{
+    border: 1px solid transparent !important;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(39,93,95)) !important;
+    color: #fff !important;
+}
+#edit_student_votehead .vh_modal .vh_btn:hover{
+    filter: brightness(1.08);
+}
+#edit_student_votehead .vh_modal .vh_btn_ghost{
+    border: 1px solid #e4eaee !important;
+    background: #fff !important;
+    color: #4a5b5e !important;
+}
+#edit_student_votehead .vh_modal .vh_btn_ghost:hover{
+    background: #f4f7f8 !important;
+}
+#edit_student_votehead .vh_modal .vh_btn_danger_ghost{
+    border: 1px solid #f1c4bf !important;
+    background: #fff !important;
+    color: #c0392b !important;
+}
+#edit_student_votehead .vh_modal .vh_btn_danger_ghost:hover{
+    background: #fdecea !important;
+}
+#edit_student_votehead .vh_modal .vh_btn_danger{
+    border: 1px solid transparent !important;
+    background: #d64545 !important;
+    color: #fff !important;
+}
+#edit_student_votehead .vh_modal .vh_btn_danger:hover{
+    background: #b93636 !important;
+}
+@media screen and (max-width: 768px){
+    #edit_student_votehead .vh_fees{
+        text-align: left;
+    }
+    #edit_student_votehead .vh_spacer{
+        display: none;
+    }
+}

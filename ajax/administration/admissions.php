@@ -373,8 +373,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                             }
                         }
                         $student_course = json_encode($student_course);
-                        $update = "UPDATE student_data SET my_course_list='".$student_course."' WHERE adm_no = '".$admission_no."'";
+                        $update = "UPDATE student_data SET my_course_list = ? WHERE adm_no = ?";
                         $stmt = $conn2->prepare($update);
+                        $stmt->bind_param("ss", $student_course, $admission_no);
                         $stmt->execute();
                         echo "<p class='text-success'>Reset has been done successfully!!</p>";
                         return;
