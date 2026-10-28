@@ -258,7 +258,8 @@ function sortAsc(arrays,index){
 }
 // The expense and payment approval windows and their popups use
 // role="button" elements for their actions, so Enter and Space click them like buttons.
-["expenses_win", "payment_approval_window", "view_payment_request", "edit_expense_windows"].forEach(function (id) {
+var expense_key_windows = ["expenses_win", "payment_approval_window", "view_payment_request", "edit_expense_windows"];
+expense_key_windows.forEach(function (id) {
     cObj(id).addEventListener("keydown", function (e) {
         var el = e.target;
         if (el.getAttribute && el.getAttribute("role") === "button" && (e.key === "Enter" || e.key === " ")) {
