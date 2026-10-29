@@ -492,7 +492,9 @@ function load_dash_graphs() {
         genderPopulationPieInstance.destroy();
     }
 
-    if(!cObj("student_population_loader").classList.contains("hide") || !cObj("fees_balance_data_loader").classList.contains("hide") || !cObj("income_and_expense_pie_loader").classList.contains("hide") || !cObj("student_attendance_data_loader").classList.contains("hide") || !cObj("fees_collection_modeofpay_loader").classList.contains("hide")){
+    // still loading from the last run (a loader missing from this dashboard counts as idle)
+    var dash_loaders = ["student_population_loader", "fees_balance_data_loader", "income_and_expense_pie_loader", "student_attendance_data_loader", "fees_collection_modeofpay_loader"];
+    if (dash_loaders.some(function (id) { return cObj(id) && !cObj(id).classList.contains("hide"); })) {
         return;
     }
 
@@ -524,13 +526,13 @@ function load_dash_graphs() {
                             {
                                 label: 'Male Active',
                                 data: maleActive,
-                                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                backgroundColor: 'rgba(3, 131, 135, 0.85)',
                                 stack: 'male'
                             },
                             {
                                 label: 'Male Inactive',
                                 data: maleInactive,
-                                backgroundColor: 'rgba(54, 162, 235, 0.3)',
+                                backgroundColor: 'rgba(3, 131, 135, 0.3)',
                                 stack: 'male'
                             },
 
@@ -538,26 +540,27 @@ function load_dash_graphs() {
                             {
                                 label: 'Female Active',
                                 data: femaleActive,
-                                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                                backgroundColor: 'rgba(232, 106, 79, 0.85)',
                                 stack: 'female'
                             },
                             {
                                 label: 'Female Inactive',
                                 data: femaleInactive,
-                                backgroundColor: 'rgba(255, 99, 132, 0.3)',
+                                backgroundColor: 'rgba(232, 106, 79, 0.3)',
                                 stack: 'female'
                             }
                         ]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         interaction: {
                             mode: 'index',
                             intersect: false
                         },
                         plugins: {
                             title: {
-                                display: true,
+                                display: false,
                                 text: 'Student Population by Course Level',
                                 font: {
                                     family: 'Nunito',
@@ -621,20 +624,21 @@ function load_dash_graphs() {
                             label:"Gender Population",
                             data: [male_pop, female_pop],
                             backgroundColor: [
-                                'rgba(54, 162, 235, 0.7)',
-                                'rgba(255, 99, 132, 0.7)'
+                                'rgba(3, 131, 135, 0.85)',
+                                'rgba(232, 106, 79, 0.85)'
                             ]
                         }]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         interaction: {
                             mode: 'index',
                             intersect: false
                         },
                         plugins: {
                             title: {
-                                display: true,
+                                display: false,
                                 text: 'Gender Population',
                                 font: {
                                     family: 'Nunito',
@@ -680,24 +684,25 @@ function load_dash_graphs() {
                             {
                                 label: 'Fees Paid',
                                 data: amount_paid,
-                                backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                                backgroundColor: 'rgba(3, 131, 135, 0.85)'
                             },
                             {
                                 label: 'Balance',
                                 data: balance,
-                                backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                                backgroundColor: 'rgba(232, 106, 79, 0.85)'
                             }
                         ]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         interaction: {
                             mode: 'index',
                             intersect: false
                         },
                         plugins: {
                             title: {
-                                display: true,
+                                display: false,
                                 text: 'Student Fees Balances by Course Level (Today)',
                                 font: {
                                     family: 'Nunito',
@@ -757,20 +762,21 @@ function load_dash_graphs() {
                             label:"Payment Details",
                             data: [fullAmountPaid, fullBalance],
                             backgroundColor: [
-                                'rgba(54, 162, 235, 0.7)',
-                                'rgba(255, 99, 132, 0.7)'
+                                'rgba(3, 131, 135, 0.85)',
+                                'rgba(232, 106, 79, 0.85)'
                             ]
                         }]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         interaction: {
                             mode: 'index',
                             intersect: false
                         },
                         plugins: {
                             title: {
-                                display: true,
+                                display: false,
                                 text: 'Fees Paid against Fees Balances (Today)',
                                 font: {
                                     family: 'Nunito',
@@ -812,20 +818,21 @@ function load_dash_graphs() {
                             label:"Income & Expense",
                             data: [income, expense],
                             backgroundColor: [
-                                'rgba(54, 162, 235, 0.7)',
-                                'rgba(255, 99, 132, 0.7)'
+                                'rgba(3, 131, 135, 0.85)',
+                                'rgba(232, 106, 79, 0.85)'
                             ]
                         }]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         interaction: {
                             mode: 'index',
                             intersect: false
                         },
                         plugins: {
                             title: {
-                                display: true,
+                                display: false,
                                 text: 'Income against Expenses (Today)',
                                 font: {
                                     family: 'Nunito',
@@ -869,24 +876,25 @@ function load_dash_graphs() {
                                 {
                                     label: 'Present',
                                     data: present,
-                                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                                    backgroundColor: 'rgba(3, 131, 135, 0.85)'
                                 },
                                 {
                                     label: 'Absent',
                                     data: absent,
-                                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                                    backgroundColor: 'rgba(232, 106, 79, 0.85)'
                                 }
                             ]
                         },
                         options: {
                             responsive: true,
+                            maintainAspectRatio: false,
                             interaction: {
                                 mode: 'index',
                                 intersect: false
                             },
                             plugins: {
                                 title: {
-                                    display: true,
+                                    display: false,
                                     text: 'Student attendance by Course Level (Today)',
                                     font: {
                                         family: 'Nunito',
@@ -946,19 +954,20 @@ function load_dash_graphs() {
                             {
                                 label: 'Fees Paid',
                                 data: amount,
-                                backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                                backgroundColor: 'rgba(3, 131, 135, 0.85)'
                             }
                         ]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         interaction: {
                             mode: 'index',
                             intersect: false
                         },
                         plugins: {
                             title: {
-                                display: true,
+                                display: false,
                                 text: 'Fees Collection by Mode of Pay (This Month)',
                                 font: {
                                     family: 'Nunito',
