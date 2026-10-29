@@ -9567,3 +9567,326 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
         display: none;
     }
 }
+
+/* ===== Dashboards (dashboard/*.php, one per role). A welcome banner, colour toned stat tiles
+   and chart cards with their own headers, shared by every user's dashboard through
+   dashboard/dash_welcome.php and dashboard/dash_charts.php. ===== */
+.dash_page{
+    --dash-teal: rgb(3, 131, 135);
+    --dash-ink: #1f3a3c;
+    --dash-muted: #6b7c7e;
+    --dash-line: #e4eaee;
+    width: 98%;
+    margin: 12px auto 20px;
+    font-family: "Nunito", "Calibri", sans-serif;
+}
+/* welcome banner */
+.dash_page .dash_hero{
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 22px 24px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgb(3,131,135) 0%, rgb(39,93,95) 100%);
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 8px 22px rgba(3,131,135,0.22);
+}
+.dash_page .dash_hero::before,
+.dash_page .dash_hero::after{
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    pointer-events: none;
+}
+.dash_page .dash_hero::before{
+    width: 260px;
+    height: 260px;
+    right: -60px;
+    top: -120px;
+}
+.dash_page .dash_hero::after{
+    width: 160px;
+    height: 160px;
+    right: 160px;
+    bottom: -110px;
+}
+.dash_page .dash_avatar{
+    position: relative;
+    flex: 0 0 64px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.85);
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.dash_page .dash_hero_text{
+    position: relative;
+    flex: 1 1 260px;
+    min-width: 0;
+}
+.dash_page .dash_hero_text small{
+    display: block;
+    font-size: 13px;
+    opacity: .85;
+}
+.dash_page .dash_hero_text h2{
+    margin: 2px 0 4px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: capitalize;
+}
+.dash_page .dash_hero_text p{
+    margin: 0;
+    font-size: 13.5px;
+    opacity: .9;
+}
+.dash_page .dash_hero_meta{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+.dash_page .dash_chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.22);
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+/* stat tiles */
+.dash_page .dash_stats{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
+    margin: 18px 0 0;
+}
+.dash_page .dash_stat{
+    --tone: var(--dash-teal);
+    --tone-bg: #e6f3f3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px 16px 12px;
+    border: 1px solid var(--dash-line);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(31,45,51,0.05);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+.dash_page .dash_stat:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(31,45,51,0.09);
+}
+.dash_page .dash_stat.d-none{
+    display: none;
+}
+.dash_page .dash_tone_teal{ --tone: rgb(3,131,135); --tone-bg: #e6f3f3; }
+.dash_page .dash_tone_blue{ --tone: #1f6fbf; --tone-bg: #e5f0fb; }
+.dash_page .dash_tone_green{ --tone: #23a455; --tone-bg: #e8f5e9; }
+.dash_page .dash_tone_red{ --tone: #d64545; --tone-bg: #fdecea; }
+.dash_page .dash_tone_amber{ --tone: #d9820b; --tone-bg: #fff3e0; }
+.dash_page .dash_tone_purple{ --tone: #7b1fa2; --tone-bg: #f3e8f8; }
+.dash_page .dash_tone_indigo{ --tone: #3949ab; --tone-bg: #e8eaf6; }
+.dash_page .dash_tone_slate{ --tone: #4a5b5e; --tone-bg: #eef2f3; }
+.dash_page .dash_stat_top{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.dash_page .dash_stat_icon{
+    flex: 0 0 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: var(--tone-bg);
+    color: var(--tone);
+    font-size: 19px;
+}
+.dash_page .dash_stat_body{
+    min-width: 0;
+}
+.dash_page .dash_stat_value{
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--dash-ink);
+    word-break: break-word;
+}
+.dash_page .dash_stat_text{
+    font-size: 17px;
+}
+.dash_page .dash_stat_money{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 20px;
+}
+.dash_page .dash_stat_body > span{
+    display: block;
+    margin-top: 3px;
+    font-size: 12px;
+    color: var(--dash-muted);
+}
+.dash_page .dash_eye{
+    padding: 2px 6px;
+    border: none;
+    border-radius: 8px;
+    background: var(--tone-bg);
+    color: var(--tone);
+    font-size: 13px;
+    line-height: 1.4;
+    cursor: pointer;
+}
+.dash_page .dash_stat_foot{
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f3f4;
+    font-size: 12.5px;
+}
+.dash_page .dash_stat_foot p{
+    margin: 0;
+}
+.dash_page .dash_link{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--tone);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+.dash_page .dash_link i{
+    font-size: 10px;
+    transition: transform .18s ease;
+}
+.dash_page .dash_link:hover i{
+    transform: translateX(3px);
+}
+.dash_page .dash_note{
+    color: #9aa8aa;
+}
+/* charts */
+.dash_page .dash_section_head{
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 26px 2px 12px;
+}
+.dash_page .dash_section_head b{
+    font-size: 17px;
+    color: var(--dash-ink);
+}
+.dash_page .dash_section_head small{
+    font-size: 12.5px;
+    color: var(--dash-muted);
+}
+.dash_page .dash_charts{
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 14px;
+}
+.dash_page .dash_span_6{ grid-column: span 6; }
+.dash_page .dash_span_4{ grid-column: span 4; }
+/* without the finance charts the gender pie would sit alone in a third of a row */
+.dash_page .dash_charts:has(.finance_graphs.d-none) .dash_gender{ grid-column: span 12; }
+.dash_page .dash_chart{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 16px 18px 18px;
+    border: 1px solid var(--dash-line);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(31,45,51,0.05);
+}
+.dash_page .dash_chart.d-none{
+    display: none;
+}
+.dash_page .dash_chart_head{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--dash-line);
+}
+.dash_page .dash_chart_icon{
+    flex: 0 0 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(39,93,95));
+    color: #fff;
+    font-size: 14px;
+}
+.dash_page .dash_chart_head b{
+    display: block;
+    font-size: 14.5px;
+    color: var(--dash-ink);
+}
+.dash_page .dash_chart_head small{
+    display: block;
+    font-size: 12px;
+    color: var(--dash-muted);
+}
+.dash_page .dash_chart_body{
+    position: relative;
+    height: 280px;
+}
+.dash_page .dash_chart_loader{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--dash-muted);
+    background: rgba(255,255,255,0.85);
+    z-index: 1;
+}
+.dash_page .dash_chart_loader.hide{
+    display: none;
+}
+@media screen and (max-width: 1100px){
+    .dash_page .dash_span_4{ grid-column: span 6; }
+}
+@media screen and (max-width: 768px){
+    .dash_page .dash_span_6,
+    .dash_page .dash_span_4{ grid-column: span 12; }
+    .dash_page .dash_hero{
+        padding: 18px;
+    }
+    .dash_page .dash_hero_meta{
+        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .dash_page .dash_stats{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .dash_page .dash_stat_value{
+        font-size: 22px;
+    }
+}
