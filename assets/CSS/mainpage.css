@@ -9767,3 +9767,66 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
         font-size: 22px;
     }
 }
+
+/* ===== Top bar Home button (homepage.php #dash). A pill with a round icon that takes the
+   user back to their dashboard. ===== */
+.dashboard .topbar_home{
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+}
+.dashboard .topbar_home #dash{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 14px 0 4px;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    color: #fff;
+    font-family: "Nunito", "Calibri", sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    backdrop-filter: blur(4px);
+    transition: background .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.dashboard .topbar_home .topbar_home_icon{
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgb(3,131,135), rgb(39,93,95));
+    color: #fff;
+    font-size: 12px;
+    box-shadow: 0 2px 6px rgba(3,131,135,0.45);
+    transition: transform .18s ease;
+}
+.dashboard .topbar_home #dash:hover{
+    background: rgba(255,255,255,0.28);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    transform: translateY(-1px);
+}
+.dashboard .topbar_home #dash:hover .topbar_home_icon{
+    transform: scale(1.08);
+}
+.dashboard .topbar_home #dash:active{
+    transform: translateY(0);
+}
+.dashboard .topbar_home #dash:focus-visible{
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+@media screen and (max-width: 768px){
+    .dashboard .topbar_home #dash{
+        padding: 0 4px;
+    }
+    .dashboard .topbar_home .topbar_home_label{
+        display: none;
+    }
+}
