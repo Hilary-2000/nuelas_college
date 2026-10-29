@@ -9780,6 +9780,31 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 .dash_page .dash_link:hover i{
     transform: translateX(3px);
 }
+/* the global button style (gradient, shadow) would turn these into filled buttons */
+#maincontents .dash_page button.dash_link,
+#maincontents .dash_page button.dash_link:hover{
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: none !important;
+    color: var(--tone) !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0;
+    box-shadow: none !important;
+    transform: none;
+}
+#maincontents .dash_page button.dash_eye,
+#maincontents .dash_page button.dash_eye:hover{
+    padding: 2px 6px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    background: var(--tone-bg) !important;
+    color: var(--tone) !important;
+    font-size: 13px !important;
+    box-shadow: none !important;
+    transform: none;
+}
 .dash_page .dash_note{
     color: #9aa8aa;
 }
@@ -9868,26 +9893,106 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
 .dash_page .dash_chart_loader.hide{
     display: none;
 }
-@media screen and (max-width: 1100px){
+/* the sizes below follow the width the dashboard actually gets (the sidebar takes part of
+   the window on tablets and laptops), not the window */
+.dash_page{
+    container: dash_page / inline-size;
+}
+@container dash_page (max-width: 1000px){
     .dash_page .dash_span_4{ grid-column: span 6; }
 }
-@media screen and (max-width: 768px){
+@container dash_page (max-width: 760px){
     .dash_page .dash_span_6,
     .dash_page .dash_span_4{ grid-column: span 12; }
     .dash_page .dash_hero{
+        gap: 14px;
         padding: 18px;
     }
     .dash_page .dash_hero_meta{
-        align-items: flex-start;
+        flex: 1 1 100%;
         flex-direction: row;
         flex-wrap: wrap;
+        align-items: center;
     }
     .dash_page .dash_stats{
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
     }
+}
+@container dash_page (max-width: 520px){
+    .dash_page .dash_hero{
+        padding: 16px 14px;
+        border-radius: 14px;
+    }
+    .dash_page .dash_avatar{
+        flex-basis: 52px;
+        width: 52px;
+        height: 52px;
+    }
+    .dash_page .dash_hero_text{
+        flex-basis: 0;
+    }
+    .dash_page .dash_hero_text h2{
+        font-size: 20px;
+    }
+    .dash_page .dash_hero_text p{
+        font-size: 12.5px;
+    }
+    .dash_page .dash_chip{
+        padding: 5px 10px;
+        font-size: 11.5px;
+        white-space: normal;
+    }
+    /* tiles stack the icon over the figure so the number gets the full width */
+    .dash_page .dash_stat{
+        padding: 12px 12px 10px;
+        border-radius: 14px;
+    }
+    .dash_page .dash_stat_top{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .dash_page .dash_stat_icon{
+        flex: 0 0 auto;
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        font-size: 15px;
+    }
     .dash_page .dash_stat_value{
-        font-size: 22px;
+        font-size: 21px;
+    }
+    .dash_page .dash_stat_text{
+        font-size: 15px;
+    }
+    .dash_page .dash_stat_money{
+        font-size: 16px;
+    }
+    .dash_page .dash_stat_foot{
+        margin-top: 10px;
+        padding-top: 8px;
+        font-size: 12px;
+    }
+    .dash_page .dash_section_head{
+        flex-wrap: wrap;
+        gap: 2px 10px;
+        margin-top: 20px;
+    }
+    .dash_page .dash_charts{
+        gap: 10px;
+    }
+    .dash_page .dash_chart{
+        padding: 14px 12px 14px;
+        border-radius: 14px;
+    }
+    .dash_page .dash_chart_body{
+        height: 240px;
+    }
+}
+@container dash_page (max-width: 340px){
+    .dash_page .dash_stats{
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -9951,5 +10056,107 @@ input[type=button]:disabled:not(.left_dash *):not(.sidebars *):not(.administrati
     }
     .dashboard .topbar_home .topbar_home_label{
         display: none;
+    }
+}
+
+/* ===== Profile header band at smaller widths (student profile in findstudents.php and staff
+   profile in empinfor.php). Follows the width the profile gets rather than the window: below
+   860px the photo sits beside the name and the boarding switch and buttons move to a full
+   width row under them, below 560px everything stacks and the controls go full width. ===== */
+#viewinformation .studentdetails,
+#informationwindow{
+    container: sp_page / inline-size;
+}
+@container sp_page (max-width: 860px){
+    :is(#viewinformation, #informationwindow) .sp_hero{
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 14px 18px;
+        padding: 18px;
+        text-align: left;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_main{
+        display: contents;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_photo .student_images,
+    :is(#viewinformation, #informationwindow) .sp_hero_photo .student_images img{
+        width: 96px;
+        height: 96px;
+    }
+    :is(#viewinformation, #informationwindow) .sp_identity h3{
+        font-size: 20px;
+        word-break: break-word;
+    }
+    :is(#viewinformation, #informationwindow) .sp_chips{
+        justify-content: flex-start;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_side{
+        grid-column: 1 / -1;
+        width: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding-top: 14px;
+        border-top: 1px solid var(--sp-line);
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_side .sm-toggle-card{
+        flex: 1 1 260px;
+        gap: 12px;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_side .sp_toggle_feedback{
+        flex: 1 1 100%;
+        order: 2;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_side .sp_btn_danger,
+    :is(#viewinformation, #informationwindow) .sp_hero_side .sp_btn_ghost{
+        align-self: stretch;
+        justify-content: center;
+    }
+}
+@container sp_page (max-width: 560px){
+    :is(#viewinformation, #informationwindow) .sp_hero{
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+        gap: 12px;
+        padding: 18px 14px 16px;
+        text-align: center;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_photo .student_images,
+    :is(#viewinformation, #informationwindow) .sp_hero_photo .student_images img{
+        width: 88px;
+        height: 88px;
+    }
+    :is(#viewinformation, #informationwindow) .sp_identity{
+        width: 100%;
+    }
+    :is(#viewinformation, #informationwindow) .sp_identity h3{
+        margin-bottom: 8px;
+        font-size: 18px;
+    }
+    :is(#viewinformation, #informationwindow) .sp_chips{
+        justify-content: center;
+    }
+    :is(#viewinformation, #informationwindow) .sp_chip{
+        font-size: 11.5px;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_side{
+        justify-self: stretch;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_side .sm-toggle-card{
+        flex: none;
+        padding: 10px 12px;
+        text-align: left;
+    }
+    :is(#viewinformation, #informationwindow) .sp_hero_side .sp_btn_danger,
+    :is(#viewinformation, #informationwindow) .sp_hero_side .sp_btn_ghost{
+        width: 100%;
+    }
+    :is(#viewinformation, #informationwindow) .sp_stats{
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
     }
 }
