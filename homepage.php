@@ -294,9 +294,9 @@ function checkPresnt($array, $string){
                 <div class="conts menu">
                     <span><img class="menuicon" id="menubtn" src="images/menu.png" alt="menu"></span>
                 </div>
-                <ul class="d-flex flex-column justify-content-between bg-gray p-2" id="" title="Home">
-                    <button class="btn btn-primary btn-sm" id="dash" type="button"><i class="fas fa-home"></i></button>
-                </ul>
+                <div class="topbar_home">
+                    <button id="dash" type="button" title="Go to your dashboard"><span class="topbar_home_icon"><i class="fas fa-home"></i></span><span class="topbar_home_label">Home</span></button>
+                </div>
                 <div class="conts fa-xs">
                     <input class="form-control" type="text" id="authoriti" value="<?php echo $_SESSION['auth'] ?>" hidden>
                     <input class="form-control" type="text" id="useriddds" value="<?php echo $_SESSION['userids'] ?>" hidden>
